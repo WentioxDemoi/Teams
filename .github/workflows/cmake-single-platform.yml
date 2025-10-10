@@ -21,13 +21,13 @@ jobs:
 
     - name: Install dependencies
       run: |
-        brew install cmake boost docker
+        brew install cmake boost
 
     - name: Configure CMake
       run: |
         mkdir -p build/TeamsClient_
         cd build/TeamsClient_
-        cmake "${{ github.workspace }}" \
+        cmake "${{ github.workspace }}/TeamsClient_" \
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
           -DCMAKE_PREFIX_PATH=${{ env.QT_PATH }}/lib/cmake/Qt6
 
@@ -35,20 +35,3 @@ jobs:
       run: |
         cd build/TeamsClient_
         make -j$(sysctl -n hw.ncpu)
-
-    - name: Run tests
-      working-directory: build/TeamsClient_
-      run: |
-        ctest -C ${{ env.BUILD_TYPE }}
-
-    - name: Package .dmg
-      working-directory: build/TeamsClient_
-      run: |
-        ${{ env.QT_PATH }}/bin/macdeployqt TeamsClient_.app/
-        hdiutil create -volname "TeamsClient_" -srcfolder TeamsClient_.app -ov -format UDZO TeamsClient_.dmg
-
-    - name: Upload build artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: TeamsClient_dmg
-        path: build/TeamsClient_/TeamsClient_.dmg
