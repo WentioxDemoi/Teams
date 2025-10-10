@@ -27,7 +27,9 @@ jobs:
       run: |
         mkdir -p build/TeamsClient_
         cd build/TeamsClient_
-        cmake ../../ -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_PREFIX_PATH=${{ env.QT_PATH }}/lib/cmake/Qt6
+        cmake "${{ github.workspace }}" \
+          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+          -DCMAKE_PREFIX_PATH=${{ env.QT_PATH }}/lib/cmake/Qt6
 
     - name: Build
       run: |
