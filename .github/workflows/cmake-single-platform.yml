@@ -1,0 +1,52 @@
+name: Build TeamsClient_
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  BUILD_TYPE: Release
+  QT_VERSION: "6.9.3"
+  QT_PATH: "$HOME/Qt/6.9.3/macos" # Chemin Qt6
+
+jobs:
+  build-client:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        brew install cmake boost docker
+
+    - name: Configure CMake
+      run: |
+        mkdir -p build/TeamsClient_
+        cd build/TeamsClient_
+        cmake ../../ -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_PREFIX_PATH=${{ env.QT_PATH }}/lib/cmake/Qt6
+
+    - name: Build
+      run: |
+        cd build/TeamsClient_
+        make -j$(sysctl -n hw.ncpu)
+
+    - name: Run tests
+      working-directory: build/TeamsClient_
+      run: |
+        ctest -C ${{ env.BUILD_TYPE }}
+
+    - name: Package .dmg
+      working-directory: build/TeamsClient_
+      run: |
+        ${{ env.QT_PATH }}/bin/macdeployqt TeamsClient_.app/
+        hdiutil create -volname "TeamsClient_" -srcfolder TeamsClient_.app -ov -format UDZO TeamsClient_.dmg
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: TeamsClient_dmg
+        path: build/TeamsClient_/TeamsClient_.dmg
