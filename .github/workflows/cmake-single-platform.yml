@@ -8,8 +8,6 @@ on:
 
 env:
   BUILD_TYPE: Release
-  QT_VERSION: "6.9.3"
-  QT_PATH: "$HOME/Qt/6.9.3/macos"
 
 jobs:
   build-client:
@@ -21,7 +19,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        brew install cmake boost
+        brew update
+        brew install cmake boost qt@6
 
     - name: Configure CMake
       run: |
@@ -29,7 +28,7 @@ jobs:
         cd build/TeamsClient_
         cmake "${{ github.workspace }}/TeamsClient_" \
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
-          -DCMAKE_PREFIX_PATH=${{ env.QT_PATH }}/lib/cmake/Qt6
+          -DCMAKE_PREFIX_PATH=$(brew --prefix qt@6)/lib/cmake/Qt6
 
     - name: Build
       run: |
