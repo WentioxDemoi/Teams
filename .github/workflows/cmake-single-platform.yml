@@ -9,7 +9,7 @@ on:
 env:
   BUILD_TYPE: Release
   QT_VERSION: "6.9.3"
-  QT_PATH: "$HOME/Qt/6.9.3/macos" # Chemin Qt6
+  QT_PATH: "$HOME/Qt/6.9.3/macos"
 
 jobs:
   build-client:
@@ -46,7 +46,7 @@ jobs:
         hdiutil create -volname "TeamsClient_" -srcfolder TeamsClient_.app -ov -format UDZO TeamsClient_.dmg
 
     - name: Upload build artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: TeamsClient_dmg
         path: build/TeamsClient_/TeamsClient_.dmg
