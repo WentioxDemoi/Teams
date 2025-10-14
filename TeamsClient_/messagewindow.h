@@ -11,6 +11,8 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QHBoxLayout> 
+#include <QStandardPaths>
+#include <QDir>
 // #include "mainwindow.h"
 
 class MainWindow;

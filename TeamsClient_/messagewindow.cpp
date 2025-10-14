@@ -12,7 +12,13 @@ MessageWindow::MessageWindow(QStackedWidget *list, QWidget *parent, MainWindow *
     Database_ = new DatabaseManager();
     Database_->open(":memory:");
     persistent_ = new DatabaseManager();
-    persistent_->open("data.db");
+    QString dataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir dir;
+    if (!dir.exists(dataPath))
+        dir.mkpath(dataPath);
+
+    QString dbFile = dataPath + "/data.db";
+    persistent_->open(dbFile.toStdString());
     this->Init();
 }
 
