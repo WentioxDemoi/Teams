@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Multimedia MultimediaWidgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia MultimediaWidgets)
+find_package(SQLite3 REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -21,6 +22,8 @@ set(PROJECT_SOURCES
         message2window.cpp
         message2window.h
         mainwindow.ui
+        DatabaseManager.cpp
+        DatabaseManager.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -45,9 +48,9 @@ else()
         )
     endif()
 endif()
-
+set(HEADER DatabaseManager.h)
 target_link_libraries(TeamsClient_ PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia Qt${QT_VERSION_MAJOR}::MultimediaWidgets)
-
+target_link_libraries(TeamsClient_ PRIVATE SQLite::SQLite3)
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.

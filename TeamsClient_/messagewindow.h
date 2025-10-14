@@ -7,6 +7,10 @@
 #include <QVBoxLayout>
 #include <QStackedWidget>
 #include "message2window.h"
+#include "DatabaseManager.h"
+#include <QLineEdit>
+#include <QTextEdit>
+#include <QHBoxLayout> 
 // #include "mainwindow.h"
 
 class MainWindow;
@@ -30,5 +34,7 @@ private:
     QPushButton *previousButton_;
     QPushButton *nextButton_;
     MainWindow *main_;
+    DatabaseManager *Database_;
+    DatabaseManager *persistent_;
 };
 #endif // MESSAGEWINDOW_H
