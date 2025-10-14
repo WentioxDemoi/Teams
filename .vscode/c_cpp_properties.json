@@ -1,0 +1,34 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/Users/remidesbordes/Qt/6.9.3/macos/include/**",
+                "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtWidgets.framework/Versions/A/Headers",
+                "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtMultimedia.framework/Versions/A/Headers",
+                "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtMultimediaWidgets.framework/Versions/A/Headers",
+                "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtCore.framework/Versions/A/Headers",
+                "/opt/homebrew/Cellar/boost/1.89.0/include",
+                "/opt/homebrew/Cellar/boost/1.89.0/lib",
+                "/opt/homebrew/Cellar/boost/1.89.0",
+                "/opt/homebrew/opt/sqlite/include",
+                "/opt/homebrew/opt/sqlite/lib",
+                "/opt/homebrew/Cellar/sqlite/3.50.4"
+            ],
+            "defines": [
+                "QT_CORE_LIB",
+                "QT_GUI_LIB",
+                "QT_WIDGETS_LIB"
+            ],
+            "compilerPath": "/usr/bin/clang++",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "macos-clang-arm64",
+            "macFrameworkPath": [
+                "/Users/remidesbordes/Qt/6.9.3/macos/lib"
+            ]
+        }
+    ],
+    "version": 4
+}

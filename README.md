@@ -1,6 +1,6 @@
 # Teams
 
-Recoding une application similaire à Teams.
+Le but est de recoder une application similaire à Teams.
 
 ## Prérequis
 
@@ -8,6 +8,7 @@ Recoding une application similaire à Teams.
 - Boost >= 1.89.0
 - Qt6 (Idéalement Qt 6.9.3)
 - Docker >= 28.4
+- SQLite >= 3.50.4
 
 ## Compilation du Client
 
