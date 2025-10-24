@@ -75,3 +75,43 @@ install(TARGETS TeamsClient_
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(TeamsClient_)
 endif()
+
+# --- GoogleTest configuration ---
+include(FetchContent)
+
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/heads/main.zip
+)
+
+# Option pour éviter des erreurs sous MSVC
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(googletest)
+
+# --- Enable testing ---
+enable_testing()
+
+# --- Définition des sources de test ---
+set(TEST_SOURCES
+    tests/test_main.cpp
+    tests/test_database.cpp
+)
+
+add_executable(TeamsClient_Tests
+    ${TEST_SOURCES}
+    DatabaseManager.cpp
+    DatabaseManager.h
+)
+
+# --- Liens ---
+target_link_libraries(TeamsClient_Tests
+    PRIVATE
+        GTest::gtest_main
+        Qt${QT_VERSION_MAJOR}::Core
+        SQLite::SQLite3
+)
+
+# --- Découverte automatique des tests ---
+include(GoogleTest)
+gtest_discover_tests(TeamsClient_Tests)
