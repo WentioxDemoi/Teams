@@ -12,11 +12,29 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
+file(GLOB Atoms_SOURCES
+     "Atoms/*.cpp"
+     "Atoms/*.h"
+)
+
+file(GLOB Molecules_SOURCES
+     "Molecules/*.cpp"
+     "Molecules/*.h"
+)
+
+file(GLOB Organisms_SOURCES
+     "Organisms/*.cpp"
+     "Organisms/*.h"
+)
+
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        ${Atoms_SOURCES}
+        ${Molecules_SOURCES}
+        ${Organisms_SOURCES}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
