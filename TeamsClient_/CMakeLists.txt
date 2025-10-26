@@ -6,11 +6,13 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
+set(CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.9.3/macos/lib/cmake/Qt6")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Test)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Test)
 
 file(GLOB Atoms_SOURCES
      "Atoms/*.cpp"
@@ -27,14 +29,18 @@ file(GLOB Organisms_SOURCES
      "Organisms/*.h"
 )
 
+set(SOURCES 
+${Atoms_SOURCES}
+        ${Molecules_SOURCES}
+        ${Organisms_SOURCES}
+)
+
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        ${Atoms_SOURCES}
-        ${Molecules_SOURCES}
-        ${Organisms_SOURCES}
+        ${SOURCES}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -86,3 +92,40 @@ install(TARGETS TeamsClient_
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(TeamsClient_)
 endif()
+# --- GoogleTest configuration ---
+include(FetchContent)
+
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/heads/main.zip
+)
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+# --- Enable testing ---
+enable_testing()
+
+file(GLOB TEST_SOURCES
+    "Tests/*.cpp"
+)
+
+add_executable(TeamsClient_Tests
+    ${TEST_SOURCES}
+    ${SOURCES}
+)
+
+# Ajoute AUTOMOC pour les tests Qt (sinon slots/signal cassent)
+set_target_properties(TeamsClient_Tests PROPERTIES AUTOMOC ON)
+
+# --- Liens nécessaires ---
+target_link_libraries(TeamsClient_Tests
+    PRIVATE
+        GTest::gtest_main
+        Qt${QT_VERSION_MAJOR}::Core
+        Qt${QT_VERSION_MAJOR}::Widgets
+        Qt${QT_VERSION_MAJOR}::Test
+)
+
+include(GoogleTest)
+gtest_discover_tests(TeamsClient_Tests)
