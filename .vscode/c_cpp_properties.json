@@ -17,7 +17,8 @@
                 "/opt/homebrew/Cellar/sqlite/3.50.4",
                 "/opt/homebrew/Cellar/googletest/1.17.0",
                 "/opt/homebrew/Cellar/googletest/1.17.0/include",
-                "/opt/homebrew/Cellar/googletest/1.17.0/lib"
+                "/opt/homebrew/Cellar/googletest/1.17.0/lib",
+                "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtTest.framework/Versions/A/Headers"
             ],
             "defines": [
                 "QT_CORE_LIB",

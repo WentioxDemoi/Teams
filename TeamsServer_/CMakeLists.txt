@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(BOOST_ROOT /usr/local/boost_1_89_0)
 include_directories(${BOOST_ROOT}/include)
 
-add_executable(server src/main.cpp)
+add_executable(server src/main.cpp src/Client.cpp src/Client.h)
 
 target_link_libraries(server PRIVATE
     ${BOOST_ROOT}/lib/libboost_filesystem.so
