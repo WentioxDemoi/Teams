@@ -3,21 +3,30 @@
 #include <QLabel>
 #include <QDebug>
 
-LoginWidget::LoginWidget(Auth* parent)
+LoginWidget::LoginWidget(Auth *parent)
     : QWidget(parent),
       authParent(parent)
 {
-    layout = new QVBoxLayout(this);
-    layout->setSpacing(10);
+    init();
+}
 
-    QLabel* title = new QLabel("Connexion");
-    title->setStyleSheet("font-size: 22px; font-weight: bold; color: #333;");
-    title->setAlignment(Qt::AlignCenter);
+bool LoginWidget::init()
+{
+    try
+    {
 
-    emailField = new InputField("Adresse e-mail");
-    passwordField = new InputField("Mot de passe", nullptr, std::nullopt, true);
+        layout = new QVBoxLayout(this);
+        layout->setSpacing(10);
 
-    loginButton = new Button("Se connecter", nullptr, std::nullopt, std::nullopt, [this]() {
+        QLabel *title = new QLabel("Connexion");
+        title->setStyleSheet("font-size: 22px; font-weight: bold; color: #333;");
+        title->setAlignment(Qt::AlignCenter);
+
+        emailField = new InputField("Adresse e-mail");
+        passwordField = new InputField("Mot de passe", nullptr, std::nullopt, true);
+
+        loginButton = new Button("Se connecter", nullptr, std::nullopt, std::nullopt, [this]()
+                                 {
         QString email = emailField->text();
         QString password = passwordField->text();
 
@@ -25,15 +34,19 @@ LoginWidget::LoginWidget(Auth* parent)
             qDebug() << "Veuillez remplir tous les champs.";
         } else {
             qDebug() << "Tentative de connexion avec :" << email << password;
-        }
-    });
+        } });
 
-    layout->addWidget(title);
-    layout->addWidget(emailField);
-    layout->addWidget(passwordField);
-    layout->addWidget(loginButton);
+        layout->addWidget(title);
+        layout->addWidget(emailField);
+        layout->addWidget(passwordField);
+        layout->addWidget(loginButton);
 
-    setLayout(layout);
+        setLayout(layout);
+        return true;
+    }
+    catch (std::exception &ex)
+    {
+        qDebug() << ex.what();
+        return false;
+    }
 }
-
-bool LoginWidget::init() { return true; }

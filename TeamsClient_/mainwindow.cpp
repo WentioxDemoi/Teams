@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "Organisms/Auth.h"
+#include "Network/NetworkManager.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

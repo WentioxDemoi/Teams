@@ -16,8 +16,8 @@ Auth::Auth(QWidget *parent)
     topBar->addStretch();
 
     switchButton = new QPushButton("S'inscrire", this);
-    switchButton->setStyleSheet("QPushButton { font-weight: bold; color: #0078d4; border: none; background: transparent; }"
-                                "QPushButton:hover { text-decoration: underline; }");
+    // switchButton->setStyleSheet("QPushButton { font-weight: bold; color: #0078d4; border: none; background: transparent; }"
+    //                             "QPushButton:hover { text-decoration: underline; }");
     connect(switchButton, &QPushButton::clicked, this, &Auth::switchPage);
 
     topBar->addWidget(switchButton);
