@@ -21,6 +21,7 @@ build_client() {
     cd "$CLIENT_DIR" || exit 1
     cmake -S . -B build > /dev/null 2>&1
     cmake --build build > /dev/null 2>&1
+    make
     cd ..
     echo -e "${GREEN}✅ Client compilé avec succès.${RESET}"
 }

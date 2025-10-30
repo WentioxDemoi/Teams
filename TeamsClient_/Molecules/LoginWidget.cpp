@@ -25,16 +25,8 @@ bool LoginWidget::init()
         emailField = new InputField("Adresse e-mail");
         passwordField = new InputField("Mot de passe", nullptr, std::nullopt, true);
 
-        loginButton = new Button("Se connecter", nullptr, std::nullopt, std::nullopt, [this]()
-                                 {
-        QString email = emailField->text();
-        QString password = passwordField->text();
-
-        if (email.isEmpty() || password.isEmpty()) {
-            qDebug() << "Veuillez remplir tous les champs.";
-        } else {
-            qDebug() << "Tentative de connexion avec :" << email << password;
-        } });
+        loginButton = new Button("Se connecter", this);
+        connect(loginButton, &Button::clicked, this, &LoginWidget::onLoginButtonClicked);
 
         layout->addWidget(title);
         layout->addWidget(emailField);
@@ -48,5 +40,18 @@ bool LoginWidget::init()
     {
         qDebug() << ex.what();
         return false;
+    }
+}
+
+void LoginWidget::onLoginButtonClicked()
+{
+    if (emailField->text().isEmpty() || passwordField->text().isEmpty())
+    {
+        qDebug() << "Veuillez remplir tous les champs.";
+    }
+    else
+    {
+        qDebug() << "Tentative de connexion avec :" << emailField->text() << passwordField->text();
+        emit loginRequest(emailField->text(), passwordField->text(), true);
     }
 }

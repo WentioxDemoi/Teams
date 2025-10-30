@@ -16,25 +16,34 @@ Auth::Auth(QWidget *parent)
     topBar->addStretch();
 
     switchButton = new QPushButton("S'inscrire", this);
-    // switchButton->setStyleSheet("QPushButton { font-weight: bold; color: #0078d4; border: none; background: transparent; }"
-    //                             "QPushButton:hover { text-decoration: underline; }");
     connect(switchButton, &QPushButton::clicked, this, &Auth::switchPage);
+
+    loginWidget = new LoginWidget(this);
+    registerWidget = new RegisterWidget(this);
+
+    // connect(loginWidget, &LoginWidget::loginRequest, this, &Auth::loginRequest);
+    connect(loginWidget, &LoginWidget::loginRequest, this, &Auth::handleLoginRequest);
+    connect(registerWidget, &RegisterWidget::registerRequest, this, &Auth::registerRequest);
 
     topBar->addWidget(switchButton);
     mainLayout->addLayout(topBar);
 
     stack = new QStackedWidget(this);
-    loginWidget = new LoginWidget(this);
-    registerWidget = new RegisterWidget(this);
-
     stack->addWidget(loginWidget);
     stack->addWidget(registerWidget);
+    stack->setCurrentWidget(loginWidget);
 
     mainLayout->addWidget(stack);
     setLayout(mainLayout);
 }
 
 Auth::~Auth() {}
+
+void Auth::handleLoginRequest(const QString& email, const QString& password, bool isLogin)
+{
+    qDebug() << "Auth received login request";
+    emit loginRequest(email, password, isLogin);
+}
 
 void Auth::switchPage()
 {

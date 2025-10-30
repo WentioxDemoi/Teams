@@ -25,19 +25,8 @@ bool RegisterWidget::init()
         passwordField = new InputField("Mot de passe", nullptr, std::nullopt, true);
         confirmPasswordField = new InputField("Confirmer le mot de passe", nullptr, std::nullopt, true);
 
-        registerButton = new Button("Créer un compte", nullptr, std::nullopt, std::nullopt, [this]()
-                                    {
-        QString email = emailField->text();
-        QString password = passwordField->text();
-        QString confirm = confirmPasswordField->text();
-
-        if (email.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
-            qDebug() << "Veuillez remplir tous les champs.";
-        } else if (password != confirm) {
-            qDebug() << "Les mots de passe ne correspondent pas.";
-        } else {
-            qDebug() << "Création de compte pour :" << email;
-        } });
+        registerButton = new Button("Créer un compte", this);
+        connect(registerButton, &QPushButton::clicked, this, &RegisterWidget::onRegisterButtonClicked);
 
         layout->addWidget(title);
         layout->addWidget(emailField);
@@ -53,5 +42,22 @@ bool RegisterWidget::init()
     {
         qDebug() << ex.what();
         return false;
+    }
+}
+
+void RegisterWidget::onRegisterButtonClicked()
+{
+    if (emailField->text().isEmpty() || passwordField->text().isEmpty() || confirmPasswordField->text().isEmpty())
+    {
+        qDebug() << "Veuillez remplir tous les champs.";
+    }
+    else if (passwordField->text() != confirmPasswordField->text())
+    {
+        qDebug() << "Les mots de passe ne correspondent pas.";
+    }
+    else
+    {
+        qDebug() << "Création de compte pour :" << emailField->text();
+        emit registerRequest(emailField->text(), passwordField->text(), false);
     }
 }

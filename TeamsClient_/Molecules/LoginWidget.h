@@ -8,20 +8,26 @@
 
 class Auth;
 
-class LoginWidget : public QWidget {
+class LoginWidget : public QWidget
+{
     Q_OBJECT
 
 public:
-    explicit LoginWidget(Auth* parent = nullptr);
+    explicit LoginWidget(Auth *parent = nullptr);
     bool init();
 
-private:
-    QVBoxLayout *layout;
-    InputField* emailField;
-    InputField* passwordField;
-    Button* loginButton;
+signals:
+    void loginRequest(const QString &email, const QString &password, bool isLogin);
 
-    Auth* authParent;
+private:
+    void onLoginButtonClicked();
+
+    QVBoxLayout *layout;
+    InputField *emailField;
+    InputField *passwordField;
+    Button *loginButton;
+
+    Auth *authParent;
 };
 
 #endif

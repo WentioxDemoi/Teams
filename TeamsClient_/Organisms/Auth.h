@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 #include <QStackedWidget>
 #include <QPushButton>
+#include <QDebug>
 
 class LoginWidget;
 class RegisterWidget;
@@ -18,6 +19,13 @@ public:
 
 private slots:
     void switchPage();
+
+public slots:
+    void handleLoginRequest(const QString& email, const QString& password, bool isLogin);
+
+signals:
+    void loginRequest(const QString &email, const QString &password, bool isLogin);
+    void registerRequest(const QString &email, const QString &password, bool isLogin);
 
 private:
     QVBoxLayout *mainLayout;
