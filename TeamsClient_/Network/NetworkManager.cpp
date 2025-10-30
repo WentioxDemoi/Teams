@@ -1,89 +1,53 @@
 #include "NetworkManager.h"
 #include <iostream>
-#include <boost/asio.hpp>
-#include <boost/system/error_code.hpp>
 #include <QThread>
 
-using boost::asio::ip::tcp;
-
-NetworkManager::NetworkManager(const std::string& host, QObject *parent)
-    : QObject(parent), socket_(io_context_), host_(host), running_(false)
+NetworkManager::NetworkManager(const std::string &host, unsigned short port, QObject *parent)
+    : QObject(parent), host_(host), port_(port)
 {
+    authManager_ = std::make_unique<AuthManager>(io_context_, host, port, this);
+    // messageManager_ = std::make_unique<MessageManager>(io_context_, host, port, this);
+
+    connect(authManager_.get(), &AuthManager::loginSuccess, this, &NetworkManager::loginSuccess);
+    connect(authManager_.get(), &AuthManager::loginFailed, this, &NetworkManager::loginFailed);
+    connect(authManager_.get(), &AuthManager::errorOccurred, this, &NetworkManager::errorOccurred);
+
+    // connect(messageManager_.get(), &MessageManager::messageReceived, this, &NetworkManager::messageReceived);
+    // connect(messageManager_.get(), &MessageManager::errorOccurred, this, &NetworkManager::errorOccurred);
 }
 
 NetworkManager::~NetworkManager()
 {
+    disconnect();
 }
 
-void NetworkManager::start()
+void NetworkManager::connectToServer()
 {
-    if (running_) return;
-
-    running_ = true;
-    run();
-}
-
-void NetworkManager::run()
-{
-    try {
-        tcp::resolver resolver(io_context_);
-        tcp::resolver::results_type endpoints = resolver.resolve(host_, std::to_string(port_));
-        boost::asio::connect(socket_, endpoints);
-
+    try
+    {
+        authManager_->connectToServer();
+        // messageManager_->connectToServer();
         emit connected();
-        std::cout << "Connecté au serveur " << host_ << ":" << port_ << std::endl;
-
-        while (running_) {
-            char buffer[1024];
-            boost::system::error_code ec;
-            std::size_t len = socket_.read_some(boost::asio::buffer(buffer), ec);
-
-            if (ec == boost::asio::error::eof) {
-                break;
-            } else if (ec) {
-                emit errorOccurred(QString::fromStdString(ec.message()));
-                break;
-            }
-
-            QString msg = QString::fromStdString(std::string(buffer, len));
-            emit messageReceived(msg);
-        }
     }
-    catch (const std::exception& e) {
+    catch (const std::exception &e)
+    {
         emit errorOccurred(QString::fromStdString(e.what()));
-        std::cerr << "Erreur : " << e.what() << std::endl;
-    }
-
-    stop();
-}
-
-void NetworkManager::sendMessage(const QString& message)
-{
-    if (!socket_.is_open()) {
-        emit errorOccurred("Socket fermé, impossible d'envoyer");
-        return;
-    }
-
-    try {
-        boost::asio::write(socket_, boost::asio::buffer(message.toStdString()));
-        std::cout << "Message envoyé : " << message.toStdString() << std::endl;
-    }
-    catch (const std::exception& e) {
-        emit errorOccurred(QString::fromStdString(e.what()));
-        std::cerr << "Erreur lors de l'envoi : " << e.what() << std::endl;
     }
 }
 
-void NetworkManager::stop()
+void NetworkManager::authenticate(const QString &username, const QString &password, bool isLogin)
 {
-    running_ = false;
+    authManager_->authenticate(username, password, isLogin);
+}
 
-    if (socket_.is_open()) {
-        boost::system::error_code ec;
-        socket_.shutdown(tcp::socket::shutdown_both, ec);
-        socket_.close(ec);
-    }
+void NetworkManager::sendChatMessage(const QString &msg)
+{
+    // messageManager_->sendMessage(msg);
+}
 
+void NetworkManager::disconnect()
+{
+    authManager_->disconnect();
+    // messageManager_->disconnect();
     emit disconnected();
-    std::cout << "Déconnecté" << std::endl;
 }
