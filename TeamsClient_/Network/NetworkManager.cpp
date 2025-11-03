@@ -8,8 +8,8 @@ NetworkManager::NetworkManager(const std::string &host, unsigned short port, QOb
     authManager_ = std::make_unique<AuthManager>(io_context_, host, port, this);
     // messageManager_ = std::make_unique<MessageManager>(io_context_, host, port, this);
 
-    connect(authManager_.get(), &AuthManager::loginSuccess, this, &NetworkManager::loginSuccess);
-    connect(authManager_.get(), &AuthManager::loginFailed, this, &NetworkManager::loginFailed);
+    connect(authManager_.get(), &AuthManager::authSuccess, this, &NetworkManager::authSuccess);
+    connect(authManager_.get(), &AuthManager::authFailed, this, &NetworkManager::authFailed);
     connect(authManager_.get(), &AuthManager::errorOccurred, this, &NetworkManager::errorOccurred);
 
     // connect(messageManager_.get(), &MessageManager::messageReceived, this, &NetworkManager::messageReceived);

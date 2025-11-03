@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 #include <atomic>
 #include <thread>
 #include <QDebug>
@@ -12,14 +13,15 @@ class AuthManager : public QObject {
     Q_OBJECT
 
 public:
-    explicit AuthManager(boost::asio::io_context& io, const std::string& host, unsigned short port, QObject* parent = nullptr);
+    explicit AuthManager(boost::asio::io_context& io,
+                         const std::string& host,
+                         unsigned short port,
+                         QObject* parent = nullptr);
     ~AuthManager();
 
 signals:
-    void loginSuccess();
-    void loginFailed(const QString& reason);
-    void registerSuccess();
-    void registerFailed(const QString& reason);
+    void authSuccess();
+    void authFailed(const QString& reason);
     void errorOccurred(const QString& err);
 
 public slots:
@@ -30,7 +32,8 @@ public slots:
 private:
     void readResponse();
 
-    boost::asio::ip::tcp::socket socket_;
+    boost::asio::ssl::context ctx_;
+    boost::asio::ssl::stream<boost::asio::ip::tcp::socket> socket_;
     boost::asio::ip::tcp::resolver resolver_;
     std::string host_;
     unsigned short port_;

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <QApplication>
 #include <QTest>
-#include "../Organisms/Auth.h"
+#include "../Organisms/AuthUI.h"
 #include "../Molecules/LoginWidget.h"
 #include "../Molecules/RegisterWidget.h"
 

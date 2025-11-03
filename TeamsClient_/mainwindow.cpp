@@ -37,11 +37,11 @@ void MainWindow::setupConnections()
     connect(networkManager_, &NetworkManager::disconnected, this, &MainWindow::onDisconnected);
     connect(networkManager_, &NetworkManager::errorOccurred, this, &MainWindow::onErrorOccurred);
 
-    connect(networkManager_, &NetworkManager::loginSuccess, this, &MainWindow::onLoginSuccess);
-    connect(networkManager_, &NetworkManager::loginFailed, this, &MainWindow::onLoginFailed);
-    connect(networkManager_, &NetworkManager::messageReceived, this, &MainWindow::onMessageReceived);
+    connect(networkManager_, &NetworkManager::authSuccess, this, &MainWindow::onAuthSuccess);
+    connect(networkManager_, &NetworkManager::authFailed, this, &MainWindow::onAuthFailed);
+    // connect(networkManager_, &NetworkManager::messageReceived, this, &MainWindow::onMessageReceived);
 
-    connect(authUI_, &Auth::loginRequest, networkManager_, &NetworkManager::authenticate);
+    connect(authUI_, &Auth::authRequest, networkManager_, &NetworkManager::authenticate);
 }
 
 void MainWindow::onConnected()
@@ -59,12 +59,12 @@ void MainWindow::onErrorOccurred(const QString& err)
     qWarning() << "[MainWindow] Network error:" << err;
 }
 
-void MainWindow::onLoginSuccess()
+void MainWindow::onAuthSuccess()
 {
     qDebug() << "[MainWindow] Login successful!";
 }
 
-void MainWindow::onLoginFailed(const QString& reason)
+void MainWindow::onAuthFailed(const QString& reason)
 {
     qDebug() << "[MainWindow] Login failed:" << reason;
 }

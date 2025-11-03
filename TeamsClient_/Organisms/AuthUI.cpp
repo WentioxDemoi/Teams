@@ -1,4 +1,4 @@
-#include "Auth.h"
+#include "AuthUI.h"
 #include "../Molecules/LoginWidget.h"
 #include "../Molecules/RegisterWidget.h"
 #include <QVBoxLayout>
@@ -21,9 +21,8 @@ Auth::Auth(QWidget *parent)
     loginWidget = new LoginWidget(this);
     registerWidget = new RegisterWidget(this);
 
-    // connect(loginWidget, &LoginWidget::loginRequest, this, &Auth::loginRequest);
-    connect(loginWidget, &LoginWidget::loginRequest, this, &Auth::handleLoginRequest);
-    connect(registerWidget, &RegisterWidget::registerRequest, this, &Auth::registerRequest);
+    connect(loginWidget, &LoginWidget::loginRequest, this, &Auth::handleAuthRequest);
+    connect(registerWidget, &RegisterWidget::registerRequest, this, &Auth::handleAuthRequest);
 
     topBar->addWidget(switchButton);
     mainLayout->addLayout(topBar);
@@ -39,10 +38,10 @@ Auth::Auth(QWidget *parent)
 
 Auth::~Auth() {}
 
-void Auth::handleLoginRequest(const QString& email, const QString& password, bool isLogin)
+void Auth::handleAuthRequest(const QString& email, const QString& password, bool isLogin)
 {
     qDebug() << "Auth received login request";
-    emit loginRequest(email, password, isLogin);
+    emit authRequest(email, password, isLogin);
 }
 
 void Auth::switchPage()

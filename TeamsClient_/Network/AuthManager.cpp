@@ -1,12 +1,29 @@
 #include "AuthManager.h"
-#include <boost/asio.hpp>
 #include <iostream>
+#include <boost/asio/connect.hpp>
+#include <boost/asio/write.hpp>
 
 using boost::asio::ip::tcp;
+namespace ssl = boost::asio::ssl;
 
-AuthManager::AuthManager(boost::asio::io_context& io, const std::string& host, unsigned short port, QObject* parent)
-    : QObject(parent), socket_(io), resolver_(io), host_(host), port_(port), connected_(false)
+AuthManager::AuthManager(boost::asio::io_context& io,
+                         const std::string& host,
+                         unsigned short port,
+                         QObject* parent)
+    : QObject(parent),
+      ctx_(ssl::context::tlsv12_client),
+      socket_(io, ctx_),
+      resolver_(io),
+      host_(host),
+      port_(port),
+      connected_(false)
 {
+    try {
+        ctx_.set_default_verify_paths();
+        ctx_.set_verify_mode(ssl::verify_peer);
+    } catch (const std::exception& e) {
+        qWarning() << "SSL context init error:" << e.what();
+    }
 }
 
 AuthManager::~AuthManager() {
@@ -16,10 +33,10 @@ AuthManager::~AuthManager() {
 void AuthManager::connectToServer() {
     try {
         auto endpoints = resolver_.resolve(host_, std::to_string(port_));
-        boost::asio::connect(socket_, endpoints);
+        boost::asio::connect(socket_.lowest_layer(), endpoints);
+        socket_.handshake(ssl::stream_base::client);
         connected_ = true;
-        qDebug() << "Connected to auth server.";
-        
+        qDebug() << "Secure connection established with auth server.";
     } catch (const std::exception& e) {
         emit errorOccurred(QString::fromStdString(e.what()));
     }
@@ -31,18 +48,16 @@ void AuthManager::authenticate(const QString& username, const QString& password,
         return;
     }
 
-    qDebug() << "ICIIII";
-
     try {
         std::string message;
         if (isLogin)
             message = "{\"action\":\"login\",\"username\":\"" +
-                                username.toStdString() + "\",\"password\":\"" +
-                                password.toStdString() + "\"}\n";
+                      username.toStdString() + "\",\"password\":\"" +
+                      password.toStdString() + "\"}\n";
         else
-            message = "{\"action\":\"login\",\"username\":\"" +
-                                username.toStdString() + "\",\"password\":\"" +
-                                password.toStdString() + "\"}\n";
+            message = "{\"action\":\"register\",\"username\":\"" +
+                      username.toStdString() + "\",\"password\":\"" +
+                      password.toStdString() + "\"}\n";
 
         boost::asio::write(socket_, boost::asio::buffer(message));
 
@@ -65,10 +80,9 @@ void AuthManager::readResponse() {
 
         std::string response(buffer, len);
         if (response.find("success") != std::string::npos)
-            emit loginSuccess();
+            emit authSuccess();
         else
-            emit loginFailed(QString::fromStdString(response));
-
+            emit authFailed(QString::fromStdString(response));
     } catch (const std::exception& e) {
         emit errorOccurred(QString::fromStdString(e.what()));
     }
@@ -77,8 +91,9 @@ void AuthManager::readResponse() {
 void AuthManager::disconnect() {
     if (connected_) {
         boost::system::error_code ec;
-        socket_.shutdown(tcp::socket::shutdown_both, ec);
-        socket_.close(ec);
+        socket_.shutdown();
+        socket_.lowest_layer().close(ec);
         connected_ = false;
+        qDebug() << "Disconnected from server.";
     }
 }

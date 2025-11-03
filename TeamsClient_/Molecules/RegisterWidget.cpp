@@ -1,5 +1,5 @@
 #include "RegisterWidget.h"
-#include "../Organisms/Auth.h"
+#include "../Organisms/AuthUI.h"
 #include <QLabel>
 #include <QDebug>
 

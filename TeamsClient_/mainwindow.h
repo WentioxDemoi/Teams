@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QLabel>
 #include "Network/NetworkManager.h"
-#include "Organisms/Auth.h"
+#include "Organisms/AuthUI.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -25,8 +25,8 @@ private slots:
     void onConnected();
     void onDisconnected();
     void onErrorOccurred(const QString& err);
-    void onLoginSuccess();
-    void onLoginFailed(const QString& reason);
+    void onAuthSuccess();
+    void onAuthFailed(const QString& reason);
     void onMessageReceived(const QString& msg);
 
 private:

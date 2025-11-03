@@ -21,8 +21,8 @@ signals:
     void disconnected();
     void errorOccurred(const QString& err);
 
-    void loginSuccess();
-    void loginFailed(const QString& reason);
+    void authSuccess();
+    void authFailed(const QString& reason);
     void messageReceived(const QString& msg);
 
 public slots:
