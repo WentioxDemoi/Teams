@@ -18,7 +18,12 @@
                 "/opt/homebrew/Cellar/googletest/1.17.0",
                 "/opt/homebrew/Cellar/googletest/1.17.0/include",
                 "/opt/homebrew/Cellar/googletest/1.17.0/lib",
-                "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtTest.framework/Versions/A/Headers"
+                "/opt/homebrew/Cellar/libpqxx/7.10.3",
+                "/opt/homebrew/Cellar/libpqxx/7.10.3/include",
+                "/opt/homebrew/Cellar/libpqxx/7.10.3/lib",
+                "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtTest.framework/Versions/A/Headers",
+                "/opt/homebrew/opt/boost/include",
+                "/opt/homebrew/opt/openssl@3/include"
             ],
             "defines": [
                 "QT_CORE_LIB",

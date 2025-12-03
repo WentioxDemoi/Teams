@@ -9,15 +9,27 @@ include_directories(${BOOST_ROOT}/include)
 
 find_package(OpenSSL REQUIRED)
 
-add_executable(server src/main.cpp src/Client.cpp src/Client.h)
+
+file(GLOB Main_SOURCES "src/*.cpp" "src/*.h")
+file(GLOB Database_SOURCES "src/Database/*.cpp" "src/Database/*.h")
+
+set(SOURCES
+    ${Main_SOURCES} 
+    ${Database_SOURCES}
+    )
+
+add_executable(server ${SOURCES})
 
 target_link_libraries(server PRIVATE
+    pqxx
+    pq
     ${BOOST_ROOT}/lib/libboost_filesystem.so
     ${BOOST_ROOT}/lib/libboost_thread.so
     ${BOOST_ROOT}/lib/libboost_date_time.so
     pthread
     OpenSSL::SSL
     OpenSSL::Crypto
+    
 )
 
 target_link_options(server PRIVATE -Wl,-rpath,${BOOST_ROOT}/lib)
