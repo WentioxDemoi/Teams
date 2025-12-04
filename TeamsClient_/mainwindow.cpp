@@ -26,7 +26,7 @@ MainWindow::~MainWindow()
 void MainWindow::initializeNetwork()
 {
     const std::string host = "127.0.0.1";
-    const unsigned short port = 12345;
+    const unsigned short port = 12345; // Modifier les ports pour bien faire les requêtes sur les différents serveurs
 
     networkManager_ = new NetworkManager(host, port, this);
 }

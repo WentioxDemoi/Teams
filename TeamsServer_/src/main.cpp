@@ -1,32 +1,55 @@
-#include "Server.h"
+#include "Servers/AuthServer.h"
+#include "Servers/MessageServer.h"
+#include "Servers/VisioServer.h"
 
+#include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
+#include <boost/asio/thread_pool.hpp>
+#include <thread>
+#include <vector>
+#include <iostream>
 
-
+namespace asio = boost::asio;
+using tcp = asio::ip::tcp;
+namespace ssl = asio::ssl;
 
 int main() {
     try {
-        const int io_threads = std::max(1u, std::thread::hardware_concurrency());
         const int db_threads = 4;
+        const int auth_threads = 1;
+        const int message_threads = 2;
+        const int visio_threads = 4;
 
-        boost::asio::io_context io_context;
-        boost::asio::thread_pool db_pool(db_threads);
-        tcp::endpoint endpoint(tcp::v4(), 12345);
-        ssl::context ctx(ssl::context::tlsv12_server);
-        ctx.use_certificate_chain_file("server.crt");
-        ctx.use_private_key_file("server.key", ssl::context::pem);
-        std::unique_ptr<Server> Server_ = std::make_unique<Server>(io_context, ctx, endpoint, db_pool);
-        Server_->Core();
-        std::vector<std::thread> workers;
-        for (int i = 0; i < io_threads; ++i)
-            workers.emplace_back([&io_context]() { io_context.run(); });
+        asio::thread_pool db_pool(db_threads);
 
-        std::cout << "Async TLS server running on port 12345 with "
-                  << io_threads << " io threads and "
-                  << db_threads << " db threads.\n";
+        ssl::context ssl_ctx(ssl::context::tlsv12_server);
+        ssl_ctx.use_certificate_chain_file("server.crt");
+        ssl_ctx.use_private_key_file("server.key", ssl::context::pem);
 
-        for (auto& t : workers) t.join();
+        asio::io_context auth_io;
+        asio::io_context message_io;
+        asio::io_context visio_io;
+
+        // Next step -> Avoir un sertificat ssl par server
+        AuthServer auth_server(auth_io, ssl_ctx, tcp::endpoint(tcp::v4(), 8000), db_pool);
+        MessageServer message_server(message_io, ssl_ctx, tcp::endpoint(tcp::v4(), 8001), db_pool);
+        VisioServer visio_server(visio_io, ssl_ctx, tcp::endpoint(tcp::v4(), 8002), db_pool);
+
+        std::vector<std::thread> threads;
+        for(int i=0; i<auth_threads; ++i) threads.emplace_back([&]{ auth_io.run(); });
+        for(int i=0; i<message_threads; ++i) threads.emplace_back([&]{ message_io.run(); });
+        for(int i=0; i<visio_threads; ++i) threads.emplace_back([&]{ visio_io.run(); });
+
+        std::cout << "Server running:\n"
+                  << "- Auth on 8000 with " << auth_threads << " threads\n"
+                  << "- Message on 8001 with " << message_threads << " threads\n"
+                  << "- Visio on 8002 with " << visio_threads << " threads\n"
+                  << "- DB pool threads: " << db_threads << "\n";
+
+        for(auto& t : threads) t.join();
         db_pool.join();
-    } catch (const std::exception& e) {
-        std::cerr << "Erreur serveur : " << e.what() << std::endl;
+    }
+    catch(const std::exception& e){
+        std::cerr << "Server error: " << e.what() << "\n";
     }
 }

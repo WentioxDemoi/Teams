@@ -35,7 +35,9 @@ RUN mkdir build && cd build && \
     cmake .. && \
     cmake --build . 
 
-EXPOSE 12345
+EXPOSE 8080
+EXPOSE 8081
+EXPOSE 8082
 
 CMD ["./build/server"]
 # CMD ["/bin/bash"]

@@ -25,7 +25,9 @@ services:
     env_file:
       - .env
     ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
+      - "${SERVER_PORT}:${SERVERAUTH_PORT}"
+      - "${SERVER_PORT}:${SERVERCHAT_PORT}"
+      - "${SERVER_PORT}:${SERVERVISIO_PORT}"
     tty: true
 
 volumes:
