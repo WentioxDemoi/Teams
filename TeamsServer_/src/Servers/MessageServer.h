@@ -1,16 +1,10 @@
 #ifndef MESSAGESERVER_H
 #define MESSAGESERVER_H
 
-#include <boost/asio.hpp>
-#include <boost/asio/ssl.hpp>
-#include <boost/asio/thread_pool.hpp>
-#include <iostream>
+#include "../includes.h";
+#include "../Errors/ErrorManager.h";
 
-namespace asio = boost::asio;
-using tcp = asio::ip::tcp;
-namespace ssl = asio::ssl;
-
-class MessageServer {
+class MessageServer : public ErrorManager {
 public:
     MessageServer(asio::io_context& io_context, ssl::context& ssl_ctx,
                tcp::endpoint endpoint, asio::thread_pool& db_pool);

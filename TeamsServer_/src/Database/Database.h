@@ -2,13 +2,7 @@
 #define DATABASE_H
 
 #include "../Structs/User.h"
-#include <pqxx/pqxx>
-#include <optional>
-#include <iostream>
-#include <random>
-#include <sstream>
-#include <iomanip>
-#include <openssl/sha.h> 
+#include "../includes.h";
 
 class Database {
 public:

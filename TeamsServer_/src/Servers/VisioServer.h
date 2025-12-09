@@ -1,10 +1,7 @@
 #ifndef VISIOSERVER_H
 #define VISIOSERVER_H
 
-#include <boost/asio.hpp>
-#include <boost/asio/ssl.hpp>
-#include <boost/asio/thread_pool.hpp>
-#include <iostream>
+#include "../includes.h";
 
 namespace asio = boost::asio;
 using tcp = asio::ip::tcp;

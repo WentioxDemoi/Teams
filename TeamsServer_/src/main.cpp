@@ -2,16 +2,8 @@
 #include "Servers/MessageServer.h"
 #include "Servers/VisioServer.h"
 
-#include <boost/asio.hpp>
-#include <boost/asio/ssl.hpp>
-#include <boost/asio/thread_pool.hpp>
-#include <thread>
-#include <vector>
-#include <iostream>
+#include "includes.h";
 
-namespace asio = boost::asio;
-using tcp = asio::ip::tcp;
-namespace ssl = asio::ssl;
 
 int main() {
     try {
@@ -31,14 +23,15 @@ int main() {
         asio::io_context visio_io;
 
         // Next step -> Avoir un sertificat ssl par server
+        // Peut être avoir plusieurs acceptors en fonction de la demande (On en a un par server pour le moment).
         AuthServer auth_server(auth_io, ssl_ctx, tcp::endpoint(tcp::v4(), 8000), db_pool);
         MessageServer message_server(message_io, ssl_ctx, tcp::endpoint(tcp::v4(), 8001), db_pool);
         VisioServer visio_server(visio_io, ssl_ctx, tcp::endpoint(tcp::v4(), 8002), db_pool);
 
         std::vector<std::thread> threads;
-        for(int i=0; i<auth_threads; ++i) threads.emplace_back([&]{ auth_io.run(); });
-        for(int i=0; i<message_threads; ++i) threads.emplace_back([&]{ message_io.run(); });
-        for(int i=0; i<visio_threads; ++i) threads.emplace_back([&]{ visio_io.run(); });
+        for(int i=0; i < auth_threads; ++i) threads.emplace_back([&]{ auth_io.run(); });
+        for(int i=0; i < message_threads; ++i) threads.emplace_back([&]{ message_io.run(); });
+        for(int i=0; i < visio_threads; ++i) threads.emplace_back([&]{ visio_io.run(); });
 
         std::cout << "Server running:\n"
                   << "- Auth on 8000 with " << auth_threads << " threads\n"

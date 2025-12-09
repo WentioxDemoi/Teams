@@ -12,6 +12,8 @@ void MessageServer::do_accept() {
         if(!ec){
             std::cout << "[Message] New connection\n";
             // Lancer lecture/écriture Message
+        } else {
+          handle_error("MessageServer Accept : ", ec);
         }
         do_accept();
     });

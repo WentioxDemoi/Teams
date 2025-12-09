@@ -1,13 +1,7 @@
 #ifndef CONNECTIONPOOL_H
 #define CONNECTIONPOOL_H
 
-#include <pqxx/pqxx>
-#include <queue>
-#include <memory>
-#include <mutex>
-#include <condition_variable>
-#include <string>
-#include <iostream>
+#include "../includes.h";
 
 class ConnectionPool {
 public:

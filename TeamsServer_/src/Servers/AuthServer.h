@@ -1,16 +1,16 @@
 #ifndef AUTHSERVER_H
 #define AUTHSERVER_H
 
-#include <boost/asio.hpp>
-#include <boost/asio/ssl.hpp>
-#include <boost/asio/thread_pool.hpp>
-#include <iostream>
+#include "../Sessions/AuthSession.h";
+#include "../includes.h";
+#include "../Errors/ErrorManager.h";
+
 
 namespace asio = boost::asio;
 using tcp = asio::ip::tcp;
 namespace ssl = asio::ssl;
 
-class AuthServer {
+class AuthServer : public ErrorManager {
 public:
     AuthServer(asio::io_context& io_context, ssl::context& ssl_ctx,
                tcp::endpoint endpoint, asio::thread_pool& db_pool);
