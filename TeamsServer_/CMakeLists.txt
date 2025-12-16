@@ -7,8 +7,9 @@ set(CMAKE_CXX_STANDARD 20)
 set(BOOST_ROOT /usr/local/boost_1_89_0)
 include_directories(${BOOST_ROOT}/include)
 
-find_package(OpenSSL REQUIRED)
+include_directories(/opt/homebrew/include)
 
+find_package(OpenSSL REQUIRED)
 
 file(GLOB Main_SOURCES "src/*.cpp" "src/*.h")
 file(GLOB Database_SOURCES "src/Database/*.cpp" "src/Database/*.h")
@@ -16,7 +17,7 @@ file(GLOB Database_SOURCES "src/Database/*.cpp" "src/Database/*.h")
 set(SOURCES
     ${Main_SOURCES} 
     ${Database_SOURCES}
-    )
+)
 
 add_executable(server ${SOURCES})
 
@@ -29,7 +30,7 @@ target_link_libraries(server PRIVATE
     pthread
     OpenSSL::SSL
     OpenSSL::Crypto
-    
+    /opt/homebrew/lib/libnats.dylib
 )
 
 target_link_options(server PRIVATE -Wl,-rpath,${BOOST_ROOT}/lib)

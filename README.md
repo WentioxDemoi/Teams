@@ -10,6 +10,7 @@ Recoding une application similaire à Teams.
 - Docker >= 28.4
 - SQLite >= 3.50.4
 - GoogleTest >= 1.17.0
+- Nats-server >= 2.12.2
 
 ## Compilation du Client
 
