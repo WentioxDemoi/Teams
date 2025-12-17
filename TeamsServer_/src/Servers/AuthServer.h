@@ -1,9 +1,9 @@
 #ifndef AUTHSERVER_H
 #define AUTHSERVER_H
 
-#include "../Sessions/AuthSession.h";
-#include "../includes.h";
-#include "../Errors/ErrorManager.h";
+#include "../Sessions/AuthSession.h"
+#include "../includes.h"
+#include "../Errors/ErrorManager.h"
 
 
 namespace asio = boost::asio;

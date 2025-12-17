@@ -1,7 +1,7 @@
 #ifndef ERRORMANAGER_H
 #define ERRORMANAGER_H
 
-#include "../includes.h";
+#include "../includes.h"
 
 class ErrorManager {
 

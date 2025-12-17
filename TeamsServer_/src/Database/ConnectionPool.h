@@ -1,7 +1,7 @@
 #ifndef CONNECTIONPOOL_H
 #define CONNECTIONPOOL_H
 
-#include "../includes.h";
+#include "../includes.h"
 
 class ConnectionPool {
 public:

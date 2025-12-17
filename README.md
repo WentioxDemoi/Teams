@@ -63,6 +63,11 @@ Le serveur est compilé et exécuté via Docker, ce qui garantit une cohérence 
 docker-compose --env-file .env up --build
 ```
 
+2. Si jamais, pour reset :
+```bash
+docker-compose down -v
+```
+
 ### Étapes de compilation et d'exécution (Nouvelle version)
 
 1. Construisez l'image Docker :

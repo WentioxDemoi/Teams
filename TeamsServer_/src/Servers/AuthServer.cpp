@@ -11,7 +11,7 @@ void AuthServer::do_accept() {
     acceptor_.async_accept([this](boost::system::error_code ec, tcp::socket socket){
         if(!ec){
             std::cout << "[Auth] New connection\n";
-            auto session = std::make_shared<AuthSession>(socket, ssl_ctx_, db_pool_);
+            auto session = std::make_shared<AuthSession>(std::move(socket), ssl_ctx_, db_pool_);
         } else {
           handle_error("AuthServer Accept: ", ec);
         }

@@ -1,8 +1,8 @@
 #ifndef AUTHSESSION_H
 #define AUTHSESSION_H
 
-#include "../includes.h";
-#include "../Errors/ErrorManager.h";
+#include "../includes.h"
+#include "../Errors/ErrorManager.h"
 
 
 class AuthSession : public std::enable_shared_from_this<AuthSession>, public ErrorManager {

@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     bzip2 \
     libpq-dev \
     libpqxx-dev \
+    libnats-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -37,7 +38,6 @@ RUN mkdir build && cd build && \
 
 EXPOSE 8080
 EXPOSE 8081
-EXPOSE 8082
 
 CMD ["./build/server"]
 # CMD ["/bin/bash"]

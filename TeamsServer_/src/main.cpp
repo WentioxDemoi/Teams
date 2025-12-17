@@ -1,7 +1,8 @@
 #include "Servers/AuthServer.h"
 #include "Servers/MessageServer.h"
+#include "Database/Database.h"
 
-#include "includes.h";
+#include "includes.h"
 
 
 int main() {
@@ -9,16 +10,19 @@ int main() {
         const int db_threads = 4;
         const int auth_threads = 1;
         const int message_threads = 2;
-        const int visio_threads = 4;
 
         asio::thread_pool db_pool(db_threads);
-
+        // std::cout << "okokok";
         ssl::context ssl_ctx(ssl::context::tlsv12_server);
         ssl_ctx.use_certificate_chain_file("server.crt");
         ssl_ctx.use_private_key_file("server.key", ssl::context::pem);
 
         asio::io_context auth_io;
         asio::io_context message_io;
+
+        Database &database = Database::instance();
+
+
 
         // Next step -> Avoir un sertificat ssl par server
         // Peut être avoir plusieurs acceptors en fonction de la demande (On en a un par server pour le moment).

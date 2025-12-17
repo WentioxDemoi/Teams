@@ -1,8 +1,8 @@
 #ifndef MESSAGESESSION_H
 #define MESSAGESESSION_H
 
-#include "../includes.h";
-#include "../Errors/ErrorManager.h";
+#include "../includes.h"
+#include "../Errors/ErrorManager.h"
 
 
 class MessageSession : public std::enable_shared_from_this<MessageSession>, public ErrorManager {

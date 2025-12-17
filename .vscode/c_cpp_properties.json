@@ -19,7 +19,7 @@
                 // "/opt/homebrew/Cellar/cnats/3.12.0",
                 "/opt/homebrew/Cellar/cnats/3.12.0/include",
                 // "/opt/homebrew/Cellar/libpqxx/7.10.3",
-                "/opt/homebrew/Cellar/libpqxx/7.10.3/include",
+                "/opt/homebrew/Cellar/libpqxx/7.10.4/include",
                 // "/opt/homebrew/Cellar/libpqxx/7.10.3/lib",
                 "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtTest.framework/Versions/A/Headers",
                 "/opt/homebrew/opt/boost/include",

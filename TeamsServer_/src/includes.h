@@ -14,6 +14,7 @@
 #include <condition_variable>
 #include <queue>
 #include <random>
+#include <cstdlib>
 
 // ======================================================
 // External Libraries

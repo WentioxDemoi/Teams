@@ -1,7 +1,7 @@
 #ifndef NATSCLIENT_H
 #define NATSCLIENT_H
 
-#include "../includes.h";
+#include "../includes.h"
 
 class NatsClient {
 
@@ -18,10 +18,10 @@ class NatsClient {
 
         natsConnection *nc_;
 
-        NatsClient(const NatsClient&) = delete;
-        NatsClient &operator=(const NatsClient&) = delete;
-        NatsClient(NatsClient&&) = delete;
-        NatsClient &operator=(NatsClient&&) = delete;
+        NatsClient(const NatsClient &) = delete;
+        NatsClient(NatsClient &&) = delete;
+        NatsClient &operator=(const NatsClient &) = delete;
+        NatsClient &operator=(NatsClient &&) = delete;
 };
 
 #endif

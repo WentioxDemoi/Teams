@@ -1,8 +1,8 @@
 #ifndef MESSAGESERVER_H
 #define MESSAGESERVER_H
 
-#include "../includes.h";
-#include "../Errors/ErrorManager.h";
+#include "../includes.h"
+#include "../Errors/ErrorManager.h"
 
 class MessageServer : public ErrorManager {
 public:
