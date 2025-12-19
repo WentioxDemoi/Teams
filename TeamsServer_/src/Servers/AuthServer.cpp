@@ -12,6 +12,7 @@ void AuthServer::do_accept() {
         if(!ec){
             std::cout << "[Auth] New connection\n";
             auto session = std::make_shared<AuthSession>(std::move(socket), ssl_ctx_, db_pool_);
+            session->start();
         } else {
           handle_error("AuthServer Accept: ", ec);
         }

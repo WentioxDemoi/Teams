@@ -5,23 +5,25 @@
 
 class NatsClient {
 
-    public :
-        static NatsClient &instance() {
-            static NatsClient NatsClient_;
-            return NatsClient_;
-        }
+public:
+  static NatsClient &instance() {
+    static NatsClient instance;
+    return instance;
+  }
 
-        natsConnection *connection() const { return nc_; };
-    private :
-        NatsClient();
-        ~NatsClient();
+  natsConnection *connection() const { return nc_; }
 
-        natsConnection *nc_;
+  void publish(const std::string &subject, const std::string &payload);
+  void subscribe(const std::string &subject, natsMsgHandler cb, void *closure);
 
-        NatsClient(const NatsClient &) = delete;
-        NatsClient(NatsClient &&) = delete;
-        NatsClient &operator=(const NatsClient &) = delete;
-        NatsClient &operator=(NatsClient &&) = delete;
+private:
+  NatsClient();
+  ~NatsClient();
+
+  natsConnection *nc_;
+
+  NatsClient(const NatsClient &) = delete;
+  NatsClient &operator=(const NatsClient &) = delete;
 };
 
 #endif

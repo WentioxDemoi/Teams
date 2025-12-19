@@ -1,10 +1,5 @@
 #include "Database.h"
-#include <cstdlib>
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <openssl/sha.h>
-#include <random>
+
 
 void Database::init_from_env() {
     const char* env_db_url  = std::getenv("DB_URL");
@@ -45,8 +40,10 @@ void Database::init_database() {
         auto db_conn = pool_->get_connection();
         pqxx::work db_txn(*db_conn);
 
-        db_txn.exec("CREATE TABLE IF NOT EXISTS " + table_users_ +
-                    " (id SERIAL PRIMARY KEY, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, token TEXT, created_at TIMESTAMP DEFAULT NOW());");
+        db_txn.exec(
+    "CREATE TABLE IF NOT EXISTS " + table_users_ +
+    " (id SERIAL PRIMARY KEY, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, "
+    "token TEXT, status TEXT DEFAULT 'offline', last_seen TIMESTAMP DEFAULT NOW(), created_at TIMESTAMP DEFAULT NOW());");
 
         db_txn.exec("CREATE TABLE IF NOT EXISTS " + table_channels_ +
                     " (id SERIAL PRIMARY KEY, name TEXT NOT NULL, is_private BOOLEAN DEFAULT TRUE, created_at TIMESTAMP DEFAULT NOW());");

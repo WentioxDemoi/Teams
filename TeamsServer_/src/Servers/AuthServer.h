@@ -6,10 +6,6 @@
 #include "../Errors/ErrorManager.h"
 
 
-namespace asio = boost::asio;
-using tcp = asio::ip::tcp;
-namespace ssl = asio::ssl;
-
 class AuthServer : public ErrorManager {
 public:
     AuthServer(asio::io_context& io_context, ssl::context& ssl_ctx,

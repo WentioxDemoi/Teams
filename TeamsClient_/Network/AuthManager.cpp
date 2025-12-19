@@ -20,7 +20,8 @@ AuthManager::AuthManager(boost::asio::io_context& io,
 {
     try {
         ctx_.set_default_verify_paths();
-        ctx_.set_verify_mode(ssl::verify_peer);
+        // ctx_.set_verify_mode(ssl::verify_peer);
+        ctx_.set_verify_mode(boost::asio::ssl::verify_none);
     } catch (const std::exception& e) {
         qWarning() << "SSL context init error:" << e.what();
     }
@@ -49,15 +50,13 @@ void AuthManager::authenticate(const QString& username, const QString& password,
     }
 
     try {
-        std::string message;
-        if (isLogin)
-            message = "{\"action\":\"login\",\"username\":\"" +
-                      username.toStdString() + "\",\"password\":\"" +
-                      password.toStdString() + "\"}\n";
-        else
-            message = "{\"action\":\"register\",\"username\":\"" +
-                      username.toStdString() + "\",\"password\":\"" +
-                      password.toStdString() + "\"}\n";
+        // On adapte le JSON pour utiliser "type" à la place de "action"
+        std::string type = isLogin ? "login" : "register";
+        std::string message = "{"
+                              "\"type\":\"" + type + "\","
+                              "\"username\":\"" + username.toStdString() + "\","
+                              "\"password\":\"" + password.toStdString() + "\""
+                              "}\n";
 
         boost::asio::write(socket_, boost::asio::buffer(message));
 

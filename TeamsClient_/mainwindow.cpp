@@ -26,7 +26,7 @@ MainWindow::~MainWindow()
 void MainWindow::initializeNetwork()
 {
     const std::string host = "127.0.0.1";
-    const unsigned short port = 12345; // Modifier les ports pour bien faire les requêtes sur les différents serveurs
+    const unsigned short port = 8080; // Modifier les ports pour bien faire les requêtes sur les différents serveurs
 
     networkManager_ = new NetworkManager(host, port, this);
 }
@@ -61,12 +61,12 @@ void MainWindow::onErrorOccurred(const QString& err)
 
 void MainWindow::onAuthSuccess()
 {
-    qDebug() << "[MainWindow] Login successful!";
+    qDebug() << "[MainWindow] Auth (Register/Login) successful!";
 }
 
 void MainWindow::onAuthFailed(const QString& reason)
 {
-    qDebug() << "[MainWindow] Login failed:" << reason;
+    qDebug() << "[MainWindow] Auth (Register/Login) failed:" << reason;
 }
 
 void MainWindow::onMessageReceived(const QString& msg)
