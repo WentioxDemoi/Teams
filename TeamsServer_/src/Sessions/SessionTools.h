@@ -4,20 +4,23 @@
 #include "../includes.h"
 
 class SessionTools {
-
 public:
-  static std::string extract_type(std::string payload) {
-    auto pos = payload.find(R"("type":")");
-    if (pos == std::string::npos)
-      return {};
-    pos += 8; // longueur de '"type":"'
-    auto end = payload.find('"', pos);
-    if (end == std::string::npos)
-      return {};
-    return payload.substr(pos, end - pos);
-  }
-  SessionTools() = delete;
-  ~SessionTools() = delete;
+    static std::string extractValue(const std::string& payload, const std::string& key) {
+        std::string searchKey = R"(")" + key + R"(":")";
+        auto pos = payload.find(searchKey);
+        if (pos == std::string::npos)
+            return {};
+
+        pos += searchKey.length();
+        auto end = payload.find('"', pos);
+        if (end == std::string::npos)
+            return {};
+
+        return payload.substr(pos, end - pos);
+    }
+
+    SessionTools() = delete;
+    ~SessionTools() = delete;
 };
 
 #endif

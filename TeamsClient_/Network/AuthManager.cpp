@@ -70,6 +70,7 @@ void AuthManager::readResponse() {
     try {
         char buffer[512];
         boost::system::error_code ec;
+        std::cout << "ok" << std::endl;
         std::size_t len = socket_.read_some(boost::asio::buffer(buffer), ec);
 
         if (ec) {
@@ -78,10 +79,14 @@ void AuthManager::readResponse() {
         }
 
         std::string response(buffer, len);
-        if (response.find("success") != std::string::npos)
+        std::cout << "okok" << std::endl;
+        std::cout << response << std::endl;
+        if (response.find("success") != std::string::npos) {
             emit authSuccess();
-        else
+        }
+        else {
             emit authFailed(QString::fromStdString(response));
+        }
     } catch (const std::exception& e) {
         emit errorOccurred(QString::fromStdString(e.what()));
     }

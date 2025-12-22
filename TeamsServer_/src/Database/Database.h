@@ -13,8 +13,9 @@ public:
   }
 
   bool add_user(const std::string &username, const std::string &password);
-  std::optional<User> authenticate_user(const std::string &username,
-                                        const std::string &password);
+  std::optional<User> authenticate(const std::string &username,
+                                        const std::string &password, bool is_register);
+
   std::optional<User> get_user_by_token(const std::string &token);
 
 private:
@@ -26,6 +27,9 @@ private:
 
   std::string hash_password(const std::string &password);
   std::string generate_token();
+  bool verify_password(const std::string& password, const std::string& hash);
+
+  std::chrono::system_clock::time_point token_expiry_time() const;
 
 
   // Variables du .env (Tout ce qui concerne la DB)

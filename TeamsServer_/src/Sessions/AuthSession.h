@@ -4,6 +4,7 @@
 #include "../includes.h"
 #include "../Errors/ErrorManager.h"
 #include "../Services/NatsClient.h"
+
 #include "SessionTools.h"
 
 class AuthSession : public std::enable_shared_from_this<AuthSession>, public ErrorManager {
@@ -19,6 +20,7 @@ private:
     void handle_login(std::string payload);
     void handle_register(std::string payload);
     void handle_register_response(std::string payload);
+    void handle_login_response(std::string payload);
     void handle_token(std::string payload);
     void handle_presence(std::string payload);
 

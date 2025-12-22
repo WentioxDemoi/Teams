@@ -15,6 +15,7 @@
 #include <queue>
 #include <random>
 #include <cstdlib>
+#include <chrono>
 
 // ======================================================
 // External Libraries
@@ -22,6 +23,10 @@
 #include <openssl/sha.h>
 #include <pqxx/pqxx>
 #include <nats/nats.h>
+
+extern "C" {
+#include "../dependencies/bcrypt/bcrypt.h"
+}
 
 // ======================================================
 // Boost / Asio

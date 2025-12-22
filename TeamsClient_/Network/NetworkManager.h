@@ -7,7 +7,6 @@
 #include <memory>
 
 #include "AuthManager.h"
-// #include "MessageManager.h"
 
 class NetworkManager : public QObject {
     Q_OBJECT
@@ -37,7 +36,6 @@ private:
     unsigned short port_;
 
     std::unique_ptr<AuthManager> authManager_;
-    // std::unique_ptr<MessageManager> messageManager_;
 };
 
 #endif

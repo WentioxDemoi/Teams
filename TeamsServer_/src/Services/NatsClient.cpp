@@ -10,6 +10,8 @@ NatsClient::NatsClient() {
 natsStatus s = natsConnection_Connect(&nc_, opts);
 if (s != NATS_OK) {
   // Message d'ERreur
+} else {
+  std::cout << "Connexion Nats OK\n";
 }
   natsOptions_Destroy(opts);
 }

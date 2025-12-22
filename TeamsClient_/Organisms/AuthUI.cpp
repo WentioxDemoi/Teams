@@ -40,7 +40,7 @@ Auth::~Auth() {}
 
 void Auth::handleAuthRequest(const QString& email, const QString& password, bool isLogin)
 {
-    qDebug() << "Auth received login request";
+    qDebug() << "Auth received request";
     emit authRequest(email, password, isLogin);
 }
 

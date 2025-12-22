@@ -39,6 +39,8 @@ if(NOT NATS_INCLUDE_DIR OR NOT NATS_LIBRARY)
     message(FATAL_ERROR "NATS C library not found. Please install it.")
 endif()
 include_directories(${NATS_INCLUDE_DIR})
+add_subdirectory(dependencies/bcrypt)
+
 
 # ------------------------------
 # Sources
@@ -79,6 +81,7 @@ target_link_libraries(server PRIVATE
     OpenSSL::SSL
     OpenSSL::Crypto
     ${NATS_LIBRARY}
+    bcrypt
 )
 
 # ------------------------------
