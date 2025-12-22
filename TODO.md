@@ -8,6 +8,7 @@ TODO
 	•	Potentiellement refactor le client pour utiliser le design pattern MVVC (Model–View–ViewModel)
 	•	Implémenter CI/CD côté serveur et client
 	•	Dans le --> FUTUR <-- faire test de charge sur le serveur (Créer un exécutable qui créer des milliers de clients)
+	•	Implémenter Argon2 au lieu de bcrypt
 
 	
 	
