@@ -92,7 +92,8 @@ std::optional<User> Database::authenticate(const std::string &username,
   try {
     const std::string token = generate_token();
     const auto expiry = token_expiry_time();
-
+    
+    // -------- REGISTER --------
     if (is_register) {
       pqxx::result exists = txn.exec_params(
           "SELECT id FROM " + table_users_ + " WHERE username = $1", username);
@@ -159,23 +160,52 @@ std::optional<User> Database::authenticate(const std::string &username,
 }
 
 std::string Database::hash_password(const std::string &password) {
-  char salt[BCRYPT_HASHSIZE];
-  char hash[BCRYPT_HASHSIZE];
+  const uint32_t t_cost = 3;
+  const uint32_t m_cost = 1 << 16; // 64 MB | A augmenter/réduire en fonction des ressources/besoins
+  const uint32_t parallelism = 1;
+  const size_t salt_len = 16;
+  const size_t hash_len = 32;
 
-  // Génére un salt avec coût 12
-  if (bcrypt_gensalt(12, salt) != 0)
-    throw std::runtime_error("Erreur génération salt bcrypt");
+  std::vector<uint8_t> salt(salt_len);
+  std::random_device rd;
+  for (auto &b : salt)
+    b = static_cast<uint8_t>(rd());
 
-  // Générer le hash
-  if (bcrypt_hashpw(password.c_str(), salt, hash) != 0)
-    throw std::runtime_error("Erreur hash bcrypt");
+  // Calcul taille exacte de la string encodée
+  size_t encoded_len = argon2_encodedlen(
+      t_cost,
+      m_cost,
+      parallelism,
+      salt_len,
+      hash_len,
+      Argon2_id);
 
-  return std::string(hash);
+  std::vector<char> encoded(encoded_len);
+
+  int rc = argon2id_hash_encoded(
+      t_cost,
+      m_cost,
+      parallelism,
+      password.data(),
+      password.size(),
+      salt.data(),
+      salt.size(),
+      hash_len,
+      encoded.data(),
+      encoded.size());
+
+  if (rc != ARGON2_OK)
+    throw std::runtime_error(argon2_error_message(rc));
+
+  return std::string(encoded.data());
 }
 
 bool Database::verify_password(const std::string &password,
                                const std::string &hash) {
-  return bcrypt_checkpw(password.c_str(), hash.c_str()) == 0;
+  return argon2id_verify(
+             hash.c_str(),
+             password.data(),
+             password.size()) == ARGON2_OK;
 }
 
 std::string Database::generate_token() {

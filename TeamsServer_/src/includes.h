@@ -23,10 +23,7 @@
 #include <openssl/sha.h>
 #include <pqxx/pqxx>
 #include <nats/nats.h>
-
-extern "C" {
-#include "../dependencies/bcrypt/bcrypt.h"
-}
+#include <argon2.h>
 
 // ======================================================
 // Boost / Asio

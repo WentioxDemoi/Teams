@@ -5,32 +5,38 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 20)
 
 # ------------------------------
-# Détection automatique de Boost
+# Boost
 # ------------------------------
 find_package(Boost 1.89 REQUIRED COMPONENTS filesystem thread date_time)
 if(NOT Boost_FOUND)
     message(FATAL_ERROR "Boost not found. Please install Boost 1.89 or higher.")
 endif()
-include_directories(${Boost_INCLUDE_DIRS})
 
 # ------------------------------
-# Détection automatique d'OpenSSL
+# Argon2 (pkg-config)
+# ------------------------------
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(ARGON2 REQUIRED libargon2)
+
+if(NOT ARGON2_FOUND)
+    message(FATAL_ERROR "Argon2 not found. Please install libargon2-dev.")
+endif()
+
+# ------------------------------
+# OpenSSL
 # ------------------------------
 find_package(OpenSSL REQUIRED)
 if(NOT OpenSSL_FOUND)
     message(FATAL_ERROR "OpenSSL not found.")
 endif()
-include_directories(${OPENSSL_INCLUDE_DIR})
 
 # ------------------------------
-# Détection automatique de NATS C
+# NATS C
 # ------------------------------
 if(APPLE)
-    # macOS Homebrew paths
     find_path(NATS_INCLUDE_DIR nats/nats.h /opt/homebrew/include /usr/local/include)
     find_library(NATS_LIBRARY nats /opt/homebrew/lib /usr/local/lib)
 else()
-    # Linux paths
     find_path(NATS_INCLUDE_DIR nats/nats.h /usr/include /usr/local/include)
     find_library(NATS_LIBRARY nats /usr/lib /usr/lib/x86_64-linux-gnu /usr/local/lib)
 endif()
@@ -38,9 +44,6 @@ endif()
 if(NOT NATS_INCLUDE_DIR OR NOT NATS_LIBRARY)
     message(FATAL_ERROR "NATS C library not found. Please install it.")
 endif()
-include_directories(${NATS_INCLUDE_DIR})
-add_subdirectory(dependencies/bcrypt)
-
 
 # ------------------------------
 # Sources
@@ -64,12 +67,22 @@ set(SOURCES
 )
 
 # ------------------------------
-# Création de l'exécutable
+# Executable
 # ------------------------------
 add_executable(server ${SOURCES})
 
 # ------------------------------
-# Link des librairies
+# Includes par target (propre)
+# ------------------------------
+target_include_directories(server PRIVATE
+    ${Boost_INCLUDE_DIRS}
+    ${ARGON2_INCLUDE_DIRS}
+    ${OPENSSL_INCLUDE_DIR}
+    ${NATS_INCLUDE_DIR}
+)
+
+# ------------------------------
+# Link libraries
 # ------------------------------
 target_link_libraries(server PRIVATE
     pqxx
@@ -81,15 +94,16 @@ target_link_libraries(server PRIVATE
     OpenSSL::SSL
     OpenSSL::Crypto
     ${NATS_LIBRARY}
-    bcrypt
+    ${ARGON2_LIBRARIES}
 )
 
 # ------------------------------
-# Runtime path pour Boost si nécessaire
+# RPATH Boost (Linux / macOS)
 # ------------------------------
 if(APPLE)
     set(BOOST_LIB_PATH "/opt/homebrew/lib")
 elseif(UNIX)
     set(BOOST_LIB_PATH "/usr/local/lib")
 endif()
+
 target_link_options(server PRIVATE -Wl,-rpath,${BOOST_LIB_PATH})
