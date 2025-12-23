@@ -75,8 +75,7 @@ void AuthSession::handle_login(std::string payload) {
       },
       this);
 
-  natsConnection_PublishRequestString(nc, "auth.login", inbox,
-                                      payload.c_str());
+  natsConnection_PublishRequestString(nc, "auth.login", inbox, payload.c_str());
 }
 
 void AuthSession::handle_register(std::string payload) {

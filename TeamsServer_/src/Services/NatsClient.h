@@ -6,10 +6,7 @@
 class NatsClient {
 
 public:
-  static NatsClient &instance() {
-    static NatsClient instance;
-    return instance;
-  }
+  static NatsClient &instance();
 
   natsConnection *connection() const { return nc_; }
 
@@ -23,7 +20,9 @@ private:
   natsConnection *nc_;
 
   NatsClient(const NatsClient &) = delete;
+  NatsClient(NatsClient &&) = delete;
   NatsClient &operator=(const NatsClient &) = delete;
+  NatsClient &operator=(NatsClient &&) = delete;
 };
 
 #endif

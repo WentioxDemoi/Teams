@@ -2,14 +2,14 @@
 
 void MessageSession::start() {
   auto self = shared_from_this();
-  stream_.async_handshake(
-      ssl::stream_base::server, [this, self](boost::system::error_code ec) {
-        if (!ec) {
-          do_read();
-        } else {
-          handle_error("MessageSession Handshake : ", ec);
-        }
-      });
+  stream_.async_handshake(ssl::stream_base::server,
+                          [this, self](boost::system::error_code ec) {
+                            if (!ec) {
+                              do_read();
+                            } else {
+                              handle_error("MessageSession Handshake : ", ec);
+                            }
+                          });
 }
 
 void MessageSession::do_read() {

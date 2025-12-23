@@ -2,6 +2,6 @@
 #include <string>
 
 struct NatsReplyContext {
-    natsConnection* nc;
-    std::string reply_to;
+  natsConnection *nc;
+  std::string reply_to;
 };

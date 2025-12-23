@@ -4,26 +4,26 @@
 // ======================================================
 // Standard Library
 // ======================================================
-#include <iostream>
-#include <string>
-#include <sstream>
+#include <chrono>
+#include <condition_variable>
+#include <cstdlib>
 #include <iomanip>
-#include <optional>
+#include <iostream>
 #include <memory>
 #include <mutex>
-#include <condition_variable>
+#include <optional>
 #include <queue>
 #include <random>
-#include <cstdlib>
-#include <chrono>
+#include <sstream>
+#include <string>
 
 // ======================================================
 // External Libraries
 // ======================================================
+#include <argon2.h>
+#include <nats/nats.h>
 #include <openssl/sha.h>
 #include <pqxx/pqxx>
-#include <nats/nats.h>
-#include <argon2.h>
 
 // ======================================================
 // Boost / Asio

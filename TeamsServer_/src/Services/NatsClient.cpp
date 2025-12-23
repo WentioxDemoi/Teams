@@ -1,18 +1,24 @@
 #include "NatsClient.h"
 
+NatsClient &NatsClient::instance() {
+  static NatsClient instance;
+  return instance;
+}
+
 NatsClient::NatsClient() {
   natsOptions *opts = nullptr;
   natsOptions_Create(&opts);
 
   // natsOptions_SetURL(opts, "nats://127.0.0.1:4222");
-  natsOptions_SetURL(opts, "nats://nats:4222"); // Uniquement si container docker nats
+  natsOptions_SetURL(opts,
+                     "nats://nats:4222"); // Uniquement si container docker nats
 
-natsStatus s = natsConnection_Connect(&nc_, opts);
-if (s != NATS_OK) {
-  // Message d'ERreur
-} else {
-  std::cout << "Connexion Nats OK\n";
-}
+  natsStatus s = natsConnection_Connect(&nc_, opts);
+  if (s != NATS_OK) {
+    // Message d'ERreur
+  } else {
+    std::cout << "Connexion Nats OK\n";
+  }
   natsOptions_Destroy(opts);
 }
 

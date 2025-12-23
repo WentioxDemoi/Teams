@@ -3,50 +3,51 @@
 
 void AuthService::handle_register(const std::string &payload,
                                   const NatsReplyContext &replyCtx) {
-    auto username = SessionTools::extractValue(payload, "username");
-    auto password = SessionTools::extractValue(payload, "password");
+  auto username = SessionTools::extractValue(payload, "username");
+  auto password = SessionTools::extractValue(payload, "password");
 
-    auto response = database->authenticate(username, password, true);
+  auto response = repository->authenticate(username, password, true);
 
-    std::string result;
-    if (!response.has_value()) {
-        result = R"({"error":"Registration failed: username may already exist or invalid data."})";
-    } else {
-        result = "{"
-                 "\"data\":{"
-                 "\"id\":" + std::to_string(response->id) + "," +
-                 "\"username\":\"" + response->username + "\"," +
-                 "\"token\":\"" + response->token + "\"," +
-                 "\"status\":\"" + response->status + "\"" +
-                 "}" 
-                 "}";
-    }
+  std::string result;
+  if (!response.has_value()) {
+    result =
+        R"({"error":"Registration failed: username may already exist or invalid data."})";
+  } else {
+    result = "{"
+             "\"data\":{"
+             "\"id\":" +
+             std::to_string(response->id) + "," + "\"username\":\"" +
+             response->username + "\"," + "\"token\":\"" + response->token +
+             "\"," + "\"status\":\"" + response->status + "\"" +
+             "}"
+             "}";
+  }
 
-    sendReply(replyCtx, result);
+  sendReply(replyCtx, result);
 }
 
 void AuthService::handle_login(const std::string &payload,
                                const NatsReplyContext &replyCtx) {
-    auto username = SessionTools::extractValue(payload, "username");
-    auto password = SessionTools::extractValue(payload, "password");
+  auto username = SessionTools::extractValue(payload, "username");
+  auto password = SessionTools::extractValue(payload, "password");
 
-    auto response = database->authenticate(username, password, false);
+  auto response = repository->authenticate(username, password, false);
 
-    std::string result;
-    if (!response.has_value()) {
-        result = R"({"error":"Login failed: invalid username or password."})";
-    } else {
-        result = "{"
-                 "\"data\":{"
-                 "\"id\":" + std::to_string(response->id) + "," +
-                 "\"username\":\"" + response->username + "\"," +
-                 "\"token\":\"" + response->token + "\"," +
-                 "\"status\":\"" + response->status + "\"" +
-                 "}" 
-                 "}";
-    }
+  std::string result;
+  if (!response.has_value()) {
+    result = R"({"error":"Login failed: invalid username or password."})";
+  } else {
+    result = "{"
+             "\"data\":{"
+             "\"id\":" +
+             std::to_string(response->id) + "," + "\"username\":\"" +
+             response->username + "\"," + "\"token\":\"" + response->token +
+             "\"," + "\"status\":\"" + response->status + "\"" +
+             "}"
+             "}";
+  }
 
-    sendReply(replyCtx, result);
+  sendReply(replyCtx, result);
 }
 
 void AuthService::sendReply(const NatsReplyContext &ctx,
@@ -65,7 +66,7 @@ void AuthService::sendReply(const NatsReplyContext &ctx,
 void AuthService::onRegisterMsg(natsConnection *nc, natsSubscription *,
                                 natsMsg *msg, void *closure) {
   auto *self = static_cast<AuthService *>(closure);
-                                  std::cout << "aaaa" << std::endl;
+  std::cout << "aaaa" << std::endl;
   std::string payload(natsMsg_GetData(msg), natsMsg_GetDataLength(msg));
   std::cout << "Payload : " << payload << std::endl;
 
@@ -78,8 +79,8 @@ void AuthService::onRegisterMsg(natsConnection *nc, natsSubscription *,
   });
 }
 
-void AuthService::onLoginMsg(natsConnection *nc , natsSubscription *, natsMsg *msg, void *closure)
-{
+void AuthService::onLoginMsg(natsConnection *nc, natsSubscription *,
+                             natsMsg *msg, void *closure) {
   auto *self = static_cast<AuthService *>(closure);
 
   std::string payload(natsMsg_GetData(msg), natsMsg_GetDataLength(msg));

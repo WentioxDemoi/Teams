@@ -6,7 +6,8 @@
 class DatabaseTools {
 
 public:
-  // Conversion time_point -> string (pour insertion dans la BDD)
+  // Conversion time_point -> string car pqxx ne gére pas ce type (pour
+  // insertion dans la BDD)
   static std::string
   time_point_to_string(const std::chrono::system_clock::time_point &tp) {
     std::time_t t = std::chrono::system_clock::to_time_t(tp);

@@ -1,4 +1,5 @@
-#include "Database/Database.h"
+#include "Database/AuthRepository.h"
+#include "Database/DatabaseInitializer.h"
 #include "Servers/AuthServer.h"
 #include "Servers/MessageServer.h"
 #include "Services/AuthService.h"
@@ -16,6 +17,8 @@ int main() {
     ssl::context ssl_ctx(ssl::context::tlsv12_server);
     ssl_ctx.use_certificate_chain_file("server.crt");
     ssl_ctx.use_private_key_file("server.key", ssl::context::pem);
+
+    DatabaseInitializer::init();
 
     asio::io_context auth_io;
     // asio::io_context message_io;
