@@ -1,0 +1,12 @@
+#include <QVBoxLayout>
+#include <QWidget>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QObject>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QUrl>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <functional>
+#include <QWebSocket>

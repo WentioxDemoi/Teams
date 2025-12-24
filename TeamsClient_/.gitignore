@@ -1,0 +1,26 @@
+# Build directories
+build/
+cmake-build-*/
+
+# Qt
+*.pro.user
+*.autosave
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Compiled Object files
+*.o
+*.obj
+
+# Executables
+*.exe
+*.out
+*.app
