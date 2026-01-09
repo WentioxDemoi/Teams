@@ -12,44 +12,6 @@ Recoding une application similaire à Teams.
 - GoogleTest >= 1.17.0
 - Nats-server >= 2.12.2
 
-## Compilation du Client
-
-### Étapes de compilation
-
-1. Accédez au dossier de build :
-```bash
-cd build/TeamsClient_
-```
-
-2. Générez les fichiers de build avec CMake (en remplaçant le chemin Qt6 selon votre configuration) :
-```bash
-cmake ../ -DCMAKE_PREFIX_PATH=$HOME/Qt/6.9.3/macos/lib/cmake/Qt6
-```
-
-3. Compilez le projet :
-```bash
-make
-```
-
-4. Lancez l'application :
-```bash
-./TeamsClient_.app/Contents/MacOS/TeamsClient_
-```
-
-Alternativement, vous pouvez double-cliquer sur l'app dans le dossier `build/`.
-
-### Création d'un fichier .dmg
-
-1. Exécutez macdeployqt pour préparer l'application :
-```bash
-~/Qt/6.9.3/macos/bin/macdeployqt TeamsClient_.app/
-```
-
-2. Créez le fichier .dmg :
-```bash
-hdiutil create -volname "TeamsClient_" -srcfolder TeamsClient_.app -ov -format UDZO TeamsClient_.dmg
-```
-
 ## Compilation du Serveur
 
 Le serveur est compilé et exécuté via Docker, ce qui garantit une cohérence d'environnement avec le déploiement sur EC2.
