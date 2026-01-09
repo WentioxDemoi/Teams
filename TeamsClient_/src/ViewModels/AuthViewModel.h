@@ -1,7 +1,7 @@
 #ifndef AUTHVIEWMODEL_H
 #define AUTHVIEWMODEL_H
 
-#include "../../includes.h"
+#include "../includes.h"
 #include "../Models/User.h"
 
 class AuthService;
@@ -11,7 +11,7 @@ class AuthViewModel : public QObject
     Q_OBJECT
 
 public:
-    explicit AuthViewModel(AuthService* authService,
+    explicit AuthViewModel(
                            QObject* parent = nullptr);
 
 public slots:

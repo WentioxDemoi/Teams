@@ -1,16 +1,13 @@
 #include "AuthViewModel.h"
-#include "../Services/AuthService.h"
-#include "../Utils/Validators.h"
 
-AuthViewModel::AuthViewModel(AuthService* authService, QObject* parent)
-    : QObject(parent),
-      authService_(authService)
+AuthViewModel::AuthViewModel(QObject* parent)
+    : QObject(parent)
 {
-    connect(authService_, &AuthService::authSuccess,
-            this, &AuthViewModel::loginSuccess);
+    // connect(authService_, &AuthService::authSuccess,
+    //         this, &AuthViewModel::loginSuccess);
 
-    connect(authService_, &AuthService::authError,
-            this, &AuthViewModel::loginError);
+    // connect(authService_, &AuthService::authError,
+    //         this, &AuthViewModel::loginError);
 }
 
 void AuthViewModel::login(const QString& username, const QString& password)
@@ -20,7 +17,7 @@ void AuthViewModel::login(const QString& username, const QString& password)
         return;
     }
 
-    authService_->loginUser(username, password);
+    // authService_->loginUser(username, password);
 }
 
 void AuthViewModel::registerUser(const QString& username,
@@ -36,5 +33,5 @@ void AuthViewModel::registerUser(const QString& username,
     //     return;
     // }
 
-    authService_->registerUser(username, password);
+    // authService_->registerUser(username, password);
 }

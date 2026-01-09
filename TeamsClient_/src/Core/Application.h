@@ -5,8 +5,6 @@
 #include "../Views/mainwindow.h"
 
 #include "ServiceLocator.h"
-#include "../Services/NetworkService.h"
-#include "../Services/AuthService.h"
 #include "../ViewModels/AuthViewModel.h"
 
 

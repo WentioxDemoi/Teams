@@ -10,13 +10,9 @@ Application::Application(int& argc, char** argv)
 
 void Application::initializeServices()
 {
-    // auto networkService = new NetworkService();
-    auto authService = new AuthService(networkService);
-    auto authViewModel = new AuthViewModel(authService);
+    auto authViewModel = new AuthViewModel();
 
     auto& locator = ServiceLocator::instance();
-    // locator.registerService(networkService);
-    locator.registerService(authService);
     locator.registerService(authViewModel);
 }
 

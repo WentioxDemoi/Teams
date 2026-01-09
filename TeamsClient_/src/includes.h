@@ -9,4 +9,4 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <functional>
-#include <QWebSocket>
+// #include <QWebSocket>
