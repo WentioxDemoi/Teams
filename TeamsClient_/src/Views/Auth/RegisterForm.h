@@ -20,4 +20,4 @@ private:
   QPushButton *registerButton;
 };
 
-#endif // REGISTERFORM_H
+#endif

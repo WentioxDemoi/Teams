@@ -8,17 +8,20 @@ Application::Application(int& argc, char** argv)
     run();
 }
 
-void Application::initializeServices()
-{
-    auto authViewModel = new AuthViewModel();
-
+void Application::initializeServices() {
     auto& locator = ServiceLocator::instance();
+
+    auto network = new AuthNetworkService();
+
+    auto authService = new AuthService(network);
+    locator.registerService(authService);
+
+    auto authViewModel = new AuthViewModel(authService);
     locator.registerService(authViewModel);
 }
 
 void Application::initializeUI()
 {
-    // Création et affichage de la fenêtre principale
     MainWindow* mainWindow = new MainWindow();
     mainWindow->show();
 }

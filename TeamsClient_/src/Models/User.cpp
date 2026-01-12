@@ -24,9 +24,18 @@ QJsonObject User::toJson() const
 User User::fromJson(const QJsonObject& json)
 {
     User user;
-    user.setId(json["id"].toInt());
-    user.setUsername(json["username"].toString());
-    user.setToken(json["token"].toString());
-    user.setStatus(json["status"].toString());
+
+    if (json.contains("id") && json["id"].isDouble())
+        user.setId(json["id"].toInt());
+
+    if (json.contains("username") && json["username"].isString())
+        user.setUsername(json["username"].toString());
+
+    if (json.contains("token") && json["token"].isString())
+        user.setToken(json["token"].toString());
+
+    if (json.contains("status") && json["status"].isString())
+        user.setStatus(json["status"].toString());
+
     return user;
 }

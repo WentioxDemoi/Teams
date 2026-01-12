@@ -1,23 +1,24 @@
 #include "AuthViewModel.h"
 
-AuthViewModel::AuthViewModel(QObject* parent)
+AuthViewModel::AuthViewModel(AuthService *authService, QObject* parent)
     : QObject(parent)
 {
-    // connect(authService_, &AuthService::authSuccess,
-    //         this, &AuthViewModel::loginSuccess);
+    authService_ = authService;
+    connect(authService_, &AuthService::authSuccess,
+            this, &AuthViewModel::loginSuccess);
 
-    // connect(authService_, &AuthService::authError,
-    //         this, &AuthViewModel::loginError);
+    connect(authService_, &AuthService::authError,
+            this, &AuthViewModel::loginError);
 }
 
-void AuthViewModel::login(const QString& username, const QString& password)
+void AuthViewModel::loginUser(const QString& username, const QString& password)
 {
     if (username.isEmpty() || password.isEmpty()) {
         emit loginError("Username and password required");
         return;
     }
 
-    // authService_->loginUser(username, password);
+    authService_->loginUser(username, password);
 }
 
 void AuthViewModel::registerUser(const QString& username,
@@ -33,5 +34,5 @@ void AuthViewModel::registerUser(const QString& username,
     //     return;
     // }
 
-    // authService_->registerUser(username, password);
+    authService_->registerUser(username, password);
 }

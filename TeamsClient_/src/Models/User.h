@@ -37,4 +37,4 @@ private:
     QString status_;
 };
 
-#endif // USER_H
+#endif

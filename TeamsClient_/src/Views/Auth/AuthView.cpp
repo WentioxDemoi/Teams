@@ -14,7 +14,6 @@ AuthView::AuthView(QWidget* parent)
     layout->addWidget(toggleButton);
     setLayout(layout);
 
-    // Initialement on montre le login
     loginForm->show();
     registerForm->hide();
     updateButtonText();
@@ -24,7 +23,7 @@ AuthView::AuthView(QWidget* parent)
     auto authVM = ServiceLocator::instance().getService<AuthViewModel>();
 
 connect(loginForm, &LoginForm::loginRequested,
-        authVM, &AuthViewModel::login);
+        authVM, &AuthViewModel::loginUser);
 
 connect(registerForm, &RegisterForm::registerRequested,
         authVM, &AuthViewModel::registerUser);
@@ -34,10 +33,10 @@ connect(authVM, &AuthViewModel::loginSuccess, this,
             qDebug() << "Logged in as" << user.username();
         });
 
-// connect(authVM, &AuthViewModel::loginError, this,
-//         [](const QString& error) {
-//             QMessageBox::warning(nullptr, "Auth error", error);
-//         });
+connect(authVM, &AuthViewModel::loginError, this,
+        [](const QString& error) {
+            qDebug() << "Error loggin : " << error;
+        });
 }
 
 void AuthView::toggleForms()

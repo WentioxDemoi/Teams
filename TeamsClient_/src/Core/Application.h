@@ -6,6 +6,7 @@
 
 #include "ServiceLocator.h"
 #include "../ViewModels/AuthViewModel.h"
+#include "../Services/AuthService.h"
 
 
 class Application {

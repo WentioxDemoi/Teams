@@ -24,9 +24,9 @@
 #include <pqxx/pqxx>
 #include <nats/nats.h>
 
-extern "C" {
-#include "../dependencies/bcrypt/bcrypt.h"
-}
+// extern "C" {
+// #include "../dependencies/bcrypt/bcrypt.h"
+// }
 
 // ======================================================
 // Boost / Asio

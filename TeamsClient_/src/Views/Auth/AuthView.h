@@ -25,4 +25,4 @@ private:
     void updateButtonText();
 };
 
-#endif // AUTHVIEW_H
+#endif
