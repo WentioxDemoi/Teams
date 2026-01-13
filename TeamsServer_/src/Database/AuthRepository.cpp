@@ -9,9 +9,9 @@ AuthRepository &AuthRepository::instance() {
 
 AuthRepository::AuthRepository() : ctx_(DatabaseContext::instance()) {}
 
-std::optional<User> AuthRepository::authenticate(const std::string &username,
-                                                 const std::string &password,
-                                                 bool is_register) {
+std::optional<User> AuthRepository::authenticate(
+    const std::string &email, const std::string &password, bool is_register,
+    const std::optional<std::string> &username) {
 
   auto conn = ctx_.acquire();
   pqxx::work txn(*conn);
@@ -21,9 +21,8 @@ std::optional<User> AuthRepository::authenticate(const std::string &username,
     const auto expiry = token_expiry_time();
 
     if (is_register) {
-      auto exists = txn.exec_params("SELECT id FROM " + ctx_.users_table() +
-                                        " WHERE username = $1",
-                                    username);
+      auto exists = txn.exec_params(
+          "SELECT id FROM " + ctx_.users_table() + " WHERE email = $1", email);
 
       if (!exists.empty()) {
         ctx_.release(conn);
@@ -32,20 +31,26 @@ std::optional<User> AuthRepository::authenticate(const std::string &username,
 
       auto hash = hash_password(password);
 
-      auto res = txn.exec_params(
-          "INSERT INTO " + ctx_.users_table() +
-              " (username, password_hash, token, token_expires_at, status) "
-              "VALUES ($1,$2,$3,$4,'online') RETURNING id",
-          username, hash, token, DatabaseTools::time_point_to_string(expiry));
+      auto res =
+          txn.exec_params("INSERT INTO " + ctx_.users_table() +
+                              " (email, username, password_hash, token, "
+                              "token_expires_at, status) "
+                              "VALUES ($1,$2,$3,$4,$5,'online') RETURNING id",
+                          email, username.value_or(""), hash, token,
+                          DatabaseTools::time_point_to_string(expiry));
+
+    //   int user_id = res[0]["id"].as<int>();
+    // std::string db_username = res[0]["username"].as<std::string>();
 
       txn.commit();
       ctx_.release(conn);
-      return User{res[0][0].as<int>(), username, token, "online"};
+      return User{res[0][0].as<int>(), username.value(), email, token,
+                  "online"};
     }
 
-    auto res = txn.exec_params("SELECT id, password_hash FROM " +
-                                   ctx_.users_table() + " WHERE username = $1",
-                               username);
+    auto res = txn.exec_params("SELECT id, password_hash, username FROM " +
+                                   ctx_.users_table() + " WHERE email = $1",
+                               email);
 
     if (res.empty()) {
       ctx_.release(conn);
@@ -58,6 +63,7 @@ std::optional<User> AuthRepository::authenticate(const std::string &username,
     }
 
     int user_id = res[0]["id"].as<int>();
+    std::string db_username = res[0]["username"].as<std::string>();
 
     txn.exec_params("UPDATE " + ctx_.users_table() +
                         " SET token=$1, token_expires_at=$2, status='online', "
@@ -68,8 +74,7 @@ std::optional<User> AuthRepository::authenticate(const std::string &username,
 
     txn.commit();
     ctx_.release(conn);
-
-    return User{user_id, username, token, "online"};
+    return User{user_id, db_username, email, token, "online"};
 
   } catch (...) {
     ctx_.release(conn);
@@ -129,7 +134,7 @@ AuthRepository::get_user_by_token(const std::string &token) {
   pqxx::work txn(*conn);
 
   pqxx::result res = txn.exec_params(
-      "SELECT id, username, status "
+      "SELECT id, email, username, status "
       "FROM " +
           ctx_.users_table() + " WHERE token = $1 AND token_expires_at > NOW()",
       token);
@@ -139,7 +144,7 @@ AuthRepository::get_user_by_token(const std::string &token) {
   if (res.empty())
     return std::nullopt;
 
-  return User{res[0]["id"].as<int>(), res[0]["username"].as<std::string>(),
+  return User{res[0]["id"].as<int>(), res[0]["email"].as<std::string>(), res[0]["username"].as<std::string>(),
               token, res[0]["status"].as<std::string>()};
 }
 

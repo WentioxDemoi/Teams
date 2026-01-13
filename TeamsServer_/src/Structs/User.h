@@ -6,6 +6,7 @@
 struct User {
   int id;
   std::string username;
+  std::string email;
   std::string token;
   std::string status;
 };

@@ -8,9 +8,10 @@ class AuthRepository {
 public:
   static AuthRepository &instance();
 
-  std::optional<User> authenticate(const std::string &username,
-                                   const std::string &password,
-                                   bool is_register);
+  std::optional<User>
+  authenticate(const std::string &email, const std::string &password,
+               bool is_register,
+               const std::optional<std::string> &username = std::nullopt);
 
   std::optional<User> get_user_by_token(const std::string &token);
 

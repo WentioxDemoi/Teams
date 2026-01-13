@@ -7,14 +7,15 @@ void DatabaseInitializer::init() {
   pqxx::work txn(*conn);
 
   txn.exec("CREATE TABLE IF NOT EXISTS " + ctx.users_table() +
-           " (id SERIAL PRIMARY KEY, "
-           "username TEXT UNIQUE NOT NULL, "
-           "password_hash TEXT NOT NULL, "
-           "token TEXT, "
-           "token_expires_at TIMESTAMP, "
-           "status TEXT DEFAULT 'offline', "
-           "last_seen TIMESTAMP DEFAULT NOW(), "
-           "created_at TIMESTAMP DEFAULT NOW());");
+         " (id SERIAL PRIMARY KEY, "
+         "email TEXT UNIQUE NOT NULL, "
+         "username TEXT UNIQUE, "
+         "password_hash TEXT NOT NULL, "
+         "token TEXT, "
+         "token_expires_at TIMESTAMP, "
+         "status TEXT DEFAULT 'offline', "
+         "last_seen TIMESTAMP DEFAULT NOW(), "
+         "created_at TIMESTAMP DEFAULT NOW());");
 
   txn.exec(
       "CREATE TABLE IF NOT EXISTS " + ctx.channels_table() +
