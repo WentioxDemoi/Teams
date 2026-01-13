@@ -11,13 +11,12 @@ Application::Application(int& argc, char** argv)
 void Application::initializeServices() {
     auto& locator = ServiceLocator::instance();
 
-    auto network = new AuthNetworkService();
-
-    auto authService = new AuthService(network);
+    auto authNetworkService = new AuthNetworkService();
+    locator.registerService(authNetworkService);
+    auto authService = new AuthService();
     locator.registerService(authService);
 
-    auto authViewModel = new AuthViewModel(authService);
-    locator.registerService(authViewModel);
+    
 }
 
 void Application::initializeUI()

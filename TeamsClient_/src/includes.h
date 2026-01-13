@@ -10,3 +10,6 @@
 #include <QJsonObject>
 #include <functional>
 // #include <QWebSocket>
+#include <QMap>
+#include <QString>
+#include <typeinfo>

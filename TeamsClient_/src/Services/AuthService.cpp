@@ -1,9 +1,9 @@
 #include "AuthService.h"
 
-AuthService::AuthService(AuthNetworkService *network, QObject* parent)
+AuthService::AuthService(QObject* parent)
     : QObject(parent)
 {
-    network_ = network;
+    network_ = ServiceLocator::instance().getService<AuthNetworkService>();
     connect(network_, &AuthNetworkService::authSuccess,
             this, &AuthService::authSuccess);
 
@@ -16,7 +16,7 @@ void AuthService::loginUser(const QString& email, const QString& password)
     network_->login(email, password);
 }
 
-void AuthService::registerUser(const QString& email, const QString& password)
+void AuthService::registerUser(const QString& email, const QString& username, const QString& password)
 {
-    network_->registerUser(email, password);
+    network_->registerUser(email, username, password);
 }

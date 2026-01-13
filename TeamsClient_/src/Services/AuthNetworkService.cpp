@@ -34,10 +34,11 @@ AuthNetworkService::AuthNetworkService(QObject* parent)
             return;
         }
 
-        qDebug() << "AUTH SUCCESS";
+        qDebug() << "\n\nAUTH SUCCESS";
         qDebug() << "ID:" << user.id();
         qDebug() << "TOKEN:" << user.token();
         qDebug() << "Username:" << user.username();
+        qDebug() << "Email:" << user.email();
         qDebug() << "Status:" << user.status();
 
         emit authSuccess(user);
@@ -61,10 +62,11 @@ void AuthNetworkService::login(const QString& username, const QString& password)
     sendRequest(payload);
 }
 
-void AuthNetworkService::registerUser(const QString& username, const QString& password)
+void AuthNetworkService::registerUser(const QString& email, const QString& username, const QString& password)
 {
     QJsonObject payload{
         {"type", "register"},
+        {"email", email},
         {"username", username},
         {"password", password}
     };

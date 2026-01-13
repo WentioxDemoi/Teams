@@ -18,9 +18,10 @@ private slots:
 
 private:
     LoginForm* loginForm;
-    RegisterForm* registerForm;
-    QPushButton* toggleButton;
-    QVBoxLayout* layout;
+    RegisterForm *registerForm;
+    QPushButton *toggleButton;
+    QVBoxLayout *layout;
+    AuthViewModel *authViewModel;
 
     void updateButtonText();
 };

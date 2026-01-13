@@ -1,9 +1,9 @@
 #include "AuthViewModel.h"
 
-AuthViewModel::AuthViewModel(AuthService *authService, QObject* parent)
+AuthViewModel::AuthViewModel(QObject* parent)
     : QObject(parent)
 {
-    authService_ = authService;
+    authService_ = ServiceLocator::instance().getService<AuthService>();
     connect(authService_, &AuthService::authSuccess,
             this, &AuthViewModel::loginSuccess);
 
@@ -21,10 +21,10 @@ void AuthViewModel::loginUser(const QString& username, const QString& password)
     authService_->loginUser(username, password);
 }
 
-void AuthViewModel::registerUser(const QString& username,
+void AuthViewModel::registerUser(const QString &email, const QString& username,
                                  const QString& password)
 {
-    if (username.isEmpty() || password.isEmpty()) {
+    if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
         emit loginError("All fields are required");
         return;
     }
@@ -34,5 +34,5 @@ void AuthViewModel::registerUser(const QString& username,
     //     return;
     // }
 
-    authService_->registerUser(username, password);
+    authService_->registerUser(email, username, password);
 }

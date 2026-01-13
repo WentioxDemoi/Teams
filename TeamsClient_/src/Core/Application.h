@@ -1,24 +1,28 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <QApplication>
 #include "../Views/mainwindow.h"
+#include <QApplication>
 
-#include "ServiceLocator.h"
-#include "../ViewModels/AuthViewModel.h"
 #include "../Services/AuthService.h"
-
+#include "../ViewModels/AuthViewModel.h"
+#include "ServiceLocator.h"
 
 class Application {
-    public :
-        Application(int &argc, char **argv);
-        int run();
+public:
+  Application(int &argc, char **argv);
+  ~Application() = default;
+  int run();
 
-    private :
-        QApplication qtApp;
+  Application(const Application &) = delete;
+  Application &operator=(const Application &) = delete;
 
-        void initializeServices();
-        void initializeUI();
+private:
+  QApplication qtApp;
+
+  void initializeServices();
+  void initializeViewModels();
+  void initializeUI();
 };
 
 #endif

@@ -11,7 +11,7 @@ public:
     explicit AuthNetworkService(QObject* parent = nullptr);
 
     void login(const QString& username, const QString& password);
-    void registerUser(const QString& username, const QString& password);
+    void registerUser(const QString& email, const QString& username, const QString& password);
 
 signals:
     void authSuccess(const User& user);

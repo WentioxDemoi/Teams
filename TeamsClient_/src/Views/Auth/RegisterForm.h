@@ -10,7 +10,8 @@ public:
   explicit RegisterForm(QWidget *parent = nullptr);
 
 signals:
-  void registerRequested(const QString &username,
+  void registerRequested(const QString &email,
+    const QString &username,
                          const QString &password);
 
 private:
