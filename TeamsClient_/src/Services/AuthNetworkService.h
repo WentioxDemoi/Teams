@@ -10,7 +10,7 @@ class AuthNetworkService : public QObject
 public:
     explicit AuthNetworkService(QObject* parent = nullptr);
 
-    void login(const QString& email, const QString& password);
+    void loginUser(const QString& email, const QString& password);
     void registerUser(const QString& email, const QString& username, const QString& password);
 
 signals:
@@ -19,8 +19,11 @@ signals:
 
 private:
     void sendRequest(const QJsonObject& payload);
+    void sendPendingPayload();
 
     QSslSocket socket_;
+    QJsonObject pendingPayload_;
+    bool waitingForResponse_;
 };
 
 #endif

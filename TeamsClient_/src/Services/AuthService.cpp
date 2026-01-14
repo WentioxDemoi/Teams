@@ -13,7 +13,7 @@ AuthService::AuthService(QObject* parent)
 
 void AuthService::loginUser(const QString& email, const QString& password)
 {
-    network_->login(email, password);
+    network_->loginUser(email, password);
 }
 
 void AuthService::registerUser(const QString& email, const QString& username, const QString& password)
