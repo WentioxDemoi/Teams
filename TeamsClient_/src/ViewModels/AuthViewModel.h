@@ -15,7 +15,7 @@ public:
   explicit AuthViewModel(QObject *parent = nullptr);
 
 public slots:
-  void loginUser(const QString &username, const QString &password);
+  void loginUser(const QString &email, const QString &password);
   void registerUser(const QString &email, const QString &username, const QString &password);
 
 signals:

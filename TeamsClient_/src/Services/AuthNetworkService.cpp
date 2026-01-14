@@ -52,11 +52,11 @@ AuthNetworkService::AuthNetworkService(QObject* parent)
 });
 }
 
-void AuthNetworkService::login(const QString& username, const QString& password)
+void AuthNetworkService::login(const QString& email, const QString& password)
 {
     QJsonObject payload{
         {"type", "login"},
-        {"username", username},
+        {"email", email},
         {"password", password}
     };
     sendRequest(payload);

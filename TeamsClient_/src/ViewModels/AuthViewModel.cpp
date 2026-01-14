@@ -11,14 +11,14 @@ AuthViewModel::AuthViewModel(QObject* parent)
             this, &AuthViewModel::loginError);
 }
 
-void AuthViewModel::loginUser(const QString& username, const QString& password)
+void AuthViewModel::loginUser(const QString& email, const QString& password)
 {
-    if (username.isEmpty() || password.isEmpty()) {
+    if (email.isEmpty() || password.isEmpty()) {
         emit loginError("Username and password required");
         return;
     }
 
-    authService_->loginUser(username, password);
+    authService_->loginUser(email, password);
 }
 
 void AuthViewModel::registerUser(const QString &email, const QString& username,
