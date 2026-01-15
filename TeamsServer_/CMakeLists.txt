@@ -49,6 +49,7 @@ endif()
 # Sources
 # ------------------------------
 file(GLOB_RECURSE Main_SOURCES "src/*.cpp" "src/*.h")
+file(GLOB_RECURSE Repositories_SOURCES "src/Repositories/*.cpp" "src/Repositories/*.h")
 file(GLOB_RECURSE Database_SOURCES "src/Database/*.cpp" "src/Database/*.h")
 file(GLOB_RECURSE Errors_SOURCES "src/Errors/*.cpp" "src/Errors/*.h")
 file(GLOB_RECURSE Servers_SOURCES "src/Servers/*.cpp" "src/Servers/*.h")
@@ -58,6 +59,7 @@ file(GLOB_RECURSE Structs_SOURCES "src/Structs/*.cpp" "src/Structs/*.h")
 
 set(SOURCES
     ${Main_SOURCES}
+    ${Repositories_SOURCES}
     ${Database_SOURCES}
     ${Errors_SOURCES}
     ${Servers_SOURCES}

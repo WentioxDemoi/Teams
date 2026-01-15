@@ -8,6 +8,7 @@ Serveur backend pour l'application Teams, gérant l'authentification, la message
 src/
 ├── Database/        # Gestion de la base de données SQLite
 ├── Servers/         # Serveurs TCP/WebSocket
+├── Repositories/    # Accès DB
 ├── Services/        # Logique métier
 ├── Sessions/        # Gestion des sessions client
 ├── Errors/          # Gestion centralisée des erreurs

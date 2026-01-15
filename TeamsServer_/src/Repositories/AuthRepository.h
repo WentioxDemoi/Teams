@@ -2,7 +2,10 @@
 #define AUTHREPOSITORY_H
 
 #include "../Structs/User.h"
-#include "DatabaseContext.h"
+#include "../Database/DatabaseContext.h"
+#include "../Database/DatabaseTools.h"
+#include "RepositoriesTools.h"
+#include "../includes.h"
 
 class AuthRepository {
 public:
@@ -18,13 +21,9 @@ public:
 private:
   DatabaseContext &ctx_;
 
-  // Constructeur privé
   AuthRepository();
   ~AuthRepository() = default;
 
-  std::string hash_password(const std::string &password);
-  bool verify_password(const std::string &password, const std::string &hash);
-  std::string generate_token();
   std::chrono::system_clock::time_point token_expiry_time() const;
 
   AuthRepository(const AuthRepository &) = delete;

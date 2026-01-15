@@ -1,7 +1,7 @@
 #ifndef AUTHSERVICE_H
 #define AUTHSERVICE_H
 
-#include "../Database/AuthRepository.h"
+#include "../Repositories/AuthRepository.h"
 #include "../Structs/NatsReplyContext.h"
 #include "../includes.h"
 #include "NatsClient.h"

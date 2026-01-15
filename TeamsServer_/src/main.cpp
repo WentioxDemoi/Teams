@@ -1,4 +1,4 @@
-#include "Database/AuthRepository.h"
+#include "Repositories/AuthRepository.h"
 #include "Database/DatabaseInitializer.h"
 #include "Servers/AuthServer.h"
 #include "Servers/MessageServer.h"
