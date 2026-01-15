@@ -15,7 +15,12 @@ public:
 public slots:
   void loginUser(const QString &username, const QString &password);
 
-  void registerUser(const QString& email, const QString &username, const QString &password);
+  void registerUser(const QString &email, const QString &username,
+                    const QString &password);
+ 
+
+private slots:
+ void saveUserData(const User &user);
 
 signals:
   void authSuccess(const User &user);

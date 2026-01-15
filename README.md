@@ -57,32 +57,8 @@ cd build/TeamsClient_
 cmake ../ -DCMAKE_PREFIX_PATH=$HOME/Qt/6.9.3/macos/lib/cmake/Qt6
 ```
 
-3. Compilez les tests :
-```bash
-make TeamsClient_Tests
-```
 
-### Exécution des tests
 
-1. Exécutez le binaire de test :
-```bash
-./TeamsClient_Tests
-```
-
-2. (Optionnel) Pour obtenir une sortie plus détaillée :
-```bash
-./TeamsClient_Tests --gtest_verbose=1
-```
-
-3. (Optionnel) Pour exécuter un test spécifique :
-```bash
-./TeamsClient_Tests --gtest_filter=NomDuTest.*
-```
-
-4. (Optionnel) Pour générer un rapport XML (intégration CI/CD) :
-```bash
-./TeamsClient_Tests --gtest_output=xml:resultats_tests.xml
-```
 
 ## Notes importantes
 

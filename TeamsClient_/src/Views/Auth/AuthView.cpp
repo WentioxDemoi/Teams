@@ -1,7 +1,6 @@
 #include "AuthView.h"
 
 AuthView::AuthView(QWidget *parent) : QWidget(parent) {
-  authViewModel = new AuthViewModel();
   loginForm = new LoginForm(this);
   registerForm = new RegisterForm(this);
 
@@ -18,19 +17,6 @@ AuthView::AuthView(QWidget *parent) : QWidget(parent) {
   updateButtonText();
 
   connect(toggleButton, &QPushButton::clicked, this, &AuthView::toggleForms);
-
-  connect(loginForm, &LoginForm::loginRequested, authViewModel,
-          &AuthViewModel::loginUser);
-
-  connect(registerForm, &RegisterForm::registerRequested, authViewModel,
-          &AuthViewModel::registerUser);
-
-  connect(
-      authViewModel, &AuthViewModel::loginSuccess, this,
-      [](const User &user) { qDebug() << "Logged in as" << user.username(); });
-
-  connect(authViewModel, &AuthViewModel::loginError, this,
-          [](const QString &error) { qDebug() << "Error loggin : " << error; });
 }
 
 void AuthView::toggleForms() {

@@ -21,8 +21,8 @@ message(STATUS "OpenSSL libraries: ${OPENSSL_LIBRARIES}")
 
 # === Qt ===
 set(CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.9.3/macos/lib/cmake/Qt6")
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network  Test) #WebSockets
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network  Test)#WebSockets
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network) #WebSockets
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network)#WebSockets
 
 # === Collecte automatique des sources par catégorie ===
 # Models
@@ -40,7 +40,6 @@ file(GLOB_RECURSE VIEWMODELS_HEADERS "src/ViewModels/*.h")
 # Views
 file(GLOB_RECURSE VIEWS_SOURCES "src/Views/*.cpp")
 file(GLOB_RECURSE VIEWS_HEADERS "src/Views/*.h")
-file(GLOB_RECURSE VIEWS_UI "src/Views/*.ui")
 
 # Services
 file(GLOB_RECURSE SERVICES_SOURCES "src/Services/*.cpp")
@@ -165,7 +164,7 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 # Collecte des tests
-file(GLOB_RECURSE TEST_SOURCES "tests/*.cpp")
+file(GLOB_RECURSE TEST_SOURCES "Tests/*.cpp")
 
 # Exclure le main.cpp des sources pour les tests
 list(FILTER ALL_SOURCES EXCLUDE REGEX ".*main\\.cpp$")
@@ -197,7 +196,7 @@ target_link_libraries(TeamsClient_Tests
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network
     # Qt${QT_VERSION_MAJOR}::WebSockets
-    Qt${QT_VERSION_MAJOR}::Test
+    # Qt${QT_VERSION_MAJOR}::Test
     OpenSSL::SSL
     OpenSSL::Crypto
 )

@@ -49,6 +49,34 @@ Alternativement, vous pouvez double-cliquer sur l'app dans le dossier `build/`.
 hdiutil create -volname "TeamsClient_" -srcfolder TeamsClient_.app -ov -format UDZO TeamsClient_.dmg
 ```
 
+### Exécution des tests
+
+0. Compilez les tests :
+```bash
+make TeamsClient_Tests
+```
+
+1. Exécutez le binaire de test :
+```bash
+./TeamsClient_Tests
+```
+
+2. (Optionnel) Pour obtenir une sortie plus détaillée :
+```bash
+./TeamsClient_Tests --gtest_verbose=1
+```
+
+3. (Optionnel) Pour exécuter un test spécifique :
+```bash
+./TeamsClient_Tests --gtest_filter=NomDuTest.*
+```
+
+4. (Optionnel) Pour générer un rapport XML (intégration CI/CD) :
+```bash
+./TeamsClient_Tests --gtest_output=xml:resultats_tests.xml
+```
+
+
 ## Dépendances
 
 - Qt 6.x (Core, Widgets, Network, WebSockets)
@@ -61,3 +89,8 @@ hdiutil create -volname "TeamsClient_" -srcfolder TeamsClient_.app -ov -format U
 - **View**: Interface utilisateur (Qt Widgets/QML)
 - **ViewModel**: Logique de présentation et binding
 - **Services**: Logique métier et communication réseau
+
+## TODO
+- Service de check du token enregistré localement en faisant une requete sur le serveur
+- Créer db et services associés 
+- Faire tests unitaires

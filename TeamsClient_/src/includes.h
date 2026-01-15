@@ -7,9 +7,13 @@
 #include <QNetworkReply>
 #include <QUrl>
 #include <QJsonDocument>
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlRecord>
 #include <QJsonObject>
 #include <functional>
-// #include <QWebSocket>
 #include <QMap>
 #include <QString>
 #include <typeinfo>
+#include <QApplication>

@@ -2,11 +2,10 @@
 #define APPLICATION_H
 
 #include "../Views/mainwindow.h"
-#include <QApplication>
-
 #include "../Services/AuthService.h"
 #include "../ViewModels/AuthViewModel.h"
 #include "ServiceLocator.h"
+#include "../includes.h"
 
 class Application {
 public:
