@@ -10,6 +10,8 @@
                 "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtMultimediaWidgets.framework/Versions/A/Headers",
                 "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtCore.framework/Versions/A/Headers",
                 "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtNetwork.framework/Versions/A/Headers",
+                "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtSql.framework/Versions/A/Headers",
+                "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtTest.framework/Versions/A/Headers",
                 "/opt/homebrew/Cellar/boost/1.89.0/include",
                 "/opt/homebrew/opt/sqlite/include",
                 "/opt/homebrew/Cellar/sqlite/3.50.4",

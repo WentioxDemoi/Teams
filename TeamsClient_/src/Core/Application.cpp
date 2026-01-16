@@ -1,21 +1,24 @@
 #include "Application.h"
 
-Application::Application(int &argc, char **argv) : qtApp(argc, argv) {
+Application::Application(int &argc, char **argv) : qtApp(argc, argv)
+{
+  QCoreApplication::setApplicationName("Teams");
   initializeServices();
   initializeUI();
   run();
 }
 
-void Application::initializeServices() {
+void Application::initializeServices()
+{
   auto &locator = ServiceLocator::instance();
 
-  auto authNetworkService = new AuthNetworkService();
-  locator.registerService(authNetworkService);
-  auto authService = new AuthService();
-  locator.registerService(authService);
+  locator.registerService<DBService>(new DBService());
+  locator.registerService<AuthNetworkService>(new AuthNetworkService());
+  locator.registerService<IAuthService>(new AuthService());
 }
 
-void Application::initializeUI() {
+void Application::initializeUI()
+{
   MainWindow *mainWindow = new MainWindow();
   mainWindow->show();
 }

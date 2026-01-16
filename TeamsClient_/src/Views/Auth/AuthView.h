@@ -4,7 +4,16 @@
 #include "LoginForm.h"
 #include "RegisterForm.h"
 
-class AuthView : public QWidget {
+/**
+ * @class AuthView
+ * @brief Interface graphique pour l'authentification.
+ *
+ * Contient et gère les formulaires de login et d'inscription, ainsi qu'un
+ * bouton pour basculer entre les deux. Coordonne l'affichage et l'interaction
+ * avec l'utilisateur.
+ */
+class AuthView : public QWidget
+{
   Q_OBJECT
 
 public:
@@ -14,7 +23,6 @@ public:
 
 private slots:
   void toggleForms();
-  
 
 private:
   QPushButton *toggleButton;

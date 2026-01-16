@@ -7,7 +7,16 @@
 #include "Views/Workspace/WorkspaceView.h"
 #include <QMainWindow>
 
-class MainWindow : public QMainWindow {
+/**
+ * @class MainWindow
+ * @brief Fenêtre principale de l'application.
+ *
+ * Gère l'affichage des différentes vues (AuthView, WorkspaceView) et coordonne
+ * l'interaction entre l'interface utilisateur et les ViewModels, notamment
+ * la gestion du succès de l'authentification.
+ */
+class MainWindow : public QMainWindow
+{
   Q_OBJECT
 
 public:

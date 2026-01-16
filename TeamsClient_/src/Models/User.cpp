@@ -1,21 +1,23 @@
 #include "User.h"
 
 User::User(int id, const QString &email, const QString &username,
-           const QString &token, const QString &status)
-    : id_(id), email_(email), username_(username), token_(token),
-      status_(status) {}
+           const QString &status, bool isMe)
+    : id_(id), email_(email), username_(username),
+      status_(status), isMe_(isMe) {}
 
-QJsonObject User::toJson() const {
+QJsonObject User::toJson() const
+{
   QJsonObject json;
   json["id"] = id_;
   json["email"] = email_;
   json["username"] = username_;
-  json["token"] = token_;
   json["status"] = status_;
+  json["isMe"] = isMe_;
   return json;
 }
 
-User User::fromJson(const QJsonObject &json) {
+User User::fromJson(const QJsonObject &json)
+{
   User user;
 
   if (json.contains("id") && json["id"].isDouble())
@@ -26,9 +28,6 @@ User User::fromJson(const QJsonObject &json) {
 
   if (json.contains("username") && json["username"].isString())
     user.setUsername(json["username"].toString());
-
-  if (json.contains("token") && json["token"].isString())
-    user.setToken(json["token"].toString());
 
   if (json.contains("status") && json["status"].isString())
     user.setStatus(json["status"].toString());

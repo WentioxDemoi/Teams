@@ -1,6 +1,7 @@
 #include "AuthView.h"
 
-AuthView::AuthView(QWidget *parent) : QWidget(parent) {
+AuthView::AuthView(QWidget *parent) : QWidget(parent)
+{
   loginForm = new LoginForm(this);
   registerForm = new RegisterForm(this);
 
@@ -19,21 +20,29 @@ AuthView::AuthView(QWidget *parent) : QWidget(parent) {
   connect(toggleButton, &QPushButton::clicked, this, &AuthView::toggleForms);
 }
 
-void AuthView::toggleForms() {
-  if (loginForm->isVisible()) {
+void AuthView::toggleForms()
+{
+  if (loginForm->isVisible())
+  {
     loginForm->hide();
     registerForm->show();
-  } else {
+  }
+  else
+  {
     loginForm->show();
     registerForm->hide();
   }
   updateButtonText();
 }
 
-void AuthView::updateButtonText() {
-  if (loginForm->isVisible()) {
+void AuthView::updateButtonText()
+{
+  if (loginForm->isVisible())
+  {
     toggleButton->setText("Switch to Register");
-  } else {
+  }
+  else
+  {
     toggleButton->setText("Switch to Login");
   }
 }

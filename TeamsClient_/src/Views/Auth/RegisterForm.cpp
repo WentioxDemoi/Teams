@@ -1,6 +1,7 @@
 #include "RegisterForm.h"
 
-RegisterForm::RegisterForm(QWidget *parent) : QWidget(parent) {
+RegisterForm::RegisterForm(QWidget *parent) : QWidget(parent)
+{
   usernameEdit = new QLineEdit(this);
   usernameEdit->setPlaceholderText("Username");
 
@@ -21,8 +22,7 @@ RegisterForm::RegisterForm(QWidget *parent) : QWidget(parent) {
 
   setLayout(layout);
 
-  connect(registerButton, &QPushButton::clicked, this, [this]() {
-    emit registerRequested(emailEdit->text(), usernameEdit->text(),
-                           passwordEdit->text());
-  });
+  connect(registerButton, &QPushButton::clicked, this, [this]()
+          { emit registerRequested(emailEdit->text(), usernameEdit->text(),
+                                   passwordEdit->text()); });
 }

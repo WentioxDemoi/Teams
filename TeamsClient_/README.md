@@ -22,7 +22,7 @@ cd build/TeamsClient_
 
 2. Générez les fichiers de build avec CMake (en remplaçant le chemin Qt6 selon votre configuration) :
 ```bash
-cmake ../ -DCMAKE_PREFIX_PATH=$HOME/Qt/6.9.3/macos/lib/cmake/Qt6
+cmake ../ #Ou pour inclure les tests: cmake ../ -DBUILD_TESTS=ON
 ```
 
 3. Compilez le projet :
@@ -51,35 +51,20 @@ hdiutil create -volname "TeamsClient_" -srcfolder TeamsClient_.app -ov -format U
 
 ### Exécution des tests
 
-0. Compilez les tests :
-```bash
-make TeamsClient_Tests
-```
-
 1. Exécutez le binaire de test :
 ```bash
-./TeamsClient_Tests
+ctest -V # Ou alors ./TeamsClient_Tests
 ```
-
-2. (Optionnel) Pour obtenir une sortie plus détaillée :
-```bash
-./TeamsClient_Tests --gtest_verbose=1
-```
-
-3. (Optionnel) Pour exécuter un test spécifique :
-```bash
-./TeamsClient_Tests --gtest_filter=NomDuTest.*
-```
-
-4. (Optionnel) Pour générer un rapport XML (intégration CI/CD) :
-```bash
-./TeamsClient_Tests --gtest_output=xml:resultats_tests.xml
-```
-
 
 ## Dépendances
 
-- Qt 6.x (Core, Widgets, Network, WebSockets)
+- Qt 6.x (Core, Widgets, Network, Test)
+- Qt keychain 0.15.0 (installé manuellement dans le repo QT)
+    - https://github.com/frankosterfeld/qtkeychain/tree/0.15
+    - mkdir build && cd build
+    - cmake .. -DCMAKE_PREFIX_PATH=$HOME/Qt/6.9.3/macos -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/Qt/6.9.3/macos -DBUILD_WITH_QT6=ON
+    - make -j$(sysctl -n hw.ncpu)
+    - make install
 - CMake 3.16+
 - Compilateur C++17
 

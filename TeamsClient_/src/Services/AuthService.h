@@ -5,30 +5,34 @@
 #include "../Models/User.h"
 #include "../includes.h"
 #include "AuthNetworkService.h"
+#include "Database/DBService.h"
+#include "IAuthService.h"
+#include "../Utils/TokenManager.h"
 
-class AuthService : public QObject {
+/**
+ * @class AuthService
+ * @brief Gère l'authentification des utilisateurs via AuthNetworkService.
+ *
+ * Implémente IAuthService. Émet authSuccess ou authError selon le résultat.
+ */
+class AuthService : public IAuthService
+{
   Q_OBJECT
 
 public:
   explicit AuthService(QObject *parent = nullptr);
 
 public slots:
-  void loginUser(const QString &username, const QString &password);
+  void loginUser(const QString &username, const QString &password) override;
 
   void registerUser(const QString &email, const QString &username,
-                    const QString &password);
- 
-
-private slots:
- void saveUserData(const User &user);
-
-signals:
-  void authSuccess(const User &user);
-
-  void authError(const QString &errorMessage);
+                    const QString &password) override;
+  void errorTokenManager(const QString &errorText);
 
 private:
   AuthNetworkService *network_;
+  TokenManager *token_;
+  DBService *db_;
 };
 
 #endif

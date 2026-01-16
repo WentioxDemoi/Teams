@@ -3,7 +3,15 @@
 
 #include "../../includes.h"
 
-class LoginForm : public QWidget {
+/**
+ * @class LoginForm
+ * @brief Formulaire de connexion utilisateur.
+ *
+ * Fournit les champs pour l'email et le mot de passe et émet le signal
+ * loginRequested lorsque l'utilisateur tente de se connecter.
+ */
+class LoginForm : public QWidget
+{
   Q_OBJECT
 
 public:

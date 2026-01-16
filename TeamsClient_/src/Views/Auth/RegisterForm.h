@@ -3,7 +3,15 @@
 
 #include "../../includes.h"
 
-class RegisterForm : public QWidget {
+/**
+ * @class RegisterForm
+ * @brief Formulaire d'inscription utilisateur.
+ *
+ * Fournit les champs pour l'email, le nom d'utilisateur et le mot de passe,
+ * et émet le signal registerRequested lorsque l'utilisateur tente de s'inscrire.
+ */
+class RegisterForm : public QWidget
+{
   Q_OBJECT
 
 public:

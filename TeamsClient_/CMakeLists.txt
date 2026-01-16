@@ -9,6 +9,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_OSX_ARCHITECTURES "arm64")   # Pour Apple Silicon
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++") # STL correcte pour macOS
+option(BUILD_TESTS "Build the tests" OFF)
 
 # === OpenSSL ===
 set(OPENSSL_ROOT_DIR "/opt/homebrew/opt/openssl@3")
@@ -20,9 +21,11 @@ message(STATUS "OpenSSL include dir: ${OPENSSL_INCLUDE_DIR}")
 message(STATUS "OpenSSL libraries: ${OPENSSL_LIBRARIES}")
 
 # === Qt ===
-set(CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.9.3/macos/lib/cmake/Qt6")
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network) #WebSockets
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network)#WebSockets
+set(CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.9.3/macos/")  # Root of Qt install
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network Test Sql)
+set(Qt6Keychain_DIR "$ENV{HOME}/Qt/6.9.3/macos/lib/cmake/Qt6Keychain")
+find_package(Qt6Keychain REQUIRED)
+
 
 # === Collecte automatique des sources par catégorie ===
 # Models
@@ -97,18 +100,15 @@ message(STATUS "Core sources: ${CORE_SOURCES}")
 message(STATUS "UI files: ${VIEWS_UI}")
 
 # === Exécutable principal ===
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(TeamsClient_
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-    )
-else()
-    add_executable(TeamsClient_ ${PROJECT_SOURCES})
-endif()
+qt_add_executable(TeamsClient_
+    MANUAL_FINALIZATION
+    ${PROJECT_SOURCES}
+)
 
 # Include directories pour l'accès aux headers
 target_include_directories(TeamsClient_ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewModels
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Views
@@ -121,13 +121,15 @@ target_include_directories(TeamsClient_ PRIVATE
 target_link_libraries(TeamsClient_
     PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Sql
     Qt${QT_VERSION_MAJOR}::Network
-    # Qt${QT_VERSION_MAJOR}::WebSockets
+    Qt6Keychain::Qt6Keychain
     OpenSSL::SSL
     OpenSSL::Crypto
 )
 
-if(${QT_VERSION} VERSION_LESS 6.1.0)
+get_target_property(QT6_VERSION Qt6::Core VERSION)
+if(QT6_VERSION VERSION_LESS "6.1.0")
     set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.TeamsClient_)
 endif()
 
@@ -145,64 +147,54 @@ install(TARGETS TeamsClient_
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+qt_finalize_executable(TeamsClient_)
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(TeamsClient_)
+
+
+if(BUILD_TESTS)
+    enable_testing()
+
+    # Collecte des tests
+    file(GLOB_RECURSE TEST_SOURCES "Tests/*.cpp")
+    file(GLOB_RECURSE TEST_HEADERS "Tests/*.h")
+
+    # Exclure le main.cpp des sources pour les tests
+    list(FILTER ALL_SOURCES EXCLUDE REGEX ".*main\\.cpp$")
+
+    add_executable(TeamsClient_Tests
+        ${TEST_SOURCES}
+        ${TEST_HEADERS}
+        ${ALL_SOURCES}
+        ${ALL_HEADERS}
+    )
+
+    set_target_properties(TeamsClient_Tests PROPERTIES AUTOMOC ON)
+
+    target_include_directories(TeamsClient_Tests PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Models
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewModels
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Views
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Services
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Components
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
+    )
+
+    target_link_libraries(TeamsClient_Tests
+        PRIVATE
+        Qt${QT_VERSION_MAJOR}::Core
+        Qt${QT_VERSION_MAJOR}::Widgets
+        Qt${QT_VERSION_MAJOR}::Network
+        Qt${QT_VERSION_MAJOR}::Test
+        Qt${QT_VERSION_MAJOR}::Sql
+        Qt6Keychain::Qt6Keychain
+        OpenSSL::SSL
+        OpenSSL::Crypto
+    )
+    add_test(NAME TeamsClient_Tests COMMAND TeamsClient_Tests)
 endif()
-
-# === GoogleTest ===
-include(FetchContent)
-FetchContent_Declare(
-    googletest
-    URL https://github.com/google/googletest/archive/refs/heads/main.zip
-)
-
-# Forcer GoogleTest à utiliser C++20 et arm64
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
-
-enable_testing()
-
-# Collecte des tests
-file(GLOB_RECURSE TEST_SOURCES "Tests/*.cpp")
-
-# Exclure le main.cpp des sources pour les tests
-list(FILTER ALL_SOURCES EXCLUDE REGEX ".*main\\.cpp$")
-
-add_executable(TeamsClient_Tests
-    ${TEST_SOURCES}
-    ${ALL_SOURCES}
-    ${ALL_HEADERS}
-)
-
-set_target_properties(TeamsClient_Tests PROPERTIES AUTOMOC ON)
-
-target_include_directories(TeamsClient_Tests PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewModels
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Views
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Services
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Components
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
-)
-
-target_link_libraries(TeamsClient_Tests
-    PRIVATE
-    GTest::gtest
-    GTest::gtest_main
-    Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::Network
-    # Qt${QT_VERSION_MAJOR}::WebSockets
-    # Qt${QT_VERSION_MAJOR}::Test
-    OpenSSL::SSL
-    OpenSSL::Crypto
-)
-
-include(GoogleTest)
-gtest_discover_tests(TeamsClient_Tests)
 
 # === Messages de résumé ===
 message(STATUS "")

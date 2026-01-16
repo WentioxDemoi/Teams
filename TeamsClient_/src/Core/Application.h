@@ -7,7 +7,15 @@
 #include "ServiceLocator.h"
 #include "../includes.h"
 
-class Application {
+/**
+ * @class Application
+ * @brief Point d'entrée principal de l'application.
+ *
+ * Initialise l'environnement Qt, les services, les ViewModels et l'interface utilisateur,
+ * puis lance la boucle principale de l'application.
+ */
+class Application
+{
 public:
   Application(int &argc, char **argv);
   ~Application() = default;

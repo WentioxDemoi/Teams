@@ -6,16 +6,17 @@
 class QLabel;
 class QVBoxLayout;
 
-class WorkspaceView : public QWidget {
+class WorkspaceView : public QWidget
+{
     Q_OBJECT
 
 public:
     explicit WorkspaceView(QWidget *parent = nullptr);
 
 private:
-    QLabel* titleLabel_;
-    QWidget* contentWidget_;
-    QVBoxLayout* mainLayout_;
+    QLabel *titleLabel_;
+    QWidget *contentWidget_;
+    QVBoxLayout *mainLayout_;
 };
 
 #endif // WORKSPACEVIEW_H

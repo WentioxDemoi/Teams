@@ -13,15 +13,13 @@ WorkspaceView::WorkspaceView(QWidget *parent)
     titleLabel_->setStyleSheet(
         "font-size: 22px;"
         "font-weight: bold;"
-        "padding: 16px;"
-    );
+        "padding: 16px;");
 
     // Zone centrale (contenu futur)
     contentWidget_ = new QFrame(this);
     contentWidget_->setStyleSheet(
         "background-color: #f5f5f5;"
-        "border: 1px solid #ddd;"
-    );
+        "border: 1px solid #ddd;");
 
     // Layout principal
     mainLayout_ = new QVBoxLayout(this);
