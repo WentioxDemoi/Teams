@@ -54,7 +54,6 @@ public:
   }
 
   RepositoriesTools() = delete;
-  ~RepositoriesTools() = delete;
 };
 
 #endif

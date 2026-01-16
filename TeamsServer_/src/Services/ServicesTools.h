@@ -37,7 +37,6 @@ public:
 }
 
   ServicesTools() = delete;
-  ~ServicesTools() = delete;
 };
 
 #endif

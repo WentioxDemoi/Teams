@@ -18,7 +18,6 @@ public:
   }
 
   DatabaseTools() = delete;
-  ~DatabaseTools() = delete;
 };
 
 #endif

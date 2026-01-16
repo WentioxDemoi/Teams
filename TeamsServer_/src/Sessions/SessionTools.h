@@ -21,7 +21,6 @@ public:
   }
 
   SessionTools() = delete;
-  ~SessionTools() = delete;
 };
 
 #endif
