@@ -5,6 +5,7 @@
 #include "../ViewModels/AuthViewModel.h"
 #include "Views/Auth/AuthView.h"
 #include "Views/Workspace/WorkspaceView.h"
+#include "LoadingDialog/LoadingDialog.h"
 #include <QMainWindow>
 
 /**
@@ -26,9 +27,13 @@ public:
 private:
   AuthViewModel *authViewModel;
   WorkspaceView *workspaceView;
+  AuthView *authView;
+  LoadingDialog *loadingView;
+  QStackedWidget *stack;
 
 public slots:
   void authSuccess(const User &user);
+  void noTokenFound();
 };
 
 #endif

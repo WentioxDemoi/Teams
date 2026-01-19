@@ -1,14 +1,21 @@
 #include "mainwindow.h"
+#include <unistd.h>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
         setWindowTitle("Test");
         resize(800, 600);
         authViewModel = new AuthViewModel(nullptr, this);
-        AuthView *authView = new AuthView(this);
+        authView = new AuthView(this);
         workspaceView = new WorkspaceView(this);
+        loadingView = new LoadingDialog("Loading your ecosystem", this);
+        stack = new QStackedWidget(this);
+        stack->addWidget(authView);
+        stack->addWidget(workspaceView);
+        stack->addWidget(loadingView);
 
-        setCentralWidget(authView);
+        setCentralWidget(stack);
+        stack->setCurrentWidget(loadingView);
 
         connect(authView->loginForm, &LoginForm::loginRequested, authViewModel,
                 &AuthViewModel::loginUser);
@@ -22,12 +29,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         connect(authViewModel, &AuthViewModel::loginError, this,
                 [](const QString &error)
                 { qDebug() << "Error loggin : " << error; });
+        connect(authViewModel, &AuthViewModel::noTokenFound, this,
+                &MainWindow::noTokenFound);
+}
+
+void MainWindow::noTokenFound()
+{
+        sleep(1);
+        stack->setCurrentWidget(authView);
 }
 
 void MainWindow::authSuccess(const User &user)
 {
         qDebug() << "Switch fenetre";
-        setCentralWidget(workspaceView);
+        stack->setCurrentWidget(workspaceView);
 }
 
 MainWindow::~MainWindow() {}

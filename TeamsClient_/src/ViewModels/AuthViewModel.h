@@ -27,9 +27,9 @@ public slots:
   void registerUser(const QString &email, const QString &username,
                     const QString &password);
 signals:
-
   void authSuccess(const User &user);
   void loginError(const QString &error);
+  void noTokenFound();
 
 private:
   IAuthService *authService_; // On passe par une interface pour faciliter les tests unitaires

@@ -19,6 +19,10 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QUrl>
+#include <QLabel>
+#include <QProgressBar>
+#include <QDialog>
+#include <QStackedWidget>
 
 // ======================================================
 // Qt SQL

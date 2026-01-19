@@ -25,6 +25,7 @@ public:
 signals:
     void authSuccess(const User &user);
     void authError(const QString &error);
+    void noTokenFound();
 };
 
 #endif

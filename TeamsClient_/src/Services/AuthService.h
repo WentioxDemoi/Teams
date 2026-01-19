@@ -22,12 +22,21 @@ class AuthService : public IAuthService
 public:
   explicit AuthService(QObject *parent = nullptr);
 
+
 public slots:
+  
+  void onUserSaved(const User &user);
+  // Auth classique
+  void initClassicAuth();
   void loginUser(const QString &username, const QString &password) override;
 
   void registerUser(const QString &email, const QString &username,
                     const QString &password) override;
+
+  // Auth via Token
+  void initTokenAuth();
   void errorTokenManager(const QString &errorText);
+  
 
 private:
   AuthNetworkService *network_;

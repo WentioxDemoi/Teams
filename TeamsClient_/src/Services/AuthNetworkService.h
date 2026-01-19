@@ -21,11 +21,16 @@ public:
   void loginUser(const QString &email, const QString &password);
   void registerUser(const QString &email, const QString &username,
                     const QString &password);
+  
   void handleServerResponse(const QByteArray &data);
 
 signals:
   void authSuccess(const User &user);
   void authError(const QString &message);
+
+public slots:
+  void validateToken(const QString &key, const QString &value);
+    
 
 private:
   void sendRequest(const QJsonObject &payload);

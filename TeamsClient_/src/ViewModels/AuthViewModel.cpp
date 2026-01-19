@@ -8,6 +8,7 @@ AuthViewModel::AuthViewModel(IAuthService *service, QObject *parent)
           this, &AuthViewModel::authSuccess);
   connect(authService_, &IAuthService::authError,
           this, &AuthViewModel::loginError);
+  connect(authService_, &IAuthService::noTokenFound, this, &AuthViewModel::noTokenFound);
 }
 
 // Quelques cas d'erreurs avant redirection vers service
