@@ -23,6 +23,7 @@ private:
   void handle_register_response(std::string payload);
   void handle_login_response(std::string payload);
   void handle_token(std::string payload);
+  void handle_token_response(std::string payload);
   void handle_presence(std::string payload);
 
   ssl::stream<tcp::socket> stream_;

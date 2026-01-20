@@ -83,23 +83,36 @@ AuthRepository::authenticate(const std::string &email,
 
 std::optional<User>
 AuthRepository::get_user_by_token(const std::string &token) {
-  auto conn = ctx_.acquire(); // pool_->get_connection();
-  pqxx::work txn(*conn);
+    try {
+        auto conn = ctx_.acquire();
+        pqxx::work txn(*conn);
 
-  pqxx::result res = txn.exec_params(
-      "SELECT id, email, username, status "
-      "FROM " +
-          ctx_.users_table() + " WHERE token = $1 AND token_expires_at > NOW()",
-      token);
+        pqxx::result res = txn.exec_params(
+            "SELECT id, username, email, status "
+            "FROM " + ctx_.users_table() +
+            " WHERE token = $1 AND token_expires_at > NOW()",
+            token);
 
-  ctx_.release(conn);
+        
 
-  if (res.empty())
-    return std::nullopt;
+        if (res.empty())
+            return std::nullopt;
 
-  return User{res[0]["id"].as<int>(), res[0]["email"].as<std::string>(),
-              res[0]["username"].as<std::string>(), token,
-              res[0]["status"].as<std::string>()};
+        std::cout << "allerrrrr" << std::endl;
+        ctx_.release(conn);
+        return User{
+            res[0]["id"].as<int>(),
+            res[0]["username"].as<std::string>(),
+            res[0]["email"].as<std::string>(),
+            token,
+            res[0]["status"].as<std::string>()
+        };
+    }
+    catch (const std::exception &e) {
+      std::cout << "pkpkpk ?";
+        std::cerr << "Exception get_user_by_token: " << e.what() << std::endl;
+        return std::nullopt;
+    }
 }
 
 std::chrono::system_clock::time_point
