@@ -22,8 +22,9 @@ void AuthService::registerUser(const QString &email, const QString &username,
 
 void AuthService::initTokenAuth()
 {
-  connect(token_, &TokenManager::error, this, &AuthService::errorTokenManager);
+  connect(token_, &TokenManager::error, this, &AuthService::errorToken);
   connect(token_, &TokenManager::keyRestored, network_, &AuthNetworkService::validateToken);
+  connect(network_, &AuthNetworkService::invalidToken, this, &AuthService::errorToken);
   token_->readKey("Token");
 }
 
@@ -52,13 +53,16 @@ void AuthService::onUserSaved(const User &user)
   }
 }
 
-void AuthService::errorTokenManager(const QString &errorText)
+void AuthService::errorToken(const QString &errorText)
 {
-  if (errorText.contains("Read key failed: Could not retrieve private key from keystore: The specified item could not be found in the keychain"))
+  if (errorText.contains("Read key failed") && errorText.contains("could not be found in the keychain"))
   {
     qDebug() << errorText;
-    initClassicAuth();
     // Supprimer quand même la DB locale pour plus de sécurité
-    emit noTokenFound();
+    
   }
+  else if (errorText.contains("Token is not valid")) {
+    token_->deleteKey("Token");
+  }
+  emit noTokenFound();
 }

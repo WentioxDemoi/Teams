@@ -27,6 +27,7 @@ public:
 signals:
   void authSuccess(const User &user);
   void authError(const QString &message);
+  void invalidToken(const QString &error);
 
 public slots:
   void validateToken(const QString &key, const QString &value);

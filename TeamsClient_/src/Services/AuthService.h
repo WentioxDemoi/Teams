@@ -35,7 +35,7 @@ public slots:
 
   // Auth via Token
   void initTokenAuth();
-  void errorTokenManager(const QString &errorText);
+  void errorToken(const QString &errorText);
   
 
 private:

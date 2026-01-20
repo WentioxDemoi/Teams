@@ -78,6 +78,11 @@ void AuthNetworkService::handleServerResponse(const QByteArray &data) {
   QJsonObject root = doc.object();
 
   if (root.contains("error") && root["error"].isString()) {
+    if (root["error"].toString().contains("Login failed: invalid token.")) {
+      emit invalidToken("Token is not valid");
+      return;
+    }
+
     emit authError(root["error"].toString());
     return;
   }
