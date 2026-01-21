@@ -6,8 +6,19 @@ AuthNetworkService::AuthNetworkService(QObject *parent) : QObject(parent) {
   connect(&socket_, &QSslSocket::encrypted, this,
           [this]() { sendPendingPayload(); });
 
-  connect(&socket_, &QSslSocket::readyRead, this,
-          [this]() { handleServerResponse(socket_.readAll()); });
+  connect(&socket_, &QSslSocket::readyRead, this, [this]() {
+    buffer_ += socket_.readAll();
+    while (buffer_.contains('\n')) {
+      auto msg = buffer_.left(buffer_.indexOf('\n'));
+      buffer_.remove(0, buffer_.indexOf('\n') + 1);
+      handleServerResponse(msg);
+    }
+  });
+
+  connect(&socket_, &QSslSocket::disconnected, this, [this]() {
+    waitingForResponse_ = false;
+    buffer_.clear();
+  });
 
   connect(&socket_,
           QOverload<const QList<QSslError> &>::of(&QSslSocket::sslErrors), this,
@@ -37,7 +48,7 @@ void AuthNetworkService::registerUser(const QString &email,
 
 void AuthNetworkService::validateToken(const QString &key,
                                        const QString &value) {
-  if (key.compare("token")) {
+  if (key == "Token") {
     qDebug() << "TOKEN";
     QJsonObject payload{{"type", "validate_token"}, {"token", value}};
     sendRequest(payload);
@@ -63,40 +74,88 @@ void AuthNetworkService::sendPendingPayload() {
 
   socket_.write(message);
 }
+void AuthNetworkService::handleServerResponse(const QByteArray &data)
+{
+    qDebug() << "\n=== handleServerResponse START ===";
+    qDebug() << "Raw data received:" << data;
 
-void AuthNetworkService::handleServerResponse(const QByteArray &data) {
-  waitingForResponse_ = false;
-
-  QJsonParseError parseError;
-  QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
-
-  if (parseError.error != QJsonParseError::NoError || !doc.isObject()) {
-    emit authError("Malformed JSON response from server");
-    return;
-  }
-
-  QJsonObject root = doc.object();
-
-  if (root.contains("error") && root["error"].isString()) {
-    if (root["error"].toString().contains("Login failed: invalid token.")) {
-      emit invalidToken("Token is not valid");
-      return;
+    if (data.trimmed().isEmpty()) {
+        qDebug() << "Data is empty, returning early";
+        return;
     }
 
-    emit authError(root["error"].toString());
-    return;
-  }
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
 
-  if (!root.contains("data") || !root["data"].isObject()) {
-    emit authError("Missing data field in server response");
-    return;
-  }
+    if (parseError.error != QJsonParseError::NoError || !doc.isObject()) {
+        qDebug() << "JSON parse error:" << parseError.errorString();
+        emit authError("Malformed JSON response from server");
+        return;
+    }
 
-  User user = User::fromJson(root["data"].toObject());
-  if (!user.isValid()) {
-    emit authError("Invalid user data received");
-    return;
-  }
-  qDebug() << "Letsogooooo";
-  emit authSuccess(user);
+    waitingForResponse_ = false;
+
+    QJsonObject root = doc.object();
+    qDebug() << "Parsed JSON object:" << root;
+
+    // Vérification du type
+    if (!root.contains("type") || !root["type"].isString()) {
+        qDebug() << "Missing or invalid 'type' field in JSON";
+        emit authError("Missing or invalid type field in server response");
+        return;
+    }
+
+    const QString type = root["type"].toString();
+    qDebug() << "Response type:" << type;
+
+    // Gestion des erreurs
+    if (root.contains("error") && root["error"].isString()) {
+        const QString error = root["error"].toString();
+        qDebug() << "Server returned error:" << error;
+
+        if (type == "validate_token_response" &&
+            error.contains("invalid token", Qt::CaseInsensitive)) {
+            qDebug() << "Token invalid detected";
+            emit invalidToken("Token is not valid");
+            return;
+        }
+
+        emit authError(error);
+        return;
+    }
+
+    // Retours avec comme objet un User
+    if (type == "login_response" ||
+        type == "register_response" ||
+        type == "validate_token_response") {
+
+        if (!root.contains("data") || !root["data"].isObject()) {
+            qDebug() << "Missing or invalid 'data' field in JSON";
+            emit authError("Missing data field in server response");
+            return;
+        }
+
+        QJsonObject userJson = root["data"].toObject();
+        qDebug() << "User JSON object:" << userJson;
+
+        User user = User::fromJson(userJson);
+        qDebug() << "User object created:";
+        user.print();
+
+        if (!user.isValid()) {
+            qDebug() << "User is not valid according to isValid()";
+            emit authError("Invalid user data received");
+            return;
+        }
+
+        qDebug() << "User is valid, emitting authSuccess";
+        emit authSuccess(user);
+        return;
+    }
+
+    // Au cas où requête inconnue
+    qDebug() << "Unhandled response type:" << type;
+    emit authError(QString("Unhandled response type: %1").arg(type));
+
+    qDebug() << "=== handleServerResponse END ===\n";
 }

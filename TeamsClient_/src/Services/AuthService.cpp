@@ -40,17 +40,29 @@ void AuthService::initClassicAuth()
 
 void AuthService::onUserSaved(const User &user)
 {
-  User localUser = user;
-  if (user.token() != nullptr)
-  {
-    token_->writeKey("Token", localUser.token());
-    localUser.clearToken();
-    emit authSuccess(localUser);
-  }
-  else
-  {
-    qDebug() << "Pas de token dans le user (Ligne 46 AuthService)";
-  }
+    qDebug() << "\n=== onUserSaved START ===";
+    qDebug() << "User received in onUserSaved:";
+    user.print();
+
+    User localUser = user;
+
+    // Vérification du token
+    if (!user.token().isEmpty()) {
+        qDebug() << "Token trouvé dans le user:" << user.token();
+
+        token_->writeKey("Token", localUser.token());
+        qDebug() << "Token écrit dans le store, suppression locale du token";
+
+        localUser.clearToken();
+        qDebug() << "Token après clearToken(): '" << localUser.token() << "'";
+
+        emit authSuccess(localUser);
+        qDebug() << "authSuccess émis avec l'utilisateur (token supprimé)";
+    } else {
+        qDebug() << "⚠️ Pas de token dans le user (Ligne 46 AuthService)";
+    }
+
+    qDebug() << "=== onUserSaved END ===\n";
 }
 
 void AuthService::errorToken(const QString &errorText)

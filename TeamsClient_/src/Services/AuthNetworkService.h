@@ -34,6 +34,7 @@ public slots:
     
 
 private:
+  QByteArray buffer_;
   void sendRequest(const QJsonObject &payload);
   void sendPendingPayload();
 

@@ -1,4 +1,8 @@
 #include "DBService.h"
+#include <QSqlDriver>
+#include <QRandomGenerator>
+#include <QDebug>
+#include "DBService.h"
 #include <QDir>
 #include <QFile>
 #include <QSqlDriver>
@@ -28,7 +32,9 @@ DBService::DBService(QObject* parent)
             email TEXT NOT NULL,
             username TEXT,
             status TEXT,
-            is_me BOOLEAN
+            is_me BOOLEAN DEFAULT 0,
+            token TEXT,
+            uuid TEXT UNIQUE
         )
     )";
 
@@ -40,55 +46,99 @@ DBService::DBService(QObject* parent)
     }
 }
 
-void DBService::saveUser(const User& user)
-{
-    bool userExists = false;
-    if (user.id() != 0) {
-        QSqlQuery checkQuery(db_);
-        checkQuery.prepare("SELECT COUNT(*) FROM users WHERE id=:id");
-        checkQuery.bindValue(":id", user.id());
-        if (checkQuery.exec() && checkQuery.next()) {
-            userExists = (checkQuery.value(0).toInt() > 0);
-            qDebug() << "Vérification existence: ID" << user.id() << "existe =" << userExists;
-        }
-    }
-    
-    QSqlQuery query(db_);
 
-    if (user.id() == 0 || !userExists) {
-        qDebug() << "Mode: INSERTION (nouvel utilisateur)";
-        query.prepare("INSERT INTO users (email, username, status) "
-                      "VALUES (:email, :username, :status)");
-    } else {
-        qDebug() << "Mode: UPDATE (utilisateur existant)";
-        query.prepare("UPDATE users SET email=:email, username=:username, "
-                      "status=:status WHERE id=:id");
-        query.bindValue(":id", user.id());
-    }
-
-    query.bindValue(":email", user.email());
-    query.bindValue(":username", user.username());
-    query.bindValue(":status", user.status());
-
-    if (!query.exec()) {
-        qDebug() << "Erreur SQL:" << query.lastError().text();
-        emit dbError("Erreur saveUser : " + query.lastError().text());
+void DBService::saveUser(const User &user) {
+    if (!db_.isOpen()) {
+        emit dbError("Base de données non ouverte !");
+        qDebug() << "[saveUser] DB not open!";
         return;
     }
+
+    // 1️⃣ Vérifier si l'utilisateur existe via UUID
+    QSqlQuery checkQuery(db_);
+    checkQuery.prepare("SELECT id FROM users WHERE uuid=:uuid");
+    checkQuery.bindValue(":uuid", user.uuid());
     
-    if (db_.driver()->hasFeature(QSqlDriver::Transactions)) {
-        qDebug() << "Commit de la transaction...";
-        db_.commit();
+    int existingId = 0;
+    if (checkQuery.exec() && checkQuery.next()) {
+        existingId = checkQuery.value(0).toInt();
+        qDebug() << "[saveUser] User exists with id=" << existingId;
+    } else if (checkQuery.lastError().isValid()) {
+        emit dbError("Erreur vérification existence user : " + checkQuery.lastError().text());
+        qDebug() << "[saveUser] Error checking user existence:" << checkQuery.lastError().text();
+        return;
+    } else {
+        qDebug() << "[saveUser] User does not exist, will insert";
     }
 
-    int newId = user.id();
-    if (user.id() == 0) {
-        newId = query.lastInsertId().toInt();
+    // 2️⃣ Déterminer si c'est le premier utilisateur pour isMe
+    bool isFirstUser = false;
+    if (existingId == 0) {
+        QSqlQuery countQuery(db_);
+        if (countQuery.exec("SELECT COUNT(*) FROM users") && countQuery.next()) {
+            int userCount = countQuery.value(0).toInt();
+            isFirstUser = (userCount == 0);
+            qDebug() << "[saveUser] Total users in DB =" << userCount
+                     << "| isFirstUser =" << isFirstUser;
+        } else if (countQuery.lastError().isValid()) {
+            emit dbError("Erreur comptage utilisateurs : " + countQuery.lastError().text());
+            qDebug() << "[saveUser] Error counting users:" << countQuery.lastError().text();
+            return;
+        }
     }
 
-    User savedUser = user;
-    savedUser.setId(newId);
-    emit userSaved(savedUser);
+    // 3️⃣ Préparer INSERT ou UPDATE
+    QSqlQuery query(db_);
+    if (existingId == 0) {
+        // INSERT
+        query.prepare(R"(
+            INSERT INTO users (email, username, status, uuid, is_me, token)
+            VALUES (:email, :username, :status, :uuid, :isMe, :token)
+        )");
+        query.bindValue(":email", user.email());
+        query.bindValue(":username", user.username());
+        query.bindValue(":status", user.status());
+        query.bindValue(":uuid", user.uuid());
+        query.bindValue(":isMe", isFirstUser ? 1 : 0);
+        query.bindValue(":token", user.token());
+        qDebug() << "[saveUser] Preparing INSERT | isMe =" << (isFirstUser ? 1 : 0);
+    } else {
+        // UPDATE
+        query.prepare(R"(
+            UPDATE users
+            SET email=:email, username=:username, status=:status, token=:token
+            WHERE id=:id
+        )");
+        query.bindValue(":id", existingId);
+        query.bindValue(":email", user.email());
+        query.bindValue(":username", user.username());
+        query.bindValue(":status", user.status());
+        query.bindValue(":token", user.token());
+        qDebug() << "[saveUser] Preparing UPDATE for id =" << existingId;
+    }
+
+    qDebug() << "[saveUser] Binding values | email:" << user.email()
+             << "| username:" << user.username()
+             << "| status:" << user.status()
+             << "| uuid:" << user.uuid();
+
+    // 4️⃣ Exécuter la requête
+    if (!query.exec()) {
+        emit dbError("Erreur saveUser : " + query.lastError().text());
+        qDebug() << "[saveUser] Execution failed:" << query.lastError().text();
+        return;
+    }
+    qDebug() << "[saveUser] Query executed successfully";
+
+    // 5️⃣ Récupérer l'ID réel
+    int newId = existingId == 0 ? query.lastInsertId().toInt() : existingId;
+    User tmp = user;
+    tmp.setId(newId);
+    if (existingId == 0) tmp.setIsMe(isFirstUser);
+
+    qDebug() << "[saveUser] User saved | id:" << newId << "| isMe:" << tmp.isMe();
+
+    emit userSaved(tmp);
     showAllUsers();
 }
 
@@ -189,3 +239,6 @@ void DBService::clearUsers()
         return;
     }
 }
+
+
+

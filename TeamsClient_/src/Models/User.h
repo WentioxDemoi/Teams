@@ -12,47 +12,55 @@
  */
 class User {
 public:
-  User() = default;
-  User(int id, const QString &email, const QString &username,
-       const QString &status, bool isMe, const QString &token = QString());
+    User() = default;
+    User(int id, const QString &email, const QString &username,
+         const QString &status, bool isMe = false, const QString &token = "", const QString &uuid = "");
 
-  // Getters
-  int id() const { return id_; }
-  QString email() const { return email_; }
-  QString username() const { return username_; }
-  QString status() const { return status_; }
-  bool isMe() const { return isMe_; }
-  QString token() const { return token_; }
-  void clearToken() { token_.clear(); }
+    // Getters
+    int id() const { return id_; }
+    QString email() const { return email_; }
+    QString username() const { return username_; }
+    QString status() const { return status_; }
+    bool isMe() const { return isMe_; }
+    QString token() const { return token_; }
+    QString uuid() const { return uuid_; }
 
-  // Setters
-  void setId(int id) { id_ = id; }
-  void setEmail(const QString &email) { email_ = email; }
-  void setUsername(const QString &username) { username_ = username; }
-  void setStatus(const QString &status) { status_ = status; }
-  void setIsMe(bool isMe) { isMe_ = isMe; }
-  void setToken(const QString &token) { token_ = token; }
+    // Setters
+    void setId(int id) { id_ = id; }
+    void setEmail(const QString &email) { email_ = email; }
+    void setUsername(const QString &username) { username_ = username; }
+    void setStatus(const QString &status) { status_ = status; }
+    void setIsMe(bool isMe) { isMe_ = isMe; }
+    void setToken(const QString &token) { token_ = token; }
+    void setUuid(const QString &uuid) { uuid_ = uuid; }
+    
+    void clearToken() { token_.clear(); }
+    bool isValid() const {
+        return id_ > 0 &&
+               !email_.isEmpty() &&
+               !username_.isEmpty() &&
+               !status_.isEmpty() &&
+               !uuid_.isEmpty();
+    }
 
-  // Serialization
-  QJsonObject toJson() const;
-  static User fromJson(const QJsonObject &json);
+    // JSON conversion
+    QJsonObject toJson() const;
+    static User fromJson(const QJsonObject &json);
 
-  bool isValid() const { return id_ > 0 && !email_.isEmpty(); }
-
-  void print() const {
-    qDebug() << "User {"
-             << "id:" << id_ << ", email:" << email_
-             << ", username:" << username_ << ", status:" << status_
-             << ", isMe:" << isMe_ << "}";
-  }
+    void print() const {
+        qDebug() << "User { id:" << id_ << ", email:" << email_ 
+                 << ", username:" << username_ << ", status:" << status_
+                 << ", token:" << token_ << ", uuid:" << uuid_
+                 << ", isMe:" << isMe_ << "}";
+    }
 
 private:
-  int id_ = 0;
-  QString email_;
-  QString username_;
-  QString status_;
-  bool isMe_ = false;
-  QString token_;
+    int id_ = 0;
+    QString email_;
+    QString username_;
+    QString status_;
+    bool isMe_ = false;
+    QString token_;
+    QString uuid_;
 };
-
 #endif
