@@ -9,6 +9,7 @@ struct User {
   std::string email;
   std::string token;
   std::string status;
+  std::string uuid;
 };
 
 #endif

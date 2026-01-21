@@ -8,10 +8,11 @@ void DatabaseInitializer::init() {
 
   txn.exec("CREATE TABLE IF NOT EXISTS " + ctx.users_table() +
          " (id SERIAL PRIMARY KEY, "
-         "server_id TEXT UNIQUE NOT NULL,"
+        //  "server_id TEXT UNIQUE NOT NULL,"
          "email TEXT UNIQUE NOT NULL, "
          "username TEXT UNIQUE, "
          "password_hash TEXT NOT NULL, "
+         "uuid TEXT UNIQUE, "
          "token TEXT, "
          "token_expires_at TIMESTAMP, "
          "status TEXT DEFAULT 'offline', "

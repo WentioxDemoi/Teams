@@ -53,6 +53,26 @@ public:
     return ss.str();
   }
 
+  static std::string generate_uuid() {
+    std::random_device rd;
+    std::uniform_int_distribution<int> dist(0, 15);
+    std::uniform_int_distribution<int> dist2(8, 11);
+
+    std::stringstream ss;
+    ss << std::hex;
+    for (int i = 0; i < 8; i++) ss << dist(rd);
+    ss << "-";
+    for (int i = 0; i < 4; i++) ss << dist(rd);
+    ss << "-4"; // version 4 UUID
+    for (int i = 0; i < 3; i++) ss << dist(rd);
+    ss << "-";
+    ss << dist2(rd); // variant
+    for (int i = 0; i < 3; i++) ss << dist(rd);
+    ss << "-";
+    for (int i = 0; i < 12; i++) ss << dist(rd);
+    return ss.str();
+}
+
   RepositoriesTools() = delete;
 };
 
