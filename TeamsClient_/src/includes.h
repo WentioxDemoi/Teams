@@ -33,6 +33,10 @@
 #include <QtSql/QSqlRecord>
 #include <qt6keychain/keychain.h>
 #include <qt6keychain/qkeychain_export.h>
+#include <QDir>
+#include <QFile>
+#include <QSqlDriver>
+
 
 
 

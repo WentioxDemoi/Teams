@@ -3,7 +3,7 @@
 AuthService::AuthService(QObject *parent) : IAuthService(parent)
 {
   network_ = ServiceLocator::instance().getService<AuthNetworkService>();
-  db_ = ServiceLocator::instance().getService<DBService>();
+  userService_ = ServiceLocator::instance().getService<UserService>();
   token_ = new TokenManager();
   initTokenAuth(); // Ici on va directement lancer une requete pour check si le token est valide
   initClassicAuth();
@@ -30,9 +30,9 @@ void AuthService::initTokenAuth()
 
 void AuthService::initClassicAuth()
 {
-  connect(network_, &AuthNetworkService::authSuccess, db_,
-          &DBService::saveUser);
-  connect(db_, &DBService::userSaved, this, &AuthService::onUserSaved);
+  connect(network_, &AuthNetworkService::authSuccess, userService_,
+          &UserService::saveUser);
+  connect(userService_, &UserService::userSaved, this, &AuthService::onUserSaved);
 
   connect(network_, &AuthNetworkService::authError, this,
           &AuthService::authError);

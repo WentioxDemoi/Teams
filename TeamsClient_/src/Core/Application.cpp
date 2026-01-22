@@ -12,9 +12,10 @@ void Application::initializeServices()
 {
   auto &locator = ServiceLocator::instance();
 
-  locator.registerService<DBService>(new DBService());
+  locator.registerService<UserService>(new UserService());
   locator.registerService<AuthNetworkService>(new AuthNetworkService());
   locator.registerService<IAuthService>(new AuthService());
+  // locator.registerService<UserService>(new UserService());
 }
 
 void Application::initializeUI()

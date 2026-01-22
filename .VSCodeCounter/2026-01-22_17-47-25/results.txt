@@ -1,0 +1,74 @@
+Date : 2026-01-22 17:47:25
+Directory : /Users/remidesbordes/Documents/Teams/TeamsClient_/src
+Total : 37 files,  1116 codes, 128 comments, 276 blanks, all 1520 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C++      |         37 |      1,116 |        128 |        276 |      1,520 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                        | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                           |         37 |      1,116 |        128 |        276 |      1,520 |
+| . (Files)                                                                                   |          2 |         42 |         12 |         10 |         64 |
+| Core                                                                                        |          4 |         84 |         15 |         21 |        120 |
+| Database                                                                                    |          2 |         51 |          0 |         12 |         63 |
+| Models                                                                                      |          2 |         76 |         10 |         11 |         97 |
+| Repositories                                                                                |          2 |        150 |          0 |         29 |        179 |
+| Services                                                                                    |          8 |        304 |         34 |         82 |        420 |
+| Utils                                                                                       |          2 |         69 |          6 |         16 |         91 |
+| ViewModels                                                                                  |          3 |         72 |         18 |         17 |        107 |
+| Views                                                                                       |         12 |        268 |         33 |         78 |        379 |
+| Views (Files)                                                                               |          2 |         64 |          8 |         15 |         87 |
+| Views/Auth                                                                                  |          6 |        132 |         22 |         39 |        193 |
+| Views/LoadingDialog                                                                         |          2 |         32 |          0 |         12 |         44 |
+| Views/Workspace                                                                             |          2 |         40 |          3 |         12 |         55 |
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                    | language | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Core/Application.cpp                  | C++      |         21 |          0 |          5 |         26 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Core/Application.h                    | C++      |         22 |          7 |          6 |         35 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Core/ServiceLocator.cpp               | C++      |          7 |          0 |          2 |          9 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Core/ServiceLocator.h                 | C++      |         34 |          8 |          8 |         50 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Database/DatabaseManager.cpp          | C++      |         39 |          0 |          6 |         45 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Database/DatabaseManager.h            | C++      |         12 |          0 |          6 |         18 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Models/User.cpp                       | C++      |         28 |          0 |          3 |         31 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Models/User.h                         | C++      |         48 |         10 |          8 |         66 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Repositories/UserRepository.cpp       | C++      |        127 |          0 |         23 |        150 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Repositories/UserRepository.h         | C++      |         23 |          0 |          6 |         29 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Services/AuthNetworkService.cpp       | C++      |        128 |          4 |         29 |        161 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Services/AuthNetworkService.h         | C++      |         28 |          8 |         10 |         46 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Services/AuthService.cpp              | C++      |         63 |          2 |         15 |         80 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Services/AuthService.h                | C++      |         28 |          8 |         11 |         47 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Services/IAuthService.cpp             | C++      |          0 |          0 |          1 |          1 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Services/IAuthService.h               | C++      |         18 |          8 |          5 |         31 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Services/UserService.cpp              | C++      |         18 |          4 |          5 |         27 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Services/UserService.h                | C++      |         21 |          0 |          6 |         27 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Utils/TokenManager.cpp                | C++      |         47 |          0 |         11 |         58 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Utils/TokenManager.h                  | C++      |         22 |          6 |          5 |         33 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/ViewModels/AuthViewModel.cpp          | C++      |         34 |          3 |          6 |         43 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/ViewModels/AuthViewModel.h            | C++      |         24 |          8 |          6 |         38 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/ViewModels/ViewModelsTools.h          | C++      |         14 |          7 |          5 |         26 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Views/Auth/AuthView.cpp               | C++      |         41 |          0 |          7 |         48 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Views/Auth/AuthView.h                 | C++      |         19 |          8 |          7 |         34 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Views/Auth/LoginForm.cpp              | C++      |         17 |          0 |          6 |         23 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Views/Auth/LoginForm.h                | C++      |         16 |          7 |          6 |         29 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Views/Auth/RegisterForm.cpp           | C++      |         21 |          0 |          7 |         28 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Views/Auth/RegisterForm.h             | C++      |         18 |          7 |          6 |         31 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Views/LoadingDialog/LoadingDialog.cpp | C++      |         17 |          0 |          6 |         23 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Views/LoadingDialog/LoadingDialog.h   | C++      |         15 |          0 |          6 |         21 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Views/Workspace/WorkspaceView.cpp     | C++      |         24 |          3 |          6 |         33 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Views/Workspace/WorkspaceView.h       | C++      |         16 |          0 |          6 |         22 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Views/mainwindow.cpp                  | C++      |         39 |          0 |          9 |         48 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/Views/mainwindow.h                    | C++      |         25 |          8 |          6 |         39 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/includes.h                            | C++      |         36 |         12 |          9 |         57 |
+| /Users/remidesbordes/Documents/Teams/TeamsClient_/src/main.cpp                              | C++      |          6 |          0 |          1 |          7 |
+| Total                                                                                       |          |      1,116 |        128 |        276 |      1,520 |
++---------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

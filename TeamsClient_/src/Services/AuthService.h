@@ -5,7 +5,7 @@
 #include "../Models/User.h"
 #include "../includes.h"
 #include "AuthNetworkService.h"
-#include "Database/DBService.h"
+#include "UserService.h"
 #include "IAuthService.h"
 #include "../Utils/TokenManager.h"
 
@@ -41,7 +41,7 @@ public slots:
 private:
   AuthNetworkService *network_;
   TokenManager *token_;
-  DBService *db_;
+  UserService *userService_;
 };
 
 #endif

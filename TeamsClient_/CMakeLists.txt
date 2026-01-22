@@ -36,6 +36,14 @@ file(GLOB_RECURSE MAIN_HEADERS "src/*.h")
 file(GLOB_RECURSE MODELS_SOURCES "src/Models/*.cpp")
 file(GLOB_RECURSE MODELS_HEADERS "src/Models/*.h")
 
+# Repositorie
+file(GLOB_RECURSE REPOSITORIES_SOURCES "src/Repositories/*.cpp")
+file(GLOB_RECURSE REPOSITORIES_HEADERS "src/Repositories/*.h")
+
+# Database
+file(GLOB_RECURSE DATABASE_SOURCES "src/Database/*.cpp")
+file(GLOB_RECURSE DATABASE_HEADERS "src/Database/*.h")
+
 # ViewModels
 file(GLOB_RECURSE VIEWMODELS_SOURCES "src/ViewModels/*.cpp")
 file(GLOB_RECURSE VIEWMODELS_HEADERS "src/ViewModels/*.h")
@@ -64,6 +72,8 @@ file(GLOB_RECURSE CORE_HEADERS "src/Core/*.h")
 set(ALL_SOURCES
     ${MAIN_SOURCES}
     ${MODELS_SOURCES}
+    ${REPOSITORIES_SOURCES}
+    ${DATABASE_SOURCES}
     ${VIEWMODELS_SOURCES}
     ${VIEWS_SOURCES}
     ${SERVICES_SOURCES}
@@ -75,6 +85,8 @@ set(ALL_SOURCES
 set(ALL_HEADERS
     ${MAIN_HEADERS}
     ${MODELS_HEADERS}
+    ${REPOSITORIES_HEADERS}
+    ${DATABASE_SOURCES}
     ${VIEWMODELS_HEADERS}
     ${VIEWS_HEADERS}
     ${SERVICES_HEADERS}
