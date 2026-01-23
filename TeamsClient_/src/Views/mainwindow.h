@@ -30,6 +30,7 @@ private:
   AuthView *authView;
   LoadingDialog *loadingView;
   QStackedWidget *stack;
+  void closeEvent(QCloseEvent *event);
 
 public slots:
   void authSuccess(const User &user);

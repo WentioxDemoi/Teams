@@ -30,7 +30,6 @@ private:
   void initializeServices();
   void initializeViewModels();
   void initializeUI();
-  void closeEvent(QCloseEvent *event);
 };
 
 #endif

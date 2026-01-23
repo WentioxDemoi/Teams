@@ -25,3 +25,4 @@ void Application::initializeUI()
 }
 
 int Application::run() { return qtApp.exec(); }
+

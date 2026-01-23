@@ -91,6 +91,18 @@ bool UserRepository::update(const User &user) {
   return query.numRowsAffected() > 0;
 }
 
+bool UserRepository::removeAll()
+{
+    QSqlQuery query(db_);
+
+    if (!query.exec("DELETE FROM users")) {
+        qDebug() << "[removeAll] Failed:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
 QList<User> UserRepository::findAll() {
   QList<User> users;
   QSqlQuery query(db_);

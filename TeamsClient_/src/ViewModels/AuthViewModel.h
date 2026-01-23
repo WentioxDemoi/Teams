@@ -3,7 +3,7 @@
 
 #include "../Core/ServiceLocator.h"
 #include "../Models/User.h"
-#include "../Services/IAuthService.h"
+#include "../Services/Interfaces/IAuthService.h"
 #include "../includes.h"
 #include "ViewModelsTools.h"
 

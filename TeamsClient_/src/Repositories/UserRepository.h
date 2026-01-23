@@ -13,12 +13,13 @@ public:
 
     std::optional<User> findByUUID(const QString &uuid);
     QList<User> findAll();
-    
+
     bool insert(const User& user);
     bool remove(const QString &uuid);
     bool isUserPresent(const QString &uuid);
     bool update(const User &user);
     bool isFirstUser();
+    bool removeAll();
 
 signals:
     void error(const QString& message);

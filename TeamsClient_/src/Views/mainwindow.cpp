@@ -45,4 +45,9 @@ void MainWindow::authSuccess(const User &user)
         stack->setCurrentWidget(workspaceView);
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+  qDebug() << "Fermeture du client";
+}
+
 MainWindow::~MainWindow() {}
