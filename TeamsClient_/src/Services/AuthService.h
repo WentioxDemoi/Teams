@@ -6,7 +6,7 @@
 #include "../includes.h"
 #include "AuthNetworkService.h"
 #include "UserService.h"
-#include "IAuthService.h"
+#include "Interfaces/IAuthService.h"
 #include "../Utils/TokenManager.h"
 
 /**
@@ -21,24 +21,23 @@ class AuthService : public IAuthService
 
 public:
   explicit AuthService(QObject *parent = nullptr);
-
+  void start() override;
 
 public slots:
   
   void onUserSaved(const User &user);
   // Auth classique
-  void initClassicAuth();
   void loginUser(const QString &username, const QString &password) override;
 
   void registerUser(const QString &email, const QString &username,
                     const QString &password) override;
 
   // Auth via Token
-  void initTokenAuth();
   void errorToken(const QString &errorText);
   
 
 private:
+
   AuthNetworkService *network_;
   TokenManager *token_;
   UserService *userService_;

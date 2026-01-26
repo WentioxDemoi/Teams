@@ -6,7 +6,6 @@
 #include "Views/Auth/AuthView.h"
 #include "Views/Workspace/WorkspaceView.h"
 #include "LoadingDialog/LoadingDialog.h"
-#include <QMainWindow>
 
 /**
  * @class MainWindow

@@ -1,8 +1,8 @@
 #ifndef IAUTHSERVICE_H
 #define IAUTHSERVICE_H
 
-#include "../includes.h"
-#include "../Models/User.h"
+#include "../../includes.h"
+#include "../../Models/User.h"
 
 /**
  * @class IAuthService
@@ -18,9 +18,12 @@ class IAuthService : public QObject
 public:
     explicit IAuthService(QObject *parent = nullptr) : QObject(parent) {};
     virtual ~IAuthService() = default;
+    virtual void start() = 0;
+
 
     virtual void loginUser(const QString &username, const QString &password) = 0;
     virtual void registerUser(const QString &email, const QString &username, const QString &password) = 0;
+
 
 signals:
     void authSuccess(const User &user);

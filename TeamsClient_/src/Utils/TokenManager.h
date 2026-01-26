@@ -13,16 +13,19 @@ class TokenManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit TokenManager(QObject *parent = nullptr);
+    static TokenManager &instance();
+
+    
 
     // Méthodes synchronisées pour manipuler le token
-    bool readToken(const QString &key);   // Retourne true si le token a été lu
-    bool writeToken(const QString &key, const QString &value); // Retourne true si écrit
-    bool deleteToken(const QString &key); // Retourne true si supprimé
+    bool readToken();   // Retourne true si le token a été lu
+    bool writeToken(const QString &value); // Retourne true si écrit
+    bool deleteToken(); // Retourne true si supprimé
 
     QString token;
 
 private:
+    explicit TokenManager(QObject *parent = nullptr);
     QKeychain::ReadPasswordJob m_readCredentialJob;
     QKeychain::WritePasswordJob m_writeCredentialJob;
     QKeychain::DeletePasswordJob m_deleteCredentialJob;

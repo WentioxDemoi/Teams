@@ -1,5 +1,11 @@
 #include "TokenManager.h"
 
+TokenManager &TokenManager::instance()
+{
+    static TokenManager instance;
+    return instance;
+}
+
 TokenManager::TokenManager(QObject *parent) 
     : QObject(parent), 
       m_readCredentialJob(APP_NAME), 
@@ -9,11 +15,12 @@ TokenManager::TokenManager(QObject *parent)
     m_readCredentialJob.setAutoDelete(false);
     m_writeCredentialJob.setAutoDelete(false);
     m_deleteCredentialJob.setAutoDelete(false);
+    readToken();
 }
 
-bool TokenManager::readToken(const QString &key)
+bool TokenManager::readToken()
 {
-    m_readCredentialJob.setKey(key);
+    m_readCredentialJob.setKey("Token");
 
     QEventLoop loop;
     QObject::connect(&m_readCredentialJob, &QKeychain::ReadPasswordJob::finished, &loop, &QEventLoop::quit);
@@ -30,9 +37,9 @@ bool TokenManager::readToken(const QString &key)
     return true;
 }
 
-bool TokenManager::writeToken(const QString &key, const QString &value)
+bool TokenManager::writeToken(const QString &value)
 {
-    m_writeCredentialJob.setKey(key);
+    m_writeCredentialJob.setKey("Token");
     m_writeCredentialJob.setTextData(value);
 
     QEventLoop loop;
@@ -49,9 +56,9 @@ bool TokenManager::writeToken(const QString &key, const QString &value)
     return true;
 }
 
-bool TokenManager::deleteToken(const QString &key)
+bool TokenManager::deleteToken()
 {
-    m_deleteCredentialJob.setKey(key);
+    m_deleteCredentialJob.setKey("Token");
 
     QEventLoop loop;
     QObject::connect(&m_deleteCredentialJob, &QKeychain::DeletePasswordJob::finished, &loop, &QEventLoop::quit);

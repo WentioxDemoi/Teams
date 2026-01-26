@@ -23,14 +23,13 @@ public:
                     const QString &password);
   
   void handleServerResponse(const QByteArray &data);
+  void validateToken(const QString &value);
+
 
 signals:
   void authSuccess(const User &user);
   void authError(const QString &message);
   void invalidToken(const QString &error);
-
-public slots:
-  void validateToken(const QString &key, const QString &value);
     
 
 private:

@@ -9,6 +9,12 @@ AuthViewModel::AuthViewModel(IAuthService *service, QObject *parent)
   connect(authService_, &IAuthService::authError,
           this, &AuthViewModel::loginError);
   connect(authService_, &IAuthService::noTokenFound, this, &AuthViewModel::noTokenFound);
+
+}
+
+void AuthViewModel::start()
+{
+    authService_->start();
 }
 
 // Quelques cas d'erreurs avant redirection vers service
@@ -41,3 +47,4 @@ void AuthViewModel::registerUser(const QString &email, const QString &username,
 
   authService_->registerUser(email, username, password);
 }
+

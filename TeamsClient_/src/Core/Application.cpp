@@ -15,7 +15,6 @@ void Application::initializeServices()
   locator.registerService<UserService>(new UserService());
   locator.registerService<AuthNetworkService>(new AuthNetworkService());
   locator.registerService<IAuthService>(new AuthService());
-  // locator.registerService<UserService>(new UserService());
 }
 
 void Application::initializeUI()

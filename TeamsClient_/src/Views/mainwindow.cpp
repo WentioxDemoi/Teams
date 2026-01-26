@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include <unistd.h>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -31,10 +30,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
                 { qDebug() << "Error loggin : " << error; });
         connect(authViewModel, &AuthViewModel::noTokenFound, this,
                 &MainWindow::noTokenFound);
+        authViewModel->start();
 }
 
 void MainWindow::noTokenFound()
 {
+        qDebug() << "aller";
         sleep(1);
         stack->setCurrentWidget(authView);
 }
@@ -42,6 +43,7 @@ void MainWindow::noTokenFound()
 void MainWindow::authSuccess(const User &user)
 {
         qDebug() << "Switch fenetre";
+        sleep(1);
         stack->setCurrentWidget(workspaceView);
 }
 
