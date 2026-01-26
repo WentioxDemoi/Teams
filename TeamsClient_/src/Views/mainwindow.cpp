@@ -2,12 +2,16 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+}
+
+void MainWindow::start()
+{
         setWindowTitle("Test");
         resize(800, 600);
-        authViewModel = new AuthViewModel(nullptr, this);
-        authView = new AuthView(this);
-        workspaceView = new WorkspaceView(this);
-        loadingView = new LoadingDialog("Loading your ecosystem", this);
+        authViewModel = ViewModelsLocator::instance().getViewModels<AuthViewModel>();
+        authView = ViewLocator::instance().getView<AuthView>();
+        workspaceView = ViewLocator::instance().getView<WorkspaceView>();
+        loadingView = ViewLocator::instance().getView<LoadingView>();
         stack = new QStackedWidget(this);
         stack->addWidget(authView);
         stack->addWidget(workspaceView);
@@ -25,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         connect(authViewModel, &AuthViewModel::authSuccess, this,
                 &MainWindow::authSuccess);
 
-        connect(authViewModel, &AuthViewModel::loginError, this,
+        connect(authViewModel, &AuthViewModel::authError, this,
                 [](const QString &error)
                 { qDebug() << "Error loggin : " << error; });
         connect(authViewModel, &AuthViewModel::noTokenFound, this,

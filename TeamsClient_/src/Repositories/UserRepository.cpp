@@ -55,6 +55,8 @@ std::optional<User> UserRepository::findByUUID(const QString &uuid) {
   return user;
 }
 
+
+
 bool UserRepository::remove(const QString &uuid) {
   QSqlQuery query(db_);
   query.prepare("DELETE FROM users WHERE uuid = :uuid");

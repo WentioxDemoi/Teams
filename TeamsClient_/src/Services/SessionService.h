@@ -1,8 +1,10 @@
 #ifndef SESSIONSERVICE_H
 #define SESSIONSERVICE_H
 
-#include "../includes.h"
 #include "../Models/User.h"
+#include "../includes.h"
+#include "AuthService.h"
+#include "Interfaces/ISessionService.h"
 
 /**
  * @class SessionService
@@ -10,19 +12,18 @@
  *
  * Définit les méthodes que tout service ...
  */
-class SessionService : public QObject
-{
-    Q_OBJECT
+class SessionService : public ISessionService {
+  Q_OBJECT
 public:
-    explicit SessionService(QObject *parent = nullptr) : QObject(parent) {};
-    void start();
+  explicit SessionService(IAuthService *service = nullptr, QObject *parent = nullptr);
+  void loginUser(const QString &username, const QString &password) override;
 
+  void registerUser(const QString &email, const QString &username,
+                    const QString &password) override;
+  void start() override;
 
-
-signals:
-    void SessionSuccess(const User &user);
-    void SessionError(const QString &error);
-    void noTokenFound();
+private:
+    IAuthService *authService_;
 };
 
 #endif

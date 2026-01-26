@@ -3,9 +3,10 @@
 
 #include "../Core/ServiceLocator.h"
 #include "../Models/User.h"
-#include "../Services/Interfaces/IAuthService.h"
 #include "../includes.h"
 #include "ViewModelsTools.h"
+#include "../Services/SessionService.h"
+#include "../Services/Interfaces/ISessionService.h"
 
 /**
  * @class AuthViewModel
@@ -20,7 +21,7 @@ class AuthViewModel : public QObject
   Q_OBJECT
 
 public:
-  explicit AuthViewModel(IAuthService *service = nullptr, QObject *parent = nullptr); // Aller voir dans le CPP l'implémentation
+  explicit AuthViewModel(ISessionService *service = nullptr, QObject *parent = nullptr); // Aller voir dans le CPP l'implémentation
   void start();
 
 public slots:
@@ -29,11 +30,12 @@ public slots:
                     const QString &password);
 signals:
   void authSuccess(const User &user);
-  void loginError(const QString &error);
+  void authError(const QString &error);
   void noTokenFound();
 
 private:
-  IAuthService *authService_; // On passe par une interface pour faciliter les tests unitaires
+
+  ISessionService *sessionService_; // On passe par une interface pour faciliter les tests unitaires
 };
 
 #endif

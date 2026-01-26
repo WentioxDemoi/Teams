@@ -1,13 +1,13 @@
 #include "AuthViewModelTest.h"
 
 void AuthViewModelTest::testLoginEmptyFieldsEmitsError() {
-    FakeAuthService service;
+    FakeSessionService service;
     AuthViewModel vm(&service);
 
     bool errorEmitted = false;
     QString capturedError;
 
-    connect(&vm, &AuthViewModel::loginError,
+    connect(&vm, &AuthViewModel::authError,
             [&](const QString &error){ errorEmitted = true; capturedError = error; });
 
     vm.loginUser("", "");
@@ -18,11 +18,11 @@ void AuthViewModelTest::testLoginEmptyFieldsEmitsError() {
 }
 
 void AuthViewModelTest::testLoginValidCallsService() {
-    FakeAuthService service;
+    FakeSessionService service;
     AuthViewModel vm(&service);
 
     bool errorEmitted = false;
-    connect(&vm, &AuthViewModel::loginError,
+    connect(&vm, &AuthViewModel::authError,
             [&](const QString &){ errorEmitted = true; });
 
     vm.loginUser("test@mail.com", "1234");
@@ -32,13 +32,13 @@ void AuthViewModelTest::testLoginValidCallsService() {
 }
 
 void AuthViewModelTest::testRegisterEmptyFieldsEmitsError() {
-    FakeAuthService service;
+    FakeSessionService service;
     AuthViewModel vm(&service);
 
     bool errorEmitted = false;
     QString capturedError;
 
-    connect(&vm, &AuthViewModel::loginError,
+    connect(&vm, &AuthViewModel::authError,
             [&](const QString &error){ errorEmitted = true; capturedError = error; });
 
     vm.registerUser("", "", "");
@@ -49,11 +49,11 @@ void AuthViewModelTest::testRegisterEmptyFieldsEmitsError() {
 }
 
 void AuthViewModelTest::testRegisterValidCallsService() {
-    FakeAuthService service;
+    FakeSessionService service;
     AuthViewModel vm(&service);
 
     bool errorEmitted = false;
-    connect(&vm, &AuthViewModel::loginError,
+    connect(&vm, &AuthViewModel::authError,
             [&](const QString &){ errorEmitted = true; });
 
     vm.registerUser("email@mail.com", "username", "password");
@@ -64,7 +64,7 @@ void AuthViewModelTest::testRegisterValidCallsService() {
 
 void AuthViewModelTest::testAuthSuccessIsPropagated()
 {
-    FakeAuthService service;
+    FakeSessionService service;
     AuthViewModel vm(&service);
 
     QSignalSpy spy(&vm, &AuthViewModel::authSuccess);
@@ -83,10 +83,10 @@ void AuthViewModelTest::testAuthSuccessIsPropagated()
 
 void AuthViewModelTest::testAuthErrorIsPropagated()
 {
-    FakeAuthService service;
+    FakeSessionService service;
     AuthViewModel vm(&service);
 
-    QSignalSpy spy(&vm, &AuthViewModel::loginError);
+    QSignalSpy spy(&vm, &AuthViewModel::authError);
 
     service.emitAuthError("fail");
 

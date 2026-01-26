@@ -19,8 +19,6 @@ public:
     explicit IAuthService(QObject *parent = nullptr) : QObject(parent) {};
     virtual ~IAuthService() = default;
     virtual void start() = 0;
-
-
     virtual void loginUser(const QString &username, const QString &password) = 0;
     virtual void registerUser(const QString &email, const QString &username, const QString &password) = 0;
 

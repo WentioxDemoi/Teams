@@ -1,26 +1,35 @@
 #include "AuthService.h"
 
-AuthService::AuthService(QObject *parent) : IAuthService(parent) {
-  network_ = ServiceLocator::instance().getService<AuthNetworkService>();
-  userService_ = ServiceLocator::instance().getService<UserService>();
-  token_ = &TokenManager::instance();
+AuthService::AuthService(AuthNetworkService* network,
+                         UserService* userService,
+                         TokenManager* token,
+                         QObject* parent)
+    : IAuthService(parent),
+      network_(network ? network : ServiceLocator::instance().getService<AuthNetworkService>()),
+      userService_(userService ? userService : ServiceLocator::instance().getService<UserService>()),
+      token_(token ? token : &TokenManager::instance())
+{
+    Q_ASSERT(network_);
+    Q_ASSERT(userService_);
+    Q_ASSERT(token_);
+
+    connect(network_, &AuthNetworkService::authSuccess, userService_,
+            &UserService::saveUser);
+    connect(userService_, &UserService::userSaved, this,
+            &AuthService::onUserSaved);
+
+    connect(network_, &AuthNetworkService::authError, this,
+            &AuthService::authError);
+    connect(network_, &AuthNetworkService::invalidToken, this,
+            &AuthService::errorToken);
+    connect(userService_, &UserService::error, this,
+            &AuthService::errorUserService);
 }
 
 void AuthService::start() {
-  connect(network_, &AuthNetworkService::authSuccess, userService_,
-          &UserService::saveUser);
-  connect(userService_, &UserService::userSaved, this,
-          &AuthService::onUserSaved);
-
-  connect(network_, &AuthNetworkService::authError, this,
-          &AuthService::authError);
-  connect(network_, &AuthNetworkService::invalidToken, this,
-          &AuthService::errorToken);
   if (token_->token != nullptr)
-
-    network_->validateToken(token_->token); // check si le token est valide
+    network_->validateToken(token_->token);
   else
-
     errorToken("No token found");
 }
 
@@ -33,40 +42,25 @@ void AuthService::registerUser(const QString &email, const QString &username,
   network_->registerUser(email, username, password);
 }
 
-
 void AuthService::onUserSaved(const User &user) {
-  qDebug() << "\n=== onUserSaved START ===";
-  qDebug() << "User received in onUserSaved:";
-  user.print();
-
   User localUser = user;
 
-  // Vérification du token
   if (!user.token().isEmpty()) {
-    qDebug() << "Token trouvé dans le user:" << user.token();
-
     token_->writeToken(localUser.token());
-    qDebug() << "Token écrit dans le store, suppression locale du token";
-
     localUser.clearToken();
-    qDebug() << "Token après clearToken(): '" << localUser.token() << "'";
-
     emit authSuccess(localUser);
-    qDebug() << "authSuccess émis avec l'utilisateur (token supprimé)";
   } else {
-    qDebug() << "⚠️ Pas de token dans le user (Ligne 46 AuthService)";
+    qDebug() << "Pas de token dans le user (Ligne 46 AuthService)";
   }
-
-  qDebug() << "=== onUserSaved END ===\n";
 }
 
-void AuthService::errorToken(const QString &errorText) {
-  if (errorText.contains("No token found")) {
-    qDebug() << errorText;
-    // Supprimer quand même la DB locale pour plus de sécurité
-
-  } else if (errorText.contains("Token is not valid")) {
+void AuthService::errorToken(const QString &error) {
+  qDebug() << error;
+  if (error.contains("Token is not valid"))
     token_->deleteToken();
-  }
+
+  userService_->deleteAll();
   emit noTokenFound();
 }
+
+void AuthService::errorUserService(const QString &error) { qDebug() << error; }

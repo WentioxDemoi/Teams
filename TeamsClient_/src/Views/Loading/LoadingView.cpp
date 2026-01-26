@@ -1,7 +1,7 @@
-#include "LoadingDialog.h"
+#include "LoadingView.h"
 
 
-LoadingDialog::LoadingDialog(const QString& message, QWidget* parent)
+LoadingView::LoadingView(const QString& message, QWidget* parent)
     : QWidget(parent)
 {
     m_label = new QLabel(message, this);
@@ -17,7 +17,7 @@ LoadingDialog::LoadingDialog(const QString& message, QWidget* parent)
     setLayout(layout);
 }
 
-void LoadingDialog::setMessage(const QString& message)
+void LoadingView::setMessage(const QString& message)
 {
     m_label->setText(message);
 }

@@ -1,20 +1,19 @@
 #include "AuthViewModel.h"
 
 // Ici, dans le cas où on fait du testing, on passe en argument un objet construit localement pour les test. Sinon, en prod, on se base sur l'objet créé dans application.cpp
-AuthViewModel::AuthViewModel(IAuthService *service, QObject *parent)
-    : authService_(service ? service : ServiceLocator::instance().getService<IAuthService>()), QObject(parent)
+AuthViewModel::AuthViewModel(ISessionService *service, QObject *parent)
+    : sessionService_(service ? service : new SessionService(nullptr, parent)), QObject(parent)
 {
-  connect(authService_, &IAuthService::authSuccess,
+  connect(sessionService_, &ISessionService::authSuccess,
           this, &AuthViewModel::authSuccess);
-  connect(authService_, &IAuthService::authError,
-          this, &AuthViewModel::loginError);
-  connect(authService_, &IAuthService::noTokenFound, this, &AuthViewModel::noTokenFound);
-
-}
-
+  connect(sessionService_, &ISessionService::authError,
+          this, &AuthViewModel::authError);
+  connect(sessionService_, &ISessionService::noTokenFound, this, &AuthViewModel::noTokenFound);
+  }
+  
 void AuthViewModel::start()
 {
-    authService_->start();
+    sessionService_->start();
 }
 
 // Quelques cas d'erreurs avant redirection vers service
@@ -22,11 +21,11 @@ void AuthViewModel::loginUser(const QString &email, const QString &password)
 {
   if (email.isEmpty() || password.isEmpty())
   {
-    emit loginError("Username and password required");
+    emit authError("Username and password required");
     return;
   }
 
-  authService_->loginUser(email, password);
+  sessionService_->loginUser(email, password);
 }
 
 // Quelques cas d'erreurs avant redirection vers service
@@ -35,16 +34,16 @@ void AuthViewModel::registerUser(const QString &email, const QString &username,
 {
   if (email.isEmpty() || username.isEmpty() || password.isEmpty())
   {
-    emit loginError("All fields are required");
+    emit authError("All fields are required");
     return;
   }
 
   if (!ViewModelsTools::isValidEmail(email))
   {
-    emit loginError("Invalid email");
+    emit authError("Invalid email");
     return;
   }
 
-  authService_->registerUser(email, username, password);
+  sessionService_->registerUser(email, username, password);
 }
 

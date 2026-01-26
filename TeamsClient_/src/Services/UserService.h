@@ -14,6 +14,7 @@ public:
 public slots:
     void saveUser(const User& user);
     void deleteUser(QString uuid);
+    void deleteAll();
 
 signals:
     void userSaved(const User& user);

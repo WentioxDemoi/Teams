@@ -1,14 +1,14 @@
-#ifndef LOADINGDIALOG_H
-#define LOADINGDIALOG_H
+#ifndef LOADINGVIEW_H
+#define LOADINGVIEW_H
 
 #include "../../includes.h"
 
-class LoadingDialog : public QWidget
+class LoadingView : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit LoadingDialog(const QString& message,
+    explicit LoadingView(const QString& message,
                            QWidget* parent = nullptr);
 
     void setMessage(const QString& message);

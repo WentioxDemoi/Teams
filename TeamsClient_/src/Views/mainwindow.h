@@ -5,7 +5,9 @@
 #include "../ViewModels/AuthViewModel.h"
 #include "Views/Auth/AuthView.h"
 #include "Views/Workspace/WorkspaceView.h"
-#include "LoadingDialog/LoadingDialog.h"
+#include "Loading/LoadingView.h"
+#include "../Core/ViewLocator.h"
+#include "../Core/ViewModelsLocator.h"
 
 /**
  * @class MainWindow
@@ -21,13 +23,14 @@ class MainWindow : public QMainWindow
 
 public:
   explicit MainWindow(QWidget *parent = nullptr);
+  void start();
   ~MainWindow();
 
 private:
   AuthViewModel *authViewModel;
   WorkspaceView *workspaceView;
   AuthView *authView;
-  LoadingDialog *loadingView;
+  LoadingView *loadingView;
   QStackedWidget *stack;
   void closeEvent(QCloseEvent *event);
 

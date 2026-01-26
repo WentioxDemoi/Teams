@@ -16,6 +16,7 @@ TokenManager::TokenManager(QObject *parent)
     m_writeCredentialJob.setAutoDelete(false);
     m_deleteCredentialJob.setAutoDelete(false);
     readToken();
+
 }
 
 bool TokenManager::readToken()

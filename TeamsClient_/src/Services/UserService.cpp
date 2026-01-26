@@ -2,26 +2,30 @@
 
 UserService::UserService(QObject* parent) : QObject(parent) {
     repo_ = new UserRepository();
-    qDebug() << "Repo instance crée";
 }
 
 void UserService::saveUser(const User& user) {
-    qDebug() << "aller";
     if (repo_->insert(user))
         emit userSaved(user);
     else {
-        qDebug() << "erreur";
-        emit error("Failed to save user.");
+        emit error("Error lors de l'enregistrement du user : " + user.uuid() + ".");
     }
 }
     
 void UserService::deleteUser(QString uuid) {
 
-    repo_->remove(uuid);
-    emit userDeleted(uuid);
+    if (repo_->remove(uuid)) {
+        // emit userDeleted(uuid); Pas encore utilisé
+        qDebug() << "Utilisateur supprimé : " + uuid;
+    }
+    else
+        emit error("Erreur lors de la suppression du user : " + uuid + ".");
 }
 
-// signals:
-//     void userSaved(const User&);
-//     void userDeleted(int id);
-//     void error(const QString&);
+void UserService::deleteAll()
+{
+    if (repo_->removeAll()) {
+        qDebug() << "Tous les utilisateurs supprimés.";
+    } else 
+        emit error("Erreur lors de la suppression de tous les users.");
+}

@@ -1,10 +1,21 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "../Views/mainwindow.h"
+// Services
 #include "../Services/AuthService.h"
+
+// Views
+#include "../Views/mainwindow.h"
+
+// ViewModels
 #include "../ViewModels/AuthViewModel.h"
+
+// Locators
 #include "ServiceLocator.h"
+#include "ViewModelsLocator.h"
+#include "ViewLocator.h"
+
+
 #include "../includes.h"
 
 /**
@@ -26,8 +37,11 @@ public:
 
 private:
   QApplication qtApp;
+  QObject *appRoot;
+  MainWindow *mainWindow;
 
   void initializeServices();
+  void initializeViews();
   void initializeViewModels();
   void initializeUI();
 };

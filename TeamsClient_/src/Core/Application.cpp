@@ -3,25 +3,49 @@
 Application::Application(int &argc, char **argv) : qtApp(argc, argv)
 {
   QCoreApplication::setApplicationName("Teams");
-  initializeServices();
   initializeUI();
-  run();
-}
-
-void Application::initializeServices()
-{
-  auto &locator = ServiceLocator::instance();
-
-  locator.registerService<UserService>(new UserService());
-  locator.registerService<AuthNetworkService>(new AuthNetworkService());
-  locator.registerService<IAuthService>(new AuthService());
 }
 
 void Application::initializeUI()
 {
-  MainWindow *mainWindow = new MainWindow();
-  mainWindow->show();
+  mainWindow = new MainWindow();
+  
+  initializeServices();
 }
 
-int Application::run() { return qtApp.exec(); }
+void Application::initializeServices()
+{
+  appRoot = new QObject();
+  auto &locator = ServiceLocator::instance();
+
+  locator.registerService<UserService>(new UserService(appRoot));
+  locator.registerService<AuthNetworkService>(new AuthNetworkService(appRoot));
+  // locator.registerService<IAuthService>(new AuthService(appRoot));
+
+  
+  initializeViewModels();
+}
+
+void Application::initializeViewModels()
+{
+  auto &locator = ViewModelsLocator::instance();
+  locator.registerViewModels<AuthViewModel>(new AuthViewModel(nullptr, appRoot));
+  initializeViews();
+}
+
+void Application::initializeViews()
+{
+  auto &locator = ViewLocator::instance();
+
+  locator.registerView<AuthView>(new AuthView(mainWindow));
+  locator.registerView<WorkspaceView>(new WorkspaceView(mainWindow));
+  locator.registerView<LoadingView>(new LoadingView("Loading your ecosystem", mainWindow));
+  run();
+}
+
+int Application::run() { 
+  mainWindow->start();
+  mainWindow->show();
+  return qtApp.exec(); 
+}
 
