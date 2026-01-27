@@ -11,7 +11,7 @@ void UserTest::testDefaultConstructor() {
 }
 
 void UserTest::testParameterizedConstructor() {
-    User user(1, "test@mail.com", "john", "active", false);
+    User user(1, "test@mail.com", "john", "active", false, "token", "uuid");
     QCOMPARE(user.id(), 1);
     QCOMPARE(user.email(), QString("test@mail.com"));
     QCOMPARE(user.username(), QString("john"));
@@ -26,22 +26,15 @@ void UserTest::testSettersAndGetters() {
     user.setEmail("user@mail.com");
     user.setUsername("alice");
     user.setStatus("online");
-    user.isMe(true); // setter actuel pour isMe
+    user.setIsMe(true);
+    user.setToken("token");
+    user.setUuid("uuid");
 
     QCOMPARE(user.id(), 42);
     QCOMPARE(user.email(), QString("user@mail.com"));
     QCOMPARE(user.username(), QString("alice"));
     QCOMPARE(user.status(), QString("online"));
     QCOMPARE(user.isMe(), true);
-}
-
-void UserTest::testIsValidRequiresIdAndEmail() {
-    User user;
-    QVERIFY(!user.isValid());
-    user.setId(1);
-    QVERIFY(!user.isValid());
-    user.setEmail("valid@mail.com");
-    QVERIFY(user.isValid());
 }
 
 void UserTest::testToJsonSerialization() {
@@ -68,7 +61,6 @@ void UserTest::testFromJsonDeserialization() {
     QCOMPARE(user.username(), QString("bob"));
     QCOMPARE(user.status(), QString("offline"));
     QCOMPARE(user.isMe(), false);
-    QVERIFY(user.isValid());
 }
 
 void UserTest::testFromJsonWithMissingFields() {

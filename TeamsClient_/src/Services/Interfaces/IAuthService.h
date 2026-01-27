@@ -27,6 +27,11 @@ signals:
     void authSuccess(const User &user);
     void authError(const QString &error);
     void noTokenFound();
+
+public slots:
+  virtual void onUserSaved(const User &user) = 0;
+  virtual void errorToken(const QString &error) = 0;
+  virtual void errorUserService(const QString &error) = 0;
 };
 
 #endif

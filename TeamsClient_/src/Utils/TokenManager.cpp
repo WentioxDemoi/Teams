@@ -7,7 +7,7 @@ TokenManager &TokenManager::instance()
 }
 
 TokenManager::TokenManager(QObject *parent) 
-    : QObject(parent), 
+    : ITokenManager(parent), 
       m_readCredentialJob(APP_NAME), 
       m_writeCredentialJob(APP_NAME), 
       m_deleteCredentialJob(APP_NAME)

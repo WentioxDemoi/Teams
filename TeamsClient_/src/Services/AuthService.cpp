@@ -1,33 +1,33 @@
 #include "AuthService.h"
 
-AuthService::AuthService(AuthNetworkService* network,
-                         UserService* userService,
-                         TokenManager* token,
+AuthService::AuthService(IAuthNetworkService* network,
+                         IUserService* userService,
+                         ITokenManager* token,
                          QObject* parent)
     : IAuthService(parent),
-      network_(network ? network : ServiceLocator::instance().getService<AuthNetworkService>()),
-      userService_(userService ? userService : ServiceLocator::instance().getService<UserService>()),
+      network_(network ? network : ServiceLocator::instance().getService<IAuthNetworkService>()),
+      userService_(userService ? userService : ServiceLocator::instance().getService<IUserService>()),
       token_(token ? token : &TokenManager::instance())
 {
     Q_ASSERT(network_);
     Q_ASSERT(userService_);
     Q_ASSERT(token_);
 
-    connect(network_, &AuthNetworkService::authSuccess, userService_,
-            &UserService::saveUser);
-    connect(userService_, &UserService::userSaved, this,
-            &AuthService::onUserSaved);
+    connect(network_, &IAuthNetworkService::authSuccess, userService_,
+            &IUserService::saveUser);
+    connect(userService_, &IUserService::userSaved, this,
+            &IAuthService::onUserSaved);
 
-    connect(network_, &AuthNetworkService::authError, this,
-            &AuthService::authError);
-    connect(network_, &AuthNetworkService::invalidToken, this,
-            &AuthService::errorToken);
-    connect(userService_, &UserService::error, this,
-            &AuthService::errorUserService);
+    connect(network_, &IAuthNetworkService::authError, this,
+            &IAuthService::authError);
+    connect(network_, &IAuthNetworkService::invalidToken, this,
+            &IAuthService::errorToken);
+    connect(userService_, &IUserService::error, this,
+            &IAuthService::errorUserService);
 }
 
 void AuthService::start() {
-  if (token_->token != nullptr)
+  if (!token_->token.isEmpty())
     network_->validateToken(token_->token);
   else
     errorToken("No token found");

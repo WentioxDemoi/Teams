@@ -18,8 +18,8 @@ void Application::initializeServices()
   appRoot = new QObject(&qtApp);
   auto &locator = ServiceLocator::instance();
 
-  locator.registerService<UserService>(new UserService(appRoot));
-  locator.registerService<AuthNetworkService>(new AuthNetworkService(appRoot));
+  locator.registerService<IUserService>(new UserService(appRoot));
+  locator.registerService<IAuthNetworkService>(new AuthNetworkService(appRoot));
   // locator.registerService<IAuthService>(new AuthService(appRoot));
 
   

@@ -3,7 +3,7 @@
 
 #include <QtTest>
 #include <QSignalSpy>
-#include "AuthNetworkService.h"
+#include "Fakes.h"
 
 class AuthNetworkServiceTest : public QObject {
     Q_OBJECT

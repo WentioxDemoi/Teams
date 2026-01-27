@@ -2,18 +2,11 @@
 
 void AuthNetworkServiceTest::testValidResponseEmitsAuthSuccess()
 {
-    AuthNetworkService service;
+    FakeAuthNetworkService service;
 
-    QSignalSpy spy(&service, &AuthNetworkService::authSuccess);
-
+    QSignalSpy spy(&service, &IAuthNetworkService::authSuccess);
     QByteArray json = R"({
-        "data": {
-            "id": 1,
-            "email": "a@b.com",
-            "username": "user",
-            "token": "abc",
-            "status": "active"
-        }
+        "success": true
     })";
 
     service.handleServerResponse(json);
@@ -23,8 +16,8 @@ void AuthNetworkServiceTest::testValidResponseEmitsAuthSuccess()
 
 void AuthNetworkServiceTest::testErrorResponseEmitsAuthError()
 {
-    AuthNetworkService service;
-    QSignalSpy spy(&service, &AuthNetworkService::authError);
+    FakeAuthNetworkService service;
+    QSignalSpy spy(&service, &IAuthNetworkService::authError);
 
     QByteArray json = R"({ "error": "Invalid credentials" })";
 

@@ -4,22 +4,19 @@
 #include "../includes.h"
 #include "../Repositories/UserRepository.h"
 #include "../Models/User.h"
+#include "Interfaces/IUserService.h"
 
-class UserService : public QObject
+class UserService : public IUserService
 {
     Q_OBJECT
 public:
     explicit UserService(QObject* parent = nullptr);
 
 public slots:
-    void saveUser(const User& user);
-    void deleteUser(QString uuid);
-    void deleteAll();
+    void saveUser(const User& user) override;
+    void deleteUser(QString uuid) override;
+    void deleteAll() override;
 
-signals:
-    void userSaved(const User& user);
-    void userDeleted(QString uuid);
-    void error(const QString& error);
 
 private:
     UserRepository *repo_;

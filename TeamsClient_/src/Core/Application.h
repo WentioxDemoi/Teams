@@ -3,6 +3,8 @@
 
 // Services
 #include "../Services/AuthService.h"
+#include "../Services/Interfaces/IAuthService.h"
+
 
 // Views
 #include "../Views/mainwindow.h"

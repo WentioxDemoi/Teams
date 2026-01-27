@@ -1,6 +1,6 @@
 #include "UserService.h"
 
-UserService::UserService(QObject* parent) : QObject(parent) {
+UserService::UserService(QObject* parent) : IUserService(parent) {
     repo_ = new UserRepository();
 }
 

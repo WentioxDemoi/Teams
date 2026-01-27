@@ -3,8 +3,8 @@
 
 #include <QtTest>
 #include <QSignalSpy>
-#include "AuthViewModel.h"
-#include "IAuthService.h"
+#include "../../../src/ViewModels/AuthViewModel.h"
+#include "../../../src/Services/Interfaces/IAuthService.h"
 #include "User.h"
 
 class FakeSessionService : public ISessionService {

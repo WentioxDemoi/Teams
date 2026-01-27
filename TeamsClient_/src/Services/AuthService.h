@@ -4,9 +4,12 @@
 #include "../Core/ServiceLocator.h"
 #include "../Models/User.h"
 #include "../includes.h"
+#include "Interfaces/IAuthNetworkService.h"
+#include "Interfaces/IUserService.h"
+#include "Interfaces/IAuthService.h"
 #include "AuthNetworkService.h"
 #include "UserService.h"
-#include "Interfaces/IAuthService.h"
+#include "AuthService.h"
 #include "../Utils/TokenManager.h"
 
 /**
@@ -20,9 +23,9 @@ class AuthService : public IAuthService
   Q_OBJECT
 
 public:
-  explicit AuthService(AuthNetworkService* network = nullptr,
-                         UserService* userService = nullptr,
-                         TokenManager* token = nullptr,
+  explicit AuthService(IAuthNetworkService* network = nullptr,
+                         IUserService* userService = nullptr,
+                         ITokenManager* token = nullptr,
                          QObject* parent = nullptr);
   void start() override;
   void loginUser(const QString &username, const QString &password) override;
@@ -31,16 +34,16 @@ public:
                     const QString &password) override;
 
 public slots:
-  void onUserSaved(const User &user);
-  void errorToken(const QString &error);
-  void errorUserService(const QString &error);
+  void onUserSaved(const User &user) override;
+  void errorToken(const QString &error) override;
+  void errorUserService(const QString &error) override;
   
 
 private:
 
-  AuthNetworkService *network_;
-  TokenManager *token_;
-  UserService *userService_;
+  IAuthNetworkService *network_;
+  ITokenManager *token_;
+  IUserService *userService_;
 };
 
 #endif

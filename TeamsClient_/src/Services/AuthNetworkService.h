@@ -1,8 +1,7 @@
 #ifndef AUTHNETWORKSERVICE_H
 #define AUTHNETWORKSERVICE_H
 
-#include "../Models/User.h"
-#include "../includes.h"
+#include "Interfaces/IAuthNetworkService.h"
 
 /**
  * @class AuthNetworkService
@@ -12,30 +11,24 @@
  * reçoit et parse les réponses JSON, et émet les signaux authSuccess ou authError
  * selon le résultat.
  */
-class AuthNetworkService : public QObject
+class AuthNetworkService : public IAuthNetworkService
 {
   Q_OBJECT
 public:
   explicit AuthNetworkService(QObject *parent = nullptr);
 
-  void loginUser(const QString &email, const QString &password);
+  void loginUser(const QString &email, const QString &password) override;
   void registerUser(const QString &email, const QString &username,
-                    const QString &password);
+                    const QString &password) override;
   
-  void handleServerResponse(const QByteArray &data);
-  void validateToken(const QString &value);
-
-
-signals:
-  void authSuccess(const User &user);
-  void authError(const QString &message);
-  void invalidToken(const QString &error);
+  void handleServerResponse(const QByteArray &data) override;
+  void validateToken(const QString &value) override;
     
 
 private:
   QByteArray buffer_;
-  void sendRequest(const QJsonObject &payload);
-  void sendPendingPayload();
+  void sendRequest(const QJsonObject &payload) override;
+  void sendPendingPayload() override;
 
   QSslSocket socket_;
   QJsonObject pendingPayload_;

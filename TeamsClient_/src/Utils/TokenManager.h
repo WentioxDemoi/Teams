@@ -1,7 +1,7 @@
 #ifndef TOKENMANAGER_H
 #define TOKENMANAGER_H
 
-#include "../includes.h"
+#include "Interfaces/ITokenManager.h"
 
 /**
  * @class TokenManager
@@ -9,7 +9,7 @@
  *
  * Émet des signaux selon la demande initiale.
  */
-class TokenManager : public QObject
+class TokenManager : public ITokenManager
 {
     Q_OBJECT
 public:
@@ -18,11 +18,10 @@ public:
     
 
     // Méthodes synchronisées pour manipuler le token
-    bool readToken();   // Retourne true si le token a été lu
-    bool writeToken(const QString &value); // Retourne true si écrit
-    bool deleteToken(); // Retourne true si supprimé
+    bool readToken() override;   // Retourne true si le token a été lu
+    bool writeToken(const QString &value) override; // Retourne true si écrit
+    bool deleteToken() override; // Retourne true si supprimé
 
-    QString token;
 
 private:
     explicit TokenManager(QObject *parent = nullptr);

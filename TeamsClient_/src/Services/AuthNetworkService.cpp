@@ -1,6 +1,6 @@
 #include "AuthNetworkService.h"
 
-AuthNetworkService::AuthNetworkService(QObject *parent) : QObject(parent) {
+AuthNetworkService::AuthNetworkService(QObject *parent) : IAuthNetworkService(parent) {
   waitingForResponse_ = false;
 
   connect(&socket_, &QSslSocket::encrypted, this,
