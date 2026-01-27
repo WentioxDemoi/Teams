@@ -4,11 +4,11 @@
 AuthViewModel::AuthViewModel(ISessionService *service, QObject *parent)
     : sessionService_(service ? service : new SessionService(nullptr, parent)), QObject(parent)
 {
-  connect(sessionService_, &ISessionService::authSuccess,
+  connect(sessionService_, &SessionService::authSuccess,
           this, &AuthViewModel::authSuccess);
-  connect(sessionService_, &ISessionService::authError,
+  connect(sessionService_, &SessionService::authError,
           this, &AuthViewModel::authError);
-  connect(sessionService_, &ISessionService::noTokenFound, this, &AuthViewModel::noTokenFound);
+  connect(sessionService_, &SessionService::noTokenFound, this, &AuthViewModel::noTokenFound);
   }
   
 void AuthViewModel::start()

@@ -9,13 +9,13 @@ Application::Application(int &argc, char **argv) : qtApp(argc, argv)
 void Application::initializeUI()
 {
   mainWindow = new MainWindow();
-  
+  QObject::connect(mainWindow, &QObject::destroyed, &qtApp, &QCoreApplication::quit);
   initializeServices();
 }
 
 void Application::initializeServices()
 {
-  appRoot = new QObject();
+  appRoot = new QObject(&qtApp);
   auto &locator = ServiceLocator::instance();
 
   locator.registerService<UserService>(new UserService(appRoot));

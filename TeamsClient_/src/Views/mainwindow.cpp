@@ -39,7 +39,7 @@ void MainWindow::start()
 
 void MainWindow::noTokenFound()
 {
-        qDebug() << "aller";
+        qDebug() << "PAs de token";
         sleep(1);
         stack->setCurrentWidget(authView);
 }

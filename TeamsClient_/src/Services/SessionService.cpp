@@ -7,11 +7,11 @@ SessionService::SessionService(IAuthService* service, QObject* parent)
     Q_ASSERT(authService_);
 
     connect(authService_, &AuthService::authSuccess,
-            this, &ISessionService::authSuccess);
+            this, &SessionService::authSuccess);
     connect(authService_, &AuthService::authError,
-            this, &ISessionService::authError);
+            this, &SessionService::authError);
     connect(authService_, &AuthService::noTokenFound,
-            this, &ISessionService::noTokenFound);
+            this, &SessionService::noTokenFound);
 }
 
 void SessionService::start() { authService_->start(); }
