@@ -7,14 +7,17 @@ AuthView::AuthView(QWidget *parent) : QWidget(parent)
 
   toggleButton = new QPushButton(this);
 
-  layout = new QVBoxLayout(this);
-  layout->addWidget(loginForm);
-  layout->addWidget(registerForm);
-  layout->addWidget(toggleButton);
-  setLayout(layout);
+  stack = new QStackedWidget(this);
+  stack->addWidget(loginForm);
+  stack->addWidget(registerForm);
 
-  loginForm->show();
-  registerForm->hide();
+  layout = new QVBoxLayout(this);
+  layout->addStretch();
+  layout->addWidget(stack, 0, Qt::AlignCenter);
+  layout->addWidget(toggleButton, 0, Qt::AlignCenter);
+  layout->addStretch();
+
+  stack->setCurrentWidget(loginForm);
   updateButtonText();
 
   connect(toggleButton, &QPushButton::clicked, this, &AuthView::toggleForms);
@@ -22,22 +25,16 @@ AuthView::AuthView(QWidget *parent) : QWidget(parent)
 
 void AuthView::toggleForms()
 {
-  if (loginForm->isVisible())
-  {
-    loginForm->hide();
-    registerForm->show();
-  }
+  if (stack->currentWidget() == loginForm)
+    stack->setCurrentWidget(registerForm);
   else
-  {
-    loginForm->show();
-    registerForm->hide();
-  }
+    stack->setCurrentWidget(loginForm);
   updateButtonText();
 }
 
 void AuthView::updateButtonText()
 {
-  if (loginForm->isVisible())
+  if (stack->currentWidget() == loginForm)
   {
     toggleButton->setText("Switch to Register");
   }

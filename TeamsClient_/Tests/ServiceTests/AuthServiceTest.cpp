@@ -61,7 +61,6 @@ void AuthServiceTest::onUserSaved_withToken_emitsAuthSuccess() {
     AuthService service(&network, &userService, &token);
     QSignalSpy spy(&service, &AuthService::authSuccess);
 
-    // User valide avec token
     User user;
     user.setId(1);
     user.setEmail("a@b.com");
@@ -84,14 +83,12 @@ void AuthServiceTest::onUserSaved_withoutToken_doesNotEmit() {
     AuthService service(&network, &userService, &token);
     QSignalSpy spy(&service, &AuthService::authSuccess);
 
-    // User valide mais sans token
     User user;
     user.setId(1);
     user.setEmail("a@b.com");
     user.setUsername("user");
     user.setStatus("active");
     user.setUuid("uuid-123");
-    // pas de token
 
     service.onUserSaved(user);
 

@@ -3,6 +3,44 @@
 Application::Application(int &argc, char **argv) : qtApp(argc, argv)
 {
   QCoreApplication::setApplicationName("Teams");
+  QFile file(":/qss/styles.qss");
+  // file.open(QFile::ReadOnly);
+  if (!file.open(QFile::ReadOnly | QFile::Text)) {
+    qWarning() << "Style QSS introuvable";
+    return;
+}
+  qtApp.setStyleSheet(file.readAll());
+  // qtApp.setStyleSheet(R"(
+  //       QWidget {
+  //           background-color: #0f172a;
+  //           color: #e5e7eb;
+  //           font-family: "Segoe UI";
+  //           font-size: 14px;
+  //       }
+
+  //       QLineEdit {
+  //           background: #020617;
+  //           border: 1px solid #334155;
+  //           border-radius: 8px;
+  //           padding: 10px;
+  //       }
+
+  //       QLineEdit:focus {
+  //           border: 1px solid #38bdf8;
+  //       }
+
+  //       QPushButton {
+  //           background: #38bdf8;
+  //           color: #020617;
+  //           border-radius: 8px;
+  //           padding: 10px;
+  //           font-weight: bold;
+  //       }
+
+  //       QPushButton:hover {
+  //           background: #0ea5e9;
+  //       }
+  //   )");
   initializeUI();
 }
 

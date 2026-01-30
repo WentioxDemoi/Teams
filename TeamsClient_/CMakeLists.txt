@@ -101,6 +101,16 @@ set(PROJECT_SOURCES
     ${VIEWS_UI}
 )
 
+qt_add_resources(app_resources
+    resources/resources.qrc
+)
+
+qt_add_executable(TeamsClient_
+    MANUAL_FINALIZATION
+    ${PROJECT_SOURCES}
+    ${app_resources}
+)
+
 # Affichage des fichiers trouvés (debug)
 message(STATUS "Models sources: ${MODELS_SOURCES}")
 message(STATUS "ViewModels sources: ${VIEWMODELS_SOURCES}")
@@ -111,11 +121,6 @@ message(STATUS "Utils sources: ${UTILS_SOURCES}")
 message(STATUS "Core sources: ${CORE_SOURCES}")
 message(STATUS "UI files: ${VIEWS_UI}")
 
-# === Exécutable principal ===
-qt_add_executable(TeamsClient_
-    MANUAL_FINALIZATION
-    ${PROJECT_SOURCES}
-)
 
 # Include directories pour l'accès aux headers
 target_include_directories(TeamsClient_ PRIVATE

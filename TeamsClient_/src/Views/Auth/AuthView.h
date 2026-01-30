@@ -27,6 +27,7 @@ private slots:
 private:
   QPushButton *toggleButton;
   QVBoxLayout *layout;
+  QStackedWidget *stack;
 
   void updateButtonText();
 };
