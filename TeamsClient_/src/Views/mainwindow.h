@@ -7,6 +7,7 @@
 #include "Views/Workspace/WorkspaceView.h"
 #include "Loading/LoadingView.h"
 #include "../Core/ViewLocator.h"
+#include "../Core/ServiceLocator.h"
 #include "../Core/ViewModelsLocator.h"
 
 /**

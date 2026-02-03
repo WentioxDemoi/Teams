@@ -53,6 +53,8 @@ public:
     lastValidatedToken = value;
   }
 
+  void disconnectFromServer() override {}
+
 private:
   void sendRequest(const QJsonObject &payload) override {}
   void sendPendingPayload() override {}

@@ -24,6 +24,7 @@ public:
   
   virtual void handleServerResponse(const QByteArray &data) = 0;
   virtual void validateToken(const QString &value) = 0;
+  virtual void disconnectFromServer() = 0;
 
 
 signals:

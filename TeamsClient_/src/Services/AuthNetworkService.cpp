@@ -135,3 +135,20 @@ void AuthNetworkService::handleServerResponse(const QByteArray &data) {
 
   emit authError(QString("Unhandled response type: %1").arg(type));
 }
+
+void AuthNetworkService::disconnectFromServer() {
+    if (socket_.state() == QAbstractSocket::ConnectedState ||
+        socket_.state() == QAbstractSocket::ConnectingState) {
+        socket_.disconnectFromHost();
+        if (socket_.state() != QAbstractSocket::UnconnectedState) {
+            socket_.waitForDisconnected(3000); // optionnel : attendre max 3s
+        }
+    }
+
+    // Réinitialisation de l’état
+    waitingForResponse_ = false;
+    buffer_.clear();
+    pendingPayload_ = QJsonObject();
+    
+    qDebug() << "Disconnected from server";
+}

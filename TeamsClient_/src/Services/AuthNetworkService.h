@@ -23,6 +23,7 @@ public:
   
   void handleServerResponse(const QByteArray &data) override;
   void validateToken(const QString &value) override;
+  void disconnectFromServer() override;
     
 
 private:

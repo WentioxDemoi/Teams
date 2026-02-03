@@ -53,7 +53,9 @@ void MainWindow::authSuccess(const User &user)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-  qDebug() << "Fermeture du client";
+        auto *network_ = ServiceLocator::instance().getService<IAuthNetworkService>();
+        network_->disconnectFromServer();
+        qDebug() << "Fermeture du client";
 }
 
 MainWindow::~MainWindow() {}
