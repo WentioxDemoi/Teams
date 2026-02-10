@@ -50,5 +50,14 @@
         "sstream": "cpp",
         "streambuf": "cpp",
         "iostream": "cpp"
+    },
+    "files.watcherExclude": {
+        "**/build/**": true,
+        "**/.git/**": true,
+        "**/node_modules/**": true,
+        "**/out/**": true
+    },
+    "search.exclude": {
+        "**/build/**": true
     }
 }

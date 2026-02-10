@@ -1,18 +1,22 @@
 # Teams Server
 
-Serveur backend pour l'application Teams, gérant l'authentification, la messagerie et la communication temps réel via NATS.
+Serveur backend pour l'application Teams, gérant l'authentification, la messagerie et la communication temps réel.
 
 ## Architecture du projet
 
 ```
 src/
-├── Database/        # Gestion de la base de données SQLite
-├── Servers/         # Serveurs TCP/WebSocket
-├── Repositories/    # Accès DB
-├── Services/        # Logique métier
-├── Sessions/        # Gestion des sessions client
-├── Errors/          # Gestion centralisée des erreurs
-└── Structs/         # Structures de données
+├── Core/            # Logique métier principale et modèles
+│   ├── Models/      # Structures de données (ex: User)
+│   ├── Repositories/# Accès aux données (UserRepository, etc.)
+│   └── Services/    # Logique métier (AuthService, etc.)
+├── Handlers/        # Gestion des requêtes entrantes et routage
+├── Infrastructure/  # Gestion technique (DB, ConnectionPool, QueryBuilder, etc.)
+├── Network/         # Serveurs TCP/SSL et sessions réseau (TcpListener, AuthSession)
+├── Utils/           # Utilitaires généraux (Crypto, Config, ResponseFormater, BoostErrorHandler)
+├── common/          # Code partagé / commun à plusieurs modules
+├── includes.h       # Fichier d'inclusions centralisées
+└── main.cpp         # Point d'entrée de l'application
 ```
 
 ## Prérequis
@@ -83,37 +87,11 @@ Les tests unitaires utilisent **GoogleTest**, intégré automatiquement par CMak
 
 ### Compilation des tests
 
-1. Depuis le répertoire de build :
+1. Dans le CMake, décommentez la partie pour les tests. Dans le dockerfile commentez la ligne qui lance le serveur et décommentez celle qui lance le terminal. Une fois connecté au terminal, faites :
 ```bash
-cd build
+cd build/ && ./server_tests
 ```
 
-2. Compilez les tests :
-```bash
-make server_tests
-```
-
-### Exécution des tests
-
-1. Exécutez le binaire de test :
-```bash
-./server_tests
-```
-
-2. (Optionnel) Sortie détaillée :
-```bash
-./server_tests --gtest_verbose=1
-```
-
-3. (Optionnel) Exécuter un test spécifique :
-```bash
-./server_tests --gtest_filter=NomDuTest.*
-```
-
-4. (Optionnel) Générer un rapport XML (CI/CD) :
-```bash
-./server_tests --gtest_output=xml:resultats_tests.xml
-```
 
 ## Configuration
 
@@ -129,22 +107,25 @@ Le serveur utilise un fichier `.env` pour la configuration. Les certificats SSL 
 
 ## Dépendances
 
-- **Boost.Asio** : Serveurs TCP/WebSocket asynchrones
-- **Boost.Beast** : Support WebSocket
-- **SQLite3** : Base de données embarquée
+- **Boost.Asio** : Serveurs TCP asynchrones et gestion des threads pour le pool de workers
+- **Boost.Beast** : Support WebSocket (si utilisé dans le futur)
+- **libpqxx / PostgreSQL** : Accès à la base de données PostgreSQL
 - **NATS C Client** : Messagerie pub/sub
 - **OpenSSL** : Support TLS/SSL
-- **GoogleTest** : Framework de tests unitaires
+- **GoogleTest & GoogleMock** : Tests unitaires et mocks pour AuthService et UserRepository
+- **Argon2** : Hachage sécurisé des mots de passe
 
 ## Architecture technique
 
-- **Connection Pool** : Gestion optimisée des connexions SQLite
-- **Session Management** : Gestion des sessions client avec authentification JWT
-- **NATS Integration** : Communication temps réel via publish/subscribe
-- **Async I/O** : Traitement asynchrone avec Boost.Asio pour la scalabilité
+- **Connection Pool** : Gestion optimisée des connexions PostgreSQL via ConnectionPool et DatabaseManager
+- **Session Management** : Gestion des sessions client sécurisées via AuthSession avec SSL et authentification par token
+- **Handler Layer** : Handler et AuthHandler pour router et traiter les requêtes JSON
+- **Async I/O** : Traitement asynchrone des connexions et requêtes via asio::io_context et thread_pool
+- **Core Layer** : Logique métier centralisée dans Core/Services et accès aux données via Core/Repositories
+- **Utils Layer** : Outils génériques pour la sécurité (Crypto), configuration (Config) et formatage JSON (ResponseFormater)
 
 ## Notes importantes
 
 - Le CMake sera enrichi au fur et à mesure du développement
 - D'autres fonctionnalités seront ajoutées progressivement
-- La base de données SQLite est automatiquement initialisée au premier lancement
+- Des UMLs sont présents dans la branch diagram

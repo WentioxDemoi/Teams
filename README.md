@@ -18,3 +18,4 @@ Recoding une application similaire à Teams.
 - D'autres dépendances seront ajoutées à l'avenir.
 - Assurez-vous de bien spécifier le chemin vers Qt6 lors de la compilation du client.
 - Étant donné que ce projet a un but pédagogique et ne contient pas de données sensibles, les fichiers .env, .vscode, .crt et .key ont été ajoutés au dépôt.
+- Problème lors du register
