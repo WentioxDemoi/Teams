@@ -16,7 +16,6 @@ void AuthViewModel::start()
     sessionService_->start();
 }
 
-// Quelques cas d'erreurs avant redirection vers service
 void AuthViewModel::loginUser(const QString &email, const QString &password)
 {
   if (email.isEmpty() || password.isEmpty())
@@ -28,7 +27,6 @@ void AuthViewModel::loginUser(const QString &email, const QString &password)
   sessionService_->loginUser(email, password);
 }
 
-// Quelques cas d'erreurs avant redirection vers service
 void AuthViewModel::registerUser(const QString &email, const QString &username,
                                  const QString &password)
 {
