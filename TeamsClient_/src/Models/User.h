@@ -13,11 +13,10 @@
 class User {
 public:
     User() = default;
-    User(int id, const QString &email, const QString &username,
+    User(const QString &email, const QString &username,
          const QString &status, bool isMe = false, const QString &token = "", const QString &uuid = "");
 
     // Getters
-    int id() const { return id_; }
     QString email() const { return email_; }
     QString username() const { return username_; }
     QString status() const { return status_; }
@@ -26,7 +25,6 @@ public:
     QString uuid() const { return uuid_; }
 
     // Setters
-    void setId(int id) { id_ = id; }
     void setEmail(const QString &email) { email_ = email; }
     void setUsername(const QString &username) { username_ = username; }
     void setStatus(const QString &status) { status_ = status; }
@@ -36,7 +34,7 @@ public:
     
     void clearToken() { token_.clear(); }
     bool isValid() const {
-        return id_ > 0 &&
+        return
                !email_.isEmpty() &&
                !username_.isEmpty() &&
                !status_.isEmpty() &&
@@ -48,14 +46,13 @@ public:
     static User fromJson(const QJsonObject &json);
 
     void print() const {
-        qDebug() << "User { id:" << id_ << ", email:" << email_ 
+        qDebug() << ", email:" << email_ 
                  << ", username:" << username_ << ", status:" << status_
                  << ", token:" << token_ << ", uuid:" << uuid_
                  << ", isMe:" << isMe_ << "}";
     }
 
 private:
-    int id_ = 0;
     QString email_;
     QString username_;
     QString status_;
