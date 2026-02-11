@@ -10,7 +10,7 @@ std::optional<User> AuthService::loginUser(const std::string &email,
 
     // Mettre à jour la date d'expiration du token
     user_->token_expires_at = config_.token_expiry_time();
-    // Déballer l'optional pour passer le User à update()
+    user_->token = Crypto::generate_token();
     bool updated = userRepo_->update(*user_);
     if (!updated) {
       std::cerr << "[AuthService] Warning: Failed to update token expiration "
