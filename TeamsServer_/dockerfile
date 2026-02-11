@@ -34,5 +34,5 @@ RUN mkdir build && cd build && \
 EXPOSE 8080
 EXPOSE 8081
 
-CMD ["./build/server"]
-# CMD ["/bin/bash"]
+# CMD ["./build/server"]
+CMD ["/bin/bash"]
