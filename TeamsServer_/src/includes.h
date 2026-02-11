@@ -24,7 +24,7 @@
 // External Libraries
 // ======================================================
 #include <argon2.h>
-#include <nats/nats.h>
+// #include <nats/nats.h>
 #include <openssl/sha.h>
 #include <pqxx/pqxx>
 

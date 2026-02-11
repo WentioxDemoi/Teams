@@ -10,7 +10,6 @@ std::optional<User> AuthService::loginUser(const std::string &email,
 
     // Mettre à jour la date d'expiration du token
     user_->token_expires_at = config_.token_expiry_time();
-
     // Déballer l'optional pour passer le User à update()
     bool updated = userRepo_->update(*user_);
     if (!updated) {
