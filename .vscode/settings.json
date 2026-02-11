@@ -59,5 +59,6 @@
     },
     "search.exclude": {
         "**/build/**": true
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }
