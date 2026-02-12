@@ -40,7 +40,7 @@ void AuthHandler::handle_register(std::string payload,
       std::string result;
       if (!response.has_value()) {
         result =
-            R"("type":"register_response","error":"Registration failed: username may already exist or invalid data."})";
+            R"({"type":"register_response","error":"Registration failed: username may already exist or invalid data."})";
       } else {
         result = ResponseFormater::format_user_response("register_response",
                                                         *response);
