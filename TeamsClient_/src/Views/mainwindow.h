@@ -10,6 +10,8 @@
 #include "../Core/ServiceLocator.h"
 #include "../Core/ViewModelsLocator.h"
 
+#include "Visio/Visio.h"
+
 /**
  * @class MainWindow
  * @brief Fenêtre principale de l'application.
@@ -33,6 +35,7 @@ private:
   AuthView *authView;
   LoadingView *loadingView;
   QStackedWidget *stack;
+  QMainWindow *visio;
   void closeEvent(QCloseEvent *event);
 
 public slots:

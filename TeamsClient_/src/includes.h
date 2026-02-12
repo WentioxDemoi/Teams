@@ -23,6 +23,9 @@
 #include <QProgressBar>
 #include <QDialog>
 #include <QStackedWidget>
+#include <QPermission>
+#include <QTimer>
+
 
 
 // ======================================================

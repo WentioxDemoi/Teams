@@ -87,7 +87,6 @@ void AuthNetworkService::handleServerResponse(const QByteArray &data) {
 
   QJsonObject root = doc.object();
 
-  // Vérification du type
   if (!root.contains("type") || !root["type"].isString()) {
     emit authError("Missing or invalid type field in server response");
     return;

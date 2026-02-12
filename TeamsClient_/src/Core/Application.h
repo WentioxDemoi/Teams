@@ -41,7 +41,7 @@ private:
   QApplication qtApp;
   QObject *appRoot;
   MainWindow *mainWindow;
-
+  void initializePerms();
   void initializeServices();
   void initializeViews();
   void initializeViewModels();

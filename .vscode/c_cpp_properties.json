@@ -13,14 +13,14 @@
                 "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtSql.framework/Versions/A/Headers",
                 "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtTest.framework/Versions/A/Headers",
                 "/opt/homebrew/Cellar/boost/1.89.0/include",
-                // "/opt/homebrew/opt/sqlite/include",
-                "/opt/homebrew/Cellar/argon2/20190702_1/include/",
-                // "/opt/homebrew/Cellar/sqlite/3.50.4",
-                // "/opt/homebrew/Cellar/nats-server/2.12.2/bin",
-                // "/opt/homebrew/Cellar/cnats/3.12.0/include",
-                "/opt/homebrew/Cellar/libpqxx/7.10.4/include",
-                "/opt/homebrew/opt/boost/include",
-                "/opt/homebrew/opt/openssl@3/include"
+                // // "/opt/homebrew/opt/sqlite/include",
+                // "/opt/homebrew/Cellar/argon2/20190702_1/include/",
+                // // "/opt/homebrew/Cellar/sqlite/3.50.4",
+                // // "/opt/homebrew/Cellar/nats-server/2.12.2/bin",
+                // // "/opt/homebrew/Cellar/cnats/3.12.0/include",
+                // "/opt/homebrew/Cellar/libpqxx/7.10.4/include",
+                // "/opt/homebrew/opt/boost/include",
+                // "/opt/homebrew/opt/openssl@3/include"
             ],
             "defines": [
                 "QT_CORE_LIB",

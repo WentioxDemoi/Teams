@@ -22,10 +22,14 @@ message(STATUS "OpenSSL libraries: ${OPENSSL_LIBRARIES}")
 
 # === Qt ===
 set(CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.9.3/macos/")  # Root of Qt install
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network Test Sql)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network Test Sql Multimedia MultimediaWidgets)
 set(Qt6Keychain_DIR "$ENV{HOME}/Qt/6.9.3/macos/lib/cmake/Qt6Keychain")
 find_package(Qt6Keychain REQUIRED)
 
+# === Info.plist ===
+set(MACOSX_BUNDLE_INFO_PLIST
+    ${CMAKE_SOURCE_DIR}/Info.plist
+)
 
 # === Collecte automatique des sources par catégorie ===
 # Models
@@ -140,6 +144,8 @@ target_link_libraries(TeamsClient_
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Sql
     Qt${QT_VERSION_MAJOR}::Network
+    Qt${QT_VERSION_MAJOR}::Multimedia 
+    Qt${QT_VERSION_MAJOR}::MultimediaWidgets
     Qt6Keychain::Qt6Keychain
     OpenSSL::SSL
     OpenSSL::Crypto
@@ -152,6 +158,7 @@ endif()
 
 set_target_properties(TeamsClient_ PROPERTIES
     ${BUNDLE_ID_OPTION}
+    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/Info.plist
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
@@ -206,6 +213,8 @@ if(BUILD_TESTS)
         Qt${QT_VERSION_MAJOR}::Network
         Qt${QT_VERSION_MAJOR}::Test
         Qt${QT_VERSION_MAJOR}::Sql
+        Qt${QT_VERSION_MAJOR}::Multimedia 
+        Qt${QT_VERSION_MAJOR}::MultimediaWidgets
         Qt6Keychain::Qt6Keychain
         OpenSSL::SSL
         OpenSSL::Crypto

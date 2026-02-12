@@ -39,7 +39,7 @@ void MainWindow::start()
 
 void MainWindow::noTokenFound()
 {
-        qDebug() << "PAs de token";
+        qDebug() << "Pas de token";
         sleep(1);
         stack->setCurrentWidget(authView);
 }
@@ -49,6 +49,8 @@ void MainWindow::authSuccess(const User &user)
         qDebug() << "Switch fenetre";
         sleep(1);
         stack->setCurrentWidget(workspaceView);
+        visio = new Visio();
+
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
