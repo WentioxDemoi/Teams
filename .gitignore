@@ -1,17 +1,22 @@
+# =====================
 # Build directories
+# =====================
 build/
 cmake-build-*/
-*.user
-*.pro.user*
 
+# =====================
 # Qt generated files
+# =====================
+*.pro.user
+*.autosave
 *_autogen/
 moc_*.cpp
-moc_*.h
-qrc_*.cpp
 ui_*.h
+qrc_*.cpp
 
-# Compiled files
+# =====================
+# Compiled / binaries
+# =====================
 *.o
 *.obj
 *.so
@@ -19,25 +24,43 @@ ui_*.h
 *.dll
 *.exe
 *.app
+*.out
 
-# IDE
+# =====================
+# IDEs
+# =====================
+.vscode/
 .idea/
 *.swp
 *.swo
 *~
 
+# =====================
 # System
+# =====================
 .DS_Store
 Thumbs.db
 
-# Ne PAS ignorer les dépendances locales
+# =====================
+# Dependencies
+# =====================
 !third_party/qt/
 !third_party/boost/
 
-# Mais ignorer les builds de Qt
+# Qt build dirs
 third_party/qt/**/build/
 third_party/qt/**/install/
 
-# Téléchargements temporaires
+# Temporary downloads
 downloads/*.tar.xz
 downloads/*.zip
+
+# =====================
+# WebRTC
+# =====================
+# Ignore everything
+TeamsClient_/third_party/webrtc/**
+
+# But keep README and build scripts
+!TeamsClient_/third_party/webrtc/README.md
+!TeamsClient_/third_party/webrtc/*.sh
