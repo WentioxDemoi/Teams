@@ -19,7 +19,6 @@ void Visio::start()
     layout = new QVBoxLayout(mainWidget);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-
     // Vidéo distante (plein écran)
     remoteVideo = new RemoteVideo(mainWidget);
     layout->addWidget(remoteVideo);

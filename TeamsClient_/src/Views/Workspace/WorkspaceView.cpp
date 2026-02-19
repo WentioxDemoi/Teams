@@ -28,6 +28,13 @@ WorkspaceView::WorkspaceView(QWidget *parent)
 
     mainLayout_->addWidget(titleLabel_);
     mainLayout_->addWidget(contentWidget_, 1);
-
+    visioButton_ = new QPushButton("Start Visio");
+    mainLayout_->addWidget(visioButton_);
+    connect(visioButton_, &QPushButton::pressed, this, &WorkspaceView::startVisio);
     setLayout(mainLayout_);
+}
+
+void WorkspaceView::startVisio()
+{
+    visio_ = new Visio(this);
 }

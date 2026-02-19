@@ -5,7 +5,6 @@ SessionService::SessionService(IAuthService* service, QObject* parent)
       ISessionService(parent)
 {
     Q_ASSERT(authService_);
-
     connect(authService_, &AuthService::authSuccess,
             this, &SessionService::authSuccess);
     connect(authService_, &AuthService::authError,

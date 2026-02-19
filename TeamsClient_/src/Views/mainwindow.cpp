@@ -49,7 +49,6 @@ void MainWindow::authSuccess(const User &user)
         qDebug() << "Switch fenetre";
         sleep(1);
         stack->setCurrentWidget(workspaceView);
-        visio = new Visio();
 
 }
 

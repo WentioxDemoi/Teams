@@ -9,6 +9,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_OSX_ARCHITECTURES "arm64")   # Pour Apple Silicon
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++") # STL correcte pour macOS
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(BUILD_TESTS "Build the tests" OFF)
 
 # === OpenSSL ===
@@ -139,6 +140,17 @@ target_include_directories(TeamsClient_ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
 )
 
+target_include_directories(TeamsClient_ SYSTEM PRIVATE # Indique au compilateur de traiter ces headers comme des headers système pour éviter les warnings systèmes
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/webrtc/src/third_party/abseil-cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/webrtc/src
+)
+
+target_compile_definitions(TeamsClient_ PRIVATE
+    WEBRTC_MAC
+    WEBRTC_POSIX
+    WEBRTC_ARCH_LITTLE_ENDIAN
+)
+
 target_link_libraries(TeamsClient_
     PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
@@ -149,6 +161,11 @@ target_link_libraries(TeamsClient_
     Qt6Keychain::Qt6Keychain
     OpenSSL::SSL
     OpenSSL::Crypto
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/webrtc/lib/libwebrtc.a
+    "-framework CoreFoundation"
+    "-framework CoreAudio"
+    "-framework AudioToolbox"
+    "-framework VideoToolbox"
 )
 
 get_target_property(QT6_VERSION Qt6::Core VERSION)
@@ -177,6 +194,13 @@ qt_finalize_executable(TeamsClient_)
 
 if(BUILD_TESTS)
     enable_testing()
+
+
+    target_compile_definitions(TeamsClient_Tests PRIVATE
+        WEBRTC_MAC
+        WEBRTC_POSIX
+        WEBRTC_ARCH_LITTLE_ENDIAN
+    )
 
     # Collecte des tests
     file(GLOB_RECURSE TEST_SOURCES "Tests/*.cpp")

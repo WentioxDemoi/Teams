@@ -52,13 +52,51 @@
         "iostream": "cpp"
     },
     "files.watcherExclude": {
-        "**/build/**": true,
-        "**/.git/**": true,
-        "**/node_modules/**": true,
-        "**/out/**": true
-    },
+    "**/build/**": true,
+    "**/.git/**": true,
+    "**/node_modules/**": true,
+    "**/third_party/**": true
+},
+"files.exclude": {
+    // "**/third_party": true,
+},
+"C_Cpp.files.exclude": {
+    // "**/build/**": true,
+    // "**/third_party/webrtc/depot_tools/**": true,
+    // "**/third_party/webrtc/_bad_scm/**": true,
+    // "**/third_party/webrtc/src/build/**": true,
+    // "**/third_party/webrtc/src/buildtools/**": true,
+    // "**/third_party/webrtc/src/tools/**": true,
+    // "**/third_party/webrtc/src/tools_webrtc/**": true,
+    // "**/third_party/webrtc/src/test/**": true,
+    // "**/third_party/webrtc/src/testing/**": true,
+    // "**/third_party/webrtc/src/examples/**": true,
+    // "**/third_party/webrtc/src/docs/**": true,
+    // "**/third_party/webrtc/src/data/**": true,
+    // "**/third_party/webrtc/src/resources/**": true,
+    // "**/third_party/webrtc/src/out/**": true,
+    // "/Users/remidesbordes/Qt/6.9.3/macos/bin/**": true,
+    // "/Users/remidesbordes/Qt/6.9.3/macos/doc/**": true,
+    // "/Users/remidesbordes/Qt/6.9.3/macos/translations/**": true,
+    // "/Users/remidesbordes/Qt/6.9.3/macos/qml/**": true,
+    // "/Users/remidesbordes/Qt/6.9.3/macos/plugins/**": true,
+    // "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/**": true,
+    // "/Users/remidesbordes/Qt/6.9.3/macos/mkspecs/**": true,
+    // "/Users/remidesbordes/Qt/6.9.3/macos/modules/**": true,
+    // "/Users/remidesbordes/Qt/6.9.3/macos/phrasebooks/**": true,
+    // "/Users/remidesbordes/Qt/6.9.3/macos/sbom/**": true,
+    // "/Users/remidesbordes/Qt/6.9.3/macos/libexec/**": true,
+    // "/Users/remidesbordes/Qt/6.9.3/macos/share/**": true
+},
     "search.exclude": {
         "**/build/**": true
     },
-    "C_Cpp.errorSquiggles": "enabled"
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "clangd.path": "/opt/homebrew/opt/llvm/bin/clangd",
+    "clangd.arguments": [
+        "--compile-commands-dir=/Users/remidesbordes/Documents/Teams/TeamsClient_/build",
+        "--background-index",
+        "--clang-tidy=false"
+]
 }

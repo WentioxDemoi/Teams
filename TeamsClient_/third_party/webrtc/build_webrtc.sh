@@ -55,6 +55,10 @@ is_component_build=false
 use_custom_libcxx=false
 target_os="mac"
 target_cpu="arm64"
+
+rtc_enable_vp8=true
+rtc_enable_vp9=true
+rtc_enable_h264=true
 '
 # A adapter en fonction du proco
 

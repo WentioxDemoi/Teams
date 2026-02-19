@@ -24,6 +24,7 @@ void DatabaseManager::initialize() {
     // Create connection pool
     pool_ = std::make_unique<ConnectionPool>(connection_string,
                                              config_.db_pool_size());
+                                    
 
     std::cout << "[DatabaseManager] Initialized successfully" << std::endl;
     std::cout << "  - Database: " << config_.db_name() << std::endl;
