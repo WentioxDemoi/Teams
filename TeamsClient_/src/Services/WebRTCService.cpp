@@ -27,11 +27,12 @@ void WebRTCService::connectToSignaling() {
 
 void WebRTCService::initialize() {
   factory_ = webrtc::CreatePeerConnectionFactory(
-      nullptr, nullptr, nullptr, nullptr,
+      nullptr, nullptr, nullptr, 
+      nullptr,
       webrtc::CreateBuiltinAudioEncoderFactory(),
       webrtc::CreateBuiltinAudioDecoderFactory(),
-      nullptr, //webrtc::CreateBuiltinVideoEncoderFactory(),
-      nullptr, //webrtc::CreateBuiltinVideoDecoderFactory()
+      webrtc::CreateBuiltinVideoEncoderFactory(),
+      webrtc::CreateBuiltinVideoDecoderFactory(),
        nullptr, nullptr);
 
 //   videoSource_ = webrtc::make_ref_counted<QtVideoSource>();
@@ -43,30 +44,30 @@ void WebRTCService::initialize() {
 
 void WebRTCService::startCall() {
   qDebug() << "User initiates call";
-  peer_->CreateOffer(this, {});
+//   peer_->CreateOffer(this, {});
 }
 
 void WebRTCService::onOffer(const QString &sdp) {
-    webrtc::SdpParseError err;
-    auto desc = webrtc::CreateSessionDescription(
-        webrtc::SdpType::kOffer, sdp.toStdString(), &err);
-    peer_->SetRemoteDescription(
-        std::move(desc),
-        RemoteDescObserver::Create([](webrtc::RTCError e) {
-            if (!e.ok()) qDebug() << "SetRemoteDescription error:" << e.message();
-        }));
-    peer_->CreateAnswer(this, {});
+    // webrtc::SdpParseError err;
+    // auto desc = webrtc::CreateSessionDescription(
+    //     webrtc::SdpType::kOffer, sdp.toStdString(), &err);
+    // peer_->SetRemoteDescription(
+    //     std::move(desc),
+    //     RemoteDescObserver::Create([](webrtc::RTCError e) {
+    //         if (!e.ok()) qDebug() << "SetRemoteDescription error:" << e.message();
+    //     }));
+    // peer_->CreateAnswer(this, {});
 }
 
 void WebRTCService::onAnswer(const QString &sdp) {
-    webrtc::SdpParseError err;
-    auto desc = webrtc::CreateSessionDescription(
-        webrtc::SdpType::kAnswer, sdp.toStdString(), &err);
-    peer_->SetRemoteDescription(
-        std::move(desc),
-        RemoteDescObserver::Create([](webrtc::RTCError e) {
-            if (!e.ok()) qDebug() << "SetRemoteDescription error:" << e.message();
-        }));
+    // webrtc::SdpParseError err;
+    // auto desc = webrtc::CreateSessionDescription(
+    //     webrtc::SdpType::kAnswer, sdp.toStdString(), &err);
+    // peer_->SetRemoteDescription(
+    //     std::move(desc),
+    //     RemoteDescObserver::Create([](webrtc::RTCError e) {
+    //         if (!e.ok()) qDebug() << "SetRemoteDescription error:" << e.message();
+    //     }));
 }
 
 void WebRTCService::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
@@ -89,11 +90,11 @@ void WebRTCService::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
 
 void WebRTCService::onIce(const QString &candidate, const QString &mid,
                           int index) {
-  webrtc::SdpParseError err;
-  auto ice = webrtc::CreateIceCandidate(mid.toStdString(), index,
-                                        candidate.toStdString(), &err);
+//   webrtc::SdpParseError err;
+//   auto ice = webrtc::CreateIceCandidate(mid.toStdString(), index,
+//                                         candidate.toStdString(), &err);
 
-  peer_->AddIceCandidate(ice);
+//   peer_->AddIceCandidate(ice);
 }
 
 void WebRTCService::OnIceCandidate(

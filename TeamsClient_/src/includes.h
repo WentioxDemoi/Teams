@@ -60,19 +60,27 @@
 
 
 
-#include <api/peer_connection_interface.h>
-#include <api/create_peerconnection_factory.h>
-#include <api/audio_codecs/builtin_audio_encoder_factory.h>
-#include <api/audio_codecs/builtin_audio_decoder_factory.h>
-#include <api/video_codecs/builtin_video_encoder_factory.h>
-#include <api/video_codecs/builtin_video_decoder_factory.h>
-#include <rtc_base/ref_counted_object.h>
-
+#include <QCamera>
+#include <QVideoSink>
+#include <QMediaCaptureSession>
+#include <QVideoWidget>
+#include <QMediaDevices>
+#include <QtCore/qtmetamacros.h>
+#include <QtMultimedia/qmediacapturesession.h>
+#include <QtMultimedia/qvideosink.h>
+#include <cstddef>
+#include <QtWidgets/qframe.h>
+#include <libyuv.h>
+#include <QVideoFrame>
+#include "api/video/i420_buffer.h"  // WebRTC I420BufferInterface
+#include "api/scoped_refptr.h"
 #include <QSslSocket>
 #include <QByteArray>
+#include <QtCore/qsize.h>
 
-#include <api/media_stream_interface.h>
-#include <rtc_base/ref_counted_object.h>
+
+// #include <api/media_stream_interface.h>
+// #include <rtc_base/ref_counted_object.h>
 
 #include <memory>
 #include <string>

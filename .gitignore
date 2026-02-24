@@ -60,7 +60,6 @@ downloads/*.zip
 # =====================
 # Ignore everything
 TeamsClient_/third_party/webrtc/**
+TeamsClient_/third_party/libyuv/**
 
 # But keep README and build scripts
-!TeamsClient_/third_party/webrtc/README.md
-!TeamsClient_/third_party/webrtc/*.sh

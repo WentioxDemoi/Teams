@@ -36,6 +36,8 @@ Le script fera les étapes suivantes :
 
 Les headers et la lib sont prêts à être utilisés dans votre projet C++.
 
+
+
 ## Utilisation dans CMake
 
 Exemple minimal pour inclure WebRTC dans votre cible :
@@ -70,6 +72,7 @@ third_party/webrtc/
 	•	Ne jamais pusher src/, lib/ ou depot_tools/ dans GitHub.
 	•	La build est macOS spécifique ; pour Linux/Windows, adapter le script GN.
 	•	WebRTC utilise STUN/TURN et signalisation pour le P2P : le code inclus ici ne fournit pas de serveur de signalisation.
+	
 
 
 ## Licence

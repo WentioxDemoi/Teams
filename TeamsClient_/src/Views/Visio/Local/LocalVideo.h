@@ -2,45 +2,26 @@
 #define LOCALVIDEO_H
 
 #include "../../../includes.h"
-
-#include <QCamera>
-#include <QMediaCaptureSession>
-#include <QVideoWidget>
-#include <QMediaDevices>
+#include "../../../Utils/FrameConverter.h"
 
 class LocalVideo : public QWidget {
     Q_OBJECT
 
 public:
-    explicit LocalVideo(QWidget *parent = nullptr)
-        : QWidget(parent)
-    {
-        setFixedSize(320, 180);
+    explicit LocalVideo(QWidget *parent = nullptr);
 
-        videoWidget = new QVideoWidget(this);
-        videoWidget->setGeometry(rect());
-
-        camera = new QCamera(QMediaDevices::defaultVideoInput(), this);
-        captureSession = new QMediaCaptureSession(this);
-
-        captureSession->setCamera(camera);
-        captureSession->setVideoOutput(videoWidget);
-
-        camera->start();
-    }
+private slots:
+    void OnFrameChanged(const QVideoFrame &frame);
+    void OnP2PChange(bool inProgress);
 
 protected:
-    void resizeEvent(QResizeEvent* event) override
-    {
-        QWidget::resizeEvent(event);
-        if (videoWidget)
-            videoWidget->setGeometry(rect());
-    }
 
 private:
+    QVideoSink *sink = nullptr;
     QCamera* camera = nullptr;
     QMediaCaptureSession* captureSession = nullptr;
     QVideoWidget* videoWidget = nullptr;
+    bool p2pInProgress = false;
 };
 
 #endif

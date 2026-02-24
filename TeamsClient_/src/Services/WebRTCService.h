@@ -1,6 +1,7 @@
 #ifndef WEBRTCSERVICE_H
 #define WEBRTCSERVICE_H
 
+#include "../webrtc_includes.h" 
 #include "../includes.h"
 
 class WebRTCService : public QObject,
@@ -60,7 +61,6 @@ private:
   // --- WebRTC ---
   webrtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;
   webrtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_;
-
   webrtc::scoped_refptr<webrtc::VideoTrackSourceInterface> videoSource_;
 
   void initPeerConnection();
