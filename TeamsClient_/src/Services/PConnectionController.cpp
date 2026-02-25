@@ -22,8 +22,8 @@ PConnectionController::PConnectionController() {
   peer_ = factory_->CreatePeerConnectionOrError(config, std::move(deps)).MoveValue();
   RTC_CHECK(peer_) << "Failed to create PeerConnection";
 
-  // auto videoTrack = factory_->CreateVideoTrack(Sources::instance().localVideo(), "video0");
-  // peer_->AddTrack(videoTrack, {"stream0"});
+  auto videoTrack = factory_->CreateVideoTrack(Sources::instance().localVideo(), "video0");
+  peer_->AddTrack(videoTrack, {"stream0"});
 }
 
 void PConnectionController::createOffer() {

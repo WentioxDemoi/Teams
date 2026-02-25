@@ -4,14 +4,11 @@
 
 #include "../includes.h"
 #include "../webrtc_includes.h"
-// #include "api/media_stream_interface.h"
-// #include "api/video/video_frame.h"
 
 
 class LocalVideoSource : public webrtc::AdaptedVideoTrackSource {
 public:
     LocalVideoSource() {};
-    // Tu appelles ça depuis OnFrameChanged
     void PushFrame(const webrtc::scoped_refptr<webrtc::I420BufferInterface>& buffer) {
         int64_t timestampUs = webrtc::TimeMicros();
         webrtc::VideoFrame frame = webrtc::VideoFrame::Builder()
