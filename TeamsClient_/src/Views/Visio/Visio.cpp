@@ -1,4 +1,5 @@
 #include "Visio.h"
+#include "Visio/Local/LocalVideo.h"
 
 Visio::Visio(QWidget* parent)
     : QMainWindow(parent)
@@ -19,15 +20,6 @@ void Visio::start()
     layout = new QVBoxLayout(mainWidget);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    // Vidéo distante (plein écran)
-    remoteVideo = new RemoteVideo(mainWidget);
-    layout->addWidget(remoteVideo);
-
-    // Vidéo locale (overlay)
-    localVideo = new LocalVideo(mainWidget);
-    // localVideo->raise();
-
-    updateLocalVideoPosition();
 }
 
 void Visio::resizeEvent(QResizeEvent* event)
@@ -52,4 +44,19 @@ void Visio::closeEvent(QCloseEvent* event)
 {
     // Plus tard : stop WebRTC, caméra, audio, etc.
     // event->accept();
+}
+
+void Visio::startReceiver()
+{
+    remoteVideo = new RemoteVideo(mainWidget);
+    layout->addWidget(remoteVideo);
+}
+
+void Visio::startSender()
+{ 
+    localVideo = new LocalVideo(mainWidget); 
+    layout->addWidget(localVideo);
+    localVideo->raise();
+    updateLocalVideoPosition();
+    connect(this, &Visio::OnP2PChange, localVideo, &LocalVideo::OnP2PChange);
 }

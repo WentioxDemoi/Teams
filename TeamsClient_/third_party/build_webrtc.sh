@@ -87,18 +87,17 @@ gn gen "$OUT_DIR" --args='
 use_custom_libcxx=false
 is_debug=false
 is_component_build=false
-
 target_os="mac"
 target_cpu="arm64"
-
 rtc_include_tests=false
 rtc_build_examples=false
 rtc_build_tools=false
 rtc_build_libvpx=true
-
 rtc_use_h264=true
 proprietary_codecs=true
 ffmpeg_branding="Chrome"
+rtc_include_internal_video_codecs=true
+use_rtti=true
 '
 # rtc_include_internal_video_codecs=true # Inutile normalement, a voir au prochain build
 # A adapter en fonction du proco

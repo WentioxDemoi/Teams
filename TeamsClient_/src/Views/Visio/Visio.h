@@ -11,13 +11,20 @@ class Visio : public QMainWindow
 
 public:
     explicit Visio(QWidget* parent = nullptr);
+    void startSender();
+    void startReceiver();
 
 protected:
     void resizeEvent(QResizeEvent* event) override;
     void closeEvent(QCloseEvent* event) override;
 
+public slots:
+
+signals:
+    void OnP2PChange(bool inProgress);
 private:
     void start();
+
     void updateLocalVideoPosition();
 
 private:

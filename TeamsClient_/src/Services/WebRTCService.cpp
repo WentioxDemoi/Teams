@@ -1,130 +1,64 @@
 #include "WebRTCService.h"
+#include <QtCore/qcoreapplication.h>
 
-WebRTCService::WebRTCService(QObject *parent) : QObject(parent) {
-  connect(&socket_, &QSslSocket::encrypted, this,
-          [this]() { qDebug() << "WebRTC signaling connected"; });
 
-  connect(&socket_, &QSslSocket::readyRead, this, [this]() {
-    buffer_ += socket_.readAll();
-    while (buffer_.contains('\n')) {
-      QByteArray msg = buffer_.left(buffer_.indexOf('\n'));
-      buffer_.remove(0, buffer_.indexOf('\n') + 1);
-      handleServerMessage(msg);
-    }
-  });
+// WebRTCService.cpp (extrait constructeur)
 
-  connect(&socket_, &QSslSocket::sslErrors, this,
-          [this](const QList<QSslError> &errors) {
-            socket_.ignoreSslErrors(errors);
-          });
-connectToSignaling();
-}
-
-void WebRTCService::connectToSignaling() {
-  if (socket_.state() == QAbstractSocket::UnconnectedState)
-    socket_.connectToHostEncrypted("localhost", 8081);
-}
-
-void WebRTCService::initialize() {
-  factory_ = webrtc::CreatePeerConnectionFactory(
-      nullptr, nullptr, nullptr, 
-      nullptr,
-      webrtc::CreateBuiltinAudioEncoderFactory(),
-      webrtc::CreateBuiltinAudioDecoderFactory(),
-      webrtc::CreateBuiltinVideoEncoderFactory(),
-      webrtc::CreateBuiltinVideoDecoderFactory(),
-       nullptr, nullptr);
-
-//   videoSource_ = webrtc::make_ref_counted<QtVideoSource>();
-//   initPeerConnection();
-
-//   auto track = factory_->CreateVideoTrack("video", videoSource_);
-//   peer_->AddTrack(track, {"stream"});
-}
-
-void WebRTCService::startCall() {
-  qDebug() << "User initiates call";
-//   peer_->CreateOffer(this, {});
-}
-
-void WebRTCService::onOffer(const QString &sdp) {
-    // webrtc::SdpParseError err;
-    // auto desc = webrtc::CreateSessionDescription(
-    //     webrtc::SdpType::kOffer, sdp.toStdString(), &err);
-    // peer_->SetRemoteDescription(
-    //     std::move(desc),
-    //     RemoteDescObserver::Create([](webrtc::RTCError e) {
-    //         if (!e.ok()) qDebug() << "SetRemoteDescription error:" << e.message();
-    //     }));
-    // peer_->CreateAnswer(this, {});
-}
-
-void WebRTCService::onAnswer(const QString &sdp) {
-    // webrtc::SdpParseError err;
-    // auto desc = webrtc::CreateSessionDescription(
-    //     webrtc::SdpType::kAnswer, sdp.toStdString(), &err);
-    // peer_->SetRemoteDescription(
-    //     std::move(desc),
-    //     RemoteDescObserver::Create([](webrtc::RTCError e) {
-    //         if (!e.ok()) qDebug() << "SetRemoteDescription error:" << e.message();
-    //     }));
-}
-
-void WebRTCService::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
-    // Capture before moving
-    std::string sdp, type;
-    desc->ToString(&sdp);
-    type = desc->type();
-
-    peer_->SetLocalDescription(
-        absl::WrapUnique(desc),
-        LocalDescObserver::Create([](webrtc::RTCError e) {
-            if (!e.ok()) qDebug() << "SetLocalDescription error:" << e.message();
-        }));
-
-    QJsonObject msg;
-    msg["type"] = QString::fromStdString(type);
-    msg["sdp"]  = QString::fromStdString(sdp);
-    sendJson(msg);
-}
-
-void WebRTCService::onIce(const QString &candidate, const QString &mid,
-                          int index) {
-//   webrtc::SdpParseError err;
-//   auto ice = webrtc::CreateIceCandidate(mid.toStdString(), index,
-//                                         candidate.toStdString(), &err);
-
-//   peer_->AddIceCandidate(ice);
-}
-
-void WebRTCService::OnIceCandidate(
-    const webrtc::IceCandidateInterface* candidate)
+WebRTCService::WebRTCService(QObject* parent)
+    : QObject(parent),
+      signalingClient_(new SignalingClient(this)),
+      pConnectionController_(std::make_unique<PConnectionController>())
 {
-    std::string sdp;
-    candidate->ToString(&sdp);
+    // --- PC → Signaling ---
+    pConnectionController_->onLocalOffer = [this](const std::string& sdp) {
+        signalingClient_->sendOffer(QString::fromStdString(sdp));
+    };
 
-    QJsonObject msg;
-    msg["type"] = "ice";
-    msg["candidate"] = QString::fromStdString(sdp);
-    msg["sdpMid"] = QString::fromStdString(candidate->sdp_mid());
-    msg["sdpMLineIndex"] = candidate->sdp_mline_index();
+    pConnectionController_->onLocalAnswer = [this](const std::string& sdp) {
+        signalingClient_->sendAnswer(QString::fromStdString(sdp));
+    };
 
-    sendJson(msg);
+    pConnectionController_->onLocalIce = [this](const std::string& c,
+                             const std::string& mid,
+                             int index) {
+        signalingClient_->sendIce(QString::fromStdString(c));
+    };
+
+    // --- Signaling → PC ---
+    connect(signalingClient_, &SignalingClient::offerReceived,
+            this, &WebRTCService::onRemoteOffer);
+
+    connect(signalingClient_, &SignalingClient::answerReceived,
+            this, &WebRTCService::onRemoteAnswer);
+
+    connect(signalingClient_, &SignalingClient::iceReceived,
+            this, &WebRTCService::onRemoteIce);
 }
 
-void WebRTCService::handleServerMessage(const QByteArray &data) {
-  QJsonDocument doc = QJsonDocument::fromJson(data);
-  if (!doc.isObject())
-    return;
 
-  QJsonObject msg = doc.object();
-  QString type = msg["type"].toString();
+  void WebRTCService::startCall() {
+    pConnectionController_->createOffer();
+  }
+  void WebRTCService::acceptCall() {
+    pConnectionController_->createAnswer();
+  }
+  void WebRTCService::hangup() {
+    pConnectionController_->close();
+  }
 
-  if (type == "offer")
-    onOffer(msg["sdp"].toString());
-  else if (type == "answer")
-    onAnswer(msg["sdp"].toString());
-  else if (type == "ice")
-    onIce(msg["candidate"].toString(), msg["sdpMid"].toString(),
-          msg["sdpMLineIndex"].toInt());
-}
+  void WebRTCService::onRemoteOffer(QString sdp) {
+    pConnectionController_->setRemoteOffer(sdp.toStdString());
+  }
+
+  void WebRTCService::onRemoteAnswer(QString sdp) {
+    pConnectionController_->setRemoteAnswer(sdp.toStdString());
+  }
+
+  void WebRTCService::onRemoteIce(QString candidate, QString mid, int index) {
+    pConnectionController_->addIceCandidate(candidate.toStdString(), mid.toStdString(), index);
+  }
+
+  void WebRTCService::disconnectFromServer()
+  {
+    //Appeler le disco de signaling qui appelera celui de network.
+  }

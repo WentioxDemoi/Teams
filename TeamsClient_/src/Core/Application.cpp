@@ -94,6 +94,8 @@
 
 
 #include "Application.h"
+#include "WebRTCService.h"
+#include "WebRTCViewModel.h"
 
 Application::Application(int &argc, char **argv) : qtApp(argc, argv)
 {
@@ -160,7 +162,9 @@ void Application::initializeServices()
   auto &locator = ServiceLocator::instance();
 
   locator.registerService<IUserService>(new UserService(appRoot));
-  locator.registerService<IAuthNetworkService>(new AuthNetworkService(appRoot));
+  locator.registerService<IAuthNetworkService>(new AuthNetworkService(nullptr, appRoot));
+  locator.registerService<WebRTCService>(new WebRTCService(appRoot));
+  
 
   
   initializeViewModels();
@@ -170,6 +174,7 @@ void Application::initializeViewModels()
 {
   auto &locator = ViewModelsLocator::instance();
   locator.registerViewModels<AuthViewModel>(new AuthViewModel(nullptr, appRoot));
+  locator.registerViewModels<WebRTCViewModel>(new WebRTCViewModel(nullptr, appRoot));
   initializeViews();
 }
 

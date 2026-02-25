@@ -9,7 +9,6 @@
 #include "Interfaces/IAuthService.h"
 #include "AuthNetworkService.h"
 #include "UserService.h"
-#include "AuthService.h"
 #include "../Utils/TokenManager.h"
 
 /**

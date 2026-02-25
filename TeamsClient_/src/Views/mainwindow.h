@@ -3,6 +3,7 @@
 
 #include "../Models/User.h"
 #include "../ViewModels/AuthViewModel.h"
+#include "../ViewModels/WebRTCViewModel.h"
 #include "Views/Auth/AuthView.h"
 #include "Views/Workspace/WorkspaceView.h"
 #include "Loading/LoadingView.h"
@@ -31,6 +32,7 @@ public:
 
 private:
   AuthViewModel *authViewModel;
+  WebRTCViewModel *webRTCViewModel;
   WorkspaceView *workspaceView;
   AuthView *authView;
   LoadingView *loadingView;

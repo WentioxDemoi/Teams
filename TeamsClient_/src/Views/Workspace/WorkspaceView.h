@@ -13,7 +13,16 @@ class WorkspaceView : public QWidget
 
 public:
     explicit WorkspaceView(QWidget *parent = nullptr);
+    void startSender();
+    void startReceiver();
+
+signals:
     void startVisio();
+    void OnP2PChange(bool inProgress);
+    void initP2P();
+
+public slots:
+    
 
 private:
     QLabel *titleLabel_;

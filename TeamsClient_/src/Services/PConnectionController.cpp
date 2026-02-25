@@ -1,0 +1,75 @@
+#include "PConnectionController.h"
+
+#include "PConnectionObserver.h"
+#include "Sources.h"
+#include "WebRTCObservers.h"
+
+PConnectionController::PConnectionController() {
+  factory_ = webrtc::CreatePeerConnectionFactory(
+      nullptr, nullptr, nullptr, nullptr, webrtc::CreateBuiltinAudioEncoderFactory(),
+      webrtc::CreateBuiltinAudioDecoderFactory(), webrtc::CreateBuiltinVideoEncoderFactory(),
+      webrtc::CreateBuiltinVideoDecoderFactory(), nullptr, nullptr);
+  RTC_CHECK(factory_) << "Failed to create PeerConnectionFactory";
+
+  webrtc::PeerConnectionInterface::RTCConfiguration config;
+  webrtc::PeerConnectionInterface::IceServer stun;
+  stun.urls.push_back("stun:stun.l.google.com:19302");
+  config.servers.push_back(stun);
+
+  // scoped_refptr obligatoire : WebRTC garde une référence interne sur l'observer
+  observer_ = webrtc::scoped_refptr<PConnectionObserver>(new PConnectionObserver(this));
+  webrtc::PeerConnectionDependencies deps(observer_.get());
+  peer_ = factory_->CreatePeerConnectionOrError(config, std::move(deps)).MoveValue();
+  RTC_CHECK(peer_) << "Failed to create PeerConnection";
+
+  // auto videoTrack = factory_->CreateVideoTrack(Sources::instance().localVideo(), "video0");
+  // peer_->AddTrack(videoTrack, {"stream0"});
+}
+
+void PConnectionController::createOffer() {
+  auto obs = webrtc::scoped_refptr<CreateSdpObserver>(
+      new CreateSdpObserver([this](const std::string& sdp) {
+        peer_->SetLocalDescription(
+            webrtc::CreateSessionDescription(webrtc::SdpType::kOffer, sdp),
+            webrtc::scoped_refptr<SetLocalSdpObserver>(new SetLocalSdpObserver()));
+        if (onLocalOffer) onLocalOffer(sdp);
+      }));
+  peer_->CreateOffer(obs.get(), {});
+}
+
+void PConnectionController::createAnswer() {
+  auto obs = webrtc::scoped_refptr<CreateSdpObserver>(
+      new CreateSdpObserver([this](const std::string& sdp) {
+        peer_->SetLocalDescription(
+            webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp),
+            webrtc::scoped_refptr<SetLocalSdpObserver>(new SetLocalSdpObserver()));
+        if (onLocalAnswer) onLocalAnswer(sdp);
+      }));
+  peer_->CreateAnswer(obs.get(), {});
+}
+
+void PConnectionController::setRemoteOffer(const std::string& sdp) {
+  peer_->SetRemoteDescription(
+      webrtc::CreateSessionDescription(webrtc::SdpType::kOffer, sdp),
+      webrtc::scoped_refptr<SetRemoteSdpObserver>(new SetRemoteSdpObserver()));
+}
+
+void PConnectionController::setRemoteAnswer(const std::string& sdp) {
+  peer_->SetRemoteDescription(
+      webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp),
+      webrtc::scoped_refptr<SetRemoteSdpObserver>(new SetRemoteSdpObserver()));
+}
+
+void PConnectionController::addIceCandidate(const std::string& candidate, const std::string& mid,
+                                            int index) {
+  webrtc::SdpParseError error;
+  auto ice = webrtc::CreateIceCandidate(mid, index, candidate, &error);
+  if (ice)
+    peer_->AddIceCandidate(ice);
+  else
+    RTC_LOG(LS_ERROR) << "[ICE] Parse error: " << error.description;
+}
+
+void PConnectionController::close() {
+  if (peer_) peer_->Close();
+}

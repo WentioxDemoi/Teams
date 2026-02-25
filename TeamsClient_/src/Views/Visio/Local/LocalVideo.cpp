@@ -1,4 +1,5 @@
 #include "LocalVideo.h"
+#include "Sources.h"
 
 LocalVideo::LocalVideo(QWidget *parent) : QWidget(parent) {
   setFixedSize(320, 180);
@@ -15,6 +16,7 @@ LocalVideo::LocalVideo(QWidget *parent) : QWidget(parent) {
   connect(sink, &QVideoSink::videoFrameChanged, this,
           &LocalVideo::OnFrameChanged);
   camera->start();
+  videoSource = Sources::instance().localVideo();
 }
 
 void LocalVideo::OnFrameChanged(const QVideoFrame &frame) {
@@ -35,6 +37,7 @@ void LocalVideo::OnFrameChanged(const QVideoFrame &frame) {
       return;
     }
 
+    videoSource->PushFrame(i420Buffer);
     // SendFrameToWebRTC(i420Buffer);
   }
 }

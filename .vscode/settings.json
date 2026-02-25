@@ -60,6 +60,7 @@
 "files.exclude": {
     // "**/third_party": true,
 },
+"clang-format.style": "{ BasedOnStyle: Google, ColumnLimit: 100 }",
 "C_Cpp.files.exclude": {
     // "**/build/**": true,
     // "**/third_party/webrtc/depot_tools/**": true,

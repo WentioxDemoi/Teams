@@ -142,6 +142,8 @@ set(WEBRTC_INCLUDE_DIRS
     ${WEBRTC_DIR}/src/api
     ${WEBRTC_DIR}/src/api/rtc_base
     ${WEBRTC_DIR}/src/third_party/abseil-cpp
+    ${WEBRTC_DIR}/src/api/video
+    ${WEBRTC_DIR}/src/api/media_stream
     # ${WEBRTC_DIR}/src/include
     # ${WEBRTC_DIR}/src/lib
     # ${WEBRTC_DIR}/src/api
@@ -170,6 +172,7 @@ target_compile_definitions(TeamsClient_ PRIVATE
     WEBRTC_MAC
     WEBRTC_POSIX
     WEBRTC_ARCH_LITTLE_ENDIAN
+    NDEBUG
 )
 
 # file(GLOB_RECURSE WEBRTC_LIBS
@@ -178,7 +181,9 @@ target_compile_definitions(TeamsClient_ PRIVATE
 
 target_compile_features(TeamsClient_ PRIVATE cxx_std_20)
 # target_compile_options(TeamsClient_ PRIVATE -fno-rtti)
-
+if(APPLE)
+    target_link_options(TeamsClient_ PRIVATE "-Wl,-force_load,${WEBRTC_LIB}")
+endif()
 target_link_libraries(TeamsClient_
     PRIVATE
     

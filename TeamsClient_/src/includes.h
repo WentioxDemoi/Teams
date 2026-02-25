@@ -72,15 +72,15 @@
 #include <QtWidgets/qframe.h>
 #include <libyuv.h>
 #include <QVideoFrame>
-#include "api/video/i420_buffer.h"  // WebRTC I420BufferInterface
-#include "api/scoped_refptr.h"
+
 #include <QSslSocket>
 #include <QByteArray>
 #include <QtCore/qsize.h>
 
 
+
 // #include <api/media_stream_interface.h>
-// #include <rtc_base/ref_counted_object.h>
+
 
 #include <memory>
 #include <string>

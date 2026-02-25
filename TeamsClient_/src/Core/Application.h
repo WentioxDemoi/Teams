@@ -11,6 +11,7 @@
 
 // ViewModels
 #include "../ViewModels/AuthViewModel.h"
+#include "../ViewModels/WebRTCViewModel.h"
 
 // Locators
 #include "ServiceLocator.h"

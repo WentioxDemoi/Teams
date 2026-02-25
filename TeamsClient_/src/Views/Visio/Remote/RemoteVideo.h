@@ -8,7 +8,7 @@ class RemoteVideo : public QWidget {
 
 public:
   explicit RemoteVideo(QWidget *parent = nullptr) : QWidget(parent) {
-        qDebug()<< "ok"; 
+        qDebug()<< "Remote vidéo started"; 
   };
 
 private:

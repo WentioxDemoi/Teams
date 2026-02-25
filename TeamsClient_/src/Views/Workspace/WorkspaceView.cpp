@@ -1,4 +1,5 @@
 #include "WorkspaceView.h"
+#include "Visio/Visio.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -30,11 +31,21 @@ WorkspaceView::WorkspaceView(QWidget *parent)
     mainLayout_->addWidget(contentWidget_, 1);
     visioButton_ = new QPushButton("Start Visio");
     mainLayout_->addWidget(visioButton_);
-    connect(visioButton_, &QPushButton::pressed, this, &WorkspaceView::startVisio);
+    connect(visioButton_, &QPushButton::pressed, this, &WorkspaceView::startSender);
+    visio_ = new Visio(this);
     setLayout(mainLayout_);
+    connect(this, &WorkspaceView::OnP2PChange, visio_, &Visio::OnP2PChange);
 }
 
-void WorkspaceView::startVisio()
+
+void WorkspaceView::startReceiver()
 {
-    visio_ = new Visio(this);
+    visio_->startReceiver();
 }
+
+void WorkspaceView::startSender()
+{
+    emit initP2P();
+    visio_->startSender();
+}
+
