@@ -1,5 +1,6 @@
 #include "LocalVideo.h"
 #include "Sources.h"
+#include <QtCore/qdebug.h>
 
 LocalVideo::LocalVideo(QWidget *parent) : QWidget(parent) {
   setFixedSize(320, 180);
@@ -42,4 +43,6 @@ void LocalVideo::OnFrameChanged(const QVideoFrame &frame) {
   }
 }
 
-void LocalVideo::OnP2PChange(bool InProgress) { p2pInProgress = InProgress; }
+void LocalVideo::OnP2PChange(bool InProgress) { 
+  qDebug() << "OnP2PChange";
+  p2pInProgress = InProgress; }

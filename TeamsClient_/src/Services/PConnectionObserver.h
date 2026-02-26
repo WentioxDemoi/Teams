@@ -20,7 +20,8 @@ class PConnectionObserver
   void OnDataChannel(webrtc::scoped_refptr<webrtc::DataChannelInterface>) override {}
   void OnIceGatheringChange(webrtc::PeerConnectionInterface::IceGatheringState) override {}
   void OnIceConnectionChange(webrtc::PeerConnectionInterface::IceConnectionState) override {}
-  void OnConnectionChange(webrtc::PeerConnectionInterface::PeerConnectionState) override {}
+  void OnConnectionChange(webrtc::PeerConnectionInterface::PeerConnectionState) override;
+  void OnTrack(webrtc::scoped_refptr<webrtc::RtpTransceiverInterface> transceiver) override;
 
   WEBRTC_REF_COUNT_IMPL // Aller voir 
 

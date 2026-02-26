@@ -24,7 +24,7 @@ public slots:
   void initP2P();
   
 signals:
-    void OnP2PChange(bool inProgress);
+    void onP2PChange(bool inProgress);
   
 
 private:

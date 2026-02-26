@@ -11,7 +11,7 @@ WebRTCViewModel::WebRTCViewModel(WebRTCService *webRTCService, QObject *parent) 
 
 void WebRTCViewModel::start()
 {
-    
+    connect(webRTCService_, &WebRTCService::onP2PChange, this, &WebRTCViewModel::onP2PChange);
 }
 
 void WebRTCViewModel::initP2P()

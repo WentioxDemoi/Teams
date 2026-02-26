@@ -22,6 +22,7 @@ class PConnectionController {
   std::function<void(const std::string& sdp)> onLocalOffer;
   std::function<void(const std::string& sdp)> onLocalAnswer;
   std::function<void(const std::string& candidate, const std::string& mid, int index)> onLocalIce;
+  std::function<void(bool inProgress)> onP2PChange;
 
  private:
   webrtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;

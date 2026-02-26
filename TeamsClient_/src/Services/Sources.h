@@ -4,6 +4,7 @@
 #include "../includes.h"
 #include "../webrtc_includes.h"
 #include "LocalVideoSource.h"
+#include "RemoteVideoSource.h"
 
 class Sources {
 public:
@@ -12,6 +13,7 @@ public:
 
     // Accès aux sources
     webrtc::scoped_refptr<LocalVideoSource> localVideo();
+    webrtc::scoped_refptr<RemoteVideoSource> remoteVideo();
 
     // Interdire copie / move
     Sources(const Sources&) = delete;
@@ -22,6 +24,8 @@ private:
     ~Sources() = default;
 
     webrtc::scoped_refptr<LocalVideoSource> local_video_;
+    webrtc::scoped_refptr<RemoteVideoSource> remote_video_;
+    
 };
 
 #endif

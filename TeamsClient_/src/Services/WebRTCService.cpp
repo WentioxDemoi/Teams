@@ -24,6 +24,15 @@ WebRTCService::WebRTCService(QObject* parent)
         signalingClient_->sendIce(QString::fromStdString(c));
     };
 
+    pConnectionController_->onP2PChange = [this](bool inProgress) {
+    QMetaObject::invokeMethod(
+        this,
+        [this, inProgress]() {
+            emit onP2PChange(inProgress);
+        },
+        Qt::QueuedConnection);
+};
+
     // --- Signaling → PC ---
     connect(signalingClient_, &SignalingClient::offerReceived,
             this, &WebRTCService::onRemoteOffer);
@@ -33,6 +42,7 @@ WebRTCService::WebRTCService(QObject* parent)
 
     connect(signalingClient_, &SignalingClient::iceReceived,
             this, &WebRTCService::onRemoteIce);
+    // connect(this, &WebRTCService::onRemoteTrack, remoteVideo_, &RemoteVideo::attachTrack);
 }
 
 

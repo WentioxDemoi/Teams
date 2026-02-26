@@ -38,7 +38,7 @@ void MainWindow::start()
                 { qDebug() << "Error loggin : " << error; });
         connect(authViewModel, &AuthViewModel::noTokenFound, this,
                 &MainWindow::noTokenFound);
-        connect(webRTCViewModel, &WebRTCViewModel::OnP2PChange, workspaceView, &WorkspaceView::OnP2PChange);
+        connect(webRTCViewModel, &WebRTCViewModel::onP2PChange, workspaceView, &WorkspaceView::OnP2PChange);
         connect(workspaceView, &WorkspaceView::initP2P, webRTCViewModel, &WebRTCViewModel::initP2P);
         authViewModel->start();
 }

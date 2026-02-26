@@ -29,6 +29,7 @@ signals:
     void disconnected();
     void remoteVideoFrame(const webrtc::VideoFrame&);
     void error(QString);
+    void onP2PChange(bool inProgress);
 
 private:
     std::unique_ptr<PConnectionController> pConnectionController_;
