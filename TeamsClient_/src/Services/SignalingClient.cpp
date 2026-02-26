@@ -36,10 +36,6 @@ void SignalingClient::handleServerResponse(const QJsonObject &root) {
 
     const QString type = root["type"].toString();
 
-    // Vérifier l'UUID pour savoir si le message nous concerne
-    if (!root.contains("uuid") || root["uuid"].toString() != clientId_)
-        return;
-
     if (type == "offer" && root.contains("sdp") && root["sdp"].isString()) {
         emit offerReceived(root["sdp"].toString());
     } else if (type == "answer" && root.contains("sdp") && root["sdp"].isString()) {
@@ -71,5 +67,13 @@ void SignalingClient::sendMessage(const QString &type, const QString &payload) {
         message["sdp"] = payload;
     }
 
+    network_->send(message);
+}
+
+void SignalingClient::registerWithServer4WebRTC(QString UUID) {
+    qDebug() << "Sent register ping for UUID:" << clientId_;
+    QJsonObject message;
+    message["type"] = "register";
+    message["uuid"] = UUID;
     network_->send(message);
 }

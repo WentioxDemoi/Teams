@@ -73,6 +73,7 @@ void AuthNetworkService::handleServerResponse(const QJsonObject &root) {
     }
 
     emit authSuccess(user);
+    emit registerWithServer4WebRTC(user.uuid());
     return;
   }
 }

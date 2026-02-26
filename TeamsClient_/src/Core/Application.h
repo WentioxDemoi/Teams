@@ -47,6 +47,7 @@ private:
   void initializeViews();
   void initializeViewModels();
   void initializeUI();
+  void connectViewModels();
 };
 
 #endif

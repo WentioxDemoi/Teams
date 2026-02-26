@@ -1,14 +1,18 @@
 #include "AuthViewModel.h"
+#include "Interfaces/ISessionService.h"
+#include "ServiceLocator.h"
+#include "SessionService.h"
 
 // Ici, dans le cas où on fait du testing, on passe en argument un objet construit localement pour les test. Sinon, en prod, on se base sur l'objet créé dans application.cpp
 AuthViewModel::AuthViewModel(ISessionService *service, QObject *parent)
-    : sessionService_(service ? service : new SessionService(nullptr, parent)), QObject(parent)
+    : sessionService_(service ? service : ServiceLocator::instance().getService<ISessionService>()), QObject(parent)
 {
-  connect(sessionService_, &SessionService::authSuccess,
+  connect(sessionService_, &ISessionService::authSuccess,
           this, &AuthViewModel::authSuccess);
-  connect(sessionService_, &SessionService::authError,
+  connect(sessionService_, &ISessionService::authError,
           this, &AuthViewModel::authError);
-  connect(sessionService_, &SessionService::noTokenFound, this, &AuthViewModel::noTokenFound);
+  connect(sessionService_, &ISessionService::noTokenFound, this, &AuthViewModel::noTokenFound);
+  connect(sessionService_, &ISessionService::registerWithServer4WebRTC, this, &AuthViewModel::registerWithServer4WebRTC);
   }
   
 void AuthViewModel::start()

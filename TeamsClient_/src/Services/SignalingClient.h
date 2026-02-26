@@ -14,7 +14,8 @@ public:
 
     void sendOffer(const QString &sdp);
     void sendAnswer(const QString &sdp);
-    void sendIce(const QString &payload); // payload JSON string: {"candidate":..., "mid":..., "index":...}
+    void sendIce(const QString &payload);
+
 
 signals:
     void offerReceived(QString sdp);
@@ -23,6 +24,10 @@ signals:
 
 private slots:
     void handleServerResponse(const QJsonObject &root);
+
+public slots:
+    void registerWithServer4WebRTC(QString UUID);
+
 
 private:
     NetworkService *network_;

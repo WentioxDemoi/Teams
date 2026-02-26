@@ -32,6 +32,7 @@ signals:
   void authSuccess(const User &user);
   void authError(const QString &message);
   void invalidToken(const QString &error);
+  void registerWithServer4WebRTC(QString UUID);
     
 
 private:

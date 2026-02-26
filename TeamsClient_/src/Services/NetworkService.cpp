@@ -19,7 +19,7 @@ NetworkService::NetworkService(qint16 port, QObject *parent)
 
     connect(&socket_, &QSslSocket::disconnected, this, [this]() {
         buffer_.clear();
-        qDebug() << "Disconnected from server";
+        qDebug() << "Disconnected from server with port" << port_;
     });
 
     connect(&socket_,

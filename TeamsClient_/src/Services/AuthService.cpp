@@ -1,4 +1,7 @@
 #include "AuthService.h"
+#include "Interfaces/IAuthNetworkService.h"
+#include "ServiceLocator.h"
+#include "WebRTCService.h"
 
 AuthService::AuthService(IAuthNetworkService* network,
                          IUserService* userService,
@@ -24,6 +27,7 @@ AuthService::AuthService(IAuthNetworkService* network,
             &IAuthService::errorToken);
     connect(userService_, &IUserService::error, this,
             &IAuthService::errorUserService);
+    connect(network_, &IAuthNetworkService::registerWithServer4WebRTC, this, &IAuthService::registerWithServer4WebRTC);
 }
 
 void AuthService::start() {

@@ -20,6 +20,7 @@ signals:
     void authSuccess(const User &user);
     void authError(const QString &error);
     void noTokenFound();
+    void registerWithServer4WebRTC(QString UUID);
 };
 
 #endif

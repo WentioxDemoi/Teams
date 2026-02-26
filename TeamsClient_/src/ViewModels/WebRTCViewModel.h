@@ -25,6 +25,7 @@ public slots:
   
 signals:
     void onP2PChange(bool inProgress);
+    void registerWithServer4WebRTC(QString UUID);
   
 
 private:

@@ -30,6 +30,8 @@ signals:
     void remoteVideoFrame(const webrtc::VideoFrame&);
     void error(QString);
     void onP2PChange(bool inProgress);
+    void registerWithServer4WebRTC(QString UUID);
+
 
 private:
     std::unique_ptr<PConnectionController> pConnectionController_;
