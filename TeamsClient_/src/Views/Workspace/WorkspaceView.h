@@ -29,6 +29,7 @@ private:
     QWidget *contentWidget_;
     QVBoxLayout *mainLayout_;
     QPushButton *visioButton_;
+     QPushButton *receiveButton_;
     Visio *visio_;
 };
 

@@ -20,4 +20,5 @@ void WebRTCViewModel::start()
 void WebRTCViewModel::initP2P()
 {
     qDebug() << "Init P2P";
+    webRTCService_->startCall();
 }

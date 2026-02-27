@@ -27,36 +27,45 @@ webrtc::scoped_refptr<webrtc::I420Buffer> FrameConverter::NV12ToI420(const QVide
 
     return i420Buffer;
 }
-
 QVideoFrame FrameConverter::I420ToNV12(webrtc::scoped_refptr<webrtc::I420Buffer> i420Buffer)
 {
-    if (!i420Buffer)
+    if (!i420Buffer) {
+        qDebug() << "[FrameConverter] buffer is null";
         return QVideoFrame();
+    }
 
     int width  = i420Buffer->width();
     int height = i420Buffer->height();
+    qDebug() << "[FrameConverter] size=" << width << "x" << height;
 
-    QVideoFrameFormat fmt(QSize(width, height), QVideoFrameFormat::Format_NV12);
-    QVideoFrame nv12Frame(fmt);
+    // Fallback via QImage RGB32 — pas optimal mais fonctionne sur toutes versions Qt 6.x
+    QImage img(width, height, QImage::Format_RGB32);
 
-    if (!nv12Frame.map(QVideoFrame::WriteOnly))
-        return QVideoFrame();
-
-    uchar* dstY  = nv12Frame.bits(0);
-    uchar* dstUV = nv12Frame.bits(1);
-
-    int dstYStride  = nv12Frame.bytesPerLine(0);
-    int dstUVStride = nv12Frame.bytesPerLine(1);
-
-    libyuv::I420ToNV12(
+    libyuv::I420ToARGB(
         i420Buffer->DataY(), i420Buffer->StrideY(),
         i420Buffer->DataU(), i420Buffer->StrideU(),
         i420Buffer->DataV(), i420Buffer->StrideV(),
-        dstY, dstYStride,
-        dstUV, dstUVStride,
+        img.bits(), img.bytesPerLine(),
         width, height
     );
 
-    nv12Frame.unmap();
-    return nv12Frame;
+    QVideoFrame frame(img);
+    qDebug() << "[FrameConverter] frame valid=" << frame.isValid()
+             << " format=" << frame.pixelFormat();
+    return frame;
+}
+
+// Dans FrameConverter — retourne QImage directement
+QImage FrameConverter::I420ToQImage(webrtc::scoped_refptr<webrtc::I420Buffer> i420Buffer) {
+    int width  = i420Buffer->width();
+    int height = i420Buffer->height();
+    QImage img(width, height, QImage::Format_RGB32);
+    libyuv::I420ToARGB(
+        i420Buffer->DataY(), i420Buffer->StrideY(),
+        i420Buffer->DataU(), i420Buffer->StrideU(),
+        i420Buffer->DataV(), i420Buffer->StrideV(),
+        img.bits(), img.bytesPerLine(),
+        width, height
+    );
+    return img;
 }

@@ -18,7 +18,7 @@ class PConnectionObserver
   void OnIceCandidate(const webrtc::IceCandidateInterface* candidate) override;
   void OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState) override {}
   void OnDataChannel(webrtc::scoped_refptr<webrtc::DataChannelInterface>) override {}
-  void OnIceGatheringChange(webrtc::PeerConnectionInterface::IceGatheringState) override {}
+  void OnIceGatheringChange(webrtc::PeerConnectionInterface::IceGatheringState state) override {qDebug() << "[PConnectionObserver] OnIceGatheringChange state=" << (int)state;}
   void OnIceConnectionChange(webrtc::PeerConnectionInterface::IceConnectionState) override {}
   void OnConnectionChange(webrtc::PeerConnectionInterface::PeerConnectionState) override;
   void OnTrack(webrtc::scoped_refptr<webrtc::RtpTransceiverInterface> transceiver) override;

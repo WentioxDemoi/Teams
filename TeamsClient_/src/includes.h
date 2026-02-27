@@ -85,6 +85,7 @@
 #include <memory>
 #include <string>
 
+inline std::string uuidd;
 #define APP_NAME "Teams"
 
 #endif

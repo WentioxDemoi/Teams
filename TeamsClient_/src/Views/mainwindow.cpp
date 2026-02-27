@@ -39,6 +39,7 @@ void MainWindow::start()
         connect(authViewModel, &AuthViewModel::noTokenFound, this,
                 &MainWindow::noTokenFound);
         connect(webRTCViewModel, &WebRTCViewModel::onP2PChange, workspaceView, &WorkspaceView::OnP2PChange);
+        // connect(workspaceView, &WorkspaceView::OnP2PChange, webRTCViewModel, &WebRTCViewModel::initP2P);
         connect(workspaceView, &WorkspaceView::initP2P, webRTCViewModel, &WebRTCViewModel::initP2P);
         authViewModel->start();
 }

@@ -28,6 +28,10 @@ class PConnectionController {
   webrtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;
   webrtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_;
   webrtc::scoped_refptr<PConnectionObserver> observer_;
+
+  std::unique_ptr<webrtc::Thread> network_thread_;
+    std::unique_ptr<webrtc::Thread> worker_thread_;
+    std::unique_ptr<webrtc::Thread> signaling_thread_;
 };
 
 #endif

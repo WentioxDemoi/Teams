@@ -14,6 +14,7 @@ void PConnectionObserver::OnIceCandidate(const webrtc::IceCandidateInterface* ca
 
 void PConnectionObserver::OnConnectionChange(
     webrtc::PeerConnectionInterface::PeerConnectionState state) {
+      qDebug() << "[PConnectionObserver] OnConnectionChange state=" << (int)state;
   if (!owner_) return;
 
   switch (state) {

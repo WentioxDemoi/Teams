@@ -3,12 +3,30 @@
 #include "PConnectionObserver.h"
 #include "Sources.h"
 #include "WebRTCObservers.h"
+#include <QtCore/qlogging.h>
 
 PConnectionController::PConnectionController() {
-  factory_ = webrtc::CreatePeerConnectionFactory(
-      nullptr, nullptr, nullptr, nullptr, webrtc::CreateBuiltinAudioEncoderFactory(),
-      webrtc::CreateBuiltinAudioDecoderFactory(), webrtc::CreateBuiltinVideoEncoderFactory(),
-      webrtc::CreateBuiltinVideoDecoderFactory(), nullptr, nullptr);
+  // PConnectionController.cpp — constructeur
+network_thread_ = webrtc::Thread::CreateWithSocketServer();
+network_thread_->Start();
+
+worker_thread_ = webrtc::Thread::Create();
+worker_thread_->Start();
+
+signaling_thread_ = webrtc::Thread::Create();
+signaling_thread_->Start();
+
+factory_ = webrtc::CreatePeerConnectionFactory(
+    network_thread_.get(),
+    worker_thread_.get(),
+    signaling_thread_.get(),
+    nullptr,
+    webrtc::CreateBuiltinAudioEncoderFactory(),
+    webrtc::CreateBuiltinAudioDecoderFactory(),
+    webrtc::CreateBuiltinVideoEncoderFactory(),
+    webrtc::CreateBuiltinVideoDecoderFactory(),
+    nullptr,
+    nullptr);
   RTC_CHECK(factory_) << "Failed to create PeerConnectionFactory";
 
   webrtc::PeerConnectionInterface::RTCConfiguration config;
@@ -24,17 +42,26 @@ PConnectionController::PConnectionController() {
 
   auto videoTrack = factory_->CreateVideoTrack(Sources::instance().localVideo(), "video0");
   peer_->AddTrack(videoTrack, {"stream0"});
+
+  
 }
 
 void PConnectionController::createOffer() {
-  auto obs = webrtc::scoped_refptr<CreateSdpObserver>(
-      new CreateSdpObserver([this](const std::string& sdp) {
-        peer_->SetLocalDescription(
-            webrtc::CreateSessionDescription(webrtc::SdpType::kOffer, sdp),
+    qDebug()  << "[createOffer] called";
+    auto obs = webrtc::scoped_refptr<CreateSdpObserver>(
+        new CreateSdpObserver([this](const std::string& sdp) {
+            qDebug()  << "[createOffer] OnSuccess, sdp size=" << sdp.size();
+            peer_->SetLocalDescription(webrtc::CreateSessionDescription(webrtc::SdpType::kOffer, sdp),
             webrtc::scoped_refptr<SetLocalSdpObserver>(new SetLocalSdpObserver()));
-        if (onLocalOffer) onLocalOffer(sdp);
-      }));
-  peer_->CreateOffer(obs.get(), {});
+            if (onLocalOffer) {
+                qDebug()  << "[createOffer] calling onLocalOffer";
+                onLocalOffer(sdp);
+            } else {
+                RTC_LOG(LS_ERROR) << "[createOffer] onLocalOffer is NULL";
+            }
+        }));
+    peer_->CreateOffer(obs.get(), {});
+    qDebug()  << "[createOffer] CreateOffer submitted";
 }
 
 void PConnectionController::createAnswer() {
@@ -63,11 +90,15 @@ void PConnectionController::setRemoteAnswer(const std::string& sdp) {
 void PConnectionController::addIceCandidate(const std::string& candidate, const std::string& mid,
                                             int index) {
   webrtc::SdpParseError error;
-  auto ice = webrtc::CreateIceCandidate(mid, index, candidate, &error);
-  if (ice)
-    peer_->AddIceCandidate(ice);
-  else
-    RTC_LOG(LS_ERROR) << "[ICE] Parse error: " << error.description;
+    auto ice = webrtc::CreateIceCandidate(mid, index, candidate, &error);
+    if (ice) {
+        qDebug() << "[ICE] Adding candidate, mid=" 
+                 << QString::fromStdString(mid);
+        peer_->AddIceCandidate(ice);
+    } else {
+        qDebug() << "[ICE] Parse error:" 
+                 << QString::fromStdString(error.description);
+    }
 }
 
 void PConnectionController::close() {

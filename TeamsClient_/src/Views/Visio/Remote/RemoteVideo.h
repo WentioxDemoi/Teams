@@ -3,6 +3,7 @@
 #include "../../../includes.h"
 #include "../../../webrtc_includes.h"
 #include "../../../Services/Sources.h"
+#include <QPainter>
 #include "../../../Utils/FrameConverter.h"
 
 class RemoteVideo : public QWidget {
@@ -10,37 +11,48 @@ class RemoteVideo : public QWidget {
 public:
     explicit RemoteVideo(QWidget* parent = nullptr) : QWidget(parent) {
         setFixedSize(320, 180);
-        videoWidget_ = new QVideoWidget(this);
-        videoWidget_->setGeometry(rect());
-        videoWidget_->show();
 
-        // Abonnement au callback WebRTC → thread Qt via invokeMethod
         Sources::instance().remoteVideo()->onFrame = [this](const webrtc::VideoFrame& frame) {
-            auto i420 = frame.video_frame_buffer()->ToI420();
-            QVideoFrame qFrame = FrameConverter::I420ToNV12(
-                webrtc::scoped_refptr<webrtc::I420Buffer>(
-                    static_cast<webrtc::I420Buffer*>(i420.get())));
-            QMetaObject::invokeMethod(this, [this, qFrame]() {
-                onFrameReady(qFrame);
+            auto i420Interface = frame.video_frame_buffer()->ToI420();
+
+            auto i420Buffer = webrtc::I420Buffer::Create(
+                i420Interface->width(),
+                i420Interface->height()
+            );
+            i420Buffer->CropAndScaleFrom(*i420Interface);
+
+            // Conversion sur le thread Qt, scoped_refptr est thread-safe
+            QMetaObject::invokeMethod(this, [this, i420Buffer]() {
+                QImage img = FrameConverter::I420ToQImage(i420Buffer);
+onFrameReady(img);
             }, Qt::QueuedConnection);
         };
-
-        qDebug() << "RemoteVideo started";
     }
 
 public slots:
     void onP2PChange(bool inProgress) {
-        if (!inProgress) {
+        if (!inProgress)
             Sources::instance().remoteVideo()->onFrame = nullptr;
-        }
     }
+
+protected:
+    // paintEvent
+void paintEvent(QPaintEvent*) override {
+    QPainter painter(this);
+    if (!currentImage_.isNull()) {
+        painter.drawImage(rect(), currentImage_);
+    } else {
+        painter.fillRect(rect(), Qt::black);
+    }
+}
 
 private:
-    void onFrameReady(const QVideoFrame& frame) {
-        if (videoWidget_ && videoWidget_->videoSink())
-            videoWidget_->videoSink()->setVideoFrame(frame);
-    }
+QImage currentImage_; 
+    void onFrameReady(const QImage& img) {
+    currentImage_ = img;
+    update();
+}
 
-    QVideoWidget* videoWidget_ = nullptr;
+    QVideoFrame currentFrame_;
 };
 #endif

@@ -41,6 +41,7 @@ void NetworkService::ensureConnected() {
 }
 
 void NetworkService::send(const QJsonObject &payload) {
+    qDebug() << "[NetworkService] send called, encrypted=" << socket_.isEncrypted() << payload;
     if (payload.isEmpty()) {
         qWarning() << "Refusing to send empty payload";
         return;
@@ -70,7 +71,7 @@ void NetworkService::handleIncomingData(const QByteArray &data) {
         emit networkError("Malformed JSON received from server");
         return;
     }
-
+    qDebug() << "WIIIIII";
     emit jsonReceived(doc.object());
 }
 
