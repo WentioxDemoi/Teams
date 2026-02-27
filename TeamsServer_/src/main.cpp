@@ -1,49 +1,88 @@
-#include "Handlers/Handler.h"
 #include "Infrastructure/Database/DatabaseManager.h"
-#include "Network/Server/TcpListener.h"
+#include "Network/Server/TcpListenerAuth.h"
+#include "Network/Server/TcpListenerWebRTC.h"
 #include "Network/Session/AuthSession.h"
 #include "includes.h"
 
 int main() {
-  try {
-    const int db_threads = 4;
-    const int auth_threads = 1; // Au moins 2 pour le serveur
+    std::cout << "[MAIN] Server starting...\n";
 
-    // Pool de threads pour les opérations DB
-    // asio::thread_pool db_pool(db_threads);
+    try {
+        const int db_threads = 4;
+        const int auth_threads = 1; // Au moins 2 pour le serveur
+        const int webrtc_threads = 1;
 
-    // Contexte ASIO pour le serveur auth
-    asio::io_context auth_io;
+        std::cout << "[MAIN] Configuration:\n";
+        std::cout << "  - DB threads: " << db_threads << "\n";
+        std::cout << "  - Auth threads: " << auth_threads << "\n";
 
-    // Configuration SSL
-    ssl::context ssl_ctx(ssl::context::tlsv12_server);
-    ssl_ctx.use_certificate_chain_file("server.crt");
-    ssl_ctx.use_private_key_file("server.key", ssl::context::pem);
+        // Contexte ASIO
+        std::cout << "[MAIN] Initializing ASIO contexts...\n";
+        asio::io_context auth_io;
+        asio::io_context webrtc_io;
 
-    // Création du serveur (lance do_accept automatiquement)
-    TcpListener<AuthSession> auth_server(auth_io, ssl_ctx,
-                                         tcp::endpoint(tcp::v4(), 8080));
+        // Configuration SSL
+        std::cout << "[MAIN] Initializing SSL context...\n";
+        ssl::context ssl_ctx(ssl::context::tlsv12_server);
 
-    std::cout << "Server running:\n"
-              << "- Auth on 8080 with " << auth_threads << " threads\n"
-              << "- DB pool threads: " << db_threads << "\n";
+        std::cout << "[MAIN] Loading SSL certificate...\n";
+        ssl_ctx.use_certificate_chain_file("server.crt");
 
-    std::vector<std::thread> threads;
-    for (int i = 0; i < auth_threads; ++i) {
-      threads.emplace_back([&auth_io]() { auth_io.run(); });
+        std::cout << "[MAIN] Loading SSL private key...\n";
+        ssl_ctx.use_private_key_file("server.key", ssl::context::pem);
+
+        // Création des serveurs
+        std::cout << "[MAIN] Starting Auth TCP listener on port 8080...\n";
+        TcpListenerAuth auth_server(
+            auth_io,
+            ssl_ctx,
+            tcp::endpoint(tcp::v4(), 8080)
+        );
+
+        std::cout << "[MAIN] Starting WebRTC TCP listener on port 8081...\n";
+        TcpListenerWebRTC webrtc_server(
+            webrtc_io,
+            ssl_ctx,
+            tcp::endpoint(tcp::v4(), 8081)
+        );
+
+        std::cout << "[MAIN] Server running:\n";
+        std::cout << "  - Auth:   port 8080 (" << auth_threads << " threads)\n";
+        std::cout << "  - WebRTC: port 8081\n";
+        std::cout << "  - DB pool threads: " << db_threads << "\n";
+
+        // Lancement des threads Auth
+        std::cout << "[MAIN] Launching Auth IO threads...\n";
+        std::vector<std::thread> threads;
+        for (int i = 0; i < auth_threads; ++i) {
+            threads.emplace_back([&auth_io, i]() {
+                std::cout << "[THREAD] Auth thread " << i << " started\n";
+                auth_io.run();
+                std::cout << "[THREAD] Auth thread " << i << " stopped\n";
+            });
+        }
+
+        std::cout << "[MAIN] Launching WebRTC IO threads...\n";
+for (int i = 0; i < webrtc_threads; ++i) {
+    threads.emplace_back([&webrtc_io, i]() {
+        std::cout << "[THREAD] WebRTC thread " << i << " started\n";
+        webrtc_io.run();
+        std::cout << "[THREAD] WebRTC thread " << i << " stopped\n";
+    });
+}
+
+        std::cout << "[MAIN] Waiting for threads to finish...\n";
+        for (auto& t : threads) {
+            t.join();
+        }
+
+        std::cout << "[MAIN] All threads stopped cleanly\n";
+
+    } catch (const std::exception& e) {
+        std::cerr << "[ERROR] Server error: " << e.what() << "\n";
+        return 1;
     }
 
-    // Attendre que tous les threads se terminent
-    for (auto &t : threads) {
-      t.join();
-    }
-
-    // Attendre que le pool DB se termine
-
-  } catch (const std::exception &e) {
-    std::cerr << "Server error: " << e.what() << "\n";
-    return 1;
-  }
-
-  return 0;
+    std::cout << "[MAIN] Server shutdown complete\n";
+    return 0;
 }

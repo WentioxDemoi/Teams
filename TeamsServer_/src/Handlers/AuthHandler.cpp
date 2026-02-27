@@ -82,3 +82,21 @@ void AuthHandler::handle_token(std::string payload, ResponseCallback respond) {
     }
   });
 }
+
+void AuthHandler::handle_type(std::string payload, ResponseCallback respond) {
+  std::string type = HandlerTools::extractValue(payload, "type");
+  std::string result;
+  std::cout << "type : " << type << std::endl;
+  if (type.empty())
+    return;
+
+  if (type == "login") {
+    handle_login(payload, respond);
+  } else if (type == "register") {
+    handle_register(payload, respond);
+  } else if (type == "validate_token") {
+    handle_token(payload, respond);
+  } else {
+    std::cerr << "[AuthSession] Unknown message type\n";
+  }
+}

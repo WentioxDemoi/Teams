@@ -25,7 +25,7 @@ void AuthSession::do_read() {
             asio::post(self->stream_.get_executor(),
                        [self, response]() { self->handle_response(response); });
           };
-          self->handler_->handle_type(payload, callback);
+          self->authHandler_->handle_type(payload, callback);
           self->do_read();
         } else {
           BoostErrorHandler::log("AuthSession", "Read", ec);

@@ -22,14 +22,16 @@ public:
   void handle_login(std::string payload, ResponseCallback respond);
   void handle_register(std::string payload, ResponseCallback respond);
   void handle_token(std::string payload, ResponseCallback respond);
+  void handle_type(std::string payload, ResponseCallback respond);
 
-  AuthHandler(asio::thread_pool &worker_pool) : worker_pool_(worker_pool) {
+  AuthHandler(ResponseCallback respond) : worker_pool_(Config::instance().worker_pool_size()) {
     authService_ =
         std::make_unique<AuthService>(std::make_unique<UserRepository>());
   };
+  ~AuthHandler() = default;
 
 private:
-  asio::thread_pool &worker_pool_;
+  asio::thread_pool worker_pool_;
 
 protected:
   std::unique_ptr<AuthService> authService_;
