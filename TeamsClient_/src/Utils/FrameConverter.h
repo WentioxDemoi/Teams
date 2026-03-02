@@ -8,8 +8,10 @@ class FrameConverter
 {
 public:
     static webrtc::scoped_refptr<webrtc::I420Buffer> NV12ToI420(const QVideoFrame& nv12Frame);
-    static QVideoFrame I420ToNV12(webrtc::scoped_refptr<webrtc::I420Buffer> i420Buffer);
-    static QImage I420ToQImage(webrtc::scoped_refptr<webrtc::I420Buffer> i420Buffer);
+    // static QVideoFrame I420ToNV12(webrtc::scoped_refptr<webrtc::I420Buffer> i420Buffer);
+    // static QImage I420ToQImage(webrtc::scoped_refptr<webrtc::I420Buffer> i420Buffer);
+    // FrameConverter.h — ajouter la déclaration
+static QVideoFrame I420ToVideoFrame(webrtc::scoped_refptr<webrtc::I420Buffer> i420Buffer);
 };
 
 #endif

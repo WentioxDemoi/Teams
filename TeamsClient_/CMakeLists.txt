@@ -82,6 +82,9 @@ file(GLOB_RECURSE UTILS_HEADERS "src/Utils/*.h")
 file(GLOB_RECURSE CORE_SOURCES "src/Core/*.cpp")
 file(GLOB_RECURSE CORE_HEADERS "src/Core/*.h")
 
+#AppleDetails
+file(GLOB_RECURSE APPLEDETAILS_SOURCES "AppleDetails/*.mm")
+
 # Regroupement de toutes les sources
 set(ALL_SOURCES
     ${MAIN_SOURCES}
@@ -183,6 +186,8 @@ target_compile_features(TeamsClient_ PRIVATE cxx_std_20)
 # target_compile_options(TeamsClient_ PRIVATE -fno-rtti)
 if(APPLE)
     target_link_options(TeamsClient_ PRIVATE "-Wl,-force_load,${WEBRTC_LIB}")
+    # target_sources(${PROJECT_NAME} PRIVATE ${APPLEDETAILS_SOURCES})
+    # target_link_libraries(${PROJECT_NAME} PRIVATE "-framework AppKit")
 endif()
 target_link_libraries(TeamsClient_
     PRIVATE

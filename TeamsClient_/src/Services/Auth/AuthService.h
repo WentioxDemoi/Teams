@@ -1,15 +1,15 @@
 #ifndef AUTHSERVICE_H
 #define AUTHSERVICE_H
 
-#include "../Core/ServiceLocator.h"
-#include "../Models/User.h"
-#include "../includes.h"
-#include "Interfaces/IAuthNetworkService.h"
-#include "Interfaces/IUserService.h"
-#include "Interfaces/IAuthService.h"
+#include "../../Core/ServiceLocator.h"
+#include "../../Models/User.h"
+#include "../../includes.h"
+#include "../Interfaces/IAuthNetworkService.h"
+#include "../Interfaces/IUserService.h"
+#include "../Interfaces/IAuthService.h"
 #include "AuthNetworkService.h"
-#include "UserService.h"
-#include "../Utils/TokenManager.h"
+#include "../UserService.h"
+#include "../../Utils/TokenManager.h"
 
 /**
  * @class AuthService

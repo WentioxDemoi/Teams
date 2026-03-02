@@ -5,8 +5,9 @@
 #include "../Models/User.h"
 #include "../includes.h"
 #include "ViewModelsTools.h"
-#include "../Services/WebRTCService.h"
+#include "../Services/P2P/WebRTCService.h"
 #include "../Services/Interfaces/ISessionService.h"
+#include "../webrtc_includes.h"
 
 /**
  * @class WebRTCViewModel

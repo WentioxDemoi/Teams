@@ -1,6 +1,6 @@
 #include "LocalVideo.h"
-#include "Sources.h"
-#include <QtCore/qdebug.h>
+
+
 
 LocalVideo::LocalVideo(QWidget *parent) : QWidget(parent) {
   setFixedSize(320, 180);
@@ -37,6 +37,30 @@ void LocalVideo::OnFrameChanged(const QVideoFrame &frame) {
                  << frame.surfaceFormat().pixelFormat();
       return;
     }
+
+    // ✅ Vérifier que la conversion a réussi
+        if (!i420Buffer) {
+            qWarning() << "Échec conversion I420 : buffer null";
+            return;
+        }
+
+        // ✅ Vérifier les dimensions cohérentes
+        if (i420Buffer->width() <= 0 || i420Buffer->height() <= 0) {
+            qWarning() << "Buffer I420 invalide : dimensions nulles";
+            return;
+        }
+
+        // ✅ Vérifier que les strides sont valides (largeur % 2 == 0 pour I420)
+        if (i420Buffer->width() % 2 != 0 || i420Buffer->height() % 2 != 0) {
+            qWarning() << "Dimensions non paires, I420 invalide";
+            return;
+        }
+
+        // ✅ Vérifier que les plans UV ne sont pas null
+        if (!i420Buffer->DataY() || !i420Buffer->DataU() || !i420Buffer->DataV()) {
+            qWarning() << "Plans YUV null dans le buffer I420";
+            return;
+        }
 
     videoSource->PushFrame(i420Buffer);
     // SendFrameToWebRTC(i420Buffer);

@@ -1,12 +1,13 @@
 #ifndef WEBRTCSERVICE_H
 #define WEBRTCSERVICE_H
 
-#include "../webrtc_includes.h" 
-#include "../includes.h"
-#include "NetworkService.h"
+#include "../../webrtc_includes.h" 
+#include "../../includes.h"
+#include "../Network/NetworkService.h"
 #include "PConnectionController.h"
 #include "SignalingClient.h"
-#include <memory>
+// #include <memory>
+// #include <QtCore/qcoreapplication.h>
 
 class WebRTCService : public QObject {
     Q_OBJECT

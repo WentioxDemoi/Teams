@@ -72,10 +72,20 @@
 #include <QtWidgets/qframe.h>
 #include <libyuv.h>
 #include <QVideoFrame>
+#include <QtCore/qjsonobject.h>
+#include <QtCore/qobject.h>
+#include <QUuid>
 
 #include <QSslSocket>
 #include <QByteArray>
 #include <QtCore/qsize.h>
+
+#include <QtCore/qtypes.h>
+#include <QJsonParseError>
+#include <QDebug>
+#include <scoped_refptr.h>
+#include <QtCore/qlogging.h>
+
 
 
 

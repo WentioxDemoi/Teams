@@ -1,18 +1,9 @@
-#include <QtCore/qcoreapplication.h>
-
-#include "AuthService.h"
-#include "Interfaces/IAuthService.h"
-#include "ServiceLocator.h"
-#include "SignalingClient.h"
 #include "WebRTCService.h"
-
-// WebRTCService.cpp (extrait constructeur)
 
 WebRTCService::WebRTCService(QObject* parent)
     : QObject(parent),
       signalingClient_(new SignalingClient(this)),
       pConnectionController_(std::make_unique<PConnectionController>()) {
-  // --- PC → Signaling ---
   pConnectionController_->onLocalOffer = [this](const std::string& sdp) {
     qDebug() << "[WebRTCService] onLocalOffer triggered, sending offer";
     signalingClient_->sendOffer(QString::fromStdString(sdp));
@@ -40,7 +31,6 @@ WebRTCService::WebRTCService(QObject* parent)
         this, [this, inProgress]() { emit onP2PChange(inProgress); }, Qt::QueuedConnection);
   };
 
-  // --- Signaling → PC ---
   connect(signalingClient_, &SignalingClient::offerReceived, this, &WebRTCService::onRemoteOffer);
 
   connect(signalingClient_, &SignalingClient::answerReceived, this, &WebRTCService::onRemoteAnswer);

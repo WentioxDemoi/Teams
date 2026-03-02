@@ -1,10 +1,7 @@
 #ifndef NETWORKSERVICE_H
 #define NETWORKSERVICE_H
 
-#include <QObject>
-#include <QSslSocket>
-#include <QJsonObject>
-#include <QtCore/qtypes.h>
+#include "../../includes.h"
 
 class NetworkService : public QObject {
     Q_OBJECT

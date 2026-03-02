@@ -1,7 +1,5 @@
 #include "AuthService.h"
-#include "Interfaces/IAuthNetworkService.h"
-#include "ServiceLocator.h"
-#include "WebRTCService.h"
+
 
 AuthService::AuthService(IAuthNetworkService* network,
                          IUserService* userService,

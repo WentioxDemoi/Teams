@@ -2,8 +2,11 @@
 #define APPLICATION_H
 
 // Services
-#include "../Services/AuthService.h"
+#include "../Services/Auth/AuthService.h"
+#include "../Services/P2P/WebRTCService.h"
 #include "../Services/Interfaces/IAuthService.h"
+#include "Interfaces/ISessionService.h"
+
 
 
 // Views
@@ -12,6 +15,8 @@
 // ViewModels
 #include "../ViewModels/AuthViewModel.h"
 #include "../ViewModels/WebRTCViewModel.h"
+
+
 
 // Locators
 #include "ServiceLocator.h"

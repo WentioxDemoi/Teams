@@ -1,7 +1,7 @@
 #ifndef REMOTEVIDEOSOURCE_H
 #define REMOTEVIDEOSOURCE_H
-#include "../includes.h"
-#include "../webrtc_includes.h"
+#include "../../includes.h"
+#include "../../webrtc_includes.h"
 
 class RemoteVideoSource
     : public webrtc::RefCountInterface,

@@ -1,7 +1,5 @@
 #include "SignalingClient.h"
-#include "TokenManager.h"
-#include <QJsonDocument>
-#include <QDebug>
+
 
 SignalingClient::SignalingClient(QObject *parent)
     : QObject(parent),

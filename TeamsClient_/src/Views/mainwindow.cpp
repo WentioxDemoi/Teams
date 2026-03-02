@@ -1,15 +1,12 @@
 #include "mainwindow.h"
-#include "WebRTCService.h"
-#include "WebRTCViewModel.h"
-#include "Workspace/WorkspaceView.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) //QMainWindow
 {
 }
 
 void MainWindow::start()
 {
-        setWindowTitle("Test");
+        // setWindowTitle("Test");
         resize(800, 600);
         authViewModel = ViewModelsLocator::instance().getViewModels<AuthViewModel>();
         webRTCViewModel = ViewModelsLocator::instance().getViewModels<WebRTCViewModel>();
@@ -42,7 +39,11 @@ void MainWindow::start()
         // connect(workspaceView, &WorkspaceView::OnP2PChange, webRTCViewModel, &WebRTCViewModel::initP2P);
         connect(workspaceView, &WorkspaceView::initP2P, webRTCViewModel, &WebRTCViewModel::initP2P);
         authViewModel->start();
+        show();
+
 }
+
+
 
 void MainWindow::noTokenFound()
 {

@@ -1,9 +1,4 @@
 #include "WebRTCViewModel.h"
-#include "AuthViewModel.h"
-#include "ServiceLocator.h"
-#include "WebRTCService.h"
-#include "webrtc_includes.h"
-#include <QtCore/qobject.h>
 
 WebRTCViewModel::WebRTCViewModel(WebRTCService *webRTCService, QObject *parent) : webRTCService_(webRTCService ? webRTCService : ServiceLocator::instance().getService<WebRTCService>()), QObject(parent)
 {

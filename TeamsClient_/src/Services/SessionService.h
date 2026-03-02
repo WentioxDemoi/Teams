@@ -3,8 +3,9 @@
 
 #include "../Models/User.h"
 #include "../includes.h"
-#include "AuthService.h"
+#include "Auth/AuthService.h"
 #include "Interfaces/ISessionService.h"
+#include "ServiceLocator.h"
 
 /**
  * @class SessionService

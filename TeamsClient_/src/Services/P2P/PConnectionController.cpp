@@ -1,10 +1,5 @@
 #include "PConnectionController.h"
 
-#include "PConnectionObserver.h"
-#include "Sources.h"
-#include "WebRTCObservers.h"
-#include <QtCore/qlogging.h>
-
 PConnectionController::PConnectionController() {
   // PConnectionController.cpp — constructeur
 network_thread_ = webrtc::Thread::CreateWithSocketServer();

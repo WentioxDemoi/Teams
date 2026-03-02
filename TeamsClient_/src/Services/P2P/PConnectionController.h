@@ -1,10 +1,11 @@
 #ifndef PCONNECTIONCONTROLLER_H
 #define PCONNECTIONCONTROLLER_H
 
-#include "../includes.h"
-#include "../webrtc_includes.h"
+#include "../../includes.h"
+#include "../../webrtc_includes.h"
 #include "PConnectionObserver.h"
 #include "Sources.h"
+#include "WebRTCObservers.h"
 
 class PConnectionController {
  public:

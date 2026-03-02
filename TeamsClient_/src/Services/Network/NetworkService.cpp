@@ -1,9 +1,5 @@
 #include "NetworkService.h"
 
-#include <QJsonDocument>
-#include <QJsonParseError>
-#include <QDebug>
-
 NetworkService::NetworkService(qint16 port, QObject *parent)
     : QObject(parent), port_(port) {
 

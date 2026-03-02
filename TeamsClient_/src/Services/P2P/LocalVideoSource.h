@@ -2,8 +2,8 @@
 #ifndef LOCALVIDEOSOURCE_H
 #define LOCALVIDEOSOURCE_H
 
-#include "../includes.h"
-#include "../webrtc_includes.h"
+#include "../../includes.h"
+#include "../../webrtc_includes.h"
 
 
 class LocalVideoSource : public webrtc::AdaptedVideoTrackSource {

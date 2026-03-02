@@ -1,6 +1,5 @@
 #include "Sources.h"
-#include "LocalVideoSource.h"
-#include <scoped_refptr.h>
+
 
 Sources& Sources::instance() {
     static Sources instance;

@@ -20,6 +20,7 @@ void Visio::start()
     layout = new QVBoxLayout(mainWidget);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
+    
 }
 
 void Visio::resizeEvent(QResizeEvent* event)
@@ -49,7 +50,11 @@ void Visio::closeEvent(QCloseEvent* event)
 void Visio::startReceiver()
 {
     remoteVideo = new RemoteVideo(mainWidget);
+    // remoteVideo->move(remoteVideo->x(), remoteVideo->y() - 50);
     layout->addWidget(remoteVideo);
+    qDebug() << "centralWidget y:" << remoteVideo->y();
+
+    
 }
 
 void Visio::startSender()
@@ -59,4 +64,5 @@ void Visio::startSender()
     localVideo->raise();
     updateLocalVideoPosition();
     connect(this, &Visio::OnP2PChange, localVideo, &LocalVideo::OnP2PChange);
+    
 }

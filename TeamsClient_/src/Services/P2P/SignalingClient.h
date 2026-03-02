@@ -1,11 +1,11 @@
 #ifndef SIGNALINGCLIENT_H
 #define SIGNALINGCLIENT_H
 
-#include "../includes.h"
-#include "NetworkService.h"
-#include <QtCore/qjsonobject.h>
-#include <QtCore/qobject.h>
-#include <QUuid>
+#include "../../includes.h"
+#include "../Network/NetworkService.h"
+#include "TokenManager.h"
+
+
 
 class SignalingClient : public QObject {
     Q_OBJECT

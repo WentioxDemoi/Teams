@@ -1,9 +1,9 @@
 #ifndef AUTHNETWORKSERVICE_H
 #define AUTHNETWORKSERVICE_H
 
-#include "Interfaces/IAuthNetworkService.h"
-#include "NetworkService.h"
-#include <cstddef>
+#include "../Interfaces/IAuthNetworkService.h"
+#include "../Network/NetworkService.h"
+#include "../../includes.h"
 
 /**
  * @class AuthNetworkService

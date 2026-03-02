@@ -3,9 +3,9 @@
 
 #include "../../../includes.h"
 #include "../../../Utils/FrameConverter.h"
-#include "../../../Services/Sources.h"
-#include "LocalVideoSource.h"
-#include <scoped_refptr.h>
+#include "../../../Services/P2P/Sources.h"
+#include "../../../Services/P2P/LocalVideoSource.h"
+#include "../../../Services/P2P/Sources.h"
 
 class LocalVideo : public QWidget {
     Q_OBJECT

@@ -93,14 +93,9 @@
 
 #include "Application.h"
 
-#include <QtCore/qobject.h>
 
-#include <cstddef>
 
-#include "AuthViewModel.h"
-#include "Interfaces/ISessionService.h"
-#include "WebRTCService.h"
-#include "WebRTCViewModel.h"
+
 
 Application::Application(int& argc, char** argv) : qtApp(argc, argv) {
   QCoreApplication::setApplicationName("Teams");
