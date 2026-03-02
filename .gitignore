@@ -30,7 +30,6 @@ qrc_*.cpp
 # IDEs
 # =====================
 .vscode/
-.VSCodeCounter/
 .idea/
 *.swp
 *.swo
