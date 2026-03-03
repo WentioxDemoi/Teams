@@ -1,44 +1,36 @@
 #ifndef WEBRTCSERVICE_H
 #define WEBRTCSERVICE_H
 
-#include "../../webrtc_includes.h" 
-#include "../../includes.h"
-#include "../Network/NetworkService.h"
 #include "PConnectionController.h"
 #include "SignalingClient.h"
-// #include <memory>
-// #include <QtCore/qcoreapplication.h>
+#include <QObject>
 
 class WebRTCService : public QObject {
-    Q_OBJECT
-public:
-    explicit WebRTCService(QObject* parent = nullptr);
-    void disconnectFromServer();
+  Q_OBJECT
+ public:
+  explicit WebRTCService(QObject* parent = nullptr);
+  void disconnectFromSignalingServer();
 
-public slots:
-    void startCall();
-    void acceptCall();
-    void hangup();
+ public slots:
+  void startCall();
+  void acceptCall();
+  void hangup();
 
-private slots:
-    void onRemoteOffer(QString sdp);
-    void onRemoteAnswer(QString sdp);
-    void onRemoteIce(QString candidate, QString mid, int index);
+ private slots:
+  void onRemoteOffer(QString sdp);
+  void onRemoteAnswer(QString sdp);
+  void onRemoteIce(QString candidate, QString mid, int index);
 
-signals:
-    void connected();
-    void disconnected();
-    void remoteVideoFrame(const webrtc::VideoFrame&);
-    void error(QString);
-    void onP2PChange(bool inProgress);
-    void registerWithServer4WebRTC(QString UUID);
+ signals:
+  void connected();
+  void disconnected();
+  void remoteVideoFrame(const webrtc::VideoFrame&);
+  void error(QString);
+  void onP2PChange(bool inProgress);
+  void registerWithServer4WebRTC(QString UUID);
 
-
-private:
-    std::unique_ptr<PConnectionController> pConnectionController_;
-    SignalingClient *signalingClient_;
-
+ private:
+  std::unique_ptr<PConnectionController> pConnectionController_;
+  SignalingClient* signalingClient_;
 };
 #endif
-
-

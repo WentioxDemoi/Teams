@@ -1,4 +1,5 @@
 #include "DatabaseManager.h"
+#include <QSqlQuery>
 
 DatabaseManager::DatabaseManager() {
     if (!QSqlDatabase::contains("AppConnection")) {

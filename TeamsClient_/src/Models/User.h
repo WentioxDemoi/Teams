@@ -1,7 +1,9 @@
 #ifndef USER_H
 #define USER_H
 
-#include "../includes.h"
+#include <QString>
+#include <QJsonObject>
+#include <QDebug>
 
 /**
  * @class User

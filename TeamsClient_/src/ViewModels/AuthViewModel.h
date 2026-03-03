@@ -1,11 +1,8 @@
 #ifndef AUTHVIEWMODEL_H
 #define AUTHVIEWMODEL_H
 
-#include "../Core/ServiceLocator.h"
 #include "../Models/User.h"
-#include "../includes.h"
-#include "ViewModelsTools.h"
-#include "../Services/SessionService.h"
+
 #include "../Services/Interfaces/ISessionService.h"
 
 /**

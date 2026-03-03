@@ -1,5 +1,6 @@
 #include "SignalingClient.h"
-
+#include "TokenManager.h"
+#include "../includes.h"
 
 SignalingClient::SignalingClient(QObject *parent)
     : QObject(parent),
@@ -91,4 +92,9 @@ void SignalingClient::registerWithServer4WebRTC(QString UUID)
     message["token"] = token;  // ✅ clé correcte
 
     network_->send(message);
+}
+
+void SignalingClient::disconnectFromServer()
+{
+    network_->disconnectFromServer();
 }

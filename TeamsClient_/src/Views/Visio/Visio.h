@@ -1,9 +1,11 @@
 #ifndef VISIO_H
 #define VISIO_H
 
-#include "../../includes.h"
+// #include "../../includes.h"
 #include "Local/LocalVideo.h"
 #include "Remote/RemoteVideo.h"
+#include <QMainWindow>
+#include <QVBoxLayout>
 
 class Visio : public QMainWindow
 {

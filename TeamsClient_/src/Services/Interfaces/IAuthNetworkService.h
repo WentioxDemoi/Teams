@@ -2,8 +2,8 @@
 #define IAUTHNETWORKSERVICE_H
 
 #include "../../Models/User.h"
-#include "../../includes.h"
-#include <QtCore/qjsonobject.h>
+#include <QJsonObject>
+#include <QSslSocket>
 
 /**
  * @class AuthNetworkService

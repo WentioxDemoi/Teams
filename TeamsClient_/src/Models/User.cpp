@@ -1,5 +1,4 @@
 #include "User.h"
-#include <QJsonObject>
 
 User::User(const QString &email, const QString &username,
            const QString &status, bool isMe, const QString &token, const QString &uuid)

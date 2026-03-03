@@ -1,4 +1,5 @@
 #include "TokenManager.h"
+#include "../includes.h"
 
 TokenManager &TokenManager::instance()
 {

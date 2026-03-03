@@ -1,7 +1,10 @@
 #ifndef VIEWLOCATOR_H
 #define VIEWLOCATOR_H
 
-#include "../includes.h"
+#include <QObject>
+#include <QMap>
+#include <QString>
+#include <typeinfo>
 
 /**
  * @class ViewLocator

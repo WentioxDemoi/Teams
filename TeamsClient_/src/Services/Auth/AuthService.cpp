@@ -1,4 +1,6 @@
 #include "AuthService.h"
+#include "../../Utils/TokenManager.h"
+#include "../../Core/ServiceLocator.h"
 
 
 AuthService::AuthService(IAuthNetworkService* network,

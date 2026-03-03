@@ -1,18 +1,16 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtWidgets/qmainwindow.h>
+#include <QMainWindow>
+#include <QStackedWidget>
 
-#include "../Core/ServiceLocator.h"
-#include "../Core/ViewLocator.h"
-#include "../Core/ViewModelsLocator.h"
+
 #include "../Models/User.h"
 #include "../ViewModels/AuthViewModel.h"
 #include "../ViewModels/WebRTCViewModel.h"
 #include "Loading/LoadingView.h"
 #include "Views/Auth/AuthView.h"
 #include "Views/Workspace/WorkspaceView.h"
-#include "Visio/Visio.h"
 #include "Workspace/WorkspaceView.h"
 
 /**

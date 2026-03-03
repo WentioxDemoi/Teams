@@ -1,7 +1,8 @@
 #ifndef VIEWMODELSTOOLS_H
 #define VIEWMODELSTOOLS_H
 
-#include "../includes.h"
+#include <QString>
+#include <QRegularExpression>
 
 /**
  * @class ViewModelsTools
@@ -12,7 +13,6 @@
  */
 class ViewModelsTools
 {
-
 public:
     static bool isValidEmail(const QString &email)
     {

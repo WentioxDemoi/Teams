@@ -1,8 +1,7 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
-#include "../includes.h"
-
+#include <QSqlDatabase>
 class DatabaseManager {
 public:
   static DatabaseManager &instance();

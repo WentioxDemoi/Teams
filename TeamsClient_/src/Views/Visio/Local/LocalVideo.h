@@ -1,11 +1,20 @@
 #ifndef LOCALVIDEO_H
 #define LOCALVIDEO_H
 
-#include "../../../includes.h"
-#include "../../../Utils/FrameConverter.h"
-#include "../../../Services/P2P/Sources.h"
 #include "../../../Services/P2P/LocalVideoSource.h"
-#include "../../../Services/P2P/Sources.h"
+
+#include <QWidget>
+#include <QVideoSink>
+#include <QVideoWidget>
+#include <QCamera>
+#include <QMediaCaptureSession>
+#include <QMediaDevices>
+#include <QVideoFrame>
+#include <QVideoFrameFormat>
+#include <QDebug>
+#include <api/scoped_refptr.h>
+#include <api/video/i420_buffer.h>
+#include <api/video/video_frame.h> 
 
 class LocalVideo : public QWidget {
     Q_OBJECT

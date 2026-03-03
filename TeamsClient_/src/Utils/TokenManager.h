@@ -2,6 +2,12 @@
 #define TOKENMANAGER_H
 
 #include "Interfaces/ITokenManager.h"
+#include <QObject>
+#include <QString>
+#include <QEventLoop>
+#include <QDebug>
+#include <qt6keychain/keychain.h>
+#include <qt6keychain/qkeychain_export.h>
 
 /**
  * @class TokenManager

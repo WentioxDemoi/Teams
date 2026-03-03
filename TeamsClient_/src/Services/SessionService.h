@@ -1,11 +1,8 @@
 #ifndef SESSIONSERVICE_H
 #define SESSIONSERVICE_H
 
-#include "../Models/User.h"
-#include "../includes.h"
-#include "Auth/AuthService.h"
+#include "Interfaces/IAuthService.h"
 #include "Interfaces/ISessionService.h"
-#include "ServiceLocator.h"
 
 /**
  * @class SessionService

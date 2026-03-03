@@ -1,7 +1,10 @@
 #ifndef REGISTERFORM_H
 #define REGISTERFORM_H
-
-#include "../../includes.h"
+#include <QWidget>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QString>
 
 /**
  * @class RegisterForm

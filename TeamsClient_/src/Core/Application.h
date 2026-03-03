@@ -1,30 +1,13 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-// Services
-#include "../Services/Auth/AuthService.h"
-#include "../Services/P2P/WebRTCService.h"
-#include "../Services/Interfaces/IAuthService.h"
-#include "Interfaces/ISessionService.h"
-
-
-
 // Views
 #include "../Views/mainwindow.h"
 
-// ViewModels
-#include "../ViewModels/AuthViewModel.h"
-#include "../ViewModels/WebRTCViewModel.h"
-
-
-
-// Locators
-#include "ServiceLocator.h"
-#include "ViewModelsLocator.h"
-#include "ViewLocator.h"
-
-
-#include "../includes.h"
+#include <QApplication>
+#include <QFile>
+#include <QDebug>
+#include <QObject>
 
 /**
  * @class Application

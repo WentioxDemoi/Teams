@@ -1,5 +1,7 @@
 #include "PConnectionObserver.h"
 #include "PConnectionController.h"
+#include "Sources.h"
+
 
 PConnectionObserver::PConnectionObserver(PConnectionController* owner) : owner_(owner) {}
 

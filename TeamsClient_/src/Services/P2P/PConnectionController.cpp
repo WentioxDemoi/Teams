@@ -1,7 +1,12 @@
 #include "PConnectionController.h"
+#include "audio_codecs/builtin_audio_decoder_factory.h"
+#include "audio_codecs/builtin_audio_encoder_factory.h"
+#include "video_codecs/builtin_video_decoder_factory.h"
+#include "video_codecs/builtin_video_encoder_factory.h"
+#include "api/create_peerconnection_factory.h"
+#include "Sources.h"
 
 PConnectionController::PConnectionController() {
-  // PConnectionController.cpp — constructeur
 network_thread_ = webrtc::Thread::CreateWithSocketServer();
 network_thread_->Start();
 

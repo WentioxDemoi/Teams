@@ -1,11 +1,11 @@
 #ifndef WORKSPACEVIEW_H
 #define WORKSPACEVIEW_H
 
-#include "../../includes.h"
-#include "../Visio/Visio.h"
-
-class QLabel;
-class QVBoxLayout;
+#include <QWidget>
+#include <QPushButton>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QFrame>
 
 class WorkspaceView : public QWidget
 {
@@ -30,7 +30,9 @@ private:
     QVBoxLayout *mainLayout_;
     QPushButton *visioButton_;
      QPushButton *receiveButton_;
-    Visio *visio_;
+
+    // // ========= VisioConf POC =========
+    // Visio *visio_;
 };
 
 #endif

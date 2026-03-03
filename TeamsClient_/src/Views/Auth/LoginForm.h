@@ -1,7 +1,11 @@
 #ifndef LOGINFORM_H
 #define LOGINFORM_H
 
-#include "../../includes.h"
+#include <QWidget>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QString>
 
 /**
  * @class LoginForm

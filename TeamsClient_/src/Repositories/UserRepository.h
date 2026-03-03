@@ -1,9 +1,8 @@
 #ifndef USERREPOSITORY_H
 #define USERREPOSITORY_H
 
-#include "../includes.h"
 #include "../Models/User.h"
-#include "../Database/DatabaseManager.h"
+#include <QSqlDatabase>
 
 class UserRepository : public QObject
 {

@@ -1,4 +1,7 @@
 #include "UserRepository.h"
+#include "../Database/DatabaseManager.h"
+#include <QSqlQuery>
+#include <QSqlError>
 
 UserRepository::UserRepository(QObject *parent)
     : QObject(parent), db_(DatabaseManager::instance().database()) {}

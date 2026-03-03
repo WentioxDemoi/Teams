@@ -1,17 +1,12 @@
 #include "WorkspaceView.h"
-#include "Visio/Visio.h"
-
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QFrame>
+// // ========= VisioConf POC =========
+// #include "Visio/Visio.h"
 
 WorkspaceView::WorkspaceView(QWidget *parent)
     : QWidget(parent)
 {
 
 
-
-    // Layout principal
     mainLayout_ = new QVBoxLayout(this);
     mainLayout_->setContentsMargins(0, 0, 0, 0);
     mainLayout_->setSpacing(0);
@@ -34,6 +29,7 @@ WorkspaceView::WorkspaceView(QWidget *parent)
 
 
     setLayout(mainLayout_);
+    
 }
 
 // // ========= VisioConf POC =========

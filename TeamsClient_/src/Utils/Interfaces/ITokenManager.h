@@ -1,7 +1,7 @@
 #ifndef ITOKENMANAGER_H
 #define ITOKENMANAGER_H
 
-#include "../../includes.h"
+#include <QObject>
 
 class ITokenManager : public QObject {
     Q_OBJECT

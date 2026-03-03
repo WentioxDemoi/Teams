@@ -1,13 +1,15 @@
 #include "WebRTCService.h"
+#include <QPointer>
 
 WebRTCService::WebRTCService(QObject* parent)
     : QObject(parent),
       signalingClient_(new SignalingClient(this)),
       pConnectionController_(std::make_unique<PConnectionController>()) {
+        QPointer<WebRTCService> self(this);
   pConnectionController_->onLocalOffer = [this](const std::string& sdp) {
     qDebug() << "[WebRTCService] onLocalOffer triggered, sending offer";
     signalingClient_->sendOffer(QString::fromStdString(sdp));
-};
+  };
 
   pConnectionController_->onLocalAnswer = [this](const std::string& sdp) {
     qDebug() << "[WebRTCService] onP2PChange:";
@@ -36,30 +38,27 @@ WebRTCService::WebRTCService(QObject* parent)
   connect(signalingClient_, &SignalingClient::answerReceived, this, &WebRTCService::onRemoteAnswer);
 
   connect(signalingClient_, &SignalingClient::iceReceived, this, &WebRTCService::onRemoteIce);
-  connect(this, &WebRTCService::registerWithServer4WebRTC, signalingClient_, &SignalingClient::registerWithServer4WebRTC);
-  
+  connect(this, &WebRTCService::registerWithServer4WebRTC, signalingClient_,
+          &SignalingClient::registerWithServer4WebRTC);
 }
 
 void WebRTCService::startCall() {
-    qDebug() << "[WebRTCService] startCall()";
-    pConnectionController_->createOffer();
+  pConnectionController_->createOffer();
 }
 void WebRTCService::acceptCall() { pConnectionController_->createAnswer(); }
 void WebRTCService::hangup() { pConnectionController_->close(); }
 
 void WebRTCService::onRemoteOffer(QString sdp) {
-    qDebug() << "[WebRTCService] onRemoteOffer received, sdp size=" << sdp.size();
-    pConnectionController_->setRemoteOffer(sdp.toStdString());
-    pConnectionController_->createAnswer();
+  qDebug() << "[WebRTCService] onRemoteOffer received, sdp size=" << sdp.size();
+  pConnectionController_->setRemoteOffer(sdp.toStdString());
+  pConnectionController_->createAnswer();
 }
 void WebRTCService::onRemoteAnswer(QString sdp) {
-    qDebug() << "[WebRTCService] onRemoteAnswer received, sdp size=" << sdp.size();
-    pConnectionController_->setRemoteAnswer(sdp.toStdString());
+  qDebug() << "[WebRTCService] onRemoteAnswer received, sdp size=" << sdp.size();
+  pConnectionController_->setRemoteAnswer(sdp.toStdString());
 }
 void WebRTCService::onRemoteIce(QString candidate, QString mid, int index) {
-    qDebug() << "[WebRTCService] onRemoteIce received, mid=" << mid << "index=" << index;
-    pConnectionController_->addIceCandidate(candidate.toStdString(), mid.toStdString(), index);
+  qDebug() << "[WebRTCService] onRemoteIce received, mid=" << mid.size() << "index=" << index;
+  pConnectionController_->addIceCandidate(candidate.toStdString(), mid.toStdString(), index);
 }
-void WebRTCService::disconnectFromServer() {
-  // Appeler le disco de signaling qui appelera celui de network.
-}
+void WebRTCService::disconnectFromSignalingServer() { signalingClient_->disconnectFromServer();}

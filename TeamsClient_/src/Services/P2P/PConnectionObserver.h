@@ -1,8 +1,12 @@
 #ifndef PCONNECTIONOBSERVER_H
 #define PCONNECTIONOBSERVER_H
 
-#include "../../includes.h"
 #include "../../webrtc_includes.h"
+#include "api/peer_connection_interface.h"
+#include "api/ref_count.h"
+#include "api/data_channel_interface.h"
+#include "api/rtp_transceiver_interface.h"
+#include <QDebug>
 
 class PConnectionController;  // FD
 

@@ -1,4 +1,6 @@
 #include "RemoteVideo.h"
+#include "../../../Utils/FrameConverter.h"
+#include <QtMultimedia/qvideosink.h>
 
 
 // RemoteVideo.cpp

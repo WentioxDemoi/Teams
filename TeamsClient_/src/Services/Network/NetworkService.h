@@ -1,7 +1,16 @@
 #ifndef NETWORKSERVICE_H
 #define NETWORKSERVICE_H
 
-#include "../../includes.h"
+#include <QObject>
+#include <QSslSocket>
+#include <QAbstractSocket>
+#include <QByteArray>
+#include <QDebug>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QList>
+#include <QSslError>
 
 class NetworkService : public QObject {
     Q_OBJECT
@@ -11,6 +20,7 @@ public:
 
     void send(const QJsonObject &payload);
     void disconnectFromServer();
+    
 
 signals:
     void jsonReceived(const QJsonObject &json);

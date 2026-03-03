@@ -1,13 +1,8 @@
 #ifndef WEBRTCVIEWMODEL_H
 #define WEBRTCVIEWMODEL_H
 
-#include "../Core/ServiceLocator.h"
-#include "../Models/User.h"
-#include "../includes.h"
 #include "ViewModelsTools.h"
 #include "../Services/P2P/WebRTCService.h"
-#include "../Services/Interfaces/ISessionService.h"
-#include "../webrtc_includes.h"
 
 /**
  * @class WebRTCViewModel
@@ -18,7 +13,7 @@ class WebRTCViewModel : public QObject
   Q_OBJECT
 
 public:
-  explicit WebRTCViewModel(WebRTCService *webRTCService = nullptr, QObject *parent = nullptr); // Aller voir dans le CPP l'implémentation
+  explicit WebRTCViewModel(WebRTCService *webRTCService = nullptr, QObject *parent = nullptr);
   void start();
 
 public slots:

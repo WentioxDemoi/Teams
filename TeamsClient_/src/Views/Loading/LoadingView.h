@@ -1,7 +1,11 @@
 #ifndef LOADINGVIEW_H
 #define LOADINGVIEW_H
 
-#include "../../includes.h"
+#include <QWidget>
+#include <QLabel>
+#include <QProgressBar>
+#include <QVBoxLayout>
+#include <QString>
 
 class LoadingView : public QWidget
 {

@@ -1,12 +1,13 @@
 // RemoteVideo.h
 #ifndef REMOTEVIDEO_H
 #define REMOTEVIDEO_H
-#include "../../../includes.h"
-#include "../../../webrtc_includes.h"
 #include "../../../Services/P2P/Sources.h"
-#include "../../../Utils/FrameConverter.h"
-#include "../../../Services/P2P/RemoteVideoSource.h"
-
+#include <QVideoWidget>
+#include <QVideoFrame>
+#include <QMetaObject>
+#include <Qt>
+#include <api/video/i420_buffer.h>
+#include <api/video/video_frame.h>
 
 class RemoteVideo : public QVideoWidget {
     Q_OBJECT

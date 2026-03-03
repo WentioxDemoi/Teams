@@ -3,7 +3,7 @@
 
 #include "LoginForm.h"
 #include "RegisterForm.h"
-
+#include <QStackedWidget>
 /**
  * @class AuthView
  * @brief Interface graphique pour l'authentification.

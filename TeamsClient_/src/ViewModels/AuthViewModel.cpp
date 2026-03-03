@@ -1,7 +1,9 @@
 #include "AuthViewModel.h"
 #include "Interfaces/ISessionService.h"
 #include "ServiceLocator.h"
-#include "SessionService.h"
+#include "Interfaces/ISessionService.h"
+#include "../Core/ServiceLocator.h"
+#include "ViewModelsTools.h"
 
 // Ici, dans le cas où on fait du testing, on passe en argument un objet construit localement pour les test. Sinon, en prod, on se base sur l'objet créé dans application.cpp
 AuthViewModel::AuthViewModel(ISessionService *service, QObject *parent)
