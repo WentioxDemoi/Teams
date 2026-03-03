@@ -5,6 +5,14 @@
 #include "WebRTCObservers.h"
 #include "rtc_base/thread.h"
 
+/**
+ * @class PConnectionController
+ * @brief Contrôleur d'une connexion WebRTC.
+ *
+ * Gère la création d'offres et de réponses, l'ajout de candidats ICE,
+ * et la fermeture d'une PeerConnection. Fournit des callbacks pour notifier
+ * les changements d'état P2P et la disponibilité des informations locales.
+ */
 class PConnectionController {
  public:
   PConnectionController();
@@ -27,8 +35,8 @@ class PConnectionController {
   webrtc::scoped_refptr<PConnectionObserver> observer_;
 
   std::unique_ptr<webrtc::Thread> network_thread_;
-    std::unique_ptr<webrtc::Thread> worker_thread_;
-    std::unique_ptr<webrtc::Thread> signaling_thread_;
+  std::unique_ptr<webrtc::Thread> worker_thread_;
+  std::unique_ptr<webrtc::Thread> signaling_thread_;
 };
 
 #endif

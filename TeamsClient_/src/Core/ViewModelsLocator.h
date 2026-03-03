@@ -1,8 +1,8 @@
 #ifndef VIEWMODELSLOCATOR_H
 #define VIEWMODELSLOCATOR_H
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
 #include <QString>
 #include <typeinfo>
 
@@ -14,40 +14,36 @@
  * Utilise un singleton pour garantir un point d'accès unique et simplifier
  * l'injection de dépendances dans les différentes couches de l'application.
  */
-class ViewModelsLocator
-{
-public:
-  static ViewModelsLocator &instance();
+class ViewModelsLocator {
+ public:
+  static ViewModelsLocator& instance();
 
   template <typename T>
-  T *getViewModels()
-  {
+  T* getViewModels() {
     QString key = typeid(T).name();
-    if (viewModels_.contains(key))
-    {
-      return static_cast<T *>(viewModels_[key]);
+    if (viewModels_.contains(key)) {
+      return static_cast<T*>(viewModels_[key]);
     }
     return nullptr;
   }
 
   template <typename T>
-  void registerViewModels(T *viewModels)
-  {
+  void registerViewModels(T* viewModels) {
     QString key = typeid(T).name();
     viewModels_[key] = viewModels;
   }
   void clear();
 
-private:
+ private:
   ViewModelsLocator() = default;
   ~ViewModelsLocator() { clear(); }
 
-  ViewModelsLocator(const ViewModelsLocator &) = delete;
-  ViewModelsLocator(ViewModelsLocator &&) = delete;
-  ViewModelsLocator &operator=(const ViewModelsLocator &) = delete;
-  ViewModelsLocator &operator=(ViewModelsLocator &&) = delete;
+  ViewModelsLocator(const ViewModelsLocator&) = delete;
+  ViewModelsLocator(ViewModelsLocator&&) = delete;
+  ViewModelsLocator& operator=(const ViewModelsLocator&) = delete;
+  ViewModelsLocator& operator=(ViewModelsLocator&&) = delete;
 
-  QMap<QString, QObject *> viewModels_;
+  QMap<QString, QObject*> viewModels_;
 };
 
 #endif

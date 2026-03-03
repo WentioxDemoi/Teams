@@ -1,8 +1,8 @@
 #ifndef SERVICELOCATOR_H
 #define SERVICELOCATOR_H
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
 #include <QString>
 #include <typeinfo>
 
@@ -14,40 +14,36 @@
  * Utilise un singleton pour garantir un point d'accès unique et simplifier
  * l'injection de dépendances dans les différentes couches de l'application.
  */
-class ServiceLocator
-{
-public:
-  static ServiceLocator &instance();
+class ServiceLocator {
+ public:
+  static ServiceLocator& instance();
 
   template <typename T>
-  T *getService()
-  {
+  T* getService() {
     QString key = typeid(T).name();
-    if (services_.contains(key))
-    {
-      return static_cast<T *>(services_[key]);
+    if (services_.contains(key)) {
+      return static_cast<T*>(services_[key]);
     }
     return nullptr;
   }
 
   template <typename T>
-  void registerService(T *service)
-  {
+  void registerService(T* service) {
     QString key = typeid(T).name();
     services_[key] = service;
   }
   void clear();
 
-private:
+ private:
   ServiceLocator() = default;
   ~ServiceLocator() { clear(); }
 
-  ServiceLocator(const ServiceLocator &) = delete;
-  ServiceLocator(ServiceLocator &&) = delete;
-  ServiceLocator &operator=(const ServiceLocator &) = delete;
-  ServiceLocator &operator=(ServiceLocator &&) = delete;
+  ServiceLocator(const ServiceLocator&) = delete;
+  ServiceLocator(ServiceLocator&&) = delete;
+  ServiceLocator& operator=(const ServiceLocator&) = delete;
+  ServiceLocator& operator=(ServiceLocator&&) = delete;
 
-  QMap<QString, QObject *> services_;
+  QMap<QString, QObject*> services_;
 };
 
 #endif

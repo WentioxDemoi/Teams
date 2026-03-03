@@ -1,10 +1,19 @@
 #ifndef WEBRTCSERVICE_H
 #define WEBRTCSERVICE_H
 
-#include "PConnectionController.h"
-#include "SignalingClient.h"
 #include <QObject>
 
+#include "PConnectionController.h"
+#include "SignalingClient.h"
+
+/**
+ * @class WebRTCService
+ * @brief Service de gestion des communications WebRTC.
+ *
+ * Coordonne la connexion avec le serveur de signalisation et le contrôle des sessions P2P,
+ * en gérant les appels entrants et sortants, les flux vidéo distants, et les événements d'état
+ * ou d'erreur liés à la communication.
+ */
 class WebRTCService : public QObject {
   Q_OBJECT
  public:

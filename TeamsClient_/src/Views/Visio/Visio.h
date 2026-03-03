@@ -1,40 +1,47 @@
 #ifndef VISIO_H
 #define VISIO_H
 
-// #include "../../includes.h"
-#include "Local/LocalVideo.h"
-#include "Remote/RemoteVideo.h"
 #include <QMainWindow>
 #include <QVBoxLayout>
 
-class Visio : public QMainWindow
-{
-    Q_OBJECT
+#include "Local/LocalVideo.h"
+#include "Remote/RemoteVideo.h"
 
-public:
-    explicit Visio(QWidget* parent = nullptr);
-    void startSender();
-    void startReceiver();
+/**
+ * @class Visio
+ * @brief Fenêtre de visioconférence.
+ *
+ * Gère l'affichage et la coordination des flux vidéo locaux et distants,
+ * ainsi que le démarrage des sessions d'envoi et de réception.
+ */
+class Visio : public QMainWindow {
+  Q_OBJECT
 
-protected:
-    void resizeEvent(QResizeEvent* event) override;
-    void closeEvent(QCloseEvent* event) override;
+ public:
+  explicit Visio(QWidget* parent = nullptr);
+  void startSender();
+  void startReceiver();
 
-public slots:
+ protected:
+  void resizeEvent(QResizeEvent* event) override;
+  void closeEvent(QCloseEvent* event) override;
 
-signals:
-    void OnP2PChange(bool inProgress);
-private:
-    void start();
+ public slots:
 
-    void updateLocalVideoPosition();
+ signals:
+  void OnP2PChange(bool inProgress);
 
-private:
-    QWidget* mainWidget = nullptr;
-    QVBoxLayout* layout = nullptr;
+ private:
+  void start();
 
-    RemoteVideo* remoteVideo = nullptr;
-    LocalVideo* localVideo = nullptr;
+  void updateLocalVideoPosition();
+
+ private:
+  QWidget* mainWidget = nullptr;
+  QVBoxLayout* layout = nullptr;
+
+  RemoteVideo* remoteVideo = nullptr;
+  LocalVideo* localVideo = nullptr;
 };
 
 #endif

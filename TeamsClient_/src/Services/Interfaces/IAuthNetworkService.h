@@ -9,9 +9,7 @@
  * @class AuthNetworkService
  * @brief Service réseau pour gérer les requêtes d'authentification.
  *
- * Envoie les requêtes login et register au serveur via QSslSocket,
- * reçoit et parse les réponses JSON, et émet les signaux authSuccess ou authError
- * selon le résultat.
+ * Formate les réponses et les envoies au serveur via la class NetworkService.
  */
 class IAuthNetworkService : public QObject
 {

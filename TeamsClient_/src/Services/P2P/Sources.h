@@ -4,6 +4,13 @@
 #include "LocalVideoSource.h"
 #include "RemoteVideoSource.h"
 
+/**
+ * @class Sources
+ * @brief Gestionnaire singleton des sources vidéo.
+ *
+ * Fournit un accès global aux sources vidéo locales et distantes,
+ * garantissant qu'une seule instance de chaque source est utilisée dans l'application.
+ */
 class Sources {
  public:
   static Sources& instance();

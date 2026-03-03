@@ -1,7 +1,7 @@
 #include "PConnectionObserver.h"
+
 #include "PConnectionController.h"
 #include "Sources.h"
-
 
 PConnectionObserver::PConnectionObserver(PConnectionController* owner) : owner_(owner) {}
 
@@ -16,7 +16,7 @@ void PConnectionObserver::OnIceCandidate(const webrtc::IceCandidateInterface* ca
 
 void PConnectionObserver::OnConnectionChange(
     webrtc::PeerConnectionInterface::PeerConnectionState state) {
-      qDebug() << "[PConnectionObserver] OnConnectionChange state=" << (int)state;
+  qDebug() << "[PConnectionObserver] OnConnectionChange state=" << (int)state;
   if (!owner_) return;
 
   switch (state) {
@@ -39,12 +39,10 @@ void PConnectionObserver::OnConnectionChange(
 
 void PConnectionObserver::OnTrack(
     webrtc::scoped_refptr<webrtc::RtpTransceiverInterface> transceiver) {
-    auto track = transceiver->receiver()->track();
-    if (track && track->kind() == webrtc::MediaStreamTrackInterface::kVideoKind) {
-        auto videoTrack = webrtc::scoped_refptr<webrtc::VideoTrackInterface>(
-            static_cast<webrtc::VideoTrackInterface*>(track.get()));
-        videoTrack->AddOrUpdateSink(
-            Sources::instance().remoteVideo().get(),
-            webrtc::VideoSinkWants());
-    }
+  auto track = transceiver->receiver()->track();
+  if (track && track->kind() == webrtc::MediaStreamTrackInterface::kVideoKind) {
+    auto videoTrack = webrtc::scoped_refptr<webrtc::VideoTrackInterface>(
+        static_cast<webrtc::VideoTrackInterface*>(track.get()));
+    videoTrack->AddOrUpdateSink(Sources::instance().remoteVideo().get(), webrtc::VideoSinkWants());
+  }
 }

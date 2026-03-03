@@ -3,7 +3,7 @@
 
 #include <string>
 
-inline std::string uuidd;
+inline std::string uuidd;  // Temporaire, pour la démo Visio webrtc
 #define APP_NAME "Teams"
 
 #endif

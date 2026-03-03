@@ -1,26 +1,26 @@
 #include "Application.h"
 
-//Interfaces
+// Interfaces
 #include "Interfaces/IAuthService.h"
 #include "Interfaces/ISessionService.h"
 
 // Services
-#include "Auth/AuthService.h"
 #include "Auth/AuthNetworkService.h"
+#include "Auth/AuthService.h"
 #include "P2P/WebRTCService.h"
-#include "UserService.h"
 #include "SessionService.h"
+#include "UserService.h"
 
 // ViewModels
 #include "../ViewModels/AuthViewModel.h"
 #include "../ViewModels/WebRTCViewModel.h"
 
 // Locators
+#include <QtCore/qpermissions.h>
+
 #include "ServiceLocator.h"
 #include "ViewLocator.h"
 #include "ViewModelsLocator.h"
-
-#include <QtCore/qpermissions.h>
 
 Application::Application(int& argc, char** argv) : qtApp(argc, argv) {
   QCoreApplication::setApplicationName("Teams");

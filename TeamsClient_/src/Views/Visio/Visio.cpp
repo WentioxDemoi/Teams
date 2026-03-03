@@ -1,68 +1,52 @@
 #include "Visio.h"
+
 #include "Visio/Local/LocalVideo.h"
 
-Visio::Visio(QWidget* parent)
-    : QMainWindow(parent)
-{
-    resize(960, 540);
-    setWindowTitle("Visio");
+Visio::Visio(QWidget* parent) : QMainWindow(parent) {
+  resize(960, 540);
+  setWindowTitle("Visio");
 
-    start();
-    show();
+  start();
+  show();
 }
 
-void Visio::start()
-{
-    // Widget central
-    mainWidget = new QWidget(this);
-    setCentralWidget(mainWidget);
+void Visio::start() {
+  // Widget central
+  mainWidget = new QWidget(this);
+  setCentralWidget(mainWidget);
 
-    layout = new QVBoxLayout(mainWidget);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    
+  layout = new QVBoxLayout(mainWidget);
+  layout->setContentsMargins(0, 0, 0, 0);
+  layout->setSpacing(0);
 }
 
-void Visio::resizeEvent(QResizeEvent* event)
-{
-    QMainWindow::resizeEvent(event);
-    updateLocalVideoPosition();
+void Visio::resizeEvent(QResizeEvent* event) {
+  QMainWindow::resizeEvent(event);
+  updateLocalVideoPosition();
 }
 
-void Visio::updateLocalVideoPosition()
-{
-    if (!localVideo)
-        return;
+void Visio::updateLocalVideoPosition() {
+  if (!localVideo) return;
 
-    int margin = 10;
-    localVideo->move(
-        width() - localVideo->width() - margin,
-        height() - localVideo->height() - margin
-    );
+  int margin = 10;
+  localVideo->move(width() - localVideo->width() - margin,
+                   height() - localVideo->height() - margin);
 }
 
-void Visio::closeEvent(QCloseEvent* event)
-{
-    // Plus tard : stop WebRTC, caméra, audio, etc.
-    // event->accept();
+void Visio::closeEvent(QCloseEvent* event) {
+  // Plus tard : stop WebRTC, caméra, audio, etc.
+  // event->accept();
 }
 
-void Visio::startReceiver()
-{
-    remoteVideo = new RemoteVideo(mainWidget);
-    // remoteVideo->move(remoteVideo->x(), remoteVideo->y() - 50);
-    layout->addWidget(remoteVideo);
-    qDebug() << "centralWidget y:" << remoteVideo->y();
-
-    
+void Visio::startReceiver() {
+  remoteVideo = new RemoteVideo(mainWidget);
+  layout->addWidget(remoteVideo);
 }
 
-void Visio::startSender()
-{ 
-    localVideo = new LocalVideo(mainWidget); 
-    layout->addWidget(localVideo);
-    localVideo->raise();
-    updateLocalVideoPosition();
-    connect(this, &Visio::OnP2PChange, localVideo, &LocalVideo::OnP2PChange);
-    
+void Visio::startSender() {
+  localVideo = new LocalVideo(mainWidget);
+  layout->addWidget(localVideo);
+  localVideo->raise();
+  updateLocalVideoPosition();
+  connect(this, &Visio::OnP2PChange, localVideo, &LocalVideo::OnP2PChange);
 }

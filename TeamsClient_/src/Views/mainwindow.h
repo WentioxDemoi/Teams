@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 
-
 #include "../Models/User.h"
 #include "../ViewModels/AuthViewModel.h"
 #include "../ViewModels/WebRTCViewModel.h"
@@ -21,8 +20,7 @@
  * l'interaction entre l'interface utilisateur et les ViewModels, notamment
  * la gestion du succès de l'authentification.
  */
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
@@ -39,12 +37,10 @@ class MainWindow : public QMainWindow
   QStackedWidget* stack;
   QMainWindow* visio;
   void closeEvent(QCloseEvent* event);
-    QPoint dragPosition_;
 
  public slots:
   void authSuccess(const User& user);
   void noTokenFound();
-
 };
 
 #endif

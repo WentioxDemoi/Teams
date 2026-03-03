@@ -2,7 +2,6 @@
 #define AUTHVIEWMODEL_H
 
 #include "../Models/User.h"
-
 #include "../Services/Interfaces/ISessionService.h"
 
 /**
@@ -13,27 +12,25 @@
  * Gère la logique métier liée au login et à l'inscription, émet des signaux
  * authSuccess ou loginError selon le résultat, et facilite les tests unitaires via IAuthService.
  */
-class AuthViewModel : public QObject
-{
+class AuthViewModel : public QObject {
   Q_OBJECT
 
-public:
-  explicit AuthViewModel(ISessionService *service = nullptr, QObject *parent = nullptr); // Aller voir dans le CPP l'implémentation
+ public:
+  explicit AuthViewModel(ISessionService* service = nullptr,
+                         QObject* parent = nullptr);  // Aller voir dans le CPP l'implémentation
   void start();
 
-public slots:
-  void loginUser(const QString &email, const QString &password);
-  void registerUser(const QString &email, const QString &username,
-                    const QString &password);
-signals:
-  void authSuccess(const User &user);
-  void authError(const QString &error);
+ public slots:
+  void loginUser(const QString& email, const QString& password);
+  void registerUser(const QString& email, const QString& username, const QString& password);
+ signals:
+  void authSuccess(const User& user);
+  void authError(const QString& error);
   void noTokenFound();
   void registerWithServer4WebRTC(QString UUID);
 
-private:
-
-  ISessionService *sessionService_; // On passe par une interface pour faciliter les tests unitaires
+ private:
+  ISessionService* sessionService_;  // On passe par une interface pour faciliter les TU
 };
 
 #endif

@@ -6,9 +6,10 @@
 
 /**
  * @class SessionService
- * @brief Interface pour ...
+ * @brief Service de gestion de session utilisateur.
  *
- * Définit les méthodes que tout service ...
+ * Gère l'authentification et l'enregistrement des utilisateurs via un service d'authentification,
+ * en fournissant des méthodes pour connecter, enregistrer et initialiser la session.
  */
 class SessionService : public ISessionService {
   Q_OBJECT

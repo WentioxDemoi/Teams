@@ -1,13 +1,15 @@
 #ifndef TOKENMANAGER_H
 #define TOKENMANAGER_H
 
-#include "Interfaces/ITokenManager.h"
-#include <QObject>
-#include <QString>
-#include <QEventLoop>
-#include <QDebug>
 #include <qt6keychain/keychain.h>
 #include <qt6keychain/qkeychain_export.h>
+
+#include <QDebug>
+#include <QEventLoop>
+#include <QObject>
+#include <QString>
+
+#include "Interfaces/ITokenManager.h"
 
 /**
  * @class TokenManager
@@ -15,25 +17,21 @@
  *
  * Émet des signaux selon la demande initiale.
  */
-class TokenManager : public ITokenManager
-{
-    Q_OBJECT
-public:
-    static TokenManager &instance();
+class TokenManager : public ITokenManager {
+  Q_OBJECT
+ public:
+  static TokenManager& instance();
 
-    
+  // Méthodes synchronisées pour manipuler le token
+  bool readToken() override;
+  bool writeToken(const QString& value) override;
+  bool deleteToken() override;
 
-    // Méthodes synchronisées pour manipuler le token
-    bool readToken() override;   // Retourne true si le token a été lu
-    bool writeToken(const QString &value) override; // Retourne true si écrit
-    bool deleteToken() override; // Retourne true si supprimé
-
-
-private:
-    explicit TokenManager(QObject *parent = nullptr);
-    QKeychain::ReadPasswordJob m_readCredentialJob;
-    QKeychain::WritePasswordJob m_writeCredentialJob;
-    QKeychain::DeletePasswordJob m_deleteCredentialJob;
+ private:
+  explicit TokenManager(QObject* parent = nullptr);
+  QKeychain::ReadPasswordJob m_readCredentialJob;
+  QKeychain::WritePasswordJob m_writeCredentialJob;
+  QKeychain::DeletePasswordJob m_deleteCredentialJob;
 };
 
 #endif

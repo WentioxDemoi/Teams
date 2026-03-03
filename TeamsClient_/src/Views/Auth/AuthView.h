@@ -1,9 +1,11 @@
 #ifndef AUTHVIEW_H
 #define AUTHVIEW_H
 
+#include <QStackedWidget>
+
 #include "LoginForm.h"
 #include "RegisterForm.h"
-#include <QStackedWidget>
+
 /**
  * @class AuthView
  * @brief Interface graphique pour l'authentification.
@@ -12,22 +14,21 @@
  * bouton pour basculer entre les deux. Coordonne l'affichage et l'interaction
  * avec l'utilisateur.
  */
-class AuthView : public QWidget
-{
+class AuthView : public QWidget {
   Q_OBJECT
 
-public:
-  explicit AuthView(QWidget *parent = nullptr);
-  LoginForm *loginForm;
-  RegisterForm *registerForm;
+ public:
+  explicit AuthView(QWidget* parent = nullptr);
+  LoginForm* loginForm;
+  RegisterForm* registerForm;
 
-private slots:
+ private slots:
   void toggleForms();
 
-private:
-  QPushButton *toggleButton;
-  QVBoxLayout *layout;
-  QStackedWidget *stack;
+ private:
+  QPushButton* toggleButton;
+  QVBoxLayout* layout;
+  QStackedWidget* stack;
 
   void updateButtonText();
 };

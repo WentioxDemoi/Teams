@@ -1,7 +1,6 @@
 #include "LoginForm.h"
 
-LoginForm::LoginForm(QWidget *parent) : QWidget(parent)
-{
+LoginForm::LoginForm(QWidget* parent) : QWidget(parent) {
   emailEdit = new QLineEdit(this);
   emailEdit->setPlaceholderText("Email");
 
@@ -11,13 +10,13 @@ LoginForm::LoginForm(QWidget *parent) : QWidget(parent)
 
   loginButton = new QPushButton("Login", this);
 
-  QVBoxLayout *layout = new QVBoxLayout(this);
+  QVBoxLayout* layout = new QVBoxLayout(this);
   layout->addWidget(emailEdit);
   layout->addWidget(passwordEdit);
   layout->addWidget(loginButton);
 
   setLayout(layout);
 
-  connect(loginButton, &QPushButton::clicked, this, [this]()
-          { emit loginRequested(emailEdit->text(), passwordEdit->text()); });
+  connect(loginButton, &QPushButton::clicked, this,
+          [this]() { emit loginRequested(emailEdit->text(), passwordEdit->text()); });
 }

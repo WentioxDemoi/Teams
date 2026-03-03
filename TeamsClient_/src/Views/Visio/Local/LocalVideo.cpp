@@ -1,9 +1,9 @@
 #include "LocalVideo.h"
+
 #include "../../../Services/P2P/Sources.h"
 #include "../../../Utils/FrameConverter.h"
 
-
-LocalVideo::LocalVideo(QWidget *parent) : QWidget(parent) {
+LocalVideo::LocalVideo(QWidget* parent) : QWidget(parent) {
   setFixedSize(320, 180);
   sink = new QVideoSink(this);
   videoWidget = new QVideoWidget(this);
@@ -15,34 +15,31 @@ LocalVideo::LocalVideo(QWidget *parent) : QWidget(parent) {
   captureSession->setCamera(camera);
   captureSession->setVideoOutput(sink);
 
-  connect(sink, &QVideoSink::videoFrameChanged, this,
-          &LocalVideo::OnFrameChanged);
+  connect(sink, &QVideoSink::videoFrameChanged, this, &LocalVideo::OnFrameChanged);
   camera->start();
   videoSource = Sources::instance().localVideo();
 }
 
-void LocalVideo::OnFrameChanged(const QVideoFrame &frame) {
-  if (!frame.isValid())
-    return;
+void LocalVideo::OnFrameChanged(const QVideoFrame& frame) {
+  if (!frame.isValid()) return;
   videoWidget->videoSink()->setVideoFrame(frame);
 
   if (p2pInProgress) {
     webrtc::scoped_refptr<webrtc::I420BufferInterface> i420Buffer;
-    // Ajouter des formats a terme
     switch (frame.surfaceFormat().pixelFormat()) {
-    case QVideoFrameFormat::PixelFormat::Format_NV12:
-      i420Buffer = FrameConverter::NV12ToI420(frame);
-      break;
-    default:
-      qWarning() << "Format non supporté pour WebRTC:"
-                 << frame.surfaceFormat().pixelFormat();
-      return;
+      case QVideoFrameFormat::PixelFormat::Format_NV12:
+        i420Buffer = FrameConverter::NV12ToI420(frame);
+        break;
+      default:
+        qWarning() << "Format non supporté pour WebRTC:" << frame.surfaceFormat().pixelFormat();
+        return;
     }
 
     videoSource->PushFrame(i420Buffer);
   }
 }
 
-void LocalVideo::OnP2PChange(bool InProgress) { 
+void LocalVideo::OnP2PChange(bool InProgress) {
   qDebug() << "OnP2PChange";
-  p2pInProgress = InProgress; }
+  p2pInProgress = InProgress;
+}

@@ -1,11 +1,12 @@
 #include "WebRTCService.h"
+
 #include <QPointer>
 
 WebRTCService::WebRTCService(QObject* parent)
     : QObject(parent),
       signalingClient_(new SignalingClient(this)),
       pConnectionController_(std::make_unique<PConnectionController>()) {
-        QPointer<WebRTCService> self(this);
+  QPointer<WebRTCService> self(this);
   pConnectionController_->onLocalOffer = [this](const std::string& sdp) {
     qDebug() << "[WebRTCService] onLocalOffer triggered, sending offer";
     signalingClient_->sendOffer(QString::fromStdString(sdp));
@@ -42,9 +43,7 @@ WebRTCService::WebRTCService(QObject* parent)
           &SignalingClient::registerWithServer4WebRTC);
 }
 
-void WebRTCService::startCall() {
-  pConnectionController_->createOffer();
-}
+void WebRTCService::startCall() { pConnectionController_->createOffer(); }
 void WebRTCService::acceptCall() { pConnectionController_->createAnswer(); }
 void WebRTCService::hangup() { pConnectionController_->close(); }
 
@@ -61,4 +60,4 @@ void WebRTCService::onRemoteIce(QString candidate, QString mid, int index) {
   qDebug() << "[WebRTCService] onRemoteIce received, mid=" << mid.size() << "index=" << index;
   pConnectionController_->addIceCandidate(candidate.toStdString(), mid.toStdString(), index);
 }
-void WebRTCService::disconnectFromSignalingServer() { signalingClient_->disconnectFromServer();}
+void WebRTCService::disconnectFromSignalingServer() { signalingClient_->disconnectFromServer(); }

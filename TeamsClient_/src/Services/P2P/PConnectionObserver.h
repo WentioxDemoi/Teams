@@ -10,6 +10,14 @@
 
 class PConnectionController;  // FD
 
+/**
+ * @class PConnectionObserver
+ * @brief Observateur pour une connexion WebRTC.
+ *
+ * Surveille les événements d'une PeerConnection, notamment les candidats ICE, 
+ * les changements de connexion et les flux médias entrants, en relayant les informations 
+ * vers le contrôleur de connexion associé.
+ */
 class PConnectionObserver
     : public webrtc::PeerConnectionObserver,
       public webrtc::RefCountInterface  // Compteur de référence, code legacy et façon de faire

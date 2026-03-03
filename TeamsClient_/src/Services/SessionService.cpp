@@ -1,6 +1,7 @@
 #include "SessionService.h"
-#include "ServiceLocator.h"
+
 #include "Auth/AuthService.h"
+#include "ServiceLocator.h"
 
 SessionService::SessionService(IAuthService* service, QObject* parent)
     : authService_(service ? service : ServiceLocator::instance().getService<IAuthService>()),

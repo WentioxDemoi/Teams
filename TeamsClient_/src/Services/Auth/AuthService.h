@@ -2,11 +2,10 @@
 #define AUTHSERVICE_H
 
 #include "../../Models/User.h"
-#include "../Interfaces/IAuthNetworkService.h"
-#include "../Interfaces/IUserService.h"
-#include "../Interfaces/IAuthService.h"
-
 #include "../../Utils/Interfaces/ITokenManager.h"
+#include "../Interfaces/IAuthNetworkService.h"
+#include "../Interfaces/IAuthService.h"
+#include "../Interfaces/IUserService.h"
 
 /**
  * @class AuthService
@@ -14,32 +13,27 @@
  *
  * Implémente IAuthService. Émet authSuccess ou authError selon le résultat.
  */
-class AuthService : public IAuthService
-{
+class AuthService : public IAuthService {
   Q_OBJECT
 
-public:
-  explicit AuthService(IAuthNetworkService* network = nullptr,
-                         IUserService* userService = nullptr,
-                         ITokenManager* token = nullptr,
-                         QObject* parent = nullptr);
+ public:
+  explicit AuthService(IAuthNetworkService* network = nullptr, IUserService* userService = nullptr,
+                       ITokenManager* token = nullptr, QObject* parent = nullptr);
   void start() override;
-  void loginUser(const QString &username, const QString &password) override;
+  void loginUser(const QString& username, const QString& password) override;
 
-  void registerUser(const QString &email, const QString &username,
-                    const QString &password) override;
+  void registerUser(const QString& email, const QString& username,
+                    const QString& password) override;
 
-public slots:
-  void onUserSaved(const User &user) override;
-  void errorToken(const QString &error) override;
-  void errorUserService(const QString &error) override;
-  
+ public slots:
+  void onUserSaved(const User& user) override;
+  void errorToken(const QString& error) override;
+  void errorUserService(const QString& error) override;
 
-private:
-
-  IAuthNetworkService *network_;
-  ITokenManager *token_;
-  IUserService *userService_;
+ private:
+  IAuthNetworkService* network_;
+  ITokenManager* token_;
+  IUserService* userService_;
 };
 
 #endif
