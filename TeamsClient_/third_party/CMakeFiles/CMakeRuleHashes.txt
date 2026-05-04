@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+7b0e441a9520cac705a9edddbb6819f8 CMakeFiles/TeamsClient__autogen
+fbb603729615f4e97e51aea7f913fb29 TeamsClient__autogen/timestamp
+cd9071efeb23ddf17c591cc6661e9a7b qrc_resources.cpp
