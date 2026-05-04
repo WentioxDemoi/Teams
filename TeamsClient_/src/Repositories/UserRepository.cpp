@@ -1,11 +1,15 @@
 #include "UserRepository.h"
 
-UserRepository::UserRepository(QObject *parent)
+#include <QSqlError>
+#include <QSqlQuery>
+
+#include "../Database/DatabaseManager.h"
+
+UserRepository::UserRepository(QObject* parent)
     : QObject(parent), db_(DatabaseManager::instance().database()) {}
 
-bool UserRepository::insert(const User &user) {
-  if (isUserPresent(user.uuid()))
-    return update(user);
+bool UserRepository::insert(const User& user) {
+  if (isUserPresent(user.uuid())) return update(user);
 
   QSqlQuery query(db_);
   query.prepare(R"(
@@ -27,7 +31,7 @@ bool UserRepository::insert(const User &user) {
   return true;
 }
 
-std::optional<User> UserRepository::findByUUID(const QString &uuid) {
+std::optional<User> UserRepository::findByUUID(const QString& uuid) {
   QSqlQuery query(db_);
   query.prepare(R"(
         SELECT email, username, status, uuid, is_me, token
@@ -41,8 +45,7 @@ std::optional<User> UserRepository::findByUUID(const QString &uuid) {
     return std::nullopt;
   }
 
-  if (!query.next())
-    return std::nullopt;
+  if (!query.next()) return std::nullopt;
 
   User user;
   user.setEmail(query.value("email").toString());
@@ -55,9 +58,7 @@ std::optional<User> UserRepository::findByUUID(const QString &uuid) {
   return user;
 }
 
-
-
-bool UserRepository::remove(const QString &uuid) {
+bool UserRepository::remove(const QString& uuid) {
   QSqlQuery query(db_);
   query.prepare("DELETE FROM users WHERE uuid = :uuid");
   query.bindValue(":uuid", uuid);
@@ -69,7 +70,7 @@ bool UserRepository::remove(const QString &uuid) {
   return query.numRowsAffected() > 0;
 }
 
-bool UserRepository::update(const User &user) {
+bool UserRepository::update(const User& user) {
   QSqlQuery query(db_);
   query.prepare(R"(
         UPDATE users
@@ -93,16 +94,15 @@ bool UserRepository::update(const User &user) {
   return query.numRowsAffected() > 0;
 }
 
-bool UserRepository::removeAll()
-{
-    QSqlQuery query(db_);
+bool UserRepository::removeAll() {
+  QSqlQuery query(db_);
 
-    if (!query.exec("DELETE FROM users")) {
-        qDebug() << "[removeAll] Failed:" << query.lastError().text();
-        return false;
-    }
+  if (!query.exec("DELETE FROM users")) {
+    qDebug() << "[removeAll] Failed:" << query.lastError().text();
+    return false;
+  }
 
-    return true;
+  return true;
 }
 
 QList<User> UserRepository::findAll() {
@@ -131,7 +131,7 @@ QList<User> UserRepository::findAll() {
   return users;
 }
 
-bool UserRepository::isUserPresent(const QString &uuid) {
+bool UserRepository::isUserPresent(const QString& uuid) {
   QSqlQuery query(db_);
   query.prepare("SELECT 1 FROM users WHERE uuid = :uuid LIMIT 1");
   query.bindValue(":uuid", uuid);

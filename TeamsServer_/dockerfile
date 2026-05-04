@@ -27,6 +27,8 @@ RUN wget https://archives.boost.io/release/1.89.0/source/boost_1_89_0.tar.bz2 -O
 
 COPY . .
 
+RUN rm -rf build
+
 RUN mkdir build && cd build && \
     cmake .. && \
     cmake --build . 

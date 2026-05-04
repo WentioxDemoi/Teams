@@ -1,7 +1,9 @@
 #ifndef AUTHSESSION_H
 #define AUTHSESSION_H
 
-#include "../../Handlers/Handler.h"
+#include <memory>
+
+#include "../../Handlers/AuthHandler.h"
 #include "../../Utils/BoostErrorHandler.h"
 #include "../../includes.h"
 
@@ -13,20 +15,22 @@
  * et délègue le traitement des requêtes au Handler central.
  */
 class AuthSession : public std::enable_shared_from_this<AuthSession> {
-public:
-  AuthSession(tcp::socket socket, ssl::context &ctx,
-              std::shared_ptr<Handler> handler)
-      : stream_(std::move(socket), ctx), handler_(handler) {}
+ public:
+  AuthSession(tcp::socket socket, ssl::context& ctx) : stream_(std::move(socket), ctx) {
+    authHandler_ =
+        std::make_unique<AuthHandler>([this](std::string response) { handle_response(std::move(response)); });
+  }
 
   void start();
+  
 
-private:
+ private:
   void do_read();
   void handle_response(std::string payload);
 
   ssl::stream<tcp::socket> stream_;
   std::array<char, 4096> buffer_;
-  std::shared_ptr<Handler> handler_;
+  std::unique_ptr<AuthHandler> authHandler_;
 };
 
 #endif

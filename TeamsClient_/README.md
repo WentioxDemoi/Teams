@@ -37,6 +37,15 @@ make
 
 Alternativement, vous pouvez double-cliquer sur l'app dans le dossier `build/`.
 
+### Accès à la caméra
+
+- Suppression des permissions sur MacOS : tccutil reset Camera
+
+### Accès au Micro
+
+- Suppression des permissions sur MacOS : tccutil reset Microphone
+
+
 ### Création d'un fichier .dmg
 
 1. Exécutez macdeployqt pour préparer l'application :

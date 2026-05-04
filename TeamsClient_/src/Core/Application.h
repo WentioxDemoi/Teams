@@ -1,24 +1,13 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-// Services
-#include "../Services/AuthService.h"
-#include "../Services/Interfaces/IAuthService.h"
-
-
 // Views
+#include <QApplication>
+#include <QDebug>
+#include <QFile>
+#include <QObject>
+
 #include "../Views/mainwindow.h"
-
-// ViewModels
-#include "../ViewModels/AuthViewModel.h"
-
-// Locators
-#include "ServiceLocator.h"
-#include "ViewModelsLocator.h"
-#include "ViewLocator.h"
-
-
-#include "../includes.h"
 
 /**
  * @class Application
@@ -27,25 +16,25 @@
  * Initialise l'environnement Qt, les services, les ViewModels et l'interface utilisateur,
  * puis lance la boucle principale de l'application.
  */
-class Application
-{
-public:
-  Application(int &argc, char **argv);
+class Application {
+ public:
+  Application(int& argc, char** argv);
   ~Application() = default;
   int run();
 
-  Application(const Application &) = delete;
-  Application &operator=(const Application &) = delete;
+  Application(const Application&) = delete;
+  Application& operator=(const Application&) = delete;
 
-private:
+ private:
   QApplication qtApp;
-  QObject *appRoot;
-  MainWindow *mainWindow;
-
+  QObject* appRoot;
+  MainWindow* mainWindow;
+  void initializePerms();
   void initializeServices();
   void initializeViews();
   void initializeViewModels();
   void initializeUI();
+  void connectViewModels();
 };
 
 #endif

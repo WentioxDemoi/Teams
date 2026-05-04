@@ -1,0 +1,10 @@
+# Ce fichier est fait pour l'autocompletion ! Pour que clangd puisse trouver les 
+# librairies sur le PC qui sont spécifiés par compile_commands.json dans le build alors 
+# que le serveur est normalement compilé dans un container docker.
+
+CompileFlags:
+  Add:
+    - "-I/opt/homebrew/opt/boost/include"
+    - "-I/opt/homebrew/opt/libpqxx/include"
+    - "-I/opt/homebrew/opt/libpq/include"
+    - "-I/opt/homebrew/opt/argon2/include"

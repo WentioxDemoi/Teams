@@ -1,7 +1,6 @@
 #include "ViewModelsLocator.h"
 
-ViewModelsLocator &ViewModelsLocator::instance()
-{
+ViewModelsLocator& ViewModelsLocator::instance() {
   static ViewModelsLocator instance;
   return instance;
 }

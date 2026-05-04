@@ -9,6 +9,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_OSX_ARCHITECTURES "arm64")   # Pour Apple Silicon
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++") # STL correcte pour macOS
+set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -stdlib=libc++")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(BUILD_TESTS "Build the tests" OFF)
 
 # === OpenSSL ===
@@ -22,10 +24,22 @@ message(STATUS "OpenSSL libraries: ${OPENSSL_LIBRARIES}")
 
 # === Qt ===
 set(CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.9.3/macos/")  # Root of Qt install
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network Test Sql)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network Test Sql Multimedia MultimediaWidgets)
 set(Qt6Keychain_DIR "$ENV{HOME}/Qt/6.9.3/macos/lib/cmake/Qt6Keychain")
 find_package(Qt6Keychain REQUIRED)
 
+# === WebRTC ===/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src/out/mac_arm64_release/obj/libwebrtc.a
+set(WEBRTC_DIR "${CMAKE_SOURCE_DIR}/third_party/webrtc")
+set(WEBRTC_LIB "${WEBRTC_DIR}/lib/libwebrtc.a")
+
+# === Libyuv ===
+set(LIBYUV_ROOT "${CMAKE_SOURCE_DIR}/third_party/libyuv")
+
+
+# === Info.plist ===
+set(MACOSX_BUNDLE_INFO_PLIST
+    ${CMAKE_SOURCE_DIR}/Info.plist
+)
 
 # === Collecte automatique des sources par catégorie ===
 # Models
@@ -67,6 +81,9 @@ file(GLOB_RECURSE UTILS_HEADERS "src/Utils/*.h")
 # Core
 file(GLOB_RECURSE CORE_SOURCES "src/Core/*.cpp")
 file(GLOB_RECURSE CORE_HEADERS "src/Core/*.h")
+
+#AppleDetails
+file(GLOB_RECURSE APPLEDETAILS_SOURCES "AppleDetails/*.mm")
 
 # Regroupement de toutes les sources
 set(ALL_SOURCES
@@ -111,6 +128,8 @@ qt_add_executable(TeamsClient_
     ${app_resources}
 )
 
+# target_link_options(TeamsClient_ PRIVATE "-Wl,-force_load,${WEBRTC_LIB}")
+
 # Affichage des fichiers trouvés (debug)
 message(STATUS "Models sources: ${MODELS_SOURCES}")
 message(STATUS "ViewModels sources: ${VIEWMODELS_SOURCES}")
@@ -121,7 +140,19 @@ message(STATUS "Utils sources: ${UTILS_SOURCES}")
 message(STATUS "Core sources: ${CORE_SOURCES}")
 message(STATUS "UI files: ${VIEWS_UI}")
 
-
+set(WEBRTC_INCLUDE_DIRS
+    ${WEBRTC_DIR}/src
+    ${WEBRTC_DIR}/src/api
+    ${WEBRTC_DIR}/src/api/rtc_base
+    ${WEBRTC_DIR}/src/third_party/abseil-cpp
+    ${WEBRTC_DIR}/src/api/video
+    ${WEBRTC_DIR}/src/api/media_stream
+    # ${WEBRTC_DIR}/src/include
+    # ${WEBRTC_DIR}/src/lib
+    # ${WEBRTC_DIR}/src/api
+    # ${WEBRTC_DIR}/src/api/rtc_base
+    # ${WEBRTC_DIR}/src/third_party/abseil-cpp
+)
 # Include directories pour l'accès aux headers
 target_include_directories(TeamsClient_ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -133,17 +164,61 @@ target_include_directories(TeamsClient_ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Components
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
+    ${LIBYUV_ROOT}/include
 )
 
+target_include_directories(TeamsClient_ SYSTEM PRIVATE
+    ${WEBRTC_INCLUDE_DIRS}
+)
+
+target_compile_definitions(TeamsClient_ PRIVATE
+    WEBRTC_MAC
+    WEBRTC_POSIX
+    WEBRTC_ARCH_LITTLE_ENDIAN
+    NDEBUG
+)
+
+# file(GLOB_RECURSE WEBRTC_LIBS
+#     "${CMAKE_SOURCE_DIR}/third_party/webrtc/src/out/Release/obj/*.a"
+# )
+
+target_compile_features(TeamsClient_ PRIVATE cxx_std_20)
+# target_compile_options(TeamsClient_ PRIVATE -fno-rtti)
+if(APPLE)
+    target_link_options(TeamsClient_ PRIVATE "-Wl,-force_load,${WEBRTC_LIB}")
+    # target_sources(${PROJECT_NAME} PRIVATE ${APPLEDETAILS_SOURCES})
+    # target_link_libraries(${PROJECT_NAME} PRIVATE "-framework AppKit")
+endif()
 target_link_libraries(TeamsClient_
     PRIVATE
+    
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Sql
     Qt${QT_VERSION_MAJOR}::Network
+    Qt${QT_VERSION_MAJOR}::Multimedia 
+    Qt${QT_VERSION_MAJOR}::MultimediaWidgets
     Qt6Keychain::Qt6Keychain
+    ${WEBRTC_DIR}/lib/libwebrtc.a
+    "-framework Foundation"
+    "-framework AVFoundation"
+    "-framework CoreAudio"
+    "-framework AudioToolbox"
+    "-framework VideoToolbox"
+    "-framework CoreMedia"
+    "-framework CoreVideo"
+    "-framework IOKit"
+    "-framework IOSurface"
+    "-framework ApplicationServices"
+    "-framework ScreenCaptureKit"
     OpenSSL::SSL
     OpenSSL::Crypto
+    ${LIBYUV_ROOT}/lib/libyuv.a
+
 )
+
+# target_link_options(TeamsClient_ PRIVATE
+#     -Wl,-force_load,${WEBRTC_LIB}
+# )
 
 get_target_property(QT6_VERSION Qt6::Core VERSION)
 if(QT6_VERSION VERSION_LESS "6.1.0")
@@ -152,6 +227,7 @@ endif()
 
 set_target_properties(TeamsClient_ PROPERTIES
     ${BUNDLE_ID_OPTION}
+    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/Info.plist
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
@@ -170,6 +246,13 @@ qt_finalize_executable(TeamsClient_)
 
 if(BUILD_TESTS)
     enable_testing()
+
+
+    target_compile_definitions(TeamsClient_Tests PRIVATE
+        WEBRTC_MAC
+        WEBRTC_POSIX
+        # WEBRTC_ARCH_LITTLE_ENDIAN
+    )
 
     # Collecte des tests
     file(GLOB_RECURSE TEST_SOURCES "Tests/*.cpp")
@@ -206,9 +289,13 @@ if(BUILD_TESTS)
         Qt${QT_VERSION_MAJOR}::Network
         Qt${QT_VERSION_MAJOR}::Test
         Qt${QT_VERSION_MAJOR}::Sql
+        Qt${QT_VERSION_MAJOR}::Multimedia 
+        Qt${QT_VERSION_MAJOR}::MultimediaWidgets
         Qt6Keychain::Qt6Keychain
         OpenSSL::SSL
         OpenSSL::Crypto
+        "-lc++"
+        "-lc++abi"
     )
     add_test(NAME TeamsClient_Tests COMMAND TeamsClient_Tests)
 endif()

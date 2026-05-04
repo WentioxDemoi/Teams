@@ -1,7 +1,6 @@
 #include "AuthView.h"
 
-AuthView::AuthView(QWidget *parent) : QWidget(parent)
-{
+AuthView::AuthView(QWidget* parent) : QWidget(parent) {
   loginForm = new LoginForm(this);
   registerForm = new RegisterForm(this);
 
@@ -23,8 +22,7 @@ AuthView::AuthView(QWidget *parent) : QWidget(parent)
   connect(toggleButton, &QPushButton::clicked, this, &AuthView::toggleForms);
 }
 
-void AuthView::toggleForms()
-{
+void AuthView::toggleForms() {
   if (stack->currentWidget() == loginForm)
     stack->setCurrentWidget(registerForm);
   else
@@ -32,14 +30,10 @@ void AuthView::toggleForms()
   updateButtonText();
 }
 
-void AuthView::updateButtonText()
-{
-  if (stack->currentWidget() == loginForm)
-  {
+void AuthView::updateButtonText() {
+  if (stack->currentWidget() == loginForm) {
     toggleButton->setText("Switch to Register");
-  }
-  else
-  {
+  } else {
     toggleButton->setText("Switch to Login");
   }
 }

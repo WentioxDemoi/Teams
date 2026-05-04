@@ -1,7 +1,8 @@
 #ifndef VIEWMODELSTOOLS_H
 #define VIEWMODELSTOOLS_H
 
-#include "../includes.h"
+#include <QRegularExpression>
+#include <QString>
 
 /**
  * @class ViewModelsTools
@@ -10,17 +11,14 @@
  * Fournit des fonctions utilitaires, comme la validation d'email,
  * sans possibilité d'instanciation.
  */
-class ViewModelsTools
-{
+class ViewModelsTools {
+ public:
+  static bool isValidEmail(const QString& email) {
+    static const QRegularExpression rx(R"((^[\w\.\-]+@[A-Za-z0-9\.\-]+\.[A-Za-z]{2,}$))");
+    return rx.match(email).hasMatch();
+  }
 
-public:
-    static bool isValidEmail(const QString &email)
-    {
-        static const QRegularExpression rx(R"((^[\w\.\-]+@[A-Za-z0-9\.\-]+\.[A-Za-z]{2,}$))");
-        return rx.match(email).hasMatch();
-    }
-
-    ViewModelsTools() = delete;
+  ViewModelsTools() = delete;
 };
 
 #endif

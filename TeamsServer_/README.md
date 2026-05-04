@@ -129,3 +129,6 @@ Le serveur utilise un fichier `.env` pour la configuration. Les certificats SSL 
 - Le CMake sera enrichi au fur et à mesure du développement
 - D'autres fonctionnalités seront ajoutées progressivement
 - Des UMLs sont présents dans la branch diagram
+
+## TODO
+- Refactor le système d'include pour soulager clang

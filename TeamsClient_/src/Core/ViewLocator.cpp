@@ -1,7 +1,6 @@
 #include "ViewLocator.h"
 
-ViewLocator &ViewLocator::instance()
-{
+ViewLocator& ViewLocator::instance() {
   static ViewLocator instance;
   return instance;
 }

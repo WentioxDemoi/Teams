@@ -1,11 +1,17 @@
 #ifndef USERSERVICE_H
 #define USERSERVICE_H
 
-#include "../includes.h"
 #include "../Repositories/UserRepository.h"
 #include "../Models/User.h"
 #include "Interfaces/IUserService.h"
 
+/**
+ * @class UserService
+ * @brief Service de gestion des utilisateurs.
+ *
+ * Fournit des méthodes pour sauvegarder, supprimer un utilisateur ou tous les utilisateurs,
+ * en s'appuyant sur le UserRepository pour l'accès aux données.
+ */
 class UserService : public IUserService
 {
     Q_OBJECT

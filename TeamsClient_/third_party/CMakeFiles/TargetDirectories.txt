@@ -1,0 +1,9 @@
+/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/CMakeFiles/TeamsClient_.dir
+/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/CMakeFiles/edit_cache.dir
+/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/CMakeFiles/rebuild_cache.dir
+/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/CMakeFiles/list_install_components.dir
+/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/CMakeFiles/install.dir
+/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/CMakeFiles/install/local.dir
+/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/CMakeFiles/install/strip.dir
+/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/CMakeFiles/TeamsClient__autogen_timestamp_deps.dir
+/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/CMakeFiles/TeamsClient__autogen.dir

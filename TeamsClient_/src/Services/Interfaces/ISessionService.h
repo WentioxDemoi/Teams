@@ -4,6 +4,14 @@
 #include <QObject>
 #include "User.h"
 
+/**
+ * @class ISessionService
+ * @brief Interface pour la gestion des sessions utilisateur.
+ *
+ * Définit les méthodes pour connecter, enregistrer et initialiser une session utilisateur,
+ * ainsi que les signaux pour notifier le succès, les erreurs d'authentification
+ * ou l'absence de jeton.
+ */
 class ISessionService : public QObject {
     Q_OBJECT
 public:
@@ -20,6 +28,7 @@ signals:
     void authSuccess(const User &user);
     void authError(const QString &error);
     void noTokenFound();
+    void registerWithServer4WebRTC(QString UUID);
 };
 
 #endif
