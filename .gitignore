@@ -45,7 +45,7 @@ Thumbs.db
 # =====================
 # Dependencies
 # =====================
-!third_party/qt/
+!third_party/qt
 !third_party/boost/
 
 # Qt build dirs
@@ -60,7 +60,6 @@ downloads/*.zip
 # WebRTC
 # =====================
 # Ignore everything
-TeamsClient_/third_party/webrtc/**
-TeamsClient_/third_party/libyuv/**
+TeamsClient_/third_party/
 
 # But keep README and build scripts
