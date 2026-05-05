@@ -67,7 +67,7 @@ ctest -V # Ou alors ./TeamsClient_Tests
 
 ## Dépendances
 
-- Qt 6.x (Core, Widgets, Network, Test)
+- Qt 6.9.3 (Core, Widgets, Network, Test)
 - Qt keychain 0.15.0 (installé manuellement dans le repo QT)
     - https://github.com/frankosterfeld/qtkeychain/tree/0.15
     - mkdir build && cd build

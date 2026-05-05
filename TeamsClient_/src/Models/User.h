@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QJsonObject>
 #include <QString>
+#include <QtCore/qhashfunctions.h>
+#include <QtCore/qobject.h>
 
 /**
  * @class User
@@ -16,7 +18,7 @@ class User {
  public:
   User() = default;
   User(const QString& email, const QString& username, const QString& status, bool isMe = false,
-       const QString& token = "", const QString& uuid = "");
+       const QString& token = "", const QString& uuid = "", const QString &avatar = "");
 
   // Getters
   QString email() const { return email_; }
@@ -25,6 +27,7 @@ class User {
   bool isMe() const { return isMe_; }
   QString token() const { return token_; }
   QString uuid() const { return uuid_; }
+  QString avatar() const { return avatar_; }
 
   // Setters
   void setEmail(const QString& email) { email_ = email; }
@@ -33,6 +36,7 @@ class User {
   void setIsMe(bool isMe) { isMe_ = isMe; }
   void setToken(const QString& token) { token_ = token; }
   void setUuid(const QString& uuid) { uuid_ = uuid; }
+  void setAvatar(const QString& avatar) { avatar_ = avatar; }
 
   void clearToken() { token_.clear(); }
   bool isValid() const {
@@ -45,7 +49,7 @@ class User {
 
   void print() const {
     qDebug() << ", email:" << email_ << ", username:" << username_ << ", status:" << status_
-             << ", token:" << token_ << ", uuid:" << uuid_ << ", isMe:" << isMe_ << "}";
+             << ", token:" << token_ << ", uuid:" << uuid_ << ", isMe:" << isMe_ << ", avatar:" << (avatar_.isEmpty() ? "false" : "true") << "}";
   }
 
  private:
@@ -55,5 +59,6 @@ class User {
   bool isMe_ = false;
   QString token_;
   QString uuid_;
+  QString avatar_;
 };
 #endif

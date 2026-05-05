@@ -5,7 +5,6 @@
 #include "Interfaces/ISessionService.h"
 
 // Services
-#include "Auth/AuthNetworkService.h"
 #include "Auth/AuthService.h"
 #include "P2P/WebRTCService.h"
 #include "SessionService.h"
@@ -85,7 +84,7 @@ void Application::initializeServices() {
   locator.registerService<IUserService>(new UserService(appRoot));
   locator.registerService<IAuthService>(new AuthService(nullptr, nullptr, nullptr, appRoot));
   locator.registerService<ISessionService>(new SessionService(nullptr, appRoot));
-  locator.registerService<WebRTCService>(new WebRTCService(appRoot));
+  // locator.registerService<WebRTCService>(new WebRTCService(appRoot));
 
   initializeViewModels();
 }

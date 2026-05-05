@@ -22,6 +22,14 @@ NetworkService::NetworkService(qint16 port, QObject* parent) : QObject(parent), 
             socket_.ignoreSslErrors(errors);
           });
 
+  connect(&socket_, &QSslSocket::encrypted, this, [this]() {
+    qDebug() << "SSL ready -> flushing queue";
+
+    while (!pendingQueue_.isEmpty())
+      send(pendingQueue_.dequeue());
+    
+  });
+
   ensureConnected();
 }
 
@@ -42,6 +50,7 @@ void NetworkService::send(const QJsonObject& payload) {
 
   if (!socket_.isEncrypted()) {
     qWarning() << "Socket not encrypted yet, send deferred";
+    pendingQueue_.enqueue(payload);
     return;
   }
 
@@ -60,7 +69,6 @@ void NetworkService::handleIncomingData(const QByteArray& data) {
     emit networkError("Malformed JSON received from server");
     return;
   }
-  qDebug() << "WIIIIII";
   emit jsonReceived(doc.object());
 }
 

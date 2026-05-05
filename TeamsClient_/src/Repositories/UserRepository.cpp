@@ -13,8 +13,8 @@ bool UserRepository::insert(const User& user) {
 
   QSqlQuery query(db_);
   query.prepare(R"(
-        INSERT INTO users (email, username, status, uuid, is_me, token)
-        VALUES (:email, :username, :status, :uuid, :isMe, :token)
+        INSERT INTO users (email, username, status, uuid, is_me, token, avatar)
+        VALUES (:email, :username, :status, :uuid, :isMe, :token, :avatar)
     )");
 
   query.bindValue(":email", user.email());
@@ -23,6 +23,7 @@ bool UserRepository::insert(const User& user) {
   query.bindValue(":uuid", user.uuid());
   query.bindValue(":isMe", isFirstUser());
   query.bindValue(":token", user.token());
+  query.bindValue(":avatar", user.avatar());
 
   if (!query.exec()) {
     qDebug() << "[insert] Execution failed:" << query.lastError().text();
@@ -34,7 +35,7 @@ bool UserRepository::insert(const User& user) {
 std::optional<User> UserRepository::findByUUID(const QString& uuid) {
   QSqlQuery query(db_);
   query.prepare(R"(
-        SELECT email, username, status, uuid, is_me, token
+        SELECT email, username, status, uuid, is_me, token, avatar
         FROM users
         WHERE uuid = :uuid
     )");
@@ -54,6 +55,7 @@ std::optional<User> UserRepository::findByUUID(const QString& uuid) {
   user.setUuid(query.value("uuid").toString());
   user.setIsMe(query.value("is_me").toBool());
   user.setToken(query.value("token").toString());
+  user.setAvatar(query.value("avatar").toString());
 
   return user;
 }
@@ -77,7 +79,8 @@ bool UserRepository::update(const User& user) {
         SET email = :email,
             username = :username,
             status = :status,
-            token = :token
+            token = :token,
+            avatar = :avatar
         WHERE uuid = :uuid
     )");
 
@@ -85,6 +88,7 @@ bool UserRepository::update(const User& user) {
   query.bindValue(":username", user.username());
   query.bindValue(":status", user.status());
   query.bindValue(":token", user.token());
+  query.bindValue(":avatar", user.avatar());
   query.bindValue(":uuid", user.uuid());
 
   if (!query.exec()) {
@@ -110,7 +114,7 @@ QList<User> UserRepository::findAll() {
   QSqlQuery query(db_);
 
   if (!query.exec(R"(
-        SELECT email, username, status, uuid, is_me, token
+        SELECT email, username, status, uuid, is_me, token, avatar
         FROM users
     )")) {
     qDebug() << "[findAll] Failed:" << query.lastError().text();
@@ -125,6 +129,7 @@ QList<User> UserRepository::findAll() {
     user.setUuid(query.value("uuid").toString());
     user.setIsMe(query.value("is_me").toBool());
     user.setToken(query.value("token").toString());
+    user.setAvatar(query.value("avatar").toString());
 
     users.append(user);
   }

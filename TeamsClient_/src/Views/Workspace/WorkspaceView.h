@@ -9,6 +9,8 @@
 // ========= VisioConf POC =========
 // #include "Visio/Visio.h"
 
+#include "Topbar/Topbar.h"
+
 
 /**
  * @class WorkspaceView
@@ -33,7 +35,7 @@ class WorkspaceView : public QWidget {
  public slots:
 
  private:
-  QLabel* titleLabel_;
+  Topbar *topbar_;
   QWidget* contentWidget_;
   QVBoxLayout* mainLayout_;
   QPushButton* visioButton_;

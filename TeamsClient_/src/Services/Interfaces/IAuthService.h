@@ -20,18 +20,18 @@ public:
     virtual void start() = 0;
     virtual void loginUser(const QString &username, const QString &password) = 0;
     virtual void registerUser(const QString &email, const QString &username, const QString &password) = 0;
+    virtual void disconnectFromServer() = 0;
 
 
 signals:
     void authSuccess(const User &user);
     void authError(const QString &error);
     void noTokenFound();
-    void registerWithServer4WebRTC(QString UUID);
+    // void registerWithServer4WebRTC(QString UUID);
 
 public slots:
   virtual void onUserSaved(const User &user) = 0;
   virtual void errorToken(const QString &error) = 0;
-  virtual void errorUserService(const QString &error) = 0;
 };
 
 #endif

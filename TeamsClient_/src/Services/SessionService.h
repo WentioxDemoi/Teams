@@ -3,6 +3,7 @@
 
 #include "Interfaces/IAuthService.h"
 #include "Interfaces/ISessionService.h"
+#include "Core/State/SessionState.h"
 
 /**
  * @class SessionService
@@ -23,6 +24,7 @@ public:
 
 private:
     IAuthService *authService_;
+    SessionState *sessionState_;
 };
 
 #endif

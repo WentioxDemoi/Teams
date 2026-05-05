@@ -26,7 +26,8 @@ DatabaseManager::DatabaseManager() {
             status TEXT,
             is_me BOOLEAN DEFAULT 0,
             token TEXT,
-            uuid TEXT UNIQUE
+            uuid TEXT UNIQUE,
+            avatar TEXT
         )
     )";
 

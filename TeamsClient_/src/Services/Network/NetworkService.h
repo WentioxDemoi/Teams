@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QSslError>
 #include <QSslSocket>
+#include <QQueue>
 
 /**
  * @class NetworkService
@@ -40,6 +41,7 @@ class NetworkService : public QObject {
   QSslSocket socket_;
   QByteArray buffer_;
   qint16 port_;
+  QQueue<QJsonObject> pendingQueue_;
 };
 
 #endif

@@ -147,11 +147,6 @@ set(WEBRTC_INCLUDE_DIRS
     ${WEBRTC_DIR}/src/third_party/abseil-cpp
     ${WEBRTC_DIR}/src/api/video
     ${WEBRTC_DIR}/src/api/media_stream
-    # ${WEBRTC_DIR}/src/include
-    # ${WEBRTC_DIR}/src/lib
-    # ${WEBRTC_DIR}/src/api
-    # ${WEBRTC_DIR}/src/api/rtc_base
-    # ${WEBRTC_DIR}/src/third_party/abseil-cpp
 )
 # Include directories pour l'accès aux headers
 target_include_directories(TeamsClient_ PRIVATE

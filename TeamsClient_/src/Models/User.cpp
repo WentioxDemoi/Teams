@@ -1,13 +1,14 @@
 #include "User.h"
 
 User::User(const QString& email, const QString& username, const QString& status, bool isMe,
-           const QString& token, const QString& uuid)
+           const QString& token, const QString& uuid, const QString &avatar)
     : email_(email),
       username_(username),
       status_(status),
       isMe_(isMe),
       token_(token),
-      uuid_(uuid) {}
+      uuid_(uuid),
+      avatar_(avatar) {}
 
 QJsonObject User::toJson() const {
   QJsonObject json;
@@ -17,6 +18,7 @@ QJsonObject User::toJson() const {
   json["isMe"] = isMe_;
   json["token"] = token_;
   json["uuid"] = uuid_;
+  json["avatar"] = avatar_;
   return json;
 }
 
@@ -30,5 +32,6 @@ User User::fromJson(const QJsonObject& json) {
   if (json.contains("isMe") && json["isMe"].isBool()) user.setIsMe(json["isMe"].toBool());
   if (json.contains("token") && json["token"].isString()) user.setToken(json["token"].toString());
   if (json.contains("uuid") && json["uuid"].isString()) user.setUuid(json["uuid"].toString());
+  if (json.contains("avatar") && json["avatar"].isString()) user.setAvatar(json["avatar"].toString());
   return user;
 }

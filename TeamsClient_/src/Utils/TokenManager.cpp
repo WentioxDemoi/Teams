@@ -19,57 +19,57 @@ TokenManager::TokenManager(QObject* parent)
 }
 
 bool TokenManager::readToken() {
-  m_readCredentialJob.setKey("Token");
+  // m_readCredentialJob.setKey("Token");
 
-  QEventLoop loop;
-  QObject::connect(&m_readCredentialJob, &QKeychain::ReadPasswordJob::finished, &loop,
-                   &QEventLoop::quit);
-  m_readCredentialJob.start();
-  loop.exec();
+  // QEventLoop loop;
+  // QObject::connect(&m_readCredentialJob, &QKeychain::ReadPasswordJob::finished, &loop,
+  //                  &QEventLoop::quit);
+  // m_readCredentialJob.start();
+  // loop.exec();
 
-  if (m_readCredentialJob.error()) {
-    qWarning() << "Read key failed:" << m_readCredentialJob.errorString();
-    token.clear();
-    return false;
-  }
+  // if (m_readCredentialJob.error()) {
+  //   qWarning() << "Read key failed:" << m_readCredentialJob.errorString();
+  //   token.clear();
+    // return false;
+  // }
 
-  token = m_readCredentialJob.textData();
+  // token = m_readCredentialJob.textData();
   return true;
 }
 
 bool TokenManager::writeToken(const QString& value) {
-  m_writeCredentialJob.setKey("Token");
-  m_writeCredentialJob.setTextData(value);
+  // m_writeCredentialJob.setKey("Token");
+  // m_writeCredentialJob.setTextData(value);
 
-  QEventLoop loop;
-  QObject::connect(&m_writeCredentialJob, &QKeychain::WritePasswordJob::finished, &loop,
-                   &QEventLoop::quit);
-  m_writeCredentialJob.start();
-  loop.exec();
+  // QEventLoop loop;
+  // QObject::connect(&m_writeCredentialJob, &QKeychain::WritePasswordJob::finished, &loop,
+  //                  &QEventLoop::quit);
+  // m_writeCredentialJob.start();
+  // loop.exec();
 
-  if (m_writeCredentialJob.error()) {
-    qWarning() << "Write key failed:" << m_writeCredentialJob.errorString();
-    return false;
-  }
+  // if (m_writeCredentialJob.error()) {
+  //   qWarning() << "Write key failed:" << m_writeCredentialJob.errorString();
+  //   return false;
+  // }
 
-  token = value;
+  // token = value;
   return true;
 }
 
 bool TokenManager::deleteToken() {
-  m_deleteCredentialJob.setKey("Token");
+  // m_deleteCredentialJob.setKey("Token");
 
-  QEventLoop loop;
-  QObject::connect(&m_deleteCredentialJob, &QKeychain::DeletePasswordJob::finished, &loop,
-                   &QEventLoop::quit);
-  m_deleteCredentialJob.start();
-  loop.exec();
+  // QEventLoop loop;
+  // QObject::connect(&m_deleteCredentialJob, &QKeychain::DeletePasswordJob::finished, &loop,
+  //                  &QEventLoop::quit);
+  // m_deleteCredentialJob.start();
+  // loop.exec();
 
-  if (m_deleteCredentialJob.error()) {
-    qWarning() << "Delete key failed:" << m_deleteCredentialJob.errorString();
-    return false;
-  }
+  // if (m_deleteCredentialJob.error()) {
+  //   qWarning() << "Delete key failed:" << m_deleteCredentialJob.errorString();
+  //   return false;
+  // }
 
-  token.clear();
+  // token.clear();
   return true;
 }

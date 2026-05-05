@@ -1,52 +1,50 @@
 #include "AuthService.h"
-#include "../../Utils/TokenManager.h"
+
 #include "../../Core/ServiceLocator.h"
+#include "../../Utils/TokenManager.h"
+#include <cstdlib>
 
-
-AuthService::AuthService(IAuthNetworkService* network,
-                         IUserService* userService,
-                         ITokenManager* token,
+AuthService::AuthService(NetworkService* network, IUserService* userService, ITokenManager* token,
                          QObject* parent)
     : IAuthService(parent),
-      network_(network ? network : ServiceLocator::instance().getService<IAuthNetworkService>()),
-      userService_(userService ? userService : ServiceLocator::instance().getService<IUserService>()),
-      token_(token ? token : &TokenManager::instance())
-{
-    Q_ASSERT(network_);
-    Q_ASSERT(userService_);
-    Q_ASSERT(token_);
+      network_(network ? network : new NetworkService(8080, parent)),
+      userService_(userService ? userService
+                               : ServiceLocator::instance().getService<IUserService>()),
+      token_(token ? token : &TokenManager::instance()) {
+  Q_ASSERT(network_);
+  Q_ASSERT(userService_);
+  Q_ASSERT(token_);
 
-    connect(network_, &IAuthNetworkService::authSuccess, userService_,
-            &IUserService::saveUser);
-    connect(userService_, &IUserService::userSaved, this,
-            &IAuthService::onUserSaved);
+  connect(network_, &NetworkService::jsonReceived, this, &AuthService::handleServerResponse);
 
-    connect(network_, &IAuthNetworkService::authError, this,
-            &IAuthService::authError);
-    connect(network_, &IAuthNetworkService::invalidToken, this,
-            &IAuthService::errorToken);
-    connect(userService_, &IUserService::error, this,
-            &IAuthService::errorUserService);
-    connect(network_, &IAuthNetworkService::registerWithServer4WebRTC, this, &IAuthService::registerWithServer4WebRTC);
+  connect(network_, &NetworkService::networkError, this, &AuthService::authError);
+
+  connect(this, &IAuthService::authSuccess, userService_, &IUserService::saveUser);
+  connect(userService_, &IUserService::userSaved, this, &IAuthService::onUserSaved);
 }
 
 void AuthService::start() {
-  if (!token_->token.isEmpty())
-    network_->validateToken(token_->token);
+  if (/*!*/token_->token.isEmpty()) {
+    // network_->send({{"type", "validate_token"}, {"token", token_->token}});
+    network_->send({{"type", "validate_token"}, {"token", "59c418ceef5aa1b93efaff76a0dbc02a"}});
+  }
   else
     errorToken("No token found");
 }
 
-void AuthService::loginUser(const QString &email, const QString &password) {
-  network_->loginUser(email, password);
+void AuthService::loginUser(const QString& email, const QString& password) {
+  network_->send({{"type", "login"}, {"email", email}, {"password", password}});
 }
 
-void AuthService::registerUser(const QString &email, const QString &username,
-                               const QString &password) {
-  network_->registerUser(email, username, password);
+void AuthService::registerUser(const QString& email, const QString& username,
+                               const QString& password) {
+  network_->send({{"type", "register"},
+                  {"email", email},
+                  {"username", username},
+                  {"password", password}});
 }
 
-void AuthService::onUserSaved(const User &user) {
+void AuthService::onUserSaved(const User& user) {
   User localUser = user;
 
   if (!user.token().isEmpty()) {
@@ -58,13 +56,59 @@ void AuthService::onUserSaved(const User &user) {
   }
 }
 
-void AuthService::errorToken(const QString &error) {
+void AuthService::errorToken(const QString& error) {
   qDebug() << error;
-  if (error.contains("Token is not valid"))
-    token_->deleteToken();
+  if (error.contains("Token is not valid")) token_->deleteToken();
 
   userService_->deleteAll();
   emit noTokenFound();
 }
 
-void AuthService::errorUserService(const QString &error) { qDebug() << error; }
+void AuthService::handleServerResponse(const QJsonObject& root) {
+  if (!root.contains("type") || !root["type"].isString()) {
+    emit authError("Missing or invalid type field in server response");
+    return;
+  }
+
+  const QString type = root["type"].toString();
+  qDebug() << "Response type:" << type;
+
+  if (root.contains("error") && root["error"].isString()) {
+    const QString error = root["error"].toString();
+
+    if (type == "validate_token_response" && error.contains("invalid token", Qt::CaseInsensitive)) {
+      errorToken("Token is not valid");
+      return;
+    }
+
+    emit authError(error);
+    return;
+  }
+
+  if (type == "login_response" || type == "register_response" ||
+      type == "validate_token_response") {
+    if (!root.contains("data") || !root["data"].isObject()) {
+      emit authError("Missing data field in server response");
+      return;
+    }
+
+    QJsonObject userJson = root["data"].toObject();
+
+    User user = User::fromJson(userJson);
+    user.setIsMe(true);
+    user.print();
+
+    if (!user.isValid()) {
+      qDebug() << "User pas valide selon user.isValid";
+      return;
+    }
+
+    userService_->saveUser(user);
+    // emit registerWithServer4WebRTC(user.uuid());
+    return;
+  }
+}
+
+void AuthService::disconnectFromServer() {
+    network_->disconnectFromServer();
+}

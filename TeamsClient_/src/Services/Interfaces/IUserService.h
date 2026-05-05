@@ -28,7 +28,7 @@ class IUserService : public QObject {
   void userSaved(const User& user);
   void userDeleted(QString uuid);
   void error(const QString& error);
- signals:
+
 };
 
 #endif

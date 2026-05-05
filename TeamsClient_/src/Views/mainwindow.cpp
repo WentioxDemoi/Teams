@@ -3,7 +3,7 @@
 #include "../Core/ServiceLocator.h"
 #include "../Core/ViewLocator.h"
 #include "../Core/ViewModelsLocator.h"
-#include "Interfaces/IAuthNetworkService.h"
+#include "Auth/AuthService.h"
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -58,10 +58,10 @@ void MainWindow::authSuccess(const User& user) {
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
-  auto* network_ = ServiceLocator::instance().getService<IAuthNetworkService>();
-  network_->disconnectFromServer();
-  auto* webRTCService_ = ServiceLocator::instance().getService<WebRTCService>();
-  webRTCService_->disconnectFromSignalingServer();
+  auto* authService_ = ServiceLocator::instance().getService<IAuthService>();
+  authService_->disconnectFromServer();
+  // auto* webRTCService_ = ServiceLocator::instance().getService<WebRTCService>();
+  // webRTCService_->disconnectFromSignalingServer();
 }
 
 MainWindow::~MainWindow() {}
