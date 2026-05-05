@@ -83,7 +83,6 @@ void Application::initializeServices() {
   auto& locator = ServiceLocator::instance();
 
   locator.registerService<IUserService>(new UserService(appRoot));
-  locator.registerService<IAuthNetworkService>(new AuthNetworkService(nullptr, appRoot));
   locator.registerService<IAuthService>(new AuthService(nullptr, nullptr, nullptr, appRoot));
   locator.registerService<ISessionService>(new SessionService(nullptr, appRoot));
   locator.registerService<WebRTCService>(new WebRTCService(appRoot));
