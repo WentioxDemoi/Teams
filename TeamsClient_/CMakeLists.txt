@@ -7,8 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_OSX_ARCHITECTURES "arm64")   # Pour Apple Silicon
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++") # STL correcte pour macOS
+set(CMAKE_OSX_ARCHITECTURES "arm64")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -stdlib=libc++")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(BUILD_TESTS "Build the tests" OFF)
@@ -19,73 +19,60 @@ set(OPENSSL_INCLUDE_DIR "${OPENSSL_ROOT_DIR}/include")
 set(OPENSSL_LIBRARIES "${OPENSSL_ROOT_DIR}/lib")
 find_package(OpenSSL REQUIRED)
 include_directories(${OPENSSL_INCLUDE_DIR})
-message(STATUS "OpenSSL include dir: ${OPENSSL_INCLUDE_DIR}")
-message(STATUS "OpenSSL libraries: ${OPENSSL_LIBRARIES}")
 
 # === Qt ===
-set(CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.9.3/macos/")  # Root of Qt install
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network Test Sql Multimedia MultimediaWidgets)
+set(CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.9.3/macos/")
+find_package(Qt6 REQUIRED COMPONENTS
+    Core Qml Widgets Network Test Sql
+    Multimedia MultimediaWidgets
+    Quick QuickControls2
+)
 set(Qt6Keychain_DIR "$ENV{HOME}/Qt/6.9.3/macos/lib/cmake/Qt6Keychain")
 find_package(Qt6Keychain REQUIRED)
 
-# === WebRTC ===/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src/out/mac_arm64_release/obj/libwebrtc.a
+# === WebRTC ===
 set(WEBRTC_DIR "${CMAKE_SOURCE_DIR}/third_party/webrtc")
 set(WEBRTC_LIB "${WEBRTC_DIR}/lib/libwebrtc.a")
 
 # === Libyuv ===
 set(LIBYUV_ROOT "${CMAKE_SOURCE_DIR}/third_party/libyuv")
 
-
 # === Info.plist ===
-set(MACOSX_BUNDLE_INFO_PLIST
-    ${CMAKE_SOURCE_DIR}/Info.plist
-)
+set(MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/Info.plist)
 
-# === Collecte automatique des sources par catégorie ===
-# Models
-file(GLOB_RECURSE MAIN_SOURCES "src/*.cpp")
-file(GLOB_RECURSE MAIN_HEADERS "src/*.h")
+# =========================================================
+# Sources
+# =========================================================
+file(GLOB MAIN_SOURCES      "src/*.cpp")
+file(GLOB MAIN_HEADERS      "src/*.h")
 
-# Models
-file(GLOB_RECURSE MODELS_SOURCES "src/Models/*.cpp")
-file(GLOB_RECURSE MODELS_HEADERS "src/Models/*.h")
+file(GLOB_RECURSE MODELS_SOURCES        "src/Models/*.cpp")
+file(GLOB_RECURSE MODELS_HEADERS        "src/Models/*.h")
 
-# Repositorie
-file(GLOB_RECURSE REPOSITORIES_SOURCES "src/Repositories/*.cpp")
-file(GLOB_RECURSE REPOSITORIES_HEADERS "src/Repositories/*.h")
+file(GLOB_RECURSE REPOSITORIES_SOURCES  "src/Repositories/*.cpp")
+file(GLOB_RECURSE REPOSITORIES_HEADERS  "src/Repositories/*.h")
 
-# Database
-file(GLOB_RECURSE DATABASE_SOURCES "src/Database/*.cpp")
-file(GLOB_RECURSE DATABASE_HEADERS "src/Database/*.h")
+file(GLOB_RECURSE DATABASE_SOURCES      "src/Database/*.cpp")
+file(GLOB_RECURSE DATABASE_HEADERS      "src/Database/*.h")
 
-# ViewModels
-file(GLOB_RECURSE VIEWMODELS_SOURCES "src/ViewModels/*.cpp")
-file(GLOB_RECURSE VIEWMODELS_HEADERS "src/ViewModels/*.h")
+file(GLOB_RECURSE VIEWMODELS_SOURCES    "src/ViewModels/*.cpp")
+file(GLOB_RECURSE VIEWMODELS_HEADERS    "src/ViewModels/*.h")
 
-# Views
-file(GLOB_RECURSE VIEWS_SOURCES "src/Views/*.cpp")
-file(GLOB_RECURSE VIEWS_HEADERS "src/Views/*.h")
+file(GLOB_RECURSE VIEWS_SOURCES         "src/Views/*.cpp")
+file(GLOB_RECURSE VIEWS_HEADERS         "src/Views/*.h")
 
-# Services
-file(GLOB_RECURSE SERVICES_SOURCES "src/Services/*.cpp")
-file(GLOB_RECURSE SERVICES_HEADERS "src/Services/*.h")
+file(GLOB_RECURSE SERVICES_SOURCES      "src/Services/*.cpp")
+file(GLOB_RECURSE SERVICES_HEADERS      "src/Services/*.h")
 
-# Components
-file(GLOB_RECURSE COMPONENTS_SOURCES "src/Components/*.cpp")
-file(GLOB_RECURSE COMPONENTS_HEADERS "src/Components/*.h")
+file(GLOB_RECURSE COMPONENTS_SOURCES    "src/Components/*.cpp")
+file(GLOB_RECURSE COMPONENTS_HEADERS    "src/Components/*.h")
 
-# Utils
-file(GLOB_RECURSE UTILS_SOURCES "src/Utils/*.cpp")
-file(GLOB_RECURSE UTILS_HEADERS "src/Utils/*.h")
+file(GLOB_RECURSE UTILS_SOURCES         "src/Utils/*.cpp")
+file(GLOB_RECURSE UTILS_HEADERS         "src/Utils/*.h")
 
-# Core
-file(GLOB_RECURSE CORE_SOURCES "src/Core/*.cpp")
-file(GLOB_RECURSE CORE_HEADERS "src/Core/*.h")
+file(GLOB_RECURSE CORE_SOURCES          "src/Core/*.cpp")
+file(GLOB_RECURSE CORE_HEADERS          "src/Core/*.h")
 
-#AppleDetails
-file(GLOB_RECURSE APPLEDETAILS_SOURCES "AppleDetails/*.mm")
-
-# Regroupement de toutes les sources
 set(ALL_SOURCES
     ${MAIN_SOURCES}
     ${MODELS_SOURCES}
@@ -103,7 +90,7 @@ set(ALL_HEADERS
     ${MAIN_HEADERS}
     ${MODELS_HEADERS}
     ${REPOSITORIES_HEADERS}
-    ${DATABASE_SOURCES}
+    ${DATABASE_HEADERS}
     ${VIEWMODELS_HEADERS}
     ${VIEWS_HEADERS}
     ${SERVICES_HEADERS}
@@ -115,31 +102,33 @@ set(ALL_HEADERS
 set(PROJECT_SOURCES
     ${ALL_SOURCES}
     ${ALL_HEADERS}
-    ${VIEWS_UI}
 )
 
-qt_add_resources(app_resources
-    resources/resources.qrc
-)
+# === Resources ===
+qt_add_resources(app_resources resources/resources.qrc)
 
+# === Exécutable principal ===
 qt_add_executable(TeamsClient_
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
     ${app_resources}
 )
 
-# target_link_options(TeamsClient_ PRIVATE "-Wl,-force_load,${WEBRTC_LIB}")
+# === Module QML ===
 
-# Affichage des fichiers trouvés (debug)
-message(STATUS "Models sources: ${MODELS_SOURCES}")
-message(STATUS "ViewModels sources: ${VIEWMODELS_SOURCES}")
-message(STATUS "Views sources: ${VIEWS_SOURCES}")
-message(STATUS "Services sources: ${SERVICES_SOURCES}")
-message(STATUS "Components sources: ${COMPONENTS_SOURCES}")
-message(STATUS "Utils sources: ${UTILS_SOURCES}")
-message(STATUS "Core sources: ${CORE_SOURCES}")
-message(STATUS "UI files: ${VIEWS_UI}")
+#Pour éviter les warnings
+qt_policy(SET QTP0001 NEW)
+qt_policy(SET QTP0004 NEW)
 
+qt_add_qml_module(TeamsClient_
+    URI TeamsClient
+    VERSION 1.0
+    RESOURCE_PREFIX /qt/qml
+    QML_FILES
+        src/QML/Main.qml
+)
+
+# === WebRTC include dirs ===
 set(WEBRTC_INCLUDE_DIRS
     ${WEBRTC_DIR}/src
     ${WEBRTC_DIR}/src/api
@@ -148,7 +137,7 @@ set(WEBRTC_INCLUDE_DIRS
     ${WEBRTC_DIR}/src/api/video
     ${WEBRTC_DIR}/src/api/media_stream
 )
-# Include directories pour l'accès aux headers
+
 target_include_directories(TeamsClient_ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
@@ -157,7 +146,6 @@ target_include_directories(TeamsClient_ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Views
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Services
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Components
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
     ${LIBYUV_ROOT}/include
 )
@@ -173,25 +161,23 @@ target_compile_definitions(TeamsClient_ PRIVATE
     NDEBUG
 )
 
-# file(GLOB_RECURSE WEBRTC_LIBS
-#     "${CMAKE_SOURCE_DIR}/third_party/webrtc/src/out/Release/obj/*.a"
-# )
-
 target_compile_features(TeamsClient_ PRIVATE cxx_std_20)
-# target_compile_options(TeamsClient_ PRIVATE -fno-rtti)
+
 if(APPLE)
     target_link_options(TeamsClient_ PRIVATE "-Wl,-force_load,${WEBRTC_LIB}")
-    # target_sources(${PROJECT_NAME} PRIVATE ${APPLEDETAILS_SOURCES})
-    # target_link_libraries(${PROJECT_NAME} PRIVATE "-framework AppKit")
 endif()
+
 target_link_libraries(TeamsClient_
     PRIVATE
-    
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Qml
     Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::Sql
     Qt${QT_VERSION_MAJOR}::Network
-    Qt${QT_VERSION_MAJOR}::Multimedia 
+    Qt${QT_VERSION_MAJOR}::Sql
+    Qt${QT_VERSION_MAJOR}::Multimedia
     Qt${QT_VERSION_MAJOR}::MultimediaWidgets
+    Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::QuickControls2
     Qt6Keychain::Qt6Keychain
     ${WEBRTC_DIR}/lib/libwebrtc.a
     "-framework Foundation"
@@ -208,62 +194,52 @@ target_link_libraries(TeamsClient_
     OpenSSL::SSL
     OpenSSL::Crypto
     ${LIBYUV_ROOT}/lib/libyuv.a
-
 )
 
-# target_link_options(TeamsClient_ PRIVATE
-#     -Wl,-force_load,${WEBRTC_LIB}
-# )
-
-get_target_property(QT6_VERSION Qt6::Core VERSION)
-if(QT6_VERSION VERSION_LESS "6.1.0")
-    set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.TeamsClient_)
-endif()
-
 set_target_properties(TeamsClient_ PROPERTIES
-    ${BUNDLE_ID_OPTION}
-    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/Info.plist
+    MACOSX_BUNDLE_INFO_PLIST     ${CMAKE_SOURCE_DIR}/Info.plist
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING
+        ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
 
 include(GNUInstallDirs)
 install(TARGETS TeamsClient_
-    BUNDLE DESTINATION .
+    BUNDLE  DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 qt_finalize_executable(TeamsClient_)
 
-
-
+# =========================================================
+# Tests
+# =========================================================
 if(BUILD_TESTS)
     enable_testing()
 
-
-    target_compile_definitions(TeamsClient_Tests PRIVATE
-        WEBRTC_MAC
-        WEBRTC_POSIX
-        # WEBRTC_ARCH_LITTLE_ENDIAN
-    )
-
-    # Collecte des tests
     file(GLOB_RECURSE TEST_SOURCES "Tests/*.cpp")
     file(GLOB_RECURSE TEST_HEADERS "Tests/*.h")
 
-    # Exclure le main.cpp des sources pour les tests
-    list(FILTER ALL_SOURCES EXCLUDE REGEX ".*main\\.cpp$")
+    # Copie de ALL_SOURCES sans main.cpp pour les tests
+    set(TEST_APP_SOURCES ${ALL_SOURCES})
+    list(FILTER TEST_APP_SOURCES EXCLUDE REGEX ".*main\\.cpp$")
 
     add_executable(TeamsClient_Tests
         ${TEST_SOURCES}
         ${TEST_HEADERS}
-        ${ALL_SOURCES}
+        ${TEST_APP_SOURCES}
         ${ALL_HEADERS}
     )
 
     set_target_properties(TeamsClient_Tests PROPERTIES AUTOMOC ON)
+
+    target_compile_definitions(TeamsClient_Tests PRIVATE
+        WEBRTC_MAC
+        WEBRTC_POSIX
+        WEBRTC_ARCH_LITTLE_ENDIAN
+    )
 
     target_include_directories(TeamsClient_Tests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -273,7 +249,6 @@ if(BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Views
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Services
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Components
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
     )
 
@@ -284,29 +259,12 @@ if(BUILD_TESTS)
         Qt${QT_VERSION_MAJOR}::Network
         Qt${QT_VERSION_MAJOR}::Test
         Qt${QT_VERSION_MAJOR}::Sql
-        Qt${QT_VERSION_MAJOR}::Multimedia 
+        Qt${QT_VERSION_MAJOR}::Multimedia
         Qt${QT_VERSION_MAJOR}::MultimediaWidgets
         Qt6Keychain::Qt6Keychain
         OpenSSL::SSL
         OpenSSL::Crypto
-        "-lc++"
-        "-lc++abi"
     )
+
     add_test(NAME TeamsClient_Tests COMMAND TeamsClient_Tests)
 endif()
-
-# === Messages de résumé ===
-message(STATUS "")
-message(STATUS "═══════════════════════════════════════════")
-message(STATUS "  Configuration du projet TeamsClient_")
-message(STATUS "═══════════════════════════════════════════")
-message(STATUS "Qt version: ${QT_VERSION}")
-message(STATUS "C++ standard: ${CMAKE_CXX_STANDARD}")
-message(STATUS "Architecture: ${CMAKE_OSX_ARCHITECTURES}")
-message(STATUS "Nombre de fichiers sources: ${CMAKE_MATCH_COUNT}")
-message(STATUS "  - Models: ${CMAKE_MATCH_0}")
-message(STATUS "  - ViewModels: ${CMAKE_MATCH_1}")
-message(STATUS "  - Views: ${CMAKE_MATCH_2}")
-message(STATUS "  - Services: ${CMAKE_MATCH_3}")
-message(STATUS "═══════════════════════════════════════════")
-message(STATUS "")

@@ -1,121 +1,75 @@
 #include "Application.h"
 
-// Interfaces
 #include "Interfaces/IAuthService.h"
 #include "Interfaces/ISessionService.h"
-
-// Services
 #include "Auth/AuthService.h"
-#include "P2P/WebRTCService.h"
 #include "SessionService.h"
 #include "UserService.h"
 
-// ViewModels
 #include "../ViewModels/AuthViewModel.h"
-#include "../ViewModels/WebRTCViewModel.h"
-
-// Locators
-#include <QtCore/qpermissions.h>
 
 #include "ServiceLocator.h"
-#include "ViewLocator.h"
 #include "ViewModelsLocator.h"
 
+#include <QtCore/qpermissions.h>
+#include <QDebug>
+#include <QFile>
+
+#include <QQmlContext>
+
 Application::Application(int& argc, char** argv) : qtApp(argc, argv) {
-  QCoreApplication::setApplicationName("Teams");
-  QFile file(":/qss/styles.qss");
-  if (!file.open(QFile::ReadOnly | QFile::Text)) {
-    qWarning() << "Style QSS introuvable";
-    return;
-  }
-  qtApp.setStyleSheet(file.readAll());
-  // initializeUI();
-  initializePerms();
+    QCoreApplication::setApplicationName("Teams");
+
+
+    initializePerms();
 }
 
 void Application::initializePerms() {
-  QCameraPermission cameraPermission;
-  auto status = qApp->checkPermission(cameraPermission);
+    QCameraPermission cameraPermission;
+    auto status = qApp->checkPermission(cameraPermission);
 
-  if (status == Qt::PermissionStatus::Undetermined) {
-    qApp->requestPermission(cameraPermission, [this](const QPermission& permission) {
-      if (permission.status() == Qt::PermissionStatus::Granted) {
-        qDebug() << "Camera permission granted";
-      } else {
-        qDebug() << "Camera permission denied";
-      }
-    });
-  } else if (status == Qt::PermissionStatus::Granted) {
-    qDebug() << "Camera already granted";
-  } else {
-    qDebug() << "Camera permission denied";
-  }
-
-  // QMicrophonePermission microphonePermission;
-  // status = qApp->checkPermission(microphonePermission);
-
-  // if (status == Qt::PermissionStatus::Undetermined) {
-  //     qApp->requestPermission(microphonePermission, [this](const QPermission &permission) {
-  //         if (permission.status() == Qt::PermissionStatus::Granted) {
-  //             qDebug() << "Microphone permission granted";
-  //         } else {
-  //             qDebug() << "Microphone permission denied";
-  //         }
-  //     });
-  // } else if (status == Qt::PermissionStatus::Granted) {
-  //     qDebug() << "Microphone already granted";
-  // } else {
-  //     qDebug() << "Microphone permission denied";
-  // }
-
-  initializeUI();
-}
-
-void Application::initializeUI() {
-  mainWindow = new MainWindow();
-  QObject::connect(mainWindow, &QObject::destroyed, &qtApp, &QCoreApplication::quit);
-  initializeServices();
+    if (status == Qt::PermissionStatus::Undetermined) {
+        qApp->requestPermission(cameraPermission, [this](const QPermission& permission) {
+            if (permission.status() == Qt::PermissionStatus::Granted)
+                qDebug() << "Camera permission granted";
+            else
+                qDebug() << "Camera permission denied";
+            initializeServices();
+        });
+    } else {
+        qDebug() << (status == Qt::PermissionStatus::Granted
+                     ? "Camera already granted" : "Camera permission denied");
+        initializeServices();
+    }
 }
 
 void Application::initializeServices() {
-  appRoot = new QObject(&qtApp);
-  auto& locator = ServiceLocator::instance();
+    appRoot = new QObject(&qtApp);
+    auto& locator = ServiceLocator::instance();
 
-  locator.registerService<IUserService>(new UserService(appRoot));
-  locator.registerService<IAuthService>(new AuthService(nullptr, nullptr, nullptr, appRoot));
-  locator.registerService<ISessionService>(new SessionService(nullptr, appRoot));
-  // locator.registerService<WebRTCService>(new WebRTCService(appRoot));
+    locator.registerService<IUserService>(new UserService(appRoot));
+    locator.registerService<IAuthService>(new AuthService(nullptr, nullptr, nullptr, appRoot));
+    locator.registerService<ISessionService>(new SessionService(nullptr, appRoot));
 
-  initializeViewModels();
+    initializeViewModels();
 }
 
 void Application::initializeViewModels() {
-  auto& locator = ViewModelsLocator::instance();
-  locator.registerViewModels<AuthViewModel>(new AuthViewModel(nullptr, appRoot));
-  locator.registerViewModels<WebRTCViewModel>(new WebRTCViewModel(nullptr, appRoot));
-  initializeViews();
-}
+    auto& locator = ViewModelsLocator::instance();
 
-void Application::initializeViews() {
-  auto& locator = ViewLocator::instance();
+    auto* authVM   = new AuthViewModel(nullptr, appRoot);
 
-  locator.registerView<AuthView>(new AuthView(mainWindow));
-  locator.registerView<WorkspaceView>(new WorkspaceView(mainWindow));
-  locator.registerView<LoadingView>(new LoadingView("Loading your ecosystem", mainWindow));
-  connectViewModels();
-}
+    locator.registerViewModels<AuthViewModel>(authVM);
 
-void Application::connectViewModels() {
-  auto& vmLocator = ViewModelsLocator::instance();
-  auto authVM = vmLocator.getViewModels<AuthViewModel>();
-  auto webrtcVM = vmLocator.getViewModels<WebRTCViewModel>();
-  QObject::connect(authVM, &AuthViewModel::registerWithServer4WebRTC, webrtcVM,
-                   &WebRTCViewModel::registerWithServer4WebRTC);
-  run();
+    engine.rootContext()->setContextProperty("authVM", authVM);
+
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed,
+                     &qtApp, []() { QCoreApplication::exit(-1); },
+                     Qt::QueuedConnection);
+
+    engine.loadFromModule("TeamsClient", "Main");
 }
 
 int Application::run() {
-  mainWindow->start();
-  mainWindow->show();
-  return qtApp.exec();
+    return qtApp.exec();
 }
