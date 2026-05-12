@@ -13,8 +13,6 @@ SessionService::SessionService(IAuthService* service, QObject* parent)
   connect(authService_, &AuthService::authError, this, &SessionService::authError);
   connect(authService_, &AuthService::noTokenFound, this, &SessionService::noTokenFound);
   connect(authService_, &AuthService::authSuccess, sessionState_, &SessionState::setlocalUser);
-  // connect(authService_, &AuthService::registerWithServer4WebRTC, this,
-  //         &SessionService::registerWithServer4WebRTC);
 }
 
 void SessionService::start() { authService_->start(); }

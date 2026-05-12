@@ -26,7 +26,7 @@ AuthService::AuthService(NetworkService* network, IUserService* userService, ITo
 void AuthService::start() {
   if (/*!*/token_->token.isEmpty()) {
     // network_->send({{"type", "validate_token"}, {"token", token_->token}});
-    network_->send({{"type", "validate_token"}, {"token", "59c418ceef5aa1b93efaff76a0dbc02a"}});
+    network_->send({{"type", "validate_token"}, {"token", "a3c7f96a27b49a8348332e55272a7d95"}});
   }
   else
     errorToken("No token found");
@@ -104,7 +104,6 @@ void AuthService::handleServerResponse(const QJsonObject& root) {
     }
 
     userService_->saveUser(user);
-    // emit registerWithServer4WebRTC(user.uuid());
     return;
   }
 }

@@ -13,8 +13,6 @@ AuthViewModel::AuthViewModel(ISessionService* service, QObject* parent)
   connect(sessionService_, &ISessionService::authSuccess, this, &AuthViewModel::authSuccess);
   connect(sessionService_, &ISessionService::authError, this, &AuthViewModel::authError);
   connect(sessionService_, &ISessionService::noTokenFound, this, &AuthViewModel::noTokenFound);
-  connect(sessionService_, &ISessionService::registerWithServer4WebRTC, this,
-          &AuthViewModel::registerWithServer4WebRTC);
 }
 
 void AuthViewModel::start() { sessionService_->start(); }
