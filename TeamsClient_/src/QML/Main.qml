@@ -6,14 +6,15 @@ ApplicationWindow {
     width: 970
     height: 600
     visible: true
-    flags: Qt.Window | Qt.FramelessWindowHint | Qt.MacWindowToolBarButtonHint
+    title: "Teams"
+    color: "#000000"
+
 
     StackView {
         id: stackView
         anchors.fill: parent
-        initialItem: workspaceView//loadingView
+        initialItem: loadingView
 
-        // Remplace sleep(1) — transition fluide entre vues
         replaceEnter: Transition {
             PropertyAnimation {
                 property: "opacity"

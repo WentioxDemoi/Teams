@@ -4,117 +4,221 @@ import QtQuick.Layouts
 
 Page {
     anchors.fill: parent
-    anchors.margins: 6
+    anchors.margins: 8
 
-    // ─────────────────────────────
-    // HEADER (style macOS léger)
-    // ─────────────────────────────
+    background: Rectangle {
+        color: "#000000"
+    }
+
     header: Rectangle {
-        height: 52
+        height: 66
         width: parent.width
+        color: "transparent"
 
-        color: "#f5f5f7"
-        radius: 14
+        Rectangle {
+            anchors.fill: parent
+            color: Qt.rgba(0.11, 0.11, 0.12, 0.92)
+            radius: 16
+            layer.enabled: true
+
+            Rectangle {
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: 12
+                anchors.rightMargin: 12
+                height: 1
+                color: Qt.rgba(1, 1, 1, 0.08)
+            }
+        }
 
         RowLayout {
             anchors.fill: parent
-            anchors.margins: 10
+            anchors.leftMargin: 50
+            anchors.rightMargin: 14
+            spacing: 12
 
             Item { Layout.fillWidth: true }
 
-            TextField {
-                Layout.preferredWidth: 420
-                placeholderText: "Search..."
+            Rectangle {
+                Layout.preferredWidth: 380
+                Layout.preferredHeight: 34
+                radius: 10
+                color: Qt.rgba(1, 1, 1, 0.08)
 
-                background: Rectangle {
-                    radius: 8
-                    color: "#ffffff"
-                    border.color: "#e5e5ea"
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 10
+                    anchors.rightMargin: 10
+                    spacing: 6
+
+                    Text {
+                        text: "⌕"
+                        font.pixelSize: 15
+                        color: "#636366"
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+
+                    TextField {
+                        Layout.fillWidth: true
+                        placeholderText: "Rechercher"
+                        color: "#ffffff"
+                        font.pixelSize: 15
+                        font.family: "SF Pro Text"
+                        verticalAlignment: TextInput.AlignVCenter
+
+                        background: Item {}
+
+                        placeholderTextColor: "#636366"
+                    }
                 }
             }
 
             Item { Layout.fillWidth: true }
 
-            Button {
-                text: "TMP"
+            Rectangle {
+                Layout.preferredWidth: 80
+                Layout.preferredHeight: 32
+                radius: 8
+                color: btnHover.containsMouse
+                       ? Qt.rgba(0.04, 0.52, 1.0, 0.85)
+                       : "#0A84FF"
 
-                background: Rectangle {
-                    radius: 8
+                Text {
+                    anchors.centerIn: parent
+                    text: "Nouveau"
                     color: "#ffffff"
-                    border.color: "#e5e5ea"
+                    font.pixelSize: 13
+                    font.weight: Font.Medium
+                    font.family: "SF Pro Text"
                 }
+
+                MouseArea {
+                    id: btnHover
+                    anchors.fill: parent
+                    hoverEnabled: true
+                }
+
+                Behavior on color { ColorAnimation { duration: 120 } }
             }
         }
     }
 
-    // ─────────────────────────────
-    // BODY (sidebar + content)
-    // ─────────────────────────────
     RowLayout {
         anchors.fill: parent
         anchors.topMargin: 10
-        spacing: 10
+        spacing: 8
 
-        // ───────── SIDEBAR (Finder style)
         Rectangle {
-            Layout.preferredWidth: 56
+            Layout.preferredWidth: 76
             Layout.fillHeight: true
-
-            color: "#f5f5f7"
             radius: 16
+            color: Qt.rgba(0.11, 0.11, 0.12, 1.0)
             clip: true
 
+            Rectangle {
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.topMargin: 16
+                anchors.bottomMargin: 16
+                width: 1
+                color: Qt.rgba(1, 1, 1, 0.06)
+            }
+
             Column {
-                anchors.centerIn: parent
-                spacing: 14
+                anchors.top: parent.top
+                anchors.topMargin: 10
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 8
 
                 Repeater {
-                    model: ["🏠", "📁", "⚙️"]
+                    model: [
+                        { glyph: "🏠", label: "Accueil" },
+                        { glyph: "🧟", label: "Fichiers" },
+                        { glyph: "🥵", label: "Réglages" }
+                    ]
 
-                    delegate: Rectangle {
-                        width: 42
-                        height: 42
-                        radius: 10
+                    delegate: Item {
+                        width: 54
+                        height: 54
 
-                        color: "transparent"
-
-                        property bool hovered: false
-
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-
-                            onEntered: parent.hovered = true
-                            onExited: parent.hovered = false
-                        }
+                        property bool hovered: sideHover.containsMouse
+                        property bool active: index === 0
 
                         Rectangle {
                             anchors.fill: parent
-                            radius: 10
-                            color: parent.hovered ? "#e8e8ed" : "transparent"
+                            radius: 8
+                            color: active
+                                   ? Qt.rgba(0.04, 0.52, 1.0, 0.18)
+                                   : (hovered ? Qt.rgba(1, 1, 1, 0.07) : "transparent")
+                            Behavior on color { ColorAnimation { duration: 100 } }
                         }
 
-                        Text {
+                        Column {
                             anchors.centerIn: parent
-                            text: modelData
-                            font.pixelSize: 18
+                            spacing: 2
+
+                            Text {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: modelData.glyph
+                                font.pixelSize: 17
+                                color: active ? "#0A84FF" : "#ebebf5"
+                            }
+
+                            Text {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: modelData.label
+                                font.pixelSize: 9
+                                font.family: "SF Pro Text"
+                                color: active ? "#0A84FF" : "#636366"
+                            }
+                        }
+
+                        MouseArea {
+                            id: sideHover
+                            anchors.fill: parent
+                            hoverEnabled: true
                         }
                     }
                 }
             }
         }
 
-        // ───────── CONTENU PRINCIPAL
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-
-            color: "#ffffff"
             radius: 16
+            color: "#1c1c1e"
+            layer.enabled: true
 
-            // zone vide pour l'instant
-            Item {
-                anchors.fill: parent
+            Column {
+                anchors.centerIn: parent
+                spacing: 10
+
+                Text {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: "⊡"
+                    font.pixelSize: 44
+                    color: "#3a3a3c"
+                }
+
+                Text {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: "Aucun élément"
+                    font.pixelSize: 17
+                    font.weight: Font.Medium
+                    font.family: "SF Pro Display"
+                    color: "#ffffff"
+                }
+
+                Text {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: "Commencez par créer ou importer du contenu."
+                    font.pixelSize: 13
+                    font.family: "SF Pro Text"
+                    color: "#636366"
+                }
             }
         }
     }

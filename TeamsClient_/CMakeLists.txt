@@ -23,7 +23,7 @@ include_directories(${OPENSSL_INCLUDE_DIR})
 # === Qt ===
 set(CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.9.3/macos/")
 find_package(Qt6 REQUIRED COMPONENTS
-    Core Qml Widgets Network Test Sql
+    Core Qml Network Test Sql
     Multimedia MultimediaWidgets
     Quick QuickControls2
 )
@@ -58,9 +58,6 @@ file(GLOB_RECURSE DATABASE_HEADERS      "src/Database/*.h")
 file(GLOB_RECURSE VIEWMODELS_SOURCES    "src/ViewModels/*.cpp")
 file(GLOB_RECURSE VIEWMODELS_HEADERS    "src/ViewModels/*.h")
 
-file(GLOB_RECURSE VIEWS_SOURCES         "src/Views/*.cpp")
-file(GLOB_RECURSE VIEWS_HEADERS         "src/Views/*.h")
-
 file(GLOB_RECURSE SERVICES_SOURCES      "src/Services/*.cpp")
 file(GLOB_RECURSE SERVICES_HEADERS      "src/Services/*.h")
 
@@ -79,7 +76,6 @@ set(ALL_SOURCES
     ${REPOSITORIES_SOURCES}
     ${DATABASE_SOURCES}
     ${VIEWMODELS_SOURCES}
-    ${VIEWS_SOURCES}
     ${SERVICES_SOURCES}
     ${COMPONENTS_SOURCES}
     ${UTILS_SOURCES}
@@ -92,7 +88,6 @@ set(ALL_HEADERS
     ${REPOSITORIES_HEADERS}
     ${DATABASE_HEADERS}
     ${VIEWMODELS_HEADERS}
-    ${VIEWS_HEADERS}
     ${SERVICES_HEADERS}
     ${COMPONENTS_HEADERS}
     ${UTILS_HEADERS}
@@ -146,7 +141,6 @@ target_include_directories(TeamsClient_ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewModels
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Views
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Services
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Components
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
@@ -174,7 +168,6 @@ target_link_libraries(TeamsClient_
     PRIVATE
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Qml
-    Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network
     Qt${QT_VERSION_MAJOR}::Sql
     Qt${QT_VERSION_MAJOR}::Multimedia
@@ -249,7 +242,6 @@ if(BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Models
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewModels
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/Views
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Services
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Components
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
@@ -258,7 +250,6 @@ if(BUILD_TESTS)
     target_link_libraries(TeamsClient_Tests
         PRIVATE
         Qt${QT_VERSION_MAJOR}::Core
-        Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Network
         Qt${QT_VERSION_MAJOR}::Test
         Qt${QT_VERSION_MAJOR}::Sql
