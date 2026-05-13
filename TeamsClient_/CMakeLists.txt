@@ -126,6 +126,9 @@ qt_add_qml_module(TeamsClient_
     RESOURCE_PREFIX /qt/qml
     QML_FILES
         src/QML/Main.qml
+        src/QML/AuthView.qml
+        src/QML/WorkspaceView.qml
+        src/QML/LoadingView.qml
 )
 
 # === WebRTC include dirs ===

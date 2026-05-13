@@ -18,11 +18,12 @@ class AuthViewModel : public QObject {
  public:
   explicit AuthViewModel(ISessionService* service = nullptr,
                          QObject* parent = nullptr);  // Aller voir dans le CPP l'implémentation
-  void start();
 
  public slots:
   void loginUser(const QString& email, const QString& password);
   void registerUser(const QString& email, const QString& username, const QString& password);
+  void start();
+
  signals:
   void authSuccess(const User& user);
   void authError(const QString& error);

@@ -6,8 +6,6 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QWidget>
-// ========= VisioConf POC =========
-// #include "Visio/Visio.h"
 
 #include "Topbar/Topbar.h"
 
@@ -41,8 +39,6 @@ class WorkspaceView : public QWidget {
   QPushButton* visioButton_;
   QPushButton* receiveButton_;
 
-  // // ========= VisioConf POC =========
-  // Visio *visio_;
 };
 
 #endif

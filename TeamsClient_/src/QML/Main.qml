@@ -2,8 +2,65 @@ import QtQuick
 import QtQuick.Controls
 
 ApplicationWindow {
-    width: 640
-    height: 480
+    id: root
+    width: 970
+    height: 600
     visible: true
-    title: "Hello World3"
+    flags: Qt.Window | Qt.FramelessWindowHint | Qt.MacWindowToolBarButtonHint
+
+    StackView {
+        id: stackView
+        anchors.fill: parent
+        initialItem: workspaceView//loadingView
+
+        // Remplace sleep(1) — transition fluide entre vues
+        replaceEnter: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 0
+                to: 1
+                duration: 400
+                easing.type: Easing.InOutQuad
+            }
+        }
+        replaceExit: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 1
+                to: 0
+                duration: 400
+                easing.type: Easing.InOutQuad
+            }
+        }
+    }
+
+    Component {
+        id: loadingView
+        LoadingView {}
+    }
+    Component {
+        id: authView
+        AuthView {}
+    }
+    Component {
+        id: workspaceView
+        WorkspaceView {}
+    }
+
+    Connections {
+        target: authVM
+
+        function onAuthSuccess() {
+            stackView.replace(workspaceView);
+        }
+        function onNoTokenFound() {
+            console.log("Error NoTokenFound:");
+            stackView.replace(authView);
+        }
+        function onAuthError(error) {
+            console.log("Error login:", error);
+        }
+    }
+
+    Component.onCompleted: authVM.start()
 }

@@ -17,7 +17,7 @@ src/
 
 1. Accédez au dossier de build :
 ```bash
-cd build/TeamsClient_
+cd build/
 ```
 
 2. Générez les fichiers de build avec CMake (en remplaçant le chemin Qt6 selon votre configuration) :
@@ -36,6 +36,18 @@ make
 ```
 
 Alternativement, vous pouvez double-cliquer sur l'app dans le dossier `build/`.
+
+## Preview
+
+1. Accédez au dossier de build :
+```bash
+cd build/
+```
+
+2. Lancer la commande sur le fichier QML cible : 
+```bash
+~/Qt/6.9.3/macos/bin/qml ../src/QML/Main.qml
+```
 
 ### Accès à la caméra
 

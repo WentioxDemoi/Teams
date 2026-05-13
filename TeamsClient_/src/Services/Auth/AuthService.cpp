@@ -26,7 +26,7 @@ AuthService::AuthService(NetworkService* network, IUserService* userService, ITo
 void AuthService::start() {
   if (/*!*/token_->token.isEmpty()) {
     // network_->send({{"type", "validate_token"}, {"token", token_->token}});
-    network_->send({{"type", "validate_token"}, {"token", "a3c7f96a27b49a8348332e55272a7d95"}});
+    network_->send({{"type", "validate_token"}, {"token", "a3cf96a27b49a8348332e55272a7d95"}});
   }
   else
     errorToken("No token found");
