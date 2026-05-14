@@ -3,13 +3,20 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 Page {
+    id: root
     anchors.fill: parent
     anchors.margins: 8
 
+    // ─── État global de navigation ───────────────────────────────────────────
+    property int currentIndex: 0
+    property int selectedContact: 0 
+
+    // ─── Fond noir général ───────────────────────────────────────────────────
     background: Rectangle {
         color: "#000000"
     }
 
+    // ─── Header ──────────────────────────────────────────────────────────────
     header: Rectangle {
         height: 66
         width: parent.width
@@ -21,6 +28,7 @@ Page {
             radius: 16
             layer.enabled: true
 
+            // Séparateur bas
             Rectangle {
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
@@ -40,6 +48,7 @@ Page {
 
             Item { Layout.fillWidth: true }
 
+            // Barre de recherche
             Rectangle {
                 Layout.preferredWidth: 380
                 Layout.preferredHeight: 34
@@ -66,9 +75,7 @@ Page {
                         font.pixelSize: 15
                         font.family: "SF Pro Text"
                         verticalAlignment: TextInput.AlignVCenter
-
                         background: Item {}
-
                         placeholderTextColor: "#636366"
                     }
                 }
@@ -76,6 +83,7 @@ Page {
 
             Item { Layout.fillWidth: true }
 
+            // Bouton Nouveau
             Rectangle {
                 Layout.preferredWidth: 80
                 Layout.preferredHeight: 32
@@ -83,6 +91,8 @@ Page {
                 color: btnHover.containsMouse
                        ? Qt.rgba(0.04, 0.52, 1.0, 0.85)
                        : "#0A84FF"
+
+                Behavior on color { ColorAnimation { duration: 120 } }
 
                 Text {
                     anchors.centerIn: parent
@@ -98,17 +108,17 @@ Page {
                     anchors.fill: parent
                     hoverEnabled: true
                 }
-
-                Behavior on color { ColorAnimation { duration: 120 } }
             }
         }
     }
 
+    // ─── Corps principal ──────────────────────────────────────────────────────
     RowLayout {
         anchors.fill: parent
         anchors.topMargin: 10
         spacing: 8
 
+        // ── Sidebar ──────────────────────────────────────────────────────────
         Rectangle {
             Layout.preferredWidth: 76
             Layout.fillHeight: true
@@ -116,6 +126,7 @@ Page {
             color: Qt.rgba(0.11, 0.11, 0.12, 1.0)
             clip: true
 
+            // Séparateur droit
             Rectangle {
                 anchors.right: parent.right
                 anchors.top: parent.top
@@ -134,8 +145,8 @@ Page {
 
                 Repeater {
                     model: [
-                        { glyph: "🏠", label: "Accueil" },
-                        { glyph: "🧟", label: "Fichiers" },
+                        { glyph: "🏠", label: "Accueil"  },
+                        { glyph: "🧟", label: "Messages" },
                         { glyph: "🥵", label: "Réglages" }
                     ]
 
@@ -144,8 +155,9 @@ Page {
                         height: 54
 
                         property bool hovered: sideHover.containsMouse
-                        property bool active: index === 0
+                        property bool active:  index === root.currentIndex
 
+                        // Fond actif / survol
                         Rectangle {
                             anchors.fill: parent
                             radius: 8
@@ -155,6 +167,7 @@ Page {
                             Behavior on color { ColorAnimation { duration: 100 } }
                         }
 
+                        // Icône + label
                         Column {
                             anchors.centerIn: parent
                             spacing: 2
@@ -179,12 +192,22 @@ Page {
                             id: sideHover
                             anchors.fill: parent
                             hoverEnabled: true
+                            onClicked: {
+                                if (index === root.currentIndex) return
+                                root.currentIndex = index
+                                switch (index) {
+                                    case 0: stackView.replace(homeView);     break
+                                    case 1: stackView.replace(messageView);  break
+                                    
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
+        // ── Zone de contenu principale ───────────────────────────────────────
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -192,34 +215,39 @@ Page {
             color: "#1c1c1e"
             layer.enabled: true
 
-            Column {
-                anchors.centerIn: parent
-                spacing: 10
+            StackView {
+                id: stackView
+                anchors.fill: parent
+                initialItem: homeView
 
-                Text {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: "⊡"
-                    font.pixelSize: 44
-                    color: "#3a3a3c"
+                replaceEnter: Transition {
+                    PropertyAnimation {
+                        property: "opacity"
+                        from: 0; to: 1
+                        duration: 400
+                        easing.type: Easing.InOutQuad
+                    }
                 }
-
-                Text {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: "Aucun élément"
-                    font.pixelSize: 17
-                    font.weight: Font.Medium
-                    font.family: "SF Pro Display"
-                    color: "#ffffff"
-                }
-
-                Text {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: "Commencez par créer ou importer du contenu."
-                    font.pixelSize: 13
-                    font.family: "SF Pro Text"
-                    color: "#636366"
+                replaceExit: Transition {
+                    PropertyAnimation {
+                        property: "opacity"
+                        from: 1; to: 0
+                        duration: 400
+                        easing.type: Easing.InOutQuad
+                    }
                 }
             }
         }
     }
+
+    // ─── Composants des vues ─────────────────────────────────────────────────
+    Component { id: homeView;     HomeView {}     }
+    Component {
+    id: messageView
+    MessageView {
+        selectedContact: root.selectedContact
+        onSelectedContactChanged: root.selectedContact = selectedContact
+    }
+}
+
 }
