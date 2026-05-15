@@ -212,7 +212,7 @@ Page {
             Layout.fillWidth: true
             Layout.fillHeight: true
             radius: 16
-            color: "#1c1c1e"
+            color: "#000000"
             layer.enabled: true
 
             StackView {
