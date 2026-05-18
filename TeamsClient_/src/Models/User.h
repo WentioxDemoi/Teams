@@ -2,10 +2,10 @@
 #define USER_H
 
 #include <QDebug>
+#include <QHashFunctions>
 #include <QJsonObject>
+#include <QObject>
 #include <QString>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qobject.h>
 
 /**
  * @class User
@@ -18,7 +18,7 @@ class User {
  public:
   User() = default;
   User(const QString& email, const QString& username, const QString& status, bool isMe = false,
-       const QString& token = "", const QString& uuid = "", const QString &avatar = "");
+       const QString& token = "", const QString& uuid = "", const QString& avatar = "");
 
   // Getters
   QString email() const { return email_; }
@@ -49,8 +49,13 @@ class User {
 
   void print() const {
     qDebug() << ", email:" << email_ << ", username:" << username_ << ", status:" << status_
-             << ", token:" << token_ << ", uuid:" << uuid_ << ", isMe:" << isMe_ << ", avatar:" << (avatar_.isEmpty() ? "false" : "true") << "}";
+             << ", token:" << token_ << ", uuid:" << uuid_ << ", isMe:" << isMe_
+             << ", avatar:" << (avatar_.isEmpty() ? "false" : "true") << "}";
   }
+
+  bool operator==(const User& other) const {
+    return uuid_ == other.uuid_;
+  }  // Pour le indexOf dans UserList
 
  private:
   QString email_;
