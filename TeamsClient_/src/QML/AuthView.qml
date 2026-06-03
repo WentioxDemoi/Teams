@@ -253,24 +253,53 @@ Page {
         Column {
             spacing: 10
 
-            property string _username: ""
+            property string _firstName: ""
+            property string _lastName: ""
             property string _email: ""
             property string _password: ""
 
-            // Champ Username
+            // Champ firstName
             Rectangle {
                 width: parent.width
                 height: 44
                 radius: 10
                 color: Qt.rgba(1, 1, 1, 0.06)
-                border.color: unameField.activeFocus
+                border.color: firstNameField.activeFocus
                               ? Qt.rgba(0.04, 0.52, 1.0, 0.6)
                               : Qt.rgba(1, 1, 1, 0.08)
                 border.width: 1
                 Behavior on border.color { ColorAnimation { duration: 150 } }
 
                 TextField {
-                    id: unameField
+                    id: firstNameField
+                    anchors.fill: parent
+                    anchors.leftMargin: 14
+                    anchors.rightMargin: 14
+                    placeholderText: "Prénom"
+                    color: "#ffffff"
+                    font.pixelSize: 15
+                    font.family: "SF Pro Text"
+                    placeholderTextColor: "#48484a"
+                    verticalAlignment: TextInput.AlignVCenter
+                    background: Item {}
+                    onTextChanged: formLoader.item._firstName = text
+                }
+            }
+
+            // Champ lastName
+            Rectangle {
+                width: parent.width
+                height: 44
+                radius: 10
+                color: Qt.rgba(1, 1, 1, 0.06)
+                border.color: lastNameField.activeFocus
+                              ? Qt.rgba(0.04, 0.52, 1.0, 0.6)
+                              : Qt.rgba(1, 1, 1, 0.08)
+                border.width: 1
+                Behavior on border.color { ColorAnimation { duration: 150 } }
+
+                TextField {
+                    id: lastNameField
                     anchors.fill: parent
                     anchors.leftMargin: 14
                     anchors.rightMargin: 14
@@ -281,7 +310,7 @@ Page {
                     placeholderTextColor: "#48484a"
                     verticalAlignment: TextInput.AlignVCenter
                     background: Item {}
-                    onTextChanged: formLoader.item._username = text
+                    onTextChanged: formLoader.item._lastName = text
                 }
             }
 
@@ -367,8 +396,9 @@ Page {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onClicked: authVM.registerUser(
+                        formLoader.item._firstName,
+                        formLoader.item._lastName,
                         formLoader.item._email,
-                        formLoader.item._username,
                         formLoader.item._password
                     )
                 }

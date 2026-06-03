@@ -21,7 +21,7 @@ void SessionService::loginUser(const QString& username, const QString& password)
   authService_->loginUser(username, password);
 }
 
-void SessionService::registerUser(const QString& email, const QString& username,
-                                  const QString& password) {
-  authService_->registerUser(email, username, password);
+void SessionService::registerUser(const QString& firstName, const QString& lastName,
+                                  const QString& email, const QString& password) {
+  authService_->registerUser(firstName, lastName, email, password);
 }

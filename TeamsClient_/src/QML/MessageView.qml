@@ -9,82 +9,7 @@ Item {
     required property int selectedContact
 
     // ─── Données de contacts ─────────────────────────────────────────────────
-    ListModel {
-        id: contactsModel
-
-        ListElement {
-            name: "Alice Martin"
-            initials: "AM"
-            lastMessage: "OK je regarde ça ce soir 👍"
-            time: "14:32"
-            unread: 2
-            online: true
-            avatarColor: "#0A84FF"
-        }
-        ListElement {
-            name: "Bob Dupont"
-            initials: "BD"
-            lastMessage: "Tu peux m'envoyer le fichier ?"
-            time: "13:10"
-            unread: 0
-            online: false
-            avatarColor: "#30D158"
-        }
-        ListElement {
-            name: "Clara Roux"
-            initials: "CR"
-            lastMessage: "Parfait, à demain alors !"
-            time: "11:58"
-            unread: 0
-            online: true
-            avatarColor: "#FF375F"
-        }
-        ListElement {
-            name: "David Leroy"
-            initials: "DL"
-            lastMessage: "Merci pour tout 🙏"
-            time: "Hier"
-            unread: 1
-            online: false
-            avatarColor: "#FF9F0A"
-        }
-        ListElement {
-            name: "Emma Bernard"
-            initials: "EB"
-            lastMessage: "C'est noté, je te tiens au courant."
-            time: "Hier"
-            unread: 0
-            online: true
-            avatarColor: "#BF5AF2"
-        }
-        ListElement {
-            name: "François Petit"
-            initials: "FP"
-            lastMessage: "Rappelle-moi quand tu peux !"
-            time: "Lun"
-            unread: 0
-            online: false
-            avatarColor: "#5AC8FA"
-        }
-        ListElement {
-            name: "Gaëlle Simon"
-            initials: "GS"
-            lastMessage: "Reçu 👌"
-            time: "Lun"
-            unread: 3
-            online: false
-            avatarColor: "#FF6961"
-        }
-        ListElement {
-            name: "Hugo Moreau"
-            initials: "HM"
-            lastMessage: "On se voit vendredi ?"
-            time: "Dim"
-            unread: 0
-            online: true
-            avatarColor: "#34C759"
-        }
-    }
+    
 
     // ─── Fausses conversations par contact ────────────────────────────────────
     property var conversations: [
@@ -179,11 +104,11 @@ Item {
                     width: 28
                     height: 28
                     radius: 14
-                    color: contactsModel.get(messageRoot.selectedContact).avatarColor
+                    color: userList.get(messageRoot.selectedContact).avatarColor
 
                     Text {
                         anchors.centerIn: parent
-                        text: contactsModel.get(messageRoot.selectedContact).initials
+                        text: userList.get(messageRoot.selectedContact).initials
                         font.pixelSize: 11
                         font.weight: Font.Bold
                         font.family: "SF Pro Text"
@@ -194,7 +119,7 @@ Item {
                         width: 8
                         height: 8
                         radius: 4
-                        color: contactsModel.get(messageRoot.selectedContact).online ? "#30D158" : "#636366"
+                        color: userList.get(messageRoot.selectedContact).online ? "#30D158" : "#636366"
                         border.color: Qt.rgba(0.11, 0.11, 0.12, 0.92)
                         border.width: 1.5
                         anchors.right: parent.right
@@ -208,7 +133,7 @@ Item {
                     Layout.fillWidth: true
 
                     Text {
-                        text: contactsModel.get(messageRoot.selectedContact).name
+                        text: userList.get(messageRoot.selectedContact).username
                         font.pixelSize: 14
                         font.weight: Font.SemiBold
                         font.family: "SF Pro Text"
@@ -216,10 +141,10 @@ Item {
                     }
 
                     Text {
-                        text: contactsModel.get(messageRoot.selectedContact).online ? "En ligne" : "Hors ligne"
+                        text: userList.get(messageRoot.selectedContact).online ? "En ligne" : "Hors ligne"
                         font.pixelSize: 11
                         font.family: "SF Pro Text"
-                        color: contactsModel.get(messageRoot.selectedContact).online ? "#30D158" : "#636366"
+                        color: userList.get(messageRoot.selectedContact).online ? "#30D158" : "#636366"
                     }
                 }
 
@@ -291,7 +216,7 @@ Item {
 
                 ListView {
                     id: contactList
-                    model: contactsModel
+                    model: userList
                     spacing: 4
                     boundsBehavior: Flickable.StopAtBounds
 
@@ -349,7 +274,7 @@ Item {
 
                                     Text {
                                         Layout.fillWidth: true
-                                        text: model.name
+                                        text: model.username
                                         font.pixelSize: 13
                                         font.weight: Font.SemiBold
                                         font.family: "SF Pro Text"
@@ -357,12 +282,6 @@ Item {
                                         elide: Text.ElideRight
                                     }
 
-                                    Text {
-                                        text: model.time
-                                        font.pixelSize: 11
-                                        font.family: "SF Pro Text"
-                                        color: "#636366"
-                                    }
                                 }
 
                                 RowLayout {
@@ -378,21 +297,7 @@ Item {
                                         elide: Text.ElideRight
                                     }
 
-                                    Rectangle {
-                                        visible: model.unread > 0
-                                        width: 18
-                                        height: 18
-                                        radius: 9
-                                        color: "#0A84FF"
-
-                                        Text {
-                                            anchors.centerIn: parent
-                                            text: model.unread
-                                            font.pixelSize: 10
-                                            font.weight: Font.Bold
-                                            color: "#ffffff"
-                                        }
-                                    }
+                                
                                 }
                             }
                         }

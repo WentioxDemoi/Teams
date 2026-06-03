@@ -28,12 +28,13 @@ std::optional<User> AuthService::loginUser(const std::string &email,
   return std::nullopt;
 }
 
-std::optional<User> AuthService::registerUser(const std::string &username,
+std::optional<User> AuthService::registerUser(const std::string &firstName,
+                                              const std::string &lastName,
                                               const std::string &email,
                                               const std::string &password) {
   std::optional<User> user_ = userRepo_->find_by_email(email);
   if (!user_) {
-    User user(Crypto::generate_uuid(), username, email,
+    User user(Crypto::generate_uuid(), firstName, lastName, email,
               Crypto::hash_password(password), Crypto::generate_token(),
               config_.token_expiry_time(), "Online", config_.time(),
               config_.time());

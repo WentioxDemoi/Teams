@@ -20,15 +20,15 @@ DatabaseManager::DatabaseManager() {
   QSqlQuery query(db_);
   QString createTable = R"(
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT NOT NULL,
-            username TEXT,
-            status TEXT,
-            is_me BOOLEAN DEFAULT 0,
-            token TEXT,
-            uuid TEXT UNIQUE,
-            avatar TEXT
-        )
+    email      TEXT NOT NULL,
+    first_name TEXT NOT NULL,
+    last_name  TEXT NOT NULL,
+    status     TEXT,
+    uuid       TEXT PRIMARY KEY,
+    is_me      INTEGER DEFAULT 0,
+    token      TEXT,
+    avatar     TEXT
+);
     )";
 
   if (!query.exec(createTable)) {

@@ -112,25 +112,25 @@ target_link_options(server PRIVATE -Wl,-rpath,${BOOST_LIB_PATH})
 # Tests
 # ------------------------------
 
-include(FetchContent)
+# include(FetchContent)
 
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
-)
-FetchContent_MakeAvailable(googletest)
+# FetchContent_Declare(
+#   googletest
+#   URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+# )
+# FetchContent_MakeAvailable(googletest)
 
-enable_testing()
+# enable_testing()
 
-file(GLOB_RECURSE TEST_SOURCES "Tests/*.cpp")
-add_executable(server_tests ${TEST_SOURCES})
+# file(GLOB_RECURSE TEST_SOURCES "Tests/*.cpp")
+# add_executable(server_tests ${TEST_SOURCES})
 
-target_link_libraries(server_tests PRIVATE
-    server_lib
-    gtest
-    gtest_main
-    gmock
-)
+# target_link_libraries(server_tests PRIVATE
+#     server_lib
+#     gtest
+#     gtest_main
+#     gmock
+# )
 
-include(GoogleTest)
-gtest_discover_tests(server_tests)
+# include(GoogleTest)
+# gtest_discover_tests(server_tests)

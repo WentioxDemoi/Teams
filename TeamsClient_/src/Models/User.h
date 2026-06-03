@@ -7,24 +7,25 @@
 #include <QObject>
 #include <QString>
 
-/**
- * @class User
- * @brief Représente un utilisateur de l'application.
- *
- * Contient les informations essentielles comme l'ID, l'email, le nom
- * d'utilisateur, le statut, et le token d'authentification (temporaire).
- */
 class User {
  public:
   User() = default;
-  User(const QString& email, const QString& username, const QString& status, bool isMe = false,
-       const QString& token = "", const QString& uuid = "", const QString& avatar = "", const QString& lastMessage = "lastMessage");
-  User(const QString& email, const QString& username, const QString& status, bool isMe = false,
-       const QString& token = "", const QString& uuid = "", const QString& avatar = "");
+  User(const QString& email, const QString& firstName, const QString& lastName,
+       const QString& status, bool isMe = false, const QString& token = "",
+       const QString& uuid = "", const QString& avatar = "", const QString& lastMessage = "");
 
   // Getters
   QString email() const { return email_; }
-  QString username() const { return username_; }
+  QString firstName() const { return firstName_; }
+  QString lastName() const { return lastName_; }
+  QString fullName() const { return firstName_ + " " + lastName_; }
+  QString initials() const {
+    QChar f = firstName_.isEmpty() ? QChar() : firstName_[0];
+    QChar l = lastName_.isEmpty() ? QChar() : lastName_[0];
+    return QString(f) + QString(l);
+  }
+  QString avatarColor() const { return generateAvatarColor(uuid_); }
+  bool online() const { return status_ == "En ligne"; }
   QString status() const { return status_; }
   bool isMe() const { return isMe_; }
   QString token() const { return token_; }
@@ -33,38 +34,42 @@ class User {
   QString lastMessage() const { return lastMessage_; }
 
   // Setters
-  void setEmail(const QString& email) { email_ = email; }
-  void setUsername(const QString& username) { username_ = username; }
-  void setStatus(const QString& status) { status_ = status; }
-  void setIsMe(bool isMe) { isMe_ = isMe; }
-  void setToken(const QString& token) { token_ = token; }
-  void setUuid(const QString& uuid) { uuid_ = uuid; }
-  void setAvatar(const QString& avatar) { avatar_ = avatar; }
-  void setLastMessage(const QString &lastMessage) {lastMessage_ = lastMessage; }
+  void setEmail(const QString& v) { email_ = v; }
+  void setFirstName(const QString& v) { firstName_ = v; }
+  void setLastName(const QString& v) { lastName_ = v; }
+  void setStatus(const QString& v) { status_ = v; }
+  void setIsMe(bool v) { isMe_ = v; }
+  void setToken(const QString& v) { token_ = v; }
+  void setUuid(const QString& v) { uuid_ = v; }
+  void setAvatar(const QString& v) { avatar_ = v; }
+  void setLastMessage(const QString& v) { lastMessage_ = v; }
 
   void clearToken() { token_.clear(); }
-  bool isValid() const {
-    return !email_.isEmpty() && !username_.isEmpty() && !status_.isEmpty() && !uuid_.isEmpty();
-  }
+  bool isValid() const { return !email_.isEmpty() && !firstName_.isEmpty() && !uuid_.isEmpty(); }
 
-  // JSON conversion
   QJsonObject toJson() const;
   static User fromJson(const QJsonObject& json);
 
+  bool operator==(const User& other) const { return uuid_ == other.uuid_; }
+
   void print() const {
-    qDebug() << ", email:" << email_ << ", username:" << username_ << ", status:" << status_
-             << ", token:" << token_ << ", uuid:" << uuid_ << ", isMe:" << isMe_
-             << ", avatar:" << (avatar_.isEmpty() ? "false" : "true") << ", last message:" + lastMessage_
-             << "}";
+    qDebug() << "{ email:" << email_ << ", name:" << fullName() << ", status:" << status_
+             << ", uuid:" << uuid_ << ", isMe:" << isMe_ << "}";
   }
 
-  bool operator==(const User& other) const {
-    return uuid_ == other.uuid_;
-  }  // Pour le indexOf dans UserList
-
  private:
+  static QString generateAvatarColor(const QString& seed) {
+    static const QStringList colors = {
+        "#FF6B6B", "#FF9F43", "#FECA57", "#48DBFB", "#1DD1A1", "#0A84FF", "#BF5AF2", "#FF375F",
+    };
+    if (seed.isEmpty()) return colors[0];
+    uint hash = qHash(seed);
+    return colors[hash % colors.size()];
+  }
+
   QString email_;
-  QString username_;
+  QString firstName_;
+  QString lastName_;
   QString status_;
   bool isMe_ = false;
   QString token_;
@@ -72,4 +77,5 @@ class User {
   QString avatar_;
   QString lastMessage_;
 };
+
 #endif

@@ -1,9 +1,9 @@
 #ifndef SESSIONSERVICE_H
 #define SESSIONSERVICE_H
 
+#include "Core/State/SessionState.h"
 #include "Interfaces/IAuthService.h"
 #include "Interfaces/ISessionService.h"
-#include "Core/State/SessionState.h"
 
 /**
  * @class SessionService
@@ -14,17 +14,17 @@
  */
 class SessionService : public ISessionService {
   Q_OBJECT
-public:
-  explicit SessionService(IAuthService *service = nullptr, QObject *parent = nullptr);
-  void loginUser(const QString &username, const QString &password) override;
+ public:
+  explicit SessionService(IAuthService* service = nullptr, QObject* parent = nullptr);
+  void loginUser(const QString& username, const QString& password) override;
 
-  void registerUser(const QString &email, const QString &username,
-                    const QString &password) override;
+  void registerUser(const QString& firstName, const QString& lastName, const QString& email,
+                    const QString& password) override;
   void start() override;
 
-private:
-    IAuthService *authService_;
-    SessionState *sessionState_;
+ private:
+  IAuthService* authService_;
+  SessionState* sessionState_;
 };
 
 #endif

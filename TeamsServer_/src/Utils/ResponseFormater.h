@@ -20,8 +20,11 @@ public:
            type +
            "\","
            "\"data\":{"
-           "\"username\":\"" +
-           json_escape(user.username) +
+           "\"firstName\":\"" +
+           json_escape(user.firstName) +
+           "\","
+           "\"lastName\":\"" +
+           json_escape(user.lastName) +
            "\","
            "\"email\":\"" +
            json_escape(user.email) +

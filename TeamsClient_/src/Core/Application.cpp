@@ -10,12 +10,15 @@
 #include "Auth/AuthService.h"
 #include "Interfaces/IAuthService.h"
 #include "Interfaces/ISessionService.h"
+#include "ModelLocator.h"
 #include "ServiceLocator.h"
 #include "SessionService.h"
+#include "UserList.h"
 #include "UserService.h"
 #include "ViewModelsLocator.h"
 
 Application::Application(int& argc, char** argv) : qtApp(argc, argv) {
+  qputenv("QT_QUICK_CONTROLS_STYLE", "Basic");
   QCoreApplication::setApplicationName("Teams");
 
   initializePerms();
@@ -59,6 +62,19 @@ void Application::initializeViewModels() {
   locator.registerViewModels<AuthViewModel>(authVM);
 
   engine.rootContext()->setContextProperty("authVM", authVM);
+  initializeModels();
+}
+
+void Application::initializeModels()
+{
+
+  auto &locator = ModelLocator::instance();
+
+  auto *userListModel = new UserList(appRoot);
+
+  locator.registerModel<UserList>(userListModel);
+
+  engine.rootContext()->setContextProperty("userList", ModelLocator::instance().getModel<UserList>());
 
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreationFailed, &qtApp,

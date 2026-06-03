@@ -1,8 +1,9 @@
 #include "AuthService.h"
 
+#include <cstdlib>
+
 #include "../../Core/ServiceLocator.h"
 #include "../../Utils/TokenManager.h"
-#include <cstdlib>
 
 AuthService::AuthService(NetworkService* network, IUserService* userService, ITokenManager* token,
                          QObject* parent)
@@ -24,11 +25,10 @@ AuthService::AuthService(NetworkService* network, IUserService* userService, ITo
 }
 
 void AuthService::start() {
-  if (/*!*/token_->token.isEmpty()) {
+  if (/*!*/ token_->token.isEmpty()) {
     // network_->send({{"type", "validate_token"}, {"token", token_->token}});
-    network_->send({{"type", "validate_token"}, {"token", "69e973f656f0ec63d6dc5b43a68c5de6"}});
-  }
-  else
+    network_->send({{"type", "validate_token"}, {"token", "c6e1bb5d3ab1f38b4651cd5edf0d13f3"}});
+  } else
     errorToken("No token found");
 }
 
@@ -36,11 +36,12 @@ void AuthService::loginUser(const QString& email, const QString& password) {
   network_->send({{"type", "login"}, {"email", email}, {"password", password}});
 }
 
-void AuthService::registerUser(const QString& email, const QString& username,
-                               const QString& password) {
+void AuthService::registerUser(const QString& firstName, const QString& lastName,
+                               const QString& email, const QString& password) {
   network_->send({{"type", "register"},
+                  {"firstName", firstName},
+                  {"lastName", lastName},
                   {"email", email},
-                  {"username", username},
                   {"password", password}});
 }
 
@@ -108,6 +109,4 @@ void AuthService::handleServerResponse(const QJsonObject& root) {
   }
 }
 
-void AuthService::disconnectFromServer() {
-    network_->disconnectFromServer();
-}
+void AuthService::disconnectFromServer() { network_->disconnectFromServer(); }

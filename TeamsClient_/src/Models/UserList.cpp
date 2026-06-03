@@ -20,33 +20,44 @@ void UserList::removeUser(const User& user) {
 }
 
 QHash<int, QByteArray> UserList::roleNames() const {
-  return {
-      {UsernameRole, "username"},
-      {StatusRole, "status"},
-      {AvatarRole, "avatar"},
-      {LastMessageRole, "lastMessage"},  // TODO
-  };
+    return {
+        {UsernameRole,    "username"},
+        {StatusRole,      "status"},
+        {AvatarRole,      "avatar"},
+        {LastMessageRole, "lastMessage"},
+        {InitialsRole,    "initials"},
+        {AvatarColorRole, "avatarColor"},
+        {OnlineRole,      "online"},
+    };
 }
 
 QVariant UserList::data(const QModelIndex& index, int role) const {
-  if (!index.isValid() || index.row() >= users_.size()) return QVariant();
+    if (!index.isValid() || index.row() >= users_.size()) return {};
+    const User& user = users_.at(index.row());
 
-  const User& user = users_.at(index.row());
+    switch (role) {
+        case UsernameRole:    return user.fullName();
+        case StatusRole:      return user.status();
+        case AvatarRole:      return user.avatar();
+        case LastMessageRole: return user.lastMessage();
+        case InitialsRole:    return user.initials();
+        case AvatarColorRole: return user.avatarColor();
+        case OnlineRole:      return user.online();
+        default:
+            qDebug() << "UserList: Undefined role.";
+    }
+    return {};
+}
 
-  switch (role) {
-    case UsernameRole:
-      return user.username();
-    case StatusRole:
-      return user.status();
-    case AvatarRole:
-      return user.avatar();
-    case LastMessageRole:
-      return "aller"; // A faire
-    default:
-      qDebug() << "UserList: Undefined role.";
-  }
-
-  return QVariant();
+QVariantMap UserList::get(int row) const {
+    if (row < 0 || row >= users_.size()) return {};
+    const User& u = users_.at(row);
+    return {
+        {"username",    u.fullName()},
+        {"initials",    u.initials()},
+        {"avatarColor", u.avatarColor()},
+        {"online",      u.online()},
+    };
 }
 
 int UserList::rowCount(const QModelIndex& parent) const {
@@ -57,36 +68,8 @@ int UserList::rowCount(const QModelIndex& parent) const {
 UserList::UserList(QObject *parent)
     : QAbstractListModel(parent)
 {
-    addUser(User(
-        "alice@example.com",
-        "Alice",
-        "En ligne",
-        false,
-        "",
-        "uuid-alice",
-        "https://i.pravatar.cc/150?img=1",
-        "AliceLastMessage"
-    ));
-
-    addUser(User(
-        "bob@example.com",
-        "Bob",
-        "Absent",
-        false,
-        "",
-        "uuid-bob",
-        "https://i.pravatar.cc/150?img=2",
-        "BobLastMessage"
-    ));
-
-    addUser(User(
-        "charlie@example.com",
-        "Charlie",
-        "Occupé",
-        false,
-        "",
-        "uuid-charlie",
-        "https://i.pravatar.cc/150?img=3",
-        "CharlieLastMessage"
-    ));
+  addUser(User("alice@example.com", "Alice", "Martin",  "En ligne", false, "", "uuid-alice", "", "OK je regarde ça ce soir 👍"));
+  addUser(User("bob@example.com",   "Bob",   "Dupont",  "Absent",   false, "", "uuid-bob",   "", "Tu peux m'envoyer le fichier ?"));
+  addUser(User("clara@example.com", "Clara", "Roux",    "En ligne", false, "", "uuid-clara", "", "Parfait, à demain alors !"));
+  addUser(User("brice@example.com", "Brice", "Roux",    "En ligne", false, "", "uuid-brice", "", "Parfait, à jamais alors !"));
 }

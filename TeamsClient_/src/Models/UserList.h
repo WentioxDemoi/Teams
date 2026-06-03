@@ -21,10 +21,13 @@ class UserList : public QAbstractListModel {
  public:
   enum Roles {
     UsernameRole = Qt::UserRole + 1,
-    StatusRole,
-    AvatarRole,
+    StatusRole,         // "En ligne" / "Absent"
+    AvatarRole,         // URL avatar
     LastMessageRole,
-  };
+    InitialsRole,       // "AM", "BD"...
+    AvatarColorRole,    // couleur hex
+    OnlineRole,         // bool
+};
 
   void addUser(const User& user);
   void removeUser(const User& user);  // Deuxième temps
@@ -32,6 +35,8 @@ class UserList : public QAbstractListModel {
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
   QHash<int, QByteArray> roleNames() const override;
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+
+  Q_INVOKABLE QVariantMap get(int row) const;
 
   explicit UserList(QObject *parent = nullptr);
 

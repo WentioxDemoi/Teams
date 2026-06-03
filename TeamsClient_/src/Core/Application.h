@@ -29,7 +29,7 @@ private:
     void initializePerms();
     void initializeServices();
     void initializeViewModels();
-    // void initializeViews();  // ← plus de views Qt Widgets
+    void initializeModels();
     // void connectViewModels();
 };
 

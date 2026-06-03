@@ -30,13 +30,14 @@ void AuthHandler::handle_login(std::string payload, ResponseCallback respond) {
 
 void AuthHandler::handle_register(std::string payload,
                                   ResponseCallback respond) {
-  auto email = HandlerTools::extractValue(payload, "email");
-  auto username = HandlerTools::extractValue(payload, "username");
-  auto password = HandlerTools::extractValue(payload, "password");
+  auto email     = HandlerTools::extractValue(payload, "email");
+  auto firstName = HandlerTools::extractValue(payload, "firstName");
+  auto lastName  = HandlerTools::extractValue(payload, "lastName");
+  auto password  = HandlerTools::extractValue(payload, "password");
 
-  asio::post(worker_pool_, [this, email, username, password, respond]() {
+  asio::post(worker_pool_, [this, email, firstName, lastName, password, respond]() {
     try {
-      auto response = authService_->registerUser(username, email, password);
+      auto response = authService_->registerUser(firstName, lastName, email, password);
       std::string result;
       if (!response.has_value()) {
         result =

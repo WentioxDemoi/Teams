@@ -17,12 +17,12 @@ class AuthService : public IAuthService {
   Q_OBJECT
 
  public:
-  explicit AuthService(NetworkService *network = nullptr, IUserService* userService = nullptr,
+  explicit AuthService(NetworkService* network = nullptr, IUserService* userService = nullptr,
                        ITokenManager* token = nullptr, QObject* parent = nullptr);
   void start() override;
   void loginUser(const QString& username, const QString& password) override;
 
-  void registerUser(const QString& email, const QString& username,
+  void registerUser(const QString& firstName, const QString& lastName, const QString& email,
                     const QString& password) override;
 
   void disconnectFromServer() override;
@@ -30,10 +30,10 @@ class AuthService : public IAuthService {
  public slots:
   void onUserSaved(const User& user) override;
   void errorToken(const QString& error) override;
-  void handleServerResponse(const QJsonObject &root);
+  void handleServerResponse(const QJsonObject& root);
 
  private:
-  NetworkService *network_;
+  NetworkService* network_;
   ITokenManager* token_;
   IUserService* userService_;
 };

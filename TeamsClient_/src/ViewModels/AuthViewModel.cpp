@@ -26,9 +26,9 @@ void AuthViewModel::loginUser(const QString& email, const QString& password) {
   sessionService_->loginUser(email, password);
 }
 
-void AuthViewModel::registerUser(const QString& email, const QString& username,
+void AuthViewModel::registerUser(const QString& firstName, const QString& lastName, const QString& email,
                                  const QString& password) {
-  if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
+  if (email.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || password.isEmpty()) {
     emit authError("All fields are required");
     return;
   }
@@ -38,5 +38,5 @@ void AuthViewModel::registerUser(const QString& email, const QString& username,
     return;
   }
 
-  sessionService_->registerUser(email, username, password);
+  sessionService_->registerUser(firstName, lastName, email, password);
 }
