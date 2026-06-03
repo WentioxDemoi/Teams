@@ -18,6 +18,8 @@ class User {
  public:
   User() = default;
   User(const QString& email, const QString& username, const QString& status, bool isMe = false,
+       const QString& token = "", const QString& uuid = "", const QString& avatar = "", const QString& lastMessage = "lastMessage");
+  User(const QString& email, const QString& username, const QString& status, bool isMe = false,
        const QString& token = "", const QString& uuid = "", const QString& avatar = "");
 
   // Getters
@@ -28,6 +30,7 @@ class User {
   QString token() const { return token_; }
   QString uuid() const { return uuid_; }
   QString avatar() const { return avatar_; }
+  QString lastMessage() const { return lastMessage_; }
 
   // Setters
   void setEmail(const QString& email) { email_ = email; }
@@ -37,6 +40,7 @@ class User {
   void setToken(const QString& token) { token_ = token; }
   void setUuid(const QString& uuid) { uuid_ = uuid; }
   void setAvatar(const QString& avatar) { avatar_ = avatar; }
+  void setLastMessage(const QString &lastMessage) {lastMessage_ = lastMessage; }
 
   void clearToken() { token_.clear(); }
   bool isValid() const {
@@ -50,7 +54,8 @@ class User {
   void print() const {
     qDebug() << ", email:" << email_ << ", username:" << username_ << ", status:" << status_
              << ", token:" << token_ << ", uuid:" << uuid_ << ", isMe:" << isMe_
-             << ", avatar:" << (avatar_.isEmpty() ? "false" : "true") << "}";
+             << ", avatar:" << (avatar_.isEmpty() ? "false" : "true") << ", last message:" + lastMessage_
+             << "}";
   }
 
   bool operator==(const User& other) const {
@@ -65,5 +70,6 @@ class User {
   QString token_;
   QString uuid_;
   QString avatar_;
+  QString lastMessage_;
 };
 #endif

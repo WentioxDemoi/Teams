@@ -1,6 +1,8 @@
 #include "UserList.h"
 
+#include <QtCore/qabstractitemmodel.h>
 #include <QtCore/qdebug.h>
+#include <QtCore/qobject.h>
 #include <QtCore/qvariant.h>
 
 void UserList::addUser(const User& user) {
@@ -39,7 +41,7 @@ QVariant UserList::data(const QModelIndex& index, int role) const {
     case AvatarRole:
       return user.avatar();
     case LastMessageRole:
-      return "aller";
+      return "aller"; // A faire
     default:
       qDebug() << "UserList: Undefined role.";
   }
@@ -50,4 +52,41 @@ QVariant UserList::data(const QModelIndex& index, int role) const {
 int UserList::rowCount(const QModelIndex& parent) const {
   if (parent.isValid()) return 0;
   return users_.size();
+}
+
+UserList::UserList(QObject *parent)
+    : QAbstractListModel(parent)
+{
+    addUser(User(
+        "alice@example.com",
+        "Alice",
+        "En ligne",
+        false,
+        "",
+        "uuid-alice",
+        "https://i.pravatar.cc/150?img=1",
+        "AliceLastMessage"
+    ));
+
+    addUser(User(
+        "bob@example.com",
+        "Bob",
+        "Absent",
+        false,
+        "",
+        "uuid-bob",
+        "https://i.pravatar.cc/150?img=2",
+        "BobLastMessage"
+    ));
+
+    addUser(User(
+        "charlie@example.com",
+        "Charlie",
+        "Occupé",
+        false,
+        "",
+        "uuid-charlie",
+        "https://i.pravatar.cc/150?img=3",
+        "CharlieLastMessage"
+    ));
 }

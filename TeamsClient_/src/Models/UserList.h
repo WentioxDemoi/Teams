@@ -2,8 +2,10 @@
 #define USERLIST_H
 
 #include <Qlist.h>
+#include <QtCore/qobject.h>
 #include <QtCore/qtmetamacros.h>
 #include <arm/types.h>
+
 #include <QAbstractListModel>
 #include <QDebug>
 #include <QHashFunctions>
@@ -11,6 +13,7 @@
 #include <QObject>
 #include <QString>
 
+#include "MessageList.h"
 #include "User.h"
 
 class UserList : public QAbstractListModel {
@@ -30,8 +33,11 @@ class UserList : public QAbstractListModel {
   QHash<int, QByteArray> roleNames() const override;
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
+  explicit UserList(QObject *parent = nullptr);
+
  private:
   QList<User> users_;
+  QHash<QString, MessageList*> messagesByUserUuid_;
 };
 
 #endif

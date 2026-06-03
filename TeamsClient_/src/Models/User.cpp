@@ -10,6 +10,17 @@ User::User(const QString& email, const QString& username, const QString& status,
       uuid_(uuid),
       avatar_(avatar) {}
 
+User::User(const QString& email, const QString& username, const QString& status, bool isMe,
+           const QString& token, const QString& uuid, const QString& avatar, const QString &lastMessage)
+    : email_(email),
+      username_(username),
+      status_(status),
+      isMe_(isMe),
+      token_(token),
+      uuid_(uuid),
+      avatar_(avatar),
+      lastMessage_(lastMessage) {}
+
 QJsonObject User::toJson() const {
   QJsonObject json;
   json["email"] = email_;
