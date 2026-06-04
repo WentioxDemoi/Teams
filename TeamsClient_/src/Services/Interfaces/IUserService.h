@@ -26,8 +26,10 @@ class IUserService : public QObject {
 
  signals:
   void userSaved(const User& user);
+  void localUserSaved(const User& user);
   void userDeleted(QString uuid);
   void error(const QString& error);
+  void saveLocalUser(const User& user);
 
 };
 

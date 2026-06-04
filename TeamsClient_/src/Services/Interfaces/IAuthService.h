@@ -17,20 +17,19 @@ class IAuthService : public QObject
 public:
     explicit IAuthService(QObject *parent = nullptr) : QObject(parent) {};
     virtual ~IAuthService() = default;
-    virtual void start() = 0;
     virtual void loginUser(const QString &username, const QString &password) = 0;
     virtual void registerUser(const QString &firstName, const QString &lastName, const QString &email, const QString &password) = 0;
+    virtual void loginWithToken(const QString &token) = 0;
     virtual void disconnectFromServer() = 0;
 
 
 signals:
     void authSuccess(const User &user);
     void authError(const QString &error);
-    void noTokenFound();
+    void errorToken(const QString& error);
 
 public slots:
-  virtual void onUserSaved(const User &user) = 0;
-  virtual void errorToken(const QString &error) = 0;
+
 };
 
 #endif

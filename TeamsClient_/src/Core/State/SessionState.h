@@ -1,29 +1,25 @@
 #ifndef SESSIONSTATE_H
 #define SESSIONSTATE_H
 
-#include "User.h"
 #include <QObject>
 
 class SessionState : public QObject {
     Q_OBJECT
 
 public:
-    const User& localUser() const { return user_; }
+ // Bon ici normalement on devrait avoir des trucs comme ça :
 
-public slots:
-    void setlocalUser(const User& user) {
-        if (user_.uuid() == user.uuid())
-            return;
+    // bool connectedToGateway; genre les différents micros services
+    // bool inCall; Avec notification automatique vers le serveur
 
-        user_ = user;
-        emit localUserChanged(user_);
-    }
+    // QString currentChannelId; Déjà géré par QML
+    // QString currentMeetingId; Déjà géré par QML
 
-signals:
-    void localUserChanged(const User &user_);
+    // QVector<QString> openedChats; Déjà géré par QML
+    // Notifications
+    // État de sync avec les serveurs
 
-private:
-    User user_;
+
 };
 
 #endif

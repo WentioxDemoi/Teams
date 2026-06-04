@@ -28,6 +28,10 @@ class ISessionService : public QObject {
   void authSuccess(const User& user);
   void authError(const QString& error);
   void noTokenFound();
+
+ public slots:
+  virtual void onLocalUserSaved(const User& user) = 0;
+  virtual void errorToken(const QString& error) = 0;
 };
 
 #endif

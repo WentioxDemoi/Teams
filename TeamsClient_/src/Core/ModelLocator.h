@@ -35,7 +35,6 @@ class ModelLocator {
 
   void clear();
 
- private:
   ModelLocator() = default;
   ~ModelLocator() { clear(); }
 

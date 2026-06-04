@@ -34,7 +34,6 @@ class ViewModelsLocator {
   }
   void clear();
 
- private:
   ViewModelsLocator() = default;
   ~ViewModelsLocator() { clear(); }
 
@@ -43,6 +42,7 @@ class ViewModelsLocator {
   ViewModelsLocator& operator=(const ViewModelsLocator&) = delete;
   ViewModelsLocator& operator=(ViewModelsLocator&&) = delete;
 
+ private:
   QMap<QString, QObject*> viewModels_;
 };
 

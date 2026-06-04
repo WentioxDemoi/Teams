@@ -1,9 +1,22 @@
 #include "UserService.h"
 
-UserService::UserService(QObject* parent) : IUserService(parent) { repo_ = new UserRepository(); }
+#include "Interfaces/IUserService.h"
+#include "Repositories/UserRepository.h"
+#include "State/UserState.h"
+
+UserService::UserService(UserRepository* repo, QObject* parent)
+    : repo_(repo ? repo : new UserRepository()), 
+    userState_(&UserState::instance()),
+    IUserService(parent) {
+      connect(this, &IUserService::saveLocalUser, userState_, &UserState::saveLocalUser);
+      connect(userState_, &UserState::localUserSaved, this, &UserService::localUserSaved);
+
+    }
 
 void UserService::saveUser(const User& user) {
-  if (repo_->insert(user))
+  if (user.isMe()) {
+    emit saveLocalUser(user);
+  } else if (repo_->insert(user))
     emit userSaved(user);
   else {
     // emit error("Error lors de l'enregistrement du user : " + user.uuid() + ".");

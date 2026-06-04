@@ -34,7 +34,6 @@ class ServiceLocator {
   }
   void clear();
 
- private:
   ServiceLocator() = default;
   ~ServiceLocator() { clear(); }
 
@@ -43,6 +42,7 @@ class ServiceLocator {
   ServiceLocator& operator=(const ServiceLocator&) = delete;
   ServiceLocator& operator=(ServiceLocator&&) = delete;
 
+ private:
   QMap<QString, QObject*> services_;
 };
 

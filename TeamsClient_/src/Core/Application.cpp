@@ -47,9 +47,9 @@ void Application::initializeServices() {
   appRoot = new QObject(&qtApp);
   auto& locator = ServiceLocator::instance();
 
-  locator.registerService<IUserService>(new UserService(appRoot));
-  locator.registerService<IAuthService>(new AuthService(nullptr, nullptr, nullptr, appRoot));
-  locator.registerService<ISessionService>(new SessionService(nullptr, appRoot));
+  locator.registerService<IUserService>(new UserService(nullptr, appRoot));
+  locator.registerService<IAuthService>(new AuthService(nullptr, appRoot));
+  locator.registerService<ISessionService>(new SessionService(nullptr, nullptr, nullptr, appRoot));
 
   initializeViewModels();
 }
