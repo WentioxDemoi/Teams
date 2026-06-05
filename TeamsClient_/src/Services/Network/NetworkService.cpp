@@ -1,6 +1,21 @@
 #include "NetworkService.h"
+#include "SessionEnum.h"
 
 NetworkService::NetworkService(qint16 port, QObject* parent) : QObject(parent), port_(port) {
+  switch (port) {
+    case 8080 :
+      server_ = ServerType::Auth;
+      break;
+    case 8081 :
+      server_ = ServerType::WebRTC;
+      break;
+    case 8082 :
+      server_ = ServerType::Message;
+      break;
+    default :
+      qDebug() << "Unknown enum (NetworkService)";
+  }
+
   connect(&socket_, &QSslSocket::readyRead, this, [this]() {
     buffer_ += socket_.readAll();
     while (buffer_.contains('\n')) {
@@ -13,6 +28,7 @@ NetworkService::NetworkService(qint16 port, QObject* parent) : QObject(parent), 
 
   connect(&socket_, &QSslSocket::disconnected, this, [this]() {
     buffer_.clear();
+    emit connectionUpdate(server_, false);
     qDebug() << "Disconnected from server with port" << port_;
   });
 
@@ -24,7 +40,7 @@ NetworkService::NetworkService(qint16 port, QObject* parent) : QObject(parent), 
 
   connect(&socket_, &QSslSocket::encrypted, this, [this]() {
     qDebug() << "SSL ready -> flushing queue";
-
+    emit connectionUpdate(server_, true);
     while (!pendingQueue_.isEmpty())
       send(pendingQueue_.dequeue());
     

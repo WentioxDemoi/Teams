@@ -2,6 +2,9 @@
 #define SESSIONSTATE_H
 
 #include <QObject>
+#include "SessionEnum.h"
+
+
 
 class SessionState : public QObject {
     Q_OBJECT
@@ -19,7 +22,15 @@ public:
     // Notifications
     // État de sync avec les serveurs
 
+public slots:
+    void onServerConnectionUpdate(ServerType server, bool status);
 
+
+
+private:
+    bool connectedToAuth;
+    bool connectedToWebRTC;
+    bool connectedToMessage;
 };
 
 #endif

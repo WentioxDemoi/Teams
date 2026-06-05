@@ -10,10 +10,8 @@ class UserState : public QObject {
 
  public:
   const User& localUser() const { return user_; }
-  static UserState& instance() {
-    static UserState instance;
-    return instance;
-  }
+
+  static UserState& instance();
 
   UserState() = default;
   ~UserState() = default;
@@ -24,12 +22,7 @@ class UserState : public QObject {
   UserState& operator=(UserState&&) = delete;
 
  public slots:
-  void saveLocalUser(const User& user) {
-    if (user_.uuid() == user.uuid()) return;
-
-    user_ = user;
-    emit localUserSaved(user_);
-  }
+  void saveLocalUser(const User& user);
   void updateLocalUser(const User &user) {};
   void deleteLocalUser() { user_ = User(); };
 

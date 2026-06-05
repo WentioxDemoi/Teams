@@ -145,6 +145,7 @@ target_include_directories(TeamsClient_ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Models
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewModels
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Services
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Services/Enums
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Components
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
     ${LIBYUV_ROOT}/include

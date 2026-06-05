@@ -2,7 +2,6 @@
 #define ISESSIONSERVICE_H
 
 #include <QObject>
-
 #include "User.h"
 
 /**

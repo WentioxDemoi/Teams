@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "../../Core/ServiceLocator.h"
+#include "Network/NetworkService.h"
 
 AuthService::AuthService(NetworkService* network, QObject* parent)
     : IAuthService(parent), network_(network ? network : new NetworkService(8080, parent)) {
@@ -11,7 +12,7 @@ AuthService::AuthService(NetworkService* network, QObject* parent)
   connect(network_, &NetworkService::jsonReceived, this, &AuthService::handleServerResponse);
 
   connect(network_, &NetworkService::networkError, this, &AuthService::authError);
-
+  connect (network_, &NetworkService::connectionUpdate, this, &AuthService::connectionUpdate);
   // connect(this, &IAuthService::authSuccess, userService_, &IUserService::saveUser);
   // connect(userService_, &IUserService::userSaved, this, &IAuthService::onUserSaved);
 }

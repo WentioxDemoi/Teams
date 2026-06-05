@@ -20,6 +20,7 @@ SessionService::SessionService(IAuthService* service, IUserService* userService,
   Q_ASSERT(authService_);
   connect(authService_, &AuthService::authSuccess, userService_, &IUserService::saveUser);
   connect(userService_, &IUserService::localUserSaved, this, &SessionService::onLocalUserSaved);
+  connect(authService_, &AuthService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
   
   connect(authService_, &AuthService::authError, this, &SessionService::authError);
   connect (authService_, &AuthService::errorToken, this, &SessionService::errorToken);

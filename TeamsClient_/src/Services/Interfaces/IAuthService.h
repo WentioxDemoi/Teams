@@ -2,6 +2,7 @@
 #define IAUTHSERVICE_H
 
 #include "../../Models/User.h"
+#include "SessionEnum.h"
 
 /**
  * @class IAuthService
@@ -27,6 +28,7 @@ signals:
     void authSuccess(const User &user);
     void authError(const QString &error);
     void errorToken(const QString& error);
+    void connectionUpdate(ServerType server, bool status);
 
 public slots:
 
