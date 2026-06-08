@@ -6,6 +6,13 @@
 
 
 
+/**
+ * @class SessionState
+ * @brief Singleton gérant l'état global de la session en cours.
+ *
+ * Suit la connectivité aux différents services (auth, WebRTC, messagerie)
+ * et centralise les informations transverses de session.
+ */
 class SessionState : public QObject {
     Q_OBJECT
 

@@ -5,6 +5,13 @@
 
 #include "User.h"
 
+/**
+ * @class UserState
+ * @brief Singleton gérant l'état de l'utilisateur local.
+ *
+ * Stocke et expose l'utilisateur actuellement connecté.
+ * Émet un signal lors de la sauvegarde pour notifier les composants abonnés.
+ */
 class UserState : public QObject {
   Q_OBJECT
 
