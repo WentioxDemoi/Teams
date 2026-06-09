@@ -29,7 +29,7 @@ SessionService::SessionService(IAuthService* service, IUserService* userService,
 void SessionService::start() {   
 if (/*!*/ token_->token.isEmpty()) {
   //authService_->loginWithToken(token_->token);
-  const QString token = "5abc486e2f1ba79f36a78cd475ade6b1";
+  const QString token = "9103da1fc9f4a480cd08de201682c823";
   authService_->loginWithToken(token);
 } else
   errorToken("No token found"); }

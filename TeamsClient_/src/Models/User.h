@@ -6,8 +6,21 @@
 #include <QJsonObject>
 #include <QObject>
 #include <QString>
+#include <QtCore/qtmetamacros.h>
+#include <qqmlintegration.h>
 
 class User {
+  Q_GADGET
+  QML_VALUE_TYPE(user)
+
+  Q_PROPERTY(QString uuid READ uuid CONSTANT)
+  Q_PROPERTY(QString username READ fullName CONSTANT)
+  Q_PROPERTY(QString initials READ initials CONSTANT)
+  Q_PROPERTY(QString avatarColor READ avatarColor CONSTANT)
+  Q_PROPERTY(bool online READ online CONSTANT)
+  Q_PROPERTY(QString lastMessage READ lastMessage CONSTANT)
+  Q_PROPERTY(QString status READ status CONSTANT)
+
  public:
   User() = default;
   User(const QString& email, const QString& firstName, const QString& lastName,

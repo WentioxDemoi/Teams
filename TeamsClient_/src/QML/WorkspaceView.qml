@@ -9,7 +9,6 @@ Page {
 
     // ─── État global de navigation ───────────────────────────────────────────
     property int currentIndex: 0
-    property int selectedContact: 0 
 
     // ─── Fond noir général ───────────────────────────────────────────────────
     background: Rectangle {
@@ -244,10 +243,7 @@ Page {
     Component { id: homeView;     HomeView {}     }
     Component {
     id: messageView
-    MessageView {
-        selectedContact: root.selectedContact
-        onSelectedContactChanged: root.selectedContact = selectedContact
-    }
+    MessageView {}
 }
 
 }

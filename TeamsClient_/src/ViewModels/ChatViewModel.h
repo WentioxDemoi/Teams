@@ -3,10 +3,10 @@
 
 #include <QObject>
 #include <QString>
+#include <QVariantMap>
 
-#include "../Models/User.h"
-#include "../Models/UserList.h"
 #include "../Models/MessageList.h"
+#include "../Models/UserList.h"
 // #include "../Services/Interfaces/IChatService.h"
 
 /**
@@ -20,42 +20,42 @@
 class ChatViewModel : public QObject {
   Q_OBJECT
   // Inutile car déjà exposé dès le début à QML
-  // Q_PROPERTY(UserList* userList READ userList CONSTANT)
 
   // A voir si on en a bien besoin normalement non car on va aussi l'exposer dès le début
-  Q_PROPERTY(MessageList* messageList READ messageList NOTIFY messageListChanged)
-  Q_PROPERTY(User* selectedUser READ selectedUser NOTIFY selectedUserChanged)
+  Q_PROPERTY(UserList* userList READ userList CONSTANT)
+  Q_PROPERTY(MessageList* currentMessageList READ messageList NOTIFY messageListChanged)
+  Q_PROPERTY(QVariantMap selectedUser READ selectedUser NOTIFY selectedUserChanged)
 
  public:
-  explicit ChatViewModel(UserList *user = nullptr,
-    //IChatService* service = nullptr, // A implémenter plus tard
+  explicit ChatViewModel(UserList* user = nullptr,
+                         // IChatService* service = nullptr, // A implémenter plus tard
                          QObject* parent = nullptr);
+
+  UserList* userList() const;
+  MessageList* messageList() const;
+  QVariantMap selectedUser() const;
 
  public slots:
   void selectUser(const QString& userUuid);
   void sendMessage(const QString& content);
   void loadContacts();
 
-//   void callUser(const QString& userUuid);
+  //   void callUser(const QString& userUuid);
 
-signals:
-//   void callStarted(const QString& userUuid);
-//   void callError(const QString& error);
+ signals:
+  //   void callStarted(const QString& userUuid);
+  //   void callError(const QString& error);
 
   void messageListChanged();
   void selectedUserChanged();
   void chatError(const QString& error);
 
-  UserList* userList() const;
-  MessageList* messageList() const;
-  User* selectedUser() const;
-
  private:
-//   IChatService* chatService_;
+  //   IChatService* chatService_;
   UserList* userList_;
-  QHash<QString, MessageList*> messagesByUuid_;  // toutes les conversations
-  MessageList* currentMessageList_;  
-  User* selectedUser_;
+  QHash<QString, MessageList*> messagesByUuid_;
+  MessageList* currentMessageList_;  // Displayed by QML
+  QVariantMap selectedUser_;
 };
 
 #endif

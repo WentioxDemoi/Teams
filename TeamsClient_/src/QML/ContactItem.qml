@@ -65,26 +65,16 @@ Item {
 
             // Point "en ligne"
             Rectangle {
-                visible: isOnline
                 width: 11
                 height: 11
                 radius: 6
-                color: "#30D158"
+                color: isOnline ? "#30D158" : "#5f5f5f"
                 anchors.right: avatarCircle.right
                 anchors.bottom: avatarCircle.bottom
                 anchors.rightMargin: -1
                 anchors.bottomMargin: -1
-
-                // Bordure pour détacher du fond
-                Rectangle {
-                    anchors.centerIn: parent
-                    width: parent.width + 2
-                    height: parent.height + 2
-                    radius: (parent.width + 2) / 2
-                    color: "transparent"
-                    border.color: Qt.rgba(0.11, 0.11, 0.12, 1.0)
-                    border.width: 2
-                }
+                border.color: Qt.rgba(0.11, 0.11, 0.12, 1.0)
+                border.width: 2
             }
         }
 

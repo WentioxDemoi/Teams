@@ -27,6 +27,7 @@ class UserList : public QAbstractListModel {
     InitialsRole,       // "AM", "BD"...
     AvatarColorRole,    // couleur hex
     OnlineRole,         // bool
+    UuidRole,
 };
 
   void addUser(const User& user);
@@ -42,7 +43,6 @@ class UserList : public QAbstractListModel {
 
  private:
   QList<User> users_;
-  QHash<QString, MessageList*> messagesByUserUuid_;
 };
 
 #endif

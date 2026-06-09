@@ -15,6 +15,7 @@ class MessageList : public QAbstractListModel {
     ContentRole,
     TimestampRole,
     IsReadRole,
+    FromMeRole,
   };
 
   explicit MessageList(QObject* parent = nullptr) : QAbstractListModel(parent) {}

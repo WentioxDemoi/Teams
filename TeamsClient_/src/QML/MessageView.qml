@@ -4,60 +4,15 @@ import QtQuick.Layouts
 
 Item {
     id: messageRoot
-    anchors.fill: parent
+    width: parent ? parent.width : 0
+    height: parent ? parent.height : 0
 
-    required property int selectedContact
-
-    // ─── Données de contacts ─────────────────────────────────────────────────
-    
-
-    // ─── Fausses conversations par contact ────────────────────────────────────
-    property var conversations: [
-        // Alice
-        [
-            { text: "Salut ! T'as regardé le doc que j'ai partagé ?", fromMe: false, time: "14:20" },
-            { text: "Pas encore, j'ai été prise dans les réunions toute la matinée", fromMe: true, time: "14:25" },
-            { text: "OK je regarde ça ce soir 👍", fromMe: false, time: "14:32" }
-        ],
-        // Bob
-        [
-            { text: "Hey, t'as avancé sur le projet ?", fromMe: true, time: "12:50" },
-            { text: "Ouais, presque fini. Il me manque juste un fichier", fromMe: false, time: "13:05" },
-            { text: "Tu peux m'envoyer le fichier ?", fromMe: false, time: "13:10" }
-        ],
-        // Clara
-        [
-            { text: "On se retrouve à quelle heure demain ?", fromMe: true, time: "11:40" },
-            { text: "10h ça te va ?", fromMe: false, time: "11:45" },
-            { text: "Nickel !", fromMe: true, time: "11:55" },
-            { text: "Parfait, à demain alors !", fromMe: false, time: "11:58" }
-        ],
-        // David
-        [
-            { text: "J'ai déposé le colis chez toi", fromMe: true, time: "Hier" },
-            { text: "Merci pour tout 🙏", fromMe: false, time: "Hier" }
-        ],
-        // Emma
-        [
-            { text: "Tu peux me tenir au courant de l'avancement ?", fromMe: true, time: "Hier" },
-            { text: "C'est noté, je te tiens au courant.", fromMe: false, time: "Hier" }
-        ],
-        // François
-        [
-            { text: "J'ai essayé de t'appeler", fromMe: true, time: "Lun" },
-            { text: "Rappelle-moi quand tu peux !", fromMe: false, time: "Lun" }
-        ],
-        // Gaëlle
-        [
-            { text: "C'est bon, j'ai bien reçu tout ce que tu m'as envoyé", fromMe: true, time: "Lun" },
-            { text: "Reçu 👌", fromMe: false, time: "Lun" }
-        ],
-        // Hugo
-        [
-            { text: "Dispo vendredi ?", fromMe: false, time: "Dim" },
-            { text: "On se voit vendredi ?", fromMe: false, time: "Dim" }
-        ]
-    ]
+    Connections {
+    target: chatVM
+    function onSelectedUserChanged() {
+        console.log("selectedUser changed:", chatVM.selectedUser)
+    }
+}
 
    ColumnLayout {
     anchors.fill: parent
@@ -71,7 +26,7 @@ Item {
 
         // Titre "Messages"
         Rectangle {
-            Layout.preferredWidth: Math.round(messageRoot.width * 0.25)
+            Layout.preferredWidth: messageRoot.width > 0 ? Math.round(messageRoot.width * 0.25) : 200
             Layout.preferredHeight: 40
             radius: 12
             color: Qt.rgba(0.11, 0.11, 0.12, 0.92)
@@ -80,7 +35,7 @@ Item {
                 anchors.centerIn: parent
                 text: "Messages"
                 font.pixelSize: 17
-                font.weight: Font.SemiBold
+                font.weight: Font.DemiBold
                 font.family: "SF Pro Text"
                 color: "#ffffff"
             }
@@ -104,11 +59,11 @@ Item {
                     width: 28
                     height: 28
                     radius: 14
-                    color: userList.get(messageRoot.selectedContact).avatarColor
+                    color: chatVM.selectedUser && chatVM.selectedUser.uuid ? chatVM.selectedUser.avatarColor : "#636366"
 
                     Text {
                         anchors.centerIn: parent
-                        text: userList.get(messageRoot.selectedContact).initials
+                        text: chatVM.selectedUser && chatVM.selectedUser.uuid ? chatVM.selectedUser.initials : ""
                         font.pixelSize: 11
                         font.weight: Font.Bold
                         font.family: "SF Pro Text"
@@ -119,7 +74,7 @@ Item {
                         width: 8
                         height: 8
                         radius: 4
-                        color: userList.get(messageRoot.selectedContact).online ? "#30D158" : "#636366"
+                        color: chatVM.selectedUser && chatVM.selectedUser.online ? "#30D158" : "#636366"
                         border.color: Qt.rgba(0.11, 0.11, 0.12, 0.92)
                         border.width: 1.5
                         anchors.right: parent.right
@@ -133,18 +88,18 @@ Item {
                     Layout.fillWidth: true
 
                     Text {
-                        text: userList.get(messageRoot.selectedContact).username
+                        text: chatVM.selectedUser && chatVM.selectedUser.uuid ? chatVM.selectedUser.username : ""
                         font.pixelSize: 14
-                        font.weight: Font.SemiBold
+                        font.weight: Font.DemiBold
                         font.family: "SF Pro Text"
                         color: "#ffffff"
                     }
 
                     Text {
-                        text: userList.get(messageRoot.selectedContact).online ? "En ligne" : "Hors ligne"
+                        text: chatVM.selectedUser && chatVM.selectedUser.online ? "En ligne" : "Hors ligne"
                         font.pixelSize: 11
                         font.family: "SF Pro Text"
-                        color: userList.get(messageRoot.selectedContact).online ? "#30D158" : "#636366"
+                        color: chatVM.selectedUser && chatVM.selectedUser.online ? "#30D158" : "#636366"
                     }
                 }
 
@@ -201,7 +156,7 @@ Item {
 
         // ── Liste des contacts ────────────────────────────────────────────
         Rectangle {
-            Layout.preferredWidth: Math.round(messageRoot.width * 0.25)
+            Layout.preferredWidth: messageRoot.width > 0 ? Math.round(messageRoot.width * 0.25) : 200
             Layout.fillHeight: true
             radius: 12
             color: Qt.rgba(0.11, 0.11, 0.12, 0.92)
@@ -216,7 +171,7 @@ Item {
 
                 ListView {
                     id: contactList
-                    model: userList
+                    model: chatVM.userList
                     spacing: 4
                     boundsBehavior: Flickable.StopAtBounds
 
@@ -225,10 +180,10 @@ Item {
                         height: 62
                         radius: 10
                         color: mouseArea.containsMouse
-                               ? Qt.rgba(1, 1, 1, 0.07)
-                               : (index === messageRoot.selectedContact
-                                  ? Qt.rgba(0.04, 0.52, 1.0, 0.18)
-                                  : "transparent")
+                            ? Qt.rgba(1, 1, 1, 0.07)
+                            : (model.uuid === ((chatVM.selectedUser && chatVM.selectedUser.uuid) ? chatVM.selectedUser.uuid : "")
+                                ? Qt.rgba(0.04, 0.52, 1.0, 0.18)
+                                : "transparent")
                         Behavior on color { ColorAnimation { duration: 100 } }
 
                         RowLayout {
@@ -276,7 +231,7 @@ Item {
                                         Layout.fillWidth: true
                                         text: model.username
                                         font.pixelSize: 13
-                                        font.weight: Font.SemiBold
+                                        font.weight: Font.DemiBold
                                         font.family: "SF Pro Text"
                                         color: "#ffffff"
                                         elide: Text.ElideRight
@@ -306,7 +261,7 @@ Item {
                             id: mouseArea
                             anchors.fill: parent
                             hoverEnabled: true
-                            onClicked: messageRoot.selectedContact = index
+                            onClicked: chatVM.selectUser(model.uuid)
                         }
                     }
                 }
@@ -333,7 +288,7 @@ Item {
 
                     ListView {
                         id: messageList
-                        model: messageRoot.conversations[messageRoot.selectedContact]
+                        model: chatVM.currentMessageList
                         topMargin: 16
                         bottomMargin: 16
                         spacing: 10
@@ -346,7 +301,7 @@ Item {
                             width: messageList.width
                             height: bubble.height + 18
 
-                            property bool isMe: modelData.fromMe
+                            property bool isMe: model.fromMe
 
                             Rectangle {
                                 id: bubble
@@ -360,7 +315,7 @@ Item {
                                     id: bubbleText
                                     anchors.centerIn: parent
                                     width: parent.width - 24
-                                    text: modelData.text
+                                    text: model.content
                                     font.pixelSize: 14
                                     font.family: "SF Pro Text"
                                     color: "#ffffff"
@@ -372,7 +327,7 @@ Item {
                                 anchors.top: bubble.bottom
                                 anchors.topMargin: 3
                                 x: bubble.x
-                                text: modelData.time
+                                text: Qt.formatTime(model.timestamp, "hh:mm")
                                 font.pixelSize: 10
                                 font.family: "SF Pro Text"
                                 color: "#636366"

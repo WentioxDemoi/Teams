@@ -7,9 +7,11 @@
 #include <QQmlContext>
 
 #include "../ViewModels/AuthViewModel.h"
+#include "../ViewModels/ChatViewModel.h"
 #include "Auth/AuthService.h"
 #include "Interfaces/IAuthService.h"
 #include "Interfaces/ISessionService.h"
+#include "MessageList.h"
 #include "ModelLocator.h"
 #include "ServiceLocator.h"
 #include "SessionService.h"
@@ -51,6 +53,20 @@ void Application::initializeServices() {
   locator.registerService<IAuthService>(new AuthService(nullptr, appRoot));
   locator.registerService<ISessionService>(new SessionService(nullptr, nullptr, nullptr, appRoot));
 
+  initializeModels();
+}
+
+void Application::initializeModels() {
+  auto& locator = ModelLocator::instance();
+
+  auto* userListModel = new UserList(appRoot);
+
+  locator.registerModel<UserList>(userListModel);
+
+  auto* messageListModel = new MessageList(appRoot);
+
+  locator.registerModel<MessageList>(messageListModel);
+
   initializeViewModels();
 }
 
@@ -61,24 +77,16 @@ void Application::initializeViewModels() {
 
   locator.registerViewModels<AuthViewModel>(authVM);
 
+  auto* chatVM = new ChatViewModel(nullptr, appRoot);
+
   engine.rootContext()->setContextProperty("authVM", authVM);
-  initializeModels();
-}
-
-void Application::initializeModels()
-{
-
-  auto &locator = ModelLocator::instance();
-
-  auto *userListModel = new UserList(appRoot);
-
-  locator.registerModel<UserList>(userListModel);
-
-  engine.rootContext()->setContextProperty("userList", ModelLocator::instance().getModel<UserList>());
+  engine.rootContext()->setContextProperty("chatVM", chatVM);
 
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreationFailed, &qtApp,
       []() { QCoreApplication::exit(-1); }, Qt::QueuedConnection);
+
+  qRegisterMetaType<User*>("User*");
 
   engine.loadFromModule("TeamsClient", "Main");
 }
