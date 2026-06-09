@@ -49,6 +49,18 @@ cd build/
 ~/Qt/6.9.3/macos/bin/qml ../src/QML/Main.qml
 ```
 
+## File cleaning
+
+1. Accédez au dossier de build :
+```bash
+cd build/
+```
+
+2. Lancer la commande sur le fichier QML cible : 
+```bash
+~/Qt/6.9.3/macos/bin/qml ../src/QML/Main.qml
+```
+
 ### Accès à la caméra
 
 - Suppression des permissions sur MacOS : tccutil reset Camera
