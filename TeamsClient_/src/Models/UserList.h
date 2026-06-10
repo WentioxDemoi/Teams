@@ -16,6 +16,13 @@
 #include "MessageList.h"
 #include "User.h"
 
+/**
+ * @class UserList
+ * @brief Modèle de liste d'utilisateurs pour QML.
+ *
+ * Gère un ensemble d'utilisateurs, leurs rôles de données et l'accès
+ * aux informations nécessaires pour afficher un carnet de contacts.
+ */
 class UserList : public QAbstractListModel {
   Q_OBJECT
  public:

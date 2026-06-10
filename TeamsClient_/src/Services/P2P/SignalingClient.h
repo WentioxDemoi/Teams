@@ -4,6 +4,13 @@
 #include "../Network/NetworkService.h"
 #include <QObject>
 
+/**
+ * @class SignalingClient
+ * @brief Client de signalisation WebRTC.
+ *
+ * Envoie et reçoit les offres, réponses et candidats ICE nécessaires
+ * pour établir une session WebRTC entre pairs.
+ */
 class SignalingClient : public QObject {
   Q_OBJECT
  public:

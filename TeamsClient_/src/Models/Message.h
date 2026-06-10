@@ -4,6 +4,13 @@
 #include <QDateTime>
 #include <QString>
 
+/**
+ * @class Message
+ * @brief Représente un message échangé entre utilisateurs.
+ *
+ * Contient les métadonnées d'un message, son contenu, son auteur, sa date,
+ * ainsi que des indicateurs de lecture et d'origine.
+ */
 class Message {
  public:
   Message() = default;

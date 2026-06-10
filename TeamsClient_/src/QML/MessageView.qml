@@ -211,8 +211,8 @@ Item {
                                     width: 10
                                     height: 10
                                     radius: 5
-                                    color: model.online ? "#30D158" : "transparent"
-                                    border.color: model.online ? Qt.rgba(0.11,0.11,0.12,0.92) : "transparent"
+                                    color: model.online ? "#30D158" : "#636366"
+                                    border.color: model.online ? Qt.rgba(0.11,0.11,0.12,0.92) : Qt.rgba(1,1,1,0.30)
                                     border.width: 1.5
                                     anchors.right: parent.right
                                     anchors.bottom: parent.bottom

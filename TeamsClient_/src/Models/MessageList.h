@@ -5,6 +5,13 @@
 
 #include "Message.h"
 
+/**
+ * @class MessageList
+ * @brief Modèle de liste de messages pour QML.
+ *
+ * Fournit les rôles de données et les opérations nécessaires pour afficher
+ * une conversation dans une vue de type ListView.
+ */
 class MessageList : public QAbstractListModel {
   Q_OBJECT
 

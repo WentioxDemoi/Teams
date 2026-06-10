@@ -9,6 +9,13 @@
 #include <QtCore/qtmetamacros.h>
 #include <qqmlintegration.h>
 
+/**
+ * @class User
+ * @brief Représente un utilisateur de l'application.
+ *
+ * Expose les informations d'un utilisateur (email, nom, statut, avatar, etc.)
+ * et fournit la sérialisation JSON pour le transfert réseau ou le stockage.
+ */
 class User {
   Q_GADGET
   QML_VALUE_TYPE(user)
