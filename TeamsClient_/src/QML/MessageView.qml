@@ -377,7 +377,10 @@ Item {
                                     background: Item {}
                                     Keys.onPressed: event => {
                                         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                                            chatVM.sendMessage(messageInput);
+                                            if (messageInput.text.trim() !== "") {
+                                                chatVM.sendMessage(messageInput.text);
+                                                messageInput.clear();
+                                            }
                                             event.accepted = true;
                                         }
                                     }
@@ -402,7 +405,12 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: chatVM.sendMessage(messageInput)
+                                    onClicked: {
+                                        if (messageInput.text.trim() !== "") {
+                                            chatVM.sendMessage(messageInput.text);
+                                            messageInput.clear();
+                                        }
+                                    }
                                 }
                             }
                         }

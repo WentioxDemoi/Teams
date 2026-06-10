@@ -16,7 +16,7 @@
 class UserService : public IUserService {
   Q_OBJECT
  public:
-  explicit UserService(UserRepository* repo = nullptr, QObject* parent = nullptr);
+  explicit UserService(UserRepository* repo = nullptr, UserState *userState = nullptr, QObject* parent = nullptr);
 
  public slots:
   void saveUser(const User& user) override;

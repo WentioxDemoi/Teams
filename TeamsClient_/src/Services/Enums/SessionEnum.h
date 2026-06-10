@@ -10,5 +10,6 @@
 enum class ServerType {
     Auth,
     WebRTC,
-    Message
+    Message,
+    Call
 };

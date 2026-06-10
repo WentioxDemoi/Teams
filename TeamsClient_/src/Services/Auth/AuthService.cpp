@@ -1,6 +1,8 @@
 #include "AuthService.h"
+#include "ServiceLocator.h"
 
 #include <cstdlib>
+#include "TokenManager.h"
 
 #include "Network/NetworkService.h"
 
@@ -8,8 +10,8 @@ AuthService::AuthService(NetworkService* network, IUserService* userService,
                          ITokenManager* tokenManager, QObject* parent)
     : IAuthService(parent),
       network_(network ? network : new NetworkService(8080, parent)),
-      userService_(userService),
-      tokenManager_(tokenManager) {
+      userService_(userService ? userService : ServiceLocator::instance().getService<IUserService>()),
+      tokenManager_(tokenManager ? tokenManager : &TokenManager::instance()) {
   Q_ASSERT(network_);
   Q_ASSERT(userService_);
   Q_ASSERT(tokenManager_);
@@ -89,6 +91,8 @@ void AuthService::handleServerResponse(const QJsonObject& root) {
     } else {
       emit authError("No token received from server");
     }
+
+    userService_->saveUser(user);
     return;
   }
 }

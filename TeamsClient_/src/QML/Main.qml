@@ -52,6 +52,7 @@ ApplicationWindow {
         target: authVM
 
         function onAuthSuccess() {
+            console.log("Auth success, switching to workspace");
             stackView.replace(workspaceView);
         }
         function onNoTokenFound() {

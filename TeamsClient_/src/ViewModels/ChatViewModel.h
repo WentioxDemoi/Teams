@@ -7,6 +7,7 @@
 
 #include "../Models/MessageList.h"
 #include "../Models/UserList.h"
+#include "Interfaces/IMessageService.h"
 // #include "../Services/Interfaces/IChatService.h"
 
 /**
@@ -31,7 +32,7 @@ class ChatViewModel : public QObject {
 
  public:
   explicit ChatViewModel(UserList* user = nullptr,
-                         // IChatService* service = nullptr, // A implémenter plus tard
+                         IMessageService* messageService = nullptr, // A implémenter plus tard
                          QObject* parent = nullptr);
 
   UserList* userList() const;
@@ -54,7 +55,7 @@ class ChatViewModel : public QObject {
   void chatError(const QString& error);
 
  private:
-  //   IChatService* chatService_;
+  IMessageService* messageService_;
   UserList* userList_;
   QHash<QString, MessageList*> messagesByUuid_;
   MessageList* currentMessageList_;  // Displayed by QML

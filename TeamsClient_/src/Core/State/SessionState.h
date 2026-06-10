@@ -40,6 +40,7 @@ private:
     bool connectedToAuth = false;
     bool connectedToWebRTC = false;
     bool connectedToMessage = false;
+    bool connectedToCall = false;
 };
 
 #endif

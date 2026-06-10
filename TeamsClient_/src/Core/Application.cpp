@@ -11,7 +11,11 @@
 #include "../ViewModels/AuthViewModel.h"
 #include "../ViewModels/ChatViewModel.h"
 #include "Auth/AuthService.h"
+#include "Call/CallService.h"
+#include "Interfaces/ICallService.h"
 #include "Interfaces/IAuthService.h"
+#include "Interfaces/IMessageService.h"
+#include "Message/MessageService.h"
 #include "MessageList.h"
 #include "ModelLocator.h"
 #include "ServiceLocator.h"
@@ -53,13 +57,18 @@ void Application::initializeServices() {
   auto& serviceLocator = ServiceLocator::instance();
   auto& stateLocator = StateLocator::instance();
 
-  serviceLocator.registerService<IUserService>(new UserService(nullptr, appRoot));
-  serviceLocator.registerService<ITokenManager>(&TokenManager::instance());
-  serviceLocator.registerService<IAuthService>(new AuthService(
-      nullptr, serviceLocator.getService<IUserService>(), &TokenManager::instance(), appRoot));
-
   stateLocator.registerState<UserState>(&UserState::instance());
   stateLocator.registerState<SessionState>(&SessionState::instance());
+
+  serviceLocator.registerService<IUserService>(
+      new UserService(nullptr, nullptr, appRoot));
+  serviceLocator.registerService<ITokenManager>(&TokenManager::instance());
+  serviceLocator.registerService<IAuthService>(new AuthService(
+      nullptr, nullptr, nullptr, appRoot));
+  serviceLocator.registerService<IMessageService>(
+      new MessageService(nullptr, appRoot));
+  serviceLocator.registerService<ICallService>(
+      new CallService(nullptr, appRoot));
 
   initializeModels();
 }
@@ -85,7 +94,9 @@ void Application::initializeViewModels() {
 
   locator.registerViewModels<AuthViewModel>(authVM);
 
-  auto* chatVM = new ChatViewModel(nullptr, appRoot);
+  auto* chatVM = new ChatViewModel(nullptr, nullptr, appRoot);
+
+  locator.registerViewModels<ChatViewModel>(chatVM);
 
   engine.rootContext()->setContextProperty("authVM", authVM);
   engine.rootContext()->setContextProperty("chatVM", chatVM);

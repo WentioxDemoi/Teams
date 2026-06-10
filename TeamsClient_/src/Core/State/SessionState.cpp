@@ -18,9 +18,12 @@ void SessionState::onServerConnectionUpdate(ServerType server, bool status) {
     case ServerType::Message:
       connectedToMessage = status;
       break;
+    case ServerType::Call:
+      connectedToCall = status;
+      break;
     default:
       qDebug() << "Unkonown enum (onServerConnectionUpdate)";
   }
   qDebug() << "Auth : " << connectedToAuth << " WebRTC : " << connectedToWebRTC
-           << " Message : " << connectedToMessage;
+           << " Message : " << connectedToMessage << " Call : " << connectedToCall;
 }
