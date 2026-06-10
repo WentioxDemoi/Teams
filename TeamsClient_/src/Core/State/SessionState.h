@@ -17,7 +17,9 @@ class SessionState : public QObject {
     Q_OBJECT
 
 public:
- // Bon ici normalement on devrait avoir des trucs comme ça :
+  static SessionState& instance();
+
+// Bon ici normalement on devrait avoir des trucs comme ça :
 
     // bool connectedToGateway; genre les différents micros services
     // bool inCall; Avec notification automatique vers le serveur
@@ -35,9 +37,9 @@ public slots:
 
 
 private:
-    bool connectedToAuth;
-    bool connectedToWebRTC;
-    bool connectedToMessage;
+    bool connectedToAuth = false;
+    bool connectedToWebRTC = false;
+    bool connectedToMessage = false;
 };
 
 #endif

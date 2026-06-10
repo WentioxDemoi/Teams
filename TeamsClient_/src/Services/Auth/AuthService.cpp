@@ -2,19 +2,23 @@
 
 #include <cstdlib>
 
-#include "../../Core/ServiceLocator.h"
 #include "Network/NetworkService.h"
 
-AuthService::AuthService(NetworkService* network, QObject* parent)
-    : IAuthService(parent), network_(network ? network : new NetworkService(8080, parent)) {
+AuthService::AuthService(NetworkService* network, IUserService* userService,
+                         ITokenManager* tokenManager, QObject* parent)
+    : IAuthService(parent),
+      network_(network ? network : new NetworkService(8080, parent)),
+      userService_(userService),
+      tokenManager_(tokenManager) {
   Q_ASSERT(network_);
+  Q_ASSERT(userService_);
+  Q_ASSERT(tokenManager_);
 
   connect(network_, &NetworkService::jsonReceived, this, &AuthService::handleServerResponse);
-
   connect(network_, &NetworkService::networkError, this, &AuthService::authError);
-  connect (network_, &NetworkService::connectionUpdate, this, &AuthService::connectionUpdate);
-  // connect(this, &IAuthService::authSuccess, userService_, &IUserService::saveUser);
-  // connect(userService_, &IUserService::userSaved, this, &IAuthService::onUserSaved);
+  connect(network_, &NetworkService::connectionUpdate, this, &AuthService::connectionUpdate);
+  connect(this, &IAuthService::errorToken, this, &AuthService::handleTokenError);
+  connect(userService_, &IUserService::localUserSaved, this, &AuthService::handleLocalUserSaved);
 }
 
 void AuthService::loginUser(const QString& email, const QString& password) {
@@ -30,9 +34,14 @@ void AuthService::registerUser(const QString& firstName, const QString& lastName
                   {"password", password}});
 }
 
-void AuthService::loginWithToken(const QString &token)
+void AuthService::loginWithToken(void)
 {
-  network_->send({{"type", "validate_token"}, {"token", token}});
+  if (/*!*/tokenManager_->token.isEmpty()) {
+    //network_->send({{"type", "validate_token"}, {"token", tokenManager_->token}});
+    network_->send({{"type", "validate_token"}, {"token", "6476223d4a95c75a3b0d846e7a6a7abb"}});
+  } else {
+    emit noTokenFound();
+  }
 }
 
 void AuthService::handleServerResponse(const QJsonObject& root) {
@@ -74,9 +83,29 @@ void AuthService::handleServerResponse(const QJsonObject& root) {
       return;
     }
 
-    emit authSuccess(user);
+    if (!user.token().isEmpty()) {
+      tokenManager_->writeToken(user.token());
+      userService_->saveUser(user);
+    } else {
+      emit authError("No token received from server");
+    }
     return;
   }
+}
+
+void AuthService::handleLocalUserSaved(const User& user) {
+  User localUser = user;
+  localUser.clearToken();
+  emit authSuccess(localUser);
+}
+
+void AuthService::handleTokenError(const QString& error) {
+  qDebug() << error;
+  if (error.contains("Token is not valid")) {
+    tokenManager_->deleteToken();
+  }
+  userService_->deleteAll();
+  emit noTokenFound();
 }
 
 void AuthService::disconnectFromServer() { network_->disconnectFromServer(); }

@@ -58,7 +58,7 @@ cd build/
 
 2. Lancer la commande sur le fichier QML cible : 
 ```bash
-~/Qt/6.9.3/macos/bin/qml ../src/QML/Main.qml
+~/Qt/6.9.3/macos/bin/qmlformat ../src/QML/Main.qml
 ```
 
 ### Accès à la caméra

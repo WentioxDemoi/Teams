@@ -2,6 +2,11 @@
 
 #include <QtCore/qdebug.h>
 
+SessionState& SessionState::instance() {
+  static SessionState instance;
+  return instance;
+}
+
 void SessionState::onServerConnectionUpdate(ServerType server, bool status) {
   switch (server) {
     case ServerType::Auth:

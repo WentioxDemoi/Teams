@@ -20,7 +20,7 @@ public:
     virtual ~IAuthService() = default;
     virtual void loginUser(const QString &username, const QString &password) = 0;
     virtual void registerUser(const QString &firstName, const QString &lastName, const QString &email, const QString &password) = 0;
-    virtual void loginWithToken(const QString &token) = 0;
+    virtual void loginWithToken(void) = 0;
     virtual void disconnectFromServer() = 0;
 
 
@@ -28,6 +28,7 @@ signals:
     void authSuccess(const User &user);
     void authError(const QString &error);
     void errorToken(const QString& error);
+    void noTokenFound();
     void connectionUpdate(ServerType server, bool status);
 
 public slots:

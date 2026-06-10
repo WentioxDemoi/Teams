@@ -1,21 +1,33 @@
 #include "AuthViewModel.h"
 
 #include "../Core/ServiceLocator.h"
-#include "Interfaces/ISessionService.h"
-#include "ServiceLocator.h"
+#include "../Core/State/SessionState.h"
+#include "../Core/State/UserState.h"
+#include "../Core/StateLocator.h"
+#include "../Services/Interfaces/IAuthService.h"
 #include "ViewModelsTools.h"
 
 // Ici, dans le cas où on fait du testing, on passe en argument un objet construit localement pour
 // les test. Sinon, en prod, on se base sur l'objet créé dans application.cpp
-AuthViewModel::AuthViewModel(ISessionService* service, QObject* parent)
-    : sessionService_(service ? service : ServiceLocator::instance().getService<ISessionService>()),
+AuthViewModel::AuthViewModel(IAuthService* authService, UserState* userState,
+                             SessionState* sessionState, QObject* parent)
+    : authService_(authService ? authService : ServiceLocator::instance().getService<IAuthService>()),
+      userState_(userState ? userState : StateLocator::instance().getState<UserState>()),
+      sessionState_(sessionState ? sessionState : StateLocator::instance().getState<SessionState>()),
       QObject(parent) {
-  connect(sessionService_, &ISessionService::authSuccess, this, &AuthViewModel::authSuccess);
-  connect(sessionService_, &ISessionService::authError, this, &AuthViewModel::authError);
-  connect(sessionService_, &ISessionService::noTokenFound, this, &AuthViewModel::noTokenFound);
+  Q_ASSERT(authService_);
+  Q_ASSERT(userState_);
+  Q_ASSERT(sessionState_);
+
+  connect(authService_, &IAuthService::authSuccess, this, &AuthViewModel::authSuccess);
+  connect(authService_, &IAuthService::authError, this, &AuthViewModel::authError);
+  connect(authService_, &IAuthService::noTokenFound, this, &AuthViewModel::noTokenFound);
+  connect(authService_, &IAuthService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
 }
 
-void AuthViewModel::start() { sessionService_->start(); }
+void AuthViewModel::start() {
+  authService_->loginWithToken();
+}
 
 void AuthViewModel::loginUser(const QString& email, const QString& password) {
   if (email.isEmpty() || password.isEmpty()) {
@@ -23,7 +35,7 @@ void AuthViewModel::loginUser(const QString& email, const QString& password) {
     return;
   }
 
-  sessionService_->loginUser(email, password);
+  authService_->loginUser(email, password);
 }
 
 void AuthViewModel::registerUser(const QString& firstName, const QString& lastName, const QString& email,
@@ -38,5 +50,5 @@ void AuthViewModel::registerUser(const QString& firstName, const QString& lastNa
     return;
   }
 
-  sessionService_->registerUser(firstName, lastName, email, password);
+  authService_->registerUser(firstName, lastName, email, password);
 }

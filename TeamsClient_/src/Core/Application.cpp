@@ -6,15 +6,18 @@
 #include <QFile>
 #include <QQmlContext>
 
+#include "../Utils/Interfaces/ITokenManager.h"
+#include "../Utils/TokenManager.h"
 #include "../ViewModels/AuthViewModel.h"
 #include "../ViewModels/ChatViewModel.h"
 #include "Auth/AuthService.h"
 #include "Interfaces/IAuthService.h"
-#include "Interfaces/ISessionService.h"
 #include "MessageList.h"
 #include "ModelLocator.h"
 #include "ServiceLocator.h"
-#include "SessionService.h"
+#include "State/SessionState.h"
+#include "State/UserState.h"
+#include "StateLocator.h"
 #include "UserList.h"
 #include "UserService.h"
 #include "ViewModelsLocator.h"
@@ -47,11 +50,16 @@ void Application::initializePerms() {
 
 void Application::initializeServices() {
   appRoot = new QObject(&qtApp);
-  auto& locator = ServiceLocator::instance();
+  auto& serviceLocator = ServiceLocator::instance();
+  auto& stateLocator = StateLocator::instance();
 
-  locator.registerService<IUserService>(new UserService(nullptr, appRoot));
-  locator.registerService<IAuthService>(new AuthService(nullptr, appRoot));
-  locator.registerService<ISessionService>(new SessionService(nullptr, nullptr, nullptr, appRoot));
+  serviceLocator.registerService<IUserService>(new UserService(nullptr, appRoot));
+  serviceLocator.registerService<ITokenManager>(&TokenManager::instance());
+  serviceLocator.registerService<IAuthService>(new AuthService(
+      nullptr, serviceLocator.getService<IUserService>(), &TokenManager::instance(), appRoot));
+
+  stateLocator.registerState<UserState>(&UserState::instance());
+  stateLocator.registerState<SessionState>(&SessionState::instance());
 
   initializeModels();
 }
@@ -73,7 +81,7 @@ void Application::initializeModels() {
 void Application::initializeViewModels() {
   auto& locator = ViewModelsLocator::instance();
 
-  auto* authVM = new AuthViewModel(nullptr, appRoot);
+  auto* authVM = new AuthViewModel(nullptr, nullptr, nullptr, appRoot);
 
   locator.registerViewModels<AuthViewModel>(authVM);
 

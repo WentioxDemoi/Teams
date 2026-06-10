@@ -1,5 +1,6 @@
 #include "ChatViewModel.h"
 #include "ModelLocator.h"
+#include <QtCore/qdebug.h>
 
 ChatViewModel::ChatViewModel(UserList* userList, QObject* parent)
     : QObject(parent),
@@ -75,6 +76,7 @@ void ChatViewModel::sendMessage(const QString& content) {
   if (!currentMessageList_ || selectedUser_.isEmpty() || content.trimmed().isEmpty()) return;
 
   // TODO: passer par le service quand il sera implémenté
+  qDebug() << "Message envoyé : " << content;
   Message msg("", "", content, QDateTime::currentDateTime(), true);
   currentMessageList_->addMessage(msg);
 }

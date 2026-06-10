@@ -21,9 +21,12 @@ class ChatViewModel : public QObject {
   Q_OBJECT
   // Inutile car déjà exposé dès le début à QML
 
-  // A voir si on en a bien besoin normalement non car on va aussi l'exposer dès le début
   Q_PROPERTY(UserList* userList READ userList CONSTANT)
+
+  // Exposer la liste de message afin que QML puisse être notifié des changements.
   Q_PROPERTY(MessageList* currentMessageList READ messageList NOTIFY messageListChanged)
+
+  // Exposer le User actuel (sous forme de QVariant car QML ne connait et ne sais pas utiliser la class User)
   Q_PROPERTY(QVariantMap selectedUser READ selectedUser NOTIFY selectedUserChanged)
 
  public:
