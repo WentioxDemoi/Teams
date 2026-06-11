@@ -24,6 +24,7 @@ ChatViewModel::ChatViewModel(UserList* userList, IChatService* chatService, QObj
     connect(&UserState::instance(), &UserState::localUserSaved, this,
             &ChatViewModel::onLocalUserSaved);
     connect(chatService_, &IChatService::contactsLoaded, this, &ChatViewModel::onContactsLoaded);
+    connect(chatService_, &IChatService::conversationsLoaded, this, &ChatViewModel::onMessagesLoaded);
   }
 }
 
@@ -83,42 +84,11 @@ void ChatViewModel::onLocalUserSaved(const User& user) {
 
   // Recharger les contacts
   if (chatService_) {
-    chatService_->loadContacts();
+    chatService_->loadContactsFromDatabaseAndServer();
   }
 }
 
-void ChatViewModel::refreshConversationsFromDatabase() {
-  if (!userList_) return;
-  qDebug() << "[ChatViewModel] Refresh conversations from database";
-  const QString localUuid = UserState::instance().localUser().uuid();
-  if (localUuid.isEmpty()) return;
 
-  qDeleteAll(messagesByUuid_);
-  messagesByUuid_.clear();
-
-  for (int i = 0; i < userList_->rowCount(); ++i) {
-    QVariantMap contact = userList_->get(i);
-    const QString contactUuid = contact["uuid"].toString();
-    if (contactUuid.isEmpty()) continue;
-
-    auto* list = new MessageList(this);
-    QList<Message> messages = messageRepository_->findForConversation(localUuid, contactUuid);
-    for (const Message& msg : messages) {
-      list->addMessage(msg);
-    }
-
-    messagesByUuid_.insert(contactUuid, list);
-  }
-
-  if (!selectedUser_.isEmpty()) {
-    const QString selectedUuid = selectedUser_["uuid"].toString();
-    if (messagesByUuid_.contains(selectedUuid)) {
-      currentMessageList_ = messagesByUuid_[selectedUuid];
-    }
-  }
-
-  emit messageListChanged();
-}
 
 void ChatViewModel::seedDatabaseMessages(const QString& localUuid) {
   if (localUuid.isEmpty()) return;
@@ -126,7 +96,7 @@ qDebug() << "[ChatViewModel] seedDatabaseMessages called with localUuid=" << loc
   auto now = QDateTime::currentDateTime();
 
   auto insertMessage = [this](const Message& message) {
-    if (!messageRepository_->insert(message)) {
+    if (!messageRepository_->save(message)) {
       qDebug() << "[ChatViewModel] Échec de l'enregistrement du message" << message.uuid();
     }
   };
@@ -165,19 +135,78 @@ qDebug() << "[ChatViewModel] seedDatabaseMessages called with localUuid=" << loc
 }
 
 void ChatViewModel::persistMessage(const Message& message) {
-  if (!messageRepository_->insert(message)) {
+  if (!messageRepository_->save(message)) {
     qDebug() << "[ChatViewModel] Erreur enregistrer le message" << message.uuid();
   }
 }
 
+
+////
+//// Ne pas oublier lors du Emit noTokenFound ou en gros lorsque le token est invalide de supprimer toute la DB Locale (Contacts + Messages pour le moment)
 void ChatViewModel::onContactsLoaded(const QList<User>& users) {
   for (const User& user : users) {
     userList_->addUser(user);
   }
 
-  // Recharger les conversations
-  refreshConversationsFromDatabase();
-  if (selectedUser_.isEmpty()) {
-    selectUser("uuid-alice");
-  }
+  chatService_->loadConversationsFromDatabaseAndServer();
+}
+
+
+// void ChatViewModel::refreshConversationsFromDatabase() {
+//   if (!userList_) return;
+//   qDebug() << "[ChatViewModel] Refresh conversations from database";
+//   const QString localUuid = UserState::instance().localUser().uuid();
+//   if (localUuid.isEmpty()) return;
+
+//   qDeleteAll(messagesByUuid_);
+//   messagesByUuid_.clear();
+
+//   for (int i = 0; i < userList_->rowCount(); ++i) {
+//     QVariantMap contact = userList_->get(i);
+//     const QString contactUuid = contact["uuid"].toString();
+//     if (contactUuid.isEmpty()) continue;
+
+//     auto* list = new MessageList(this);
+//     QList<Message> messages = messageRepository_->findForConversation(localUuid, contactUuid);
+//     for (const Message& msg : messages) {
+//       list->addMessage(msg);
+//     }
+
+//     messagesByUuid_.insert(contactUuid, list);
+//   }
+
+//   if (!selectedUser_.isEmpty()) {
+//     const QString selectedUuid = selectedUser_["uuid"].toString();
+//     if (messagesByUuid_.contains(selectedUuid)) {
+//       currentMessageList_ = messagesByUuid_[selectedUuid];
+//     }
+//   }
+
+//   emit messageListChanged();
+// }
+
+void ChatViewModel::onMessagesLoaded(const QList<Message>& messages) {
+    qDeleteAll(messagesByUuid_);
+    messagesByUuid_.clear();
+
+    QString conversationUuid;
+
+    for (const Message& message : messages) {
+
+
+
+        if (message.fromMe()) {
+            conversationUuid = message.receiverUuid();
+        } else {
+            conversationUuid = message.senderUuid();
+        }
+
+        if (!messagesByUuid_.contains(conversationUuid)) {
+            messagesByUuid_[conversationUuid] = new MessageList(this);
+        }
+
+        messagesByUuid_[conversationUuid]->addMessage(message);
+    }
+
+    selectUser(conversationUuid);
 }

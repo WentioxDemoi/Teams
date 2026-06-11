@@ -14,25 +14,26 @@
  * si aucun utilisateur n'existe encore.
  */
 class UserRepository : public QObject {
-  Q_OBJECT
- public:
-  explicit UserRepository(QObject* parent = nullptr);
+    Q_OBJECT
 
-  std::optional<User> findByUUID(const QString& uuid);
-  QList<User> findAll();
+public:
+    explicit UserRepository(QObject* parent = nullptr);
 
-  bool insert(const User& user);
-  bool remove(const QString& uuid);
-  bool isUserPresent(const QString& uuid);
-  bool update(const User& user);
-  bool isFirstUser();
-  bool removeAll();
+    bool save(const User& user);
 
- signals:
-  void error(const QString& message);
+    std::optional<User> findByUUID(const QString& uuid);
+    QList<User> findAll();
 
- private:
-  QSqlDatabase db_;
+    bool remove(const QString& uuid);
+
+    bool removeAll();
+    bool removeAllContacts();
+
+signals:
+    void error(const QString& message);
+
+private:
+    QSqlDatabase db_;
 };
 
 #endif

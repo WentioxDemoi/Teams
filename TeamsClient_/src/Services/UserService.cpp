@@ -16,7 +16,7 @@ UserService::UserService(UserRepository* userRepo, UserState *userState, QObject
 void UserService::saveUser(const User& user) {
   if (user.isMe()) {
     emit saveLocalUser(user);
-  } else if (userRepo_->insert(user))
+  } else if (userRepo_->save(user))
     emit userSaved(user);
   else {
     qDebug() << "Error lors de l'enregistrement du user : " + user.uuid() + ".";

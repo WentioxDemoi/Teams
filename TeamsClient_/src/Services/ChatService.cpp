@@ -20,7 +20,7 @@ ChatService::ChatService(IMessageService* messageService,
 
   connect(messageService_, &IMessageService::messageSent, this, &IChatService::messageSent);
   connect(messageService_, &IMessageService::messageReceived, this, &IChatService::messageReceived);
-  connect(messageService_, &IMessageService::conversationLoaded, this, &IChatService::conversationLoaded);
+  connect(messageService_, &IMessageService::conversationsLoaded, this, &IChatService::conversationsLoaded);
   connect(messageService_, &IMessageService::messageError, this, &IChatService::messageError);
   connect(messageService_, &IMessageService::connectionUpdate, this, &IChatService::connectionUpdate);
 
@@ -43,20 +43,20 @@ void ChatService::sendMessage(const QString& recipientUuid, const QString& conte
   messageService_->sendMessage(recipientUuid, content);
 }
 
-void ChatService::loadConversation(const QString& userUuid) {
+void ChatService::loadConversationsFromDatabaseAndServer() {
   if (!messageService_) {
     emit messageError("Service de messagerie indisponible");
     return;
   }
-  messageService_->loadConversation(userUuid);
+  messageService_->loadConversationsFromDatabaseAndServer();
 }
 
-void ChatService::loadContacts() {
+void ChatService::loadContactsFromDatabaseAndServer() {
   if (!contactService_) {
     emit messageError("Service de contacts indisponible");
     return;
   }
-  contactService_->loadContacts();
+  contactService_->loadContactsFromDatabaseAndServer();
 }
 
 void ChatService::startCall(const QString& calleeUuid) {

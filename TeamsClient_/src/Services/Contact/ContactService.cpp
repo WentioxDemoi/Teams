@@ -28,20 +28,23 @@ ContactService::ContactService(NetworkService* network, UserRepository* userRepo
 //                    "Parfait, à jamais  alors !"));
 }
 
-void ContactService::loadContacts() {
+void ContactService::loadContactsFromDatabaseAndServer() {
   QList<User> users = userRepo_->findAll();
-  if (!users.isEmpty()) {
-    emit contactsLoaded(users);
-  }
+
 
   // A venir pour mettre à jour la liste de contacts depuis le serveur
   //   QJsonObject payload;
   //   payload["type"] = "load_users";
+  //   payload["token"] = UserState::instance().localUser().token();
   //   network_->send(payload);
+
+    if (!users.isEmpty()) {
+    emit contactsLoaded(users);
+  }
 }
 
 void ContactService::saveContact(const User& user) {
-  if (userRepo_->insert(user)) {
+  if (userRepo_->save(user)) {
     emit contactSaved(user);
   } else {
     emit contactError("Impossible de sauvegarder le contact");
@@ -90,7 +93,7 @@ void ContactService::handleServerResponse(const QJsonObject& root) {
 // A utiliser uniquement une fois la réponse positive sur l'enregistrement du user reçu.
 void ContactService::persistContacts(const QList<User>& users) {
   for (const User& user : users) {
-    if (!userRepo_->insert(user)) {
+    if (!userRepo_->save(user)) {
       qDebug() << "[ContactService] Impossible de persister le user" << user.uuid();
     }
   }

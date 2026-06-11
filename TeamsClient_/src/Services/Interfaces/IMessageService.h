@@ -5,6 +5,7 @@
 #include <QList>
 #include <QObject>
 #include <QString>
+#include "Message.h"
 #include "SessionEnum.h"
 
 /**
@@ -22,14 +23,14 @@ class IMessageService : public QObject {
 
  public slots:
   virtual void sendMessage(const QString& recipientUuid, const QString& content) = 0;
-  virtual void loadConversation(const QString& userUuid) = 0;
-  virtual void loadContacts() = 0;
+  virtual void loadConversationsFromDatabaseAndServer() = 0;
   virtual void disconnectFromServer() = 0;
+  virtual void deleteAll() = 0;
 
  signals:
   void messageSent(const QJsonObject& message);
   void messageReceived(const QJsonObject& message);
-  void conversationLoaded(const QString& userUuid, const QList<QJsonObject>& messages);
+  void conversationsLoaded(const QList<Message>& messages);
   void contactsLoaded(const QList<QJsonObject>& contacts);
   void messageError(const QString& error);
   void connectionUpdate(ServerType server, bool status);

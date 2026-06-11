@@ -23,7 +23,7 @@ class IContactService : public QObject {
   virtual ~IContactService() = default;
 
  public slots:
-  virtual void loadContacts() = 0;
+  virtual void loadContactsFromDatabaseAndServer() = 0;
   virtual void saveContact(const User& user) = 0;
   virtual void deleteContact(const QString& uuid) = 0;
   virtual void disconnectFromServer() = 0;

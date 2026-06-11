@@ -24,7 +24,7 @@ class ContactService : public IContactService {
                           QObject* parent = nullptr);
 
  public slots:
-  void loadContacts() override;
+  void loadContactsFromDatabaseAndServer() override;
   void saveContact(const User& user) override;
   void deleteContact(const QString& uuid) override;
   void disconnectFromServer() override;

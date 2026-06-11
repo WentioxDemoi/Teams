@@ -5,6 +5,7 @@
 #include <QList>
 #include <QObject>
 #include <QString>
+#include "Message.h"
 #include "SessionEnum.h"
 #include "User.h"
 
@@ -23,8 +24,8 @@ class IChatService : public QObject {
 
  public slots:
   virtual void sendMessage(const QString& recipientUuid, const QString& content) = 0;
-  virtual void loadConversation(const QString& userUuid) = 0;
-  virtual void loadContacts() = 0;
+  virtual void loadConversationsFromDatabaseAndServer() = 0;
+  virtual void loadContactsFromDatabaseAndServer() = 0;
   virtual void startCall(const QString& calleeUuid) = 0;
   virtual void acceptCall(const QString& callUuid) = 0;
   virtual void hangup(const QString& callUuid) = 0;
@@ -33,7 +34,7 @@ class IChatService : public QObject {
  signals:
   void messageSent(const QJsonObject& message);
   void messageReceived(const QJsonObject& message);
-  void conversationLoaded(const QString& userUuid, const QList<QJsonObject>& messages);
+  void conversationsLoaded(const QList<Message>& messages);
   void contactsLoaded(const QList<User>& users);
   void messageError(const QString& error);
   void callStarted(const QString& callUuid, const QString& calleeUuid);

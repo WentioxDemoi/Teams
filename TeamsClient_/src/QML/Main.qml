@@ -56,7 +56,6 @@ ApplicationWindow {
             stackView.replace(workspaceView);
         }
         function onNoTokenFound() {
-            console.log("Error NoTokenFound:");
             stackView.replace(authView);
         }
         function onAuthError(error) {

@@ -58,29 +58,35 @@ void Application::initializePerms() {
 
 void Application::initializeServices() {
   appRoot = new QObject(&qtApp);
+
   auto& serviceLocator = ServiceLocator::instance();
   auto& stateLocator = StateLocator::instance();
 
   stateLocator.registerState<UserState>(&UserState::instance());
   stateLocator.registerState<SessionState>(&SessionState::instance());
 
-  serviceLocator.registerService<IUserService>(
-      new UserService(nullptr, nullptr, appRoot));
   serviceLocator.registerService<ITokenManager>(&TokenManager::instance());
-  serviceLocator.registerService<IAuthService>(new AuthService(
-      nullptr, nullptr, nullptr, appRoot));
+
+  auto* userService = new UserService(nullptr, nullptr, appRoot);
+  serviceLocator.registerService<IUserService>(userService);
 
   auto* messageService = new MessageService(nullptr, nullptr, appRoot);
   serviceLocator.registerService<IMessageService>(messageService);
 
   auto* contactService = new ContactService(nullptr, nullptr, appRoot);
   serviceLocator.registerService<IContactService>(contactService);
-  
+
   auto* callService = new CallService(nullptr, appRoot);
   serviceLocator.registerService<ICallService>(callService);
-  
+
   auto* chatService = new ChatService(nullptr, nullptr, nullptr, appRoot);
   serviceLocator.registerService<IChatService>(chatService);
+
+  // AuthService EN DERNIER
+  auto* authService =
+      new AuthService(nullptr, nullptr, nullptr, nullptr, appRoot);
+
+  serviceLocator.registerService<IAuthService>(authService);
 
   initializeModels();
 }

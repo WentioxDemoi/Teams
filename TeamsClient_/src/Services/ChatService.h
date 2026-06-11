@@ -24,8 +24,8 @@ class ChatService : public IChatService {
 
  public slots:
   void sendMessage(const QString& recipientUuid, const QString& content) override;
-  void loadConversation(const QString& userUuid) override;
-  void loadContacts() override;
+  void loadConversationsFromDatabaseAndServer() override;
+  void loadContactsFromDatabaseAndServer() override;
   void startCall(const QString& calleeUuid) override;
   void acceptCall(const QString& callUuid) override;
   void hangup(const QString& callUuid) override;

@@ -50,6 +50,7 @@ class ChatViewModel : public QObject {
  private slots:
   void onLocalUserSaved(const User& user); // TMP
   void onContactsLoaded(const QList<User>& users);
+  void onMessagesLoaded(const QList<Message>& messages);
 
  signals:
   //   void callStarted(const QString& userUuid);
@@ -60,7 +61,7 @@ class ChatViewModel : public QObject {
   void chatError(const QString& error);
 
  private:
-  void refreshConversationsFromDatabase();
+  // void refreshConversationsFromDatabase();
   void persistMessage(const Message& message);
   void seedDatabaseMessages(const QString& localUuid);
 

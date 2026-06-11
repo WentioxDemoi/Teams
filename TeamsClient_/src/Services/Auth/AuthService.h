@@ -6,6 +6,7 @@
 #include "../Interfaces/IUserService.h"
 #include "../../Utils/Interfaces/ITokenManager.h"
 #include "Network/NetworkService.h"
+#include "Interfaces/IMessageService.h"
 
 
 /**
@@ -20,6 +21,7 @@ class AuthService : public IAuthService {
  public:
   explicit AuthService(NetworkService* network = nullptr,
                        IUserService* userService = nullptr,
+                       IMessageService* messageService = nullptr,
                        ITokenManager* tokenManager = nullptr,
                        QObject* parent = nullptr);
   void loginUser(const QString& username, const QString& password) override;
@@ -40,6 +42,7 @@ class AuthService : public IAuthService {
  private:
   NetworkService* network_;
   IUserService* userService_;
+  IMessageService* messageService_;
   ITokenManager* tokenManager_;
 };
 

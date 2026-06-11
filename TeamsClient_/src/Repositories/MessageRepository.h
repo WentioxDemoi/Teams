@@ -26,11 +26,9 @@ class MessageRepository : public QObject {
   QList<Message> findForConversation(const QString& userUuid1, const QString& userUuid2);
   QList<Message> findForParticipant(const QString& participantUuid);
 
-  bool insert(const Message& message);
-  bool update(const Message& message);
+  bool save(const Message& message);
   bool remove(const QString& uuid);
   bool removeAll();
-  bool messagePresent(const QString& uuid);
 
  signals:
   void error(const QString& message);

@@ -18,10 +18,11 @@ class MessageService : public IMessageService {
  public:
   explicit MessageService(NetworkService* network = nullptr, MessageRepository* messageRepo = nullptr, QObject* parent = nullptr);
 
+
  public slots:
   void sendMessage(const QString& recipientUuid, const QString& content) override;
-  void loadConversation(const QString& userUuid) override;
-  void loadContacts() override;
+  void loadConversationsFromDatabaseAndServer() override;
+  void deleteAll() override;
   void disconnectFromServer() override;
 
  private slots:

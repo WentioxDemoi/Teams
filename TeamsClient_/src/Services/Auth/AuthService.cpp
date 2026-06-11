@@ -6,11 +6,12 @@
 
 #include "Network/NetworkService.h"
 
-AuthService::AuthService(NetworkService* network, IUserService* userService,
+AuthService::AuthService(NetworkService* network, IUserService* userService, IMessageService* messageService,
                          ITokenManager* tokenManager, QObject* parent)
     : IAuthService(parent),
       network_(network ? network : new NetworkService(8080, parent)),
       userService_(userService ? userService : ServiceLocator::instance().getService<IUserService>()),
+      messageService_(messageService ? messageService : ServiceLocator::instance().getService<IMessageService>()),
       tokenManager_(tokenManager ? tokenManager : &TokenManager::instance()) {
   Q_ASSERT(network_);
   Q_ASSERT(userService_);
@@ -40,9 +41,9 @@ void AuthService::loginWithToken(void)
 {
   if (/*!*/tokenManager_->token.isEmpty()) {
     //network_->send({{"type", "validate_token"}, {"token", tokenManager_->token}});
-    network_->send({{"type", "validate_token"}, {"token", "f62e4f0ec56cfa17c7361f933aaccf0b"}});
+    network_->send({{"type", "validate_token"}, {"token", "7a359c180728cb26caa45b7c2bd99fd0"}});
   } else {
-    emit noTokenFound();
+      handleTokenError("No token found");
   }
 }
 
@@ -109,6 +110,7 @@ void AuthService::handleTokenError(const QString& error) {
     tokenManager_->deleteToken();
   }
   userService_->deleteAll();
+  messageService_->deleteAll();
   emit noTokenFound();
 }
 

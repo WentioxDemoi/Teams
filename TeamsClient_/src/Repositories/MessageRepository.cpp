@@ -130,57 +130,57 @@ QList<Message> MessageRepository::findForParticipant(const QString& participantU
   return messages;
 }
 
-bool MessageRepository::insert(const Message& message) {
-  if (messagePresent(message.uuid())) return update(message);
+bool MessageRepository::save(const Message& message) {
+    QSqlQuery query(db_);
 
-  QSqlQuery query(db_);
-  query.prepare(R"(
-      INSERT INTO messages (uuid, sender_uuid, receiver_uuid, type, content, timestamp, is_read, from_me)
-      VALUES (:uuid, :senderUuid, :receiverUuid, :type, :content, :timestamp, :isRead, :fromMe)
-  )");
-  query.bindValue(":uuid", message.uuid());
-  query.bindValue(":senderUuid", message.senderUuid());
-  query.bindValue(":receiverUuid", message.receiverUuid());
-  query.bindValue(":type", message.type());
-  query.bindValue(":content", message.content());
-  query.bindValue(":timestamp", message.timestamp().toString(Qt::ISODate));
-  query.bindValue(":isRead", message.isRead());
-  query.bindValue(":fromMe", message.fromMe());
+    query.prepare(R"(
+        INSERT INTO messages (
+            uuid,
+            sender_uuid,
+            receiver_uuid,
+            type,
+            content,
+            timestamp,
+            is_read,
+            from_me
+        )
+        VALUES (
+            :uuid,
+            :senderUuid,
+            :receiverUuid,
+            :type,
+            :content,
+            :timestamp,
+            :isRead,
+            :fromMe
+        )
 
-  if (!query.exec()) {
-    qDebug() << "[insert] Execution failed:" << query.lastError().text();
-    return false;
-  }
-  return true;
-}
+        ON CONFLICT(uuid)
+        DO UPDATE SET
+            sender_uuid = excluded.sender_uuid,
+            receiver_uuid = excluded.receiver_uuid,
+            type = excluded.type,
+            content = excluded.content,
+            timestamp = excluded.timestamp,
+            is_read = excluded.is_read,
+            from_me = excluded.from_me
+    )");
 
-bool MessageRepository::update(const Message& message) {
-  QSqlQuery query(db_);
-  query.prepare(R"(
-      UPDATE messages
-      SET sender_uuid   = :senderUuid,
-          receiver_uuid = :receiverUuid,
-          type          = :type,
-          content       = :content,
-          timestamp     = :timestamp,
-          is_read       = :isRead,
-          from_me       = :fromMe
-      WHERE uuid = :uuid
-  )");
-  query.bindValue(":senderUuid", message.senderUuid());
-  query.bindValue(":receiverUuid", message.receiverUuid());
-  query.bindValue(":type", message.type());
-  query.bindValue(":content", message.content());
-  query.bindValue(":timestamp", message.timestamp().toString(Qt::ISODate));
-  query.bindValue(":isRead", message.isRead());
-  query.bindValue(":fromMe", message.fromMe());
-  query.bindValue(":uuid", message.uuid());
+    query.bindValue(":uuid", message.uuid());
+    query.bindValue(":senderUuid", message.senderUuid());
+    query.bindValue(":receiverUuid", message.receiverUuid());
+    query.bindValue(":type", message.type());
+    query.bindValue(":content", message.content());
+    query.bindValue(":timestamp", message.timestamp().toString(Qt::ISODate));
+    query.bindValue(":isRead", message.isRead());
+    query.bindValue(":fromMe", message.fromMe());
 
-  if (!query.exec()) {
-    qDebug() << "[update] Failed:" << query.lastError().text();
-    return false;
-  }
-  return query.numRowsAffected() > 0;
+    if (!query.exec()) {
+        qDebug() << "[save] Failed:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
 }
 
 bool MessageRepository::remove(const QString& uuid) {
@@ -202,16 +202,4 @@ bool MessageRepository::removeAll() {
     return false;
   }
   return true;
-}
-
-bool MessageRepository::messagePresent(const QString& uuid) {
-  QSqlQuery query(db_);
-  query.prepare("SELECT 1 FROM messages WHERE uuid = :uuid LIMIT 1");
-  query.bindValue(":uuid", uuid);
-
-  if (!query.exec()) {
-    qDebug() << "[messagePresent] Error:" << query.lastError().text();
-    return false;
-  }
-  return query.next();
 }
