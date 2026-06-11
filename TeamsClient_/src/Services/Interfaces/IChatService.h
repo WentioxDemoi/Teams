@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QString>
 #include "SessionEnum.h"
+#include "User.h"
 
 /**
  * @class IChatService
@@ -33,7 +34,7 @@ class IChatService : public QObject {
   void messageSent(const QJsonObject& message);
   void messageReceived(const QJsonObject& message);
   void conversationLoaded(const QString& userUuid, const QList<QJsonObject>& messages);
-  void contactsLoaded(const QList<QJsonObject>& contacts);
+  void contactsLoaded(const QList<User>& users);
   void messageError(const QString& error);
   void callStarted(const QString& callUuid, const QString& calleeUuid);
   void callAccepted(const QString& callUuid, const QString& callerUuid);

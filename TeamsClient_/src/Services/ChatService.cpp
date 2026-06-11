@@ -14,10 +14,6 @@ ChatService::ChatService(IMessageService* messageService,
       messageService_(messageService ? messageService : ServiceLocator::instance().getService<IMessageService>()),
       contactService_(contactService ? contactService : ServiceLocator::instance().getService<IContactService>()),
       callService_(callService ? callService : ServiceLocator::instance().getService<ICallService>()) {
-  if (!callService_) {
-    callService_ = new CallService(nullptr, this);
-  }
-
   Q_ASSERT(messageService_);
   Q_ASSERT(contactService_);
   Q_ASSERT(callService_);

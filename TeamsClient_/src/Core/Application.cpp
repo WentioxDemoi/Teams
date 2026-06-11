@@ -71,13 +71,15 @@ void Application::initializeServices() {
       nullptr, nullptr, nullptr, appRoot));
 
   auto* messageService = new MessageService(nullptr, nullptr, appRoot);
-  auto* contactService = new ContactService(nullptr, nullptr, appRoot);
-  auto* callService = new CallService(nullptr, appRoot);
-  auto* chatService = new ChatService(nullptr, nullptr, nullptr, appRoot);
-
   serviceLocator.registerService<IMessageService>(messageService);
+
+  auto* contactService = new ContactService(nullptr, nullptr, appRoot);
   serviceLocator.registerService<IContactService>(contactService);
+  
+  auto* callService = new CallService(nullptr, appRoot);
   serviceLocator.registerService<ICallService>(callService);
+  
+  auto* chatService = new ChatService(nullptr, nullptr, nullptr, appRoot);
   serviceLocator.registerService<IChatService>(chatService);
 
   initializeModels();

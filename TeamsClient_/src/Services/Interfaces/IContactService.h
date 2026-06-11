@@ -29,7 +29,7 @@ class IContactService : public QObject {
   virtual void disconnectFromServer() = 0;
 
  signals:
-  void contactsLoaded(const QList<QJsonObject>& contacts);
+  void contactsLoaded(const QList<User>& contacts);
   void contactSaved(const User& user);
   void contactDeleted(const QString& uuid);
   void contactError(const QString& error);

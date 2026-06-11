@@ -44,12 +44,12 @@ class ChatViewModel : public QObject {
  public slots:
   void selectUser(const QString& userUuid);
   void sendMessage(const QString& content);
-  void loadContacts();
 
   //   void callUser(const QString& userUuid);
 
  private slots:
   void onLocalUserSaved(const User& user); // TMP
+  void onContactsLoaded(const QList<User>& users);
 
  signals:
   //   void callStarted(const QString& userUuid);

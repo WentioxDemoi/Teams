@@ -16,17 +16,28 @@ ContactService::ContactService(NetworkService* network, UserRepository* userRepo
   connect(network_, &NetworkService::jsonReceived, this, &ContactService::handleServerResponse);
   connect(network_, &NetworkService::networkError, this, &ContactService::contactError);
   connect(network_, &NetworkService::connectionUpdate, this, &ContactService::connectionUpdate);
+
+  // TMP
+//   saveContact(User("alice@example.com", "Alice", "Martin", "En ligne", false, "", "uuid-alice", "",
+//                    "OK je regarde ça ce soir 👍"));
+//   saveContact(User("bob@example.com", "Bob", "Dupont", "Absent", false, "", "uuid-bob", "",
+//                    "Tu peux m'envoyer le fichier ?"));
+//   saveContact(User("clara@example.com", "Clara", "Roux", "En ligne", false, "", "uuid-clara", "",
+//                    "Parfait, à demain alors !"));
+//   saveContact(User("brice@example.com", "Brice", "Roux", "En ligne", false, "", "uuid-brice", "",
+//                    "Parfait, à jamais  alors !"));
 }
 
 void ContactService::loadContacts() {
   QList<User> users = userRepo_->findAll();
   if (!users.isEmpty()) {
-    emitContactsLoaded(users);
+    emit contactsLoaded(users);
   }
 
-  QJsonObject payload;
-  payload["type"] = "load_users";
-  network_->send(payload);
+  // A venir pour mettre à jour la liste de contacts depuis le serveur
+  //   QJsonObject payload;
+  //   payload["type"] = "load_users";
+  //   network_->send(payload);
 }
 
 void ContactService::saveContact(const User& user) {
@@ -63,18 +74,6 @@ void ContactService::handleServerResponse(const QJsonObject& root) {
     return;
   }
 
-  if (type == "users_response" && root.contains("users") && root["users"].isArray()) {
-    QList<User> users;
-    for (const auto& item : root["users"].toArray()) {
-      if (item.isObject()) {
-        users.append(User::fromJson(item.toObject()));
-      }
-    }
-    persistContacts(users);
-    emitContactsLoaded(users);
-    return;
-  }
-
   if (type == "contacts_response" && root.contains("contacts") && root["contacts"].isArray()) {
     QList<User> users;
     for (const auto& item : root["contacts"].toArray()) {
@@ -83,24 +82,16 @@ void ContactService::handleServerResponse(const QJsonObject& root) {
       }
     }
     persistContacts(users);
-    emitContactsLoaded(users);
+    emit contactsLoaded(users);
     return;
   }
 }
 
+// A utiliser uniquement une fois la réponse positive sur l'enregistrement du user reçu.
 void ContactService::persistContacts(const QList<User>& users) {
   for (const User& user : users) {
     if (!userRepo_->insert(user)) {
       qDebug() << "[ContactService] Impossible de persister le user" << user.uuid();
     }
   }
-}
-
-void ContactService::emitContactsLoaded(const QList<User>& users) {
-  QList<QJsonObject> contactsJson;
-  contactsJson.reserve(users.size());
-  for (const User& user : users) {
-    contactsJson.append(user.toJson());
-  }
-  emit contactsLoaded(contactsJson);
 }

@@ -71,13 +71,4 @@ int UserList::rowCount(const QModelIndex& parent) const {
   return users_.size();
 }
 
-UserList::UserList(QObject* parent) : QAbstractListModel(parent) {
-  addUser(User("alice@example.com", "Alice", "Martin", "En ligne", false, "", "uuid-alice", "",
-               "OK je regarde ça ce soir 👍"));
-  addUser(User("bob@example.com", "Bob", "Dupont", "Absent", false, "", "uuid-bob", "",
-               "Tu peux m'envoyer le fichier ?"));
-  addUser(User("clara@example.com", "Clara", "Roux", "En ligne", false, "", "uuid-clara", "",
-               "Parfait, à demain alors !"));
-  addUser(User("brice@example.com", "Brice", "Roux", "En ligne", false, "", "uuid-brice", "",
-               "Parfait, à jamais  alors !"));
-}
+UserList::UserList(QObject* parent) : QAbstractListModel(parent) { }

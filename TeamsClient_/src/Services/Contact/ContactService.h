@@ -34,7 +34,6 @@ class ContactService : public IContactService {
 
  private:
   void persistContacts(const QList<User>& users);
-  void emitContactsLoaded(const QList<User>& users);
 
   NetworkService* network_;
   UserRepository* userRepo_;

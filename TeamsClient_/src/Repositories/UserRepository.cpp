@@ -13,8 +13,8 @@ bool UserRepository::insert(const User& user) {
 
     QSqlQuery query(db_);
     query.prepare(R"(
-        INSERT INTO users (email, first_name, last_name, status, uuid, is_me, token, avatar)
-        VALUES (:email, :firstName, :lastName, :status, :uuid, :isMe, :token, :avatar)
+        INSERT INTO users (email, first_name, last_name, status, uuid, is_me, token, avatar, last_message)
+        VALUES (:email, :firstName, :lastName, :status, :uuid, :isMe, :token, :avatar, :lastMessage)
     )");
 
     query.bindValue(":email",     user.email());
@@ -25,6 +25,7 @@ bool UserRepository::insert(const User& user) {
     query.bindValue(":isMe",      isFirstUser());
     query.bindValue(":token",     user.token());
     query.bindValue(":avatar",    user.avatar());
+    query.bindValue(":lastMessage", user.lastMessage());
 
     if (!query.exec()) {
         qDebug() << "[insert] Execution failed:" << query.lastError().text();
@@ -36,7 +37,7 @@ bool UserRepository::insert(const User& user) {
 std::optional<User> UserRepository::findByUUID(const QString& uuid) {
     QSqlQuery query(db_);
     query.prepare(R"(
-        SELECT email, first_name, last_name, status, uuid, is_me, token, avatar
+        SELECT email, first_name, last_name, status, uuid, is_me, token, avatar, last_message
         FROM users
         WHERE uuid = :uuid
     )");
@@ -58,6 +59,7 @@ std::optional<User> UserRepository::findByUUID(const QString& uuid) {
     user.setIsMe(query.value("is_me").toBool());
     user.setToken(query.value("token").toString());
     user.setAvatar(query.value("avatar").toString());
+    user.setLastMessage(query.value("last_message").toString());
 
     return user;
 }
@@ -83,7 +85,8 @@ bool UserRepository::update(const User& user) {
             last_name  = :lastName,
             status     = :status,
             token      = :token,
-            avatar     = :avatar
+            avatar     = :avatar,
+            last_message = :lastMessage
         WHERE uuid = :uuid
     )");
 
@@ -93,6 +96,7 @@ bool UserRepository::update(const User& user) {
     query.bindValue(":status",    user.status());
     query.bindValue(":token",     user.token());
     query.bindValue(":avatar",    user.avatar());
+    query.bindValue(":lastMessage", user.lastMessage());
     query.bindValue(":uuid",      user.uuid());
 
     if (!query.exec()) {
@@ -117,7 +121,7 @@ QList<User> UserRepository::findAll() {
     QSqlQuery query(db_);
 
     if (!query.exec(R"(
-        SELECT email, first_name, last_name, status, uuid, is_me, token, avatar
+        SELECT email, first_name, last_name, status, uuid, is_me, token, avatar, last_message
         FROM users
     )")) {
         qDebug() << "[findAll] Failed:" << query.lastError().text();
@@ -134,6 +138,7 @@ QList<User> UserRepository::findAll() {
         user.setIsMe(query.value("is_me").toBool());
         user.setToken(query.value("token").toString());
         user.setAvatar(query.value("avatar").toString());
+        user.setLastMessage(query.value("last_message").toString());
 
         users.append(user);
     }

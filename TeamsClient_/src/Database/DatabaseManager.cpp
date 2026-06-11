@@ -27,7 +27,8 @@ DatabaseManager::DatabaseManager() {
     uuid       TEXT PRIMARY KEY,
     is_me      INTEGER DEFAULT 0,
     token      TEXT,
-    avatar     TEXT
+    avatar     TEXT,
+    last_message TEXT
 );
     )";
 
