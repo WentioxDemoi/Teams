@@ -5,6 +5,7 @@
 #include <QObject>
 #include "../Interfaces/IMessageService.h"
 #include "../Network/NetworkService.h"
+#include "../../Repositories/MessageRepository.h"
 
 /**
  * @class MessageService
@@ -15,7 +16,7 @@
 class MessageService : public IMessageService {
   Q_OBJECT
  public:
-  explicit MessageService(NetworkService* network = nullptr, QObject* parent = nullptr);
+  explicit MessageService(NetworkService* network = nullptr, MessageRepository* messageRepo = nullptr, QObject* parent = nullptr);
 
  public slots:
   void sendMessage(const QString& recipientUuid, const QString& content) override;
@@ -28,6 +29,7 @@ class MessageService : public IMessageService {
 
  private:
   NetworkService* network_;
+  MessageRepository* messageRepo_;
 };
 
 #endif

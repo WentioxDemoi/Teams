@@ -4,8 +4,8 @@
 #include "State/UserState.h"
 #include "StateLocator.h"
 
-UserService::UserService(UserRepository* repo, UserState *userState, QObject* parent)
-    : repo_(repo ? repo : new UserRepository()), 
+UserService::UserService(UserRepository* userRepo, UserState *userState, QObject* parent)
+    : userRepo_(userRepo ? userRepo : new UserRepository(parent)), 
     userState_(userState ? userState : StateLocator::instance().getState<UserState>()),
     IUserService(parent) {
       connect(this, &IUserService::saveLocalUser, userState_, &UserState::saveLocalUser);
@@ -16,7 +16,7 @@ UserService::UserService(UserRepository* repo, UserState *userState, QObject* pa
 void UserService::saveUser(const User& user) {
   if (user.isMe()) {
     emit saveLocalUser(user);
-  } else if (repo_->insert(user))
+  } else if (userRepo_->insert(user))
     emit userSaved(user);
   else {
     qDebug() << "Error lors de l'enregistrement du user : " + user.uuid() + ".";
@@ -24,7 +24,7 @@ void UserService::saveUser(const User& user) {
 }
 
 void UserService::deleteUser(QString uuid) {
-  if (repo_->remove(uuid)) {
+  if (userRepo_->remove(uuid)) {
     qDebug() << "Utilisateur supprimé : " + uuid;
   } else {
     qDebug() << "Erreur lors de la suppression du user : " + uuid + ".";
@@ -32,7 +32,7 @@ void UserService::deleteUser(QString uuid) {
 }
 
 void UserService::deleteAll() {
-  if (repo_->removeAll()) {
+  if (userRepo_->removeAll()) {
     qDebug() << "Tous les utilisateurs supprimés.";
   } else {
     qDebug() << "Erreur lors de la suppression de tous les users.";

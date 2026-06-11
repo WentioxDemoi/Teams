@@ -15,6 +15,9 @@ NetworkService::NetworkService(qint16 port, QObject* parent) : QObject(parent), 
     case 8083 :
       server_ = ServerType::Call;
       break;
+    case 8084 :
+      server_ = ServerType::Contact;
+      break;
     default :
       qDebug() << "Unknown enum (NetworkService)";
   }

@@ -7,14 +7,18 @@
 
 #include "../../Core/State/UserState.h"
 #include "../../Models/Message.h"
+#include "Repositories/MessageRepository.h"
+#include "ServiceLocator.h"
 
-MessageService::MessageService(NetworkService* network, QObject* parent)
+MessageService::MessageService(NetworkService* network, MessageRepository* messageRepo, QObject* parent)
     : IMessageService(parent),
-      network_(network ? network : new NetworkService(8082, parent)) {
+      network_(network ? network : new NetworkService(8082, parent)),
+      messageRepo_(messageRepo ? messageRepo : new MessageRepository(parent)) {
   Q_ASSERT(network_);
   connect(network_, &NetworkService::jsonReceived, this, &MessageService::handleServerResponse);
   connect(network_, &NetworkService::networkError, this, &MessageService::messageError);
   connect(network_, &NetworkService::connectionUpdate, this, &MessageService::connectionUpdate);
+
 }
 
 void MessageService::sendMessage(const QString& recipientUuid, const QString& content) {
@@ -84,11 +88,35 @@ void MessageService::handleServerResponse(const QJsonObject& root) {
     return;
   }
 
-  // TO BE DETERMINED
-//   if (type == "message_sent" && root.contains("message") && root["message"].isObject()) {
-//     emit messageSent(root["message"].toObject());
-//     return;
-//   }
+  if (type == "message_sent") {
+    if (root.contains("status") && root["status"].isString() && root["status"].toString() != "success") {
+      const QString error = root.contains("error") && root["error"].isString()
+          ? root["error"].toString()
+          : "Échec de l'envoi du message";
+      emit messageError(error);
+      return;
+    }
+
+    if (!root.contains("message") || !root["message"].isObject()) {
+      emit messageError("Réponse serveur message_sent invalide");
+      return;
+    }
+
+    QJsonObject messageJson = root["message"].toObject();
+    Message message = Message::fromJson(messageJson);
+
+    if (message.uuid().isEmpty() || message.senderUuid().isEmpty() || message.receiverUuid().isEmpty()) {
+      emit messageError("Message serveur invalide");
+      return;
+    }
+
+    if (messageRepo_) {
+      messageRepo_->insert(message);
+    }
+
+    emit messageSent(messageJson);
+    return;
+  }
 
   if (type == "message_received" && root.contains("message") && root["message"].isObject()) {
     emit messageReceived(root["message"].toObject());

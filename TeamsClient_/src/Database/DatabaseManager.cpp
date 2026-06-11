@@ -36,6 +36,25 @@ DatabaseManager::DatabaseManager() {
   } else {
     qDebug() << "Table users créée/vérifiée avec succès";
   }
+
+  QString createMessageTable = R"(
+        CREATE TABLE IF NOT EXISTS messages (
+    uuid         TEXT PRIMARY KEY,
+    sender_uuid  TEXT NOT NULL,
+    receiver_uuid TEXT NOT NULL,
+    type         TEXT,
+    content      TEXT,
+    timestamp    TEXT,
+    is_read      INTEGER DEFAULT 0,
+    from_me      INTEGER DEFAULT 0
+);
+    )";
+
+  if (!query.exec(createMessageTable)) {
+    qDebug() << "Création table messages échouée";
+  } else {
+    qDebug() << "Table messages créée/vérifiée avec succès";
+  }
 }
 
 DatabaseManager& DatabaseManager::instance() {

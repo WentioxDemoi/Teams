@@ -7,8 +7,10 @@
 
 #include "../Models/MessageList.h"
 #include "../Models/UserList.h"
-#include "Interfaces/IMessageService.h"
-// #include "../Services/Interfaces/IChatService.h"
+#include "../Models/User.h"
+#include "Interfaces/IChatService.h"
+
+class MessageRepository; // TMP
 
 /**
  * @class ChatViewModel
@@ -32,7 +34,7 @@ class ChatViewModel : public QObject {
 
  public:
   explicit ChatViewModel(UserList* user = nullptr,
-                         IMessageService* messageService = nullptr, // A implémenter plus tard
+                         IChatService* chatService = nullptr,
                          QObject* parent = nullptr);
 
   UserList* userList() const;
@@ -46,6 +48,9 @@ class ChatViewModel : public QObject {
 
   //   void callUser(const QString& userUuid);
 
+ private slots:
+  void onLocalUserSaved(const User& user); // TMP
+
  signals:
   //   void callStarted(const QString& userUuid);
   //   void callError(const QString& error);
@@ -55,8 +60,13 @@ class ChatViewModel : public QObject {
   void chatError(const QString& error);
 
  private:
-  IMessageService* messageService_;
+  void refreshConversationsFromDatabase();
+  void persistMessage(const Message& message);
+  void seedDatabaseMessages(const QString& localUuid);
+
+  IChatService* chatService_;
   UserList* userList_;
+  MessageRepository* messageRepository_; // TMP
   QHash<QString, MessageList*> messagesByUuid_;
   MessageList* currentMessageList_;  // Displayed by QML
   QVariantMap selectedUser_;

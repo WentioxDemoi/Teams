@@ -1,0 +1,100 @@
+#include "ChatService.h"
+
+#include "Call/CallService.h"
+#include "Contact/ContactService.h"
+#include "ServiceLocator.h"
+
+#include <QDebug>
+
+ChatService::ChatService(IMessageService* messageService,
+                         IContactService* contactService,
+                         ICallService* callService,
+                         QObject* parent)
+    : IChatService(parent),
+      messageService_(messageService ? messageService : ServiceLocator::instance().getService<IMessageService>()),
+      contactService_(contactService ? contactService : ServiceLocator::instance().getService<IContactService>()),
+      callService_(callService ? callService : ServiceLocator::instance().getService<ICallService>()) {
+  if (!callService_) {
+    callService_ = new CallService(nullptr, this);
+  }
+
+  Q_ASSERT(messageService_);
+  Q_ASSERT(contactService_);
+  Q_ASSERT(callService_);
+
+  connect(messageService_, &IMessageService::messageSent, this, &IChatService::messageSent);
+  connect(messageService_, &IMessageService::messageReceived, this, &IChatService::messageReceived);
+  connect(messageService_, &IMessageService::conversationLoaded, this, &IChatService::conversationLoaded);
+  connect(messageService_, &IMessageService::messageError, this, &IChatService::messageError);
+  connect(messageService_, &IMessageService::connectionUpdate, this, &IChatService::connectionUpdate);
+
+  connect(contactService_, &IContactService::contactsLoaded, this, &IChatService::contactsLoaded);
+  connect(contactService_, &IContactService::contactError, this, &IChatService::messageError);
+  connect(contactService_, &IContactService::connectionUpdate, this, &IChatService::connectionUpdate);
+
+  connect(callService_, &ICallService::callStarted, this, &IChatService::callStarted);
+  connect(callService_, &ICallService::callAccepted, this, &IChatService::callAccepted);
+  connect(callService_, &ICallService::callEnded, this, &IChatService::callEnded);
+  connect(callService_, &ICallService::callError, this, &IChatService::callError);
+  connect(callService_, &ICallService::connectionUpdate, this, &IChatService::connectionUpdate);
+}
+
+void ChatService::sendMessage(const QString& recipientUuid, const QString& content) {
+  if (!messageService_) {
+    emit messageError("Service de messagerie indisponible");
+    return;
+  }
+  messageService_->sendMessage(recipientUuid, content);
+}
+
+void ChatService::loadConversation(const QString& userUuid) {
+  if (!messageService_) {
+    emit messageError("Service de messagerie indisponible");
+    return;
+  }
+  messageService_->loadConversation(userUuid);
+}
+
+void ChatService::loadContacts() {
+  if (!contactService_) {
+    emit messageError("Service de contacts indisponible");
+    return;
+  }
+  contactService_->loadContacts();
+}
+
+void ChatService::startCall(const QString& calleeUuid) {
+  if (!callService_) {
+    emit callError("Service d'appel indisponible");
+    return;
+  }
+  callService_->startCall(calleeUuid);
+}
+
+void ChatService::acceptCall(const QString& callUuid) {
+  if (!callService_) {
+    emit callError("Service d'appel indisponible");
+    return;
+  }
+  callService_->acceptCall(callUuid);
+}
+
+void ChatService::hangup(const QString& callUuid) {
+  if (!callService_) {
+    emit callError("Service d'appel indisponible");
+    return;
+  }
+  callService_->hangup(callUuid);
+}
+
+void ChatService::disconnectFromServer() {
+  if (messageService_) {
+    messageService_->disconnectFromServer();
+  }
+  if (contactService_) {
+    contactService_->disconnectFromServer();
+  }
+  if (callService_) {
+    callService_->disconnectFromServer();
+  }
+}

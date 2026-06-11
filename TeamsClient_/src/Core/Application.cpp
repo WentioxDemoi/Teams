@@ -12,8 +12,12 @@
 #include "../ViewModels/ChatViewModel.h"
 #include "Auth/AuthService.h"
 #include "Call/CallService.h"
+#include "ChatService.h"
+#include "Contact/ContactService.h"
 #include "Interfaces/ICallService.h"
+#include "Interfaces/IChatService.h"
 #include "Interfaces/IAuthService.h"
+#include "Interfaces/IContactService.h"
 #include "Interfaces/IMessageService.h"
 #include "Message/MessageService.h"
 #include "MessageList.h"
@@ -65,10 +69,16 @@ void Application::initializeServices() {
   serviceLocator.registerService<ITokenManager>(&TokenManager::instance());
   serviceLocator.registerService<IAuthService>(new AuthService(
       nullptr, nullptr, nullptr, appRoot));
-  serviceLocator.registerService<IMessageService>(
-      new MessageService(nullptr, appRoot));
-  serviceLocator.registerService<ICallService>(
-      new CallService(nullptr, appRoot));
+
+  auto* messageService = new MessageService(nullptr, nullptr, appRoot);
+  auto* contactService = new ContactService(nullptr, nullptr, appRoot);
+  auto* callService = new CallService(nullptr, appRoot);
+  auto* chatService = new ChatService(nullptr, nullptr, nullptr, appRoot);
+
+  serviceLocator.registerService<IMessageService>(messageService);
+  serviceLocator.registerService<IContactService>(contactService);
+  serviceLocator.registerService<ICallService>(callService);
+  serviceLocator.registerService<IChatService>(chatService);
 
   initializeModels();
 }

@@ -38,6 +38,12 @@ class Message {
   static Message fromJson(const QJsonObject& json);
   QJsonObject toJson() const;
 
+  void setUuid(const QString& uuid) { uuid_ = uuid; }
+  void setSenderUuid(const QString& senderUuid) { senderUuid_ = senderUuid; }
+  void setReceiverUuid(const QString& receiverUuid) { receiverUuid_ = receiverUuid; }
+  void setType(const QString& type) { type_ = type; }
+  void setTimestamp(const QDateTime& timestamp) { timestamp_ = timestamp; }
+
  private:
   QString uuid_;
   QString senderUuid_;
