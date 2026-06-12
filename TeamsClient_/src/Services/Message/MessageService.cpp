@@ -21,37 +21,49 @@ MessageService::MessageService(NetworkService* network, MessageRepository* messa
   connect(network_, &NetworkService::connectionUpdate, this, &MessageService::connectionUpdate);
 }
 
+void MessageService::loadConversationsFromDatabaseAndServer() {
+  // TODO
+  // 1. Fetch des messages depuis le serveur
+  // 2. Enregistrement des messages dans la DB locale (merge)
+  // 3. Fetch des messages depuis la DB locale et émission du signal conversationsLoaded
+
+  // A venir pour mettre à jour la liste de messages depuis le serveur
+  //   QJsonObject payload;
+  //   payload["type"] = "load_messages";
+  //   payload["token"] = UserState::instance().localUser().token();
+  //   network_->send(payload);
+
+  QList<Message> messages = messageRepo_->findAll();
+
+  if (!messages.isEmpty()) {
+    emit conversationsLoaded(messages);
+  }
+}
+
 void MessageService::sendMessage(const QString& recipientUuid, const QString& content) {
   if (recipientUuid.trimmed().isEmpty() || content.trimmed().isEmpty()) {
     emit messageError("Destinataire ou contenu invalide");
     return;
   }
 
-  // Construire l'objet Message
   const QString messageUuid = QUuid::createUuid().toString().remove('{').remove('}');
   const QString senderUuid = UserState::instance().localUser().uuid();
-  const QString type = "chat";  // par défaut
   const QDateTime timestamp = QDateTime::currentDateTime();
 
-  Message msg(messageUuid, senderUuid, recipientUuid, type, content, timestamp, true, false);
+  Message msg(messageUuid, senderUuid, recipientUuid, "chat", content, timestamp, true, false);
   const QJsonObject messageJson = msg.toJson();
 
-  // Valider le message construit
   if (!messageJson.contains("uuid") || !messageJson.contains("senderUuid") ||
       !messageJson.contains("receiverUuid")) {
     emit messageError("Message construit incomplet");
     return;
   }
 
-  const QString token = UserState::instance().localUser().token();
-
-  // Construire le payload et envoyer au network
   QJsonObject payload;
   payload["type"] = "send_message";
-  payload["token"] = token;
+  payload["token"] = UserState::instance().localUser().token();
   payload["message"] = messageJson;
 
-  // Logger avant d'envoyer
   QJsonDocument doc(payload);
   qDebug() << "=== Envoi de message ===";
   qDebug().noquote() << doc.toJson(QJsonDocument::Indented);
@@ -60,20 +72,29 @@ void MessageService::sendMessage(const QString& recipientUuid, const QString& co
   network_->send(payload);
 }
 
-void MessageService::loadConversationsFromDatabaseAndServer() {
-  // Implementation for loading conversations from database and server
-  QList<Message> messages = messageRepo_->findAll();  // Charger d'abord depuis la base locale
-
-    // A venir pour mettre à jour la liste de messages depuis le serveur
-  //   QJsonObject payload;
-  //   payload["type"] = "load_messages";
-  //   payload["token"] = UserState::instance().localUser().token();
-  //   network_->send(payload);
-
-  emit conversationsLoaded(messages);
+void MessageService::saveMessage(const Message& message) {
+  if (messageRepo_->save(message)) {
+    emit messageSaved(message);
+  } else {
+    emit messageError("Impossible de sauvegarder le message");
+  }
 }
 
-void MessageService::disconnectFromServer() { network_->disconnectFromServer(); }
+void MessageService::deleteMessage(const QString& uuid) {
+  if (messageRepo_->remove(uuid)) {
+    emit messageDeleted(uuid);
+  } else {
+    emit messageError("Impossible de supprimer le message");
+  }
+}
+
+void MessageService::deleteAll() {
+  if (messageRepo_->removeAll()) {
+    qDebug() << "Tous les messages supprimés.";
+  } else {
+    qDebug() << "Erreur lors de la suppression de tous les messages.";
+  }
+}
 
 void MessageService::handleServerResponse(const QJsonObject& root) {
   if (!root.contains("type") || !root["type"].isString()) {
@@ -111,10 +132,7 @@ void MessageService::handleServerResponse(const QJsonObject& root) {
       return;
     }
 
-    if (messageRepo_) {
-      messageRepo_->save(message);
-    }
-
+    persistMessages({message});
     emit messageSent(messageJson);
     return;
   }
@@ -124,29 +142,25 @@ void MessageService::handleServerResponse(const QJsonObject& root) {
     return;
   }
 
-  // TO Determine parce que cette partie doit être un fetch de toutes les convs demandés par le client local (en fonction des contacts demandés au serveur)
   if (type == "conversation_response" && root.contains("userUuid") && root.contains("messages") &&
       root["messages"].isArray()) {
-    QJsonArray messagesArray = root["messages"].toArray();
     QList<Message> messages;
-
-    for (const QJsonValue& value : messagesArray) {
-      if (!value.isObject()) {
-        continue;
-      }
-      Message message = Message::fromJson(value.toObject());
-      messages.append(message);
+    for (const QJsonValue& value : root["messages"].toArray()) {
+      if (!value.isObject()) continue;
+      messages.append(Message::fromJson(value.toObject()));
     }
-
+    persistMessages(messages);
     emit conversationsLoaded(messages);
     return;
   }
 }
 
-void MessageService::deleteAll() {
-   if (messageRepo_->removeAll()) {
-    qDebug() << "Tous les messages supprimés.";
-  } else {
-    qDebug() << "Erreur lors de la suppression de tous les messages.";
+void MessageService::persistMessages(const QList<Message>& messages) {
+  for (const Message& message : messages) {
+    if (!messageRepo_->save(message)) {
+      qDebug() << "[MessageService] Impossible de persister le message" << message.uuid();
+    }
   }
 }
+
+void MessageService::disconnectFromServer() { network_->disconnectFromServer(); }

@@ -29,7 +29,11 @@ ContactService::ContactService(NetworkService* network, UserRepository* userRepo
 }
 
 void ContactService::loadContactsFromDatabaseAndServer() {
-  QList<User> users = userRepo_->findAll();
+  
+  // TODO
+  // 1. Fetch des contacts depuis le serveur
+  // 2. Enregistrement des contacts dans la DB locale (merge)
+  // 3. Fetch des contacts depuis la DB locale et émission du signal contactsLoaded
 
 
   // A venir pour mettre à jour la liste de contacts depuis le serveur
@@ -38,6 +42,8 @@ void ContactService::loadContactsFromDatabaseAndServer() {
   //   payload["token"] = UserState::instance().localUser().token();
   //   network_->send(payload);
 
+  QList<User> users = userRepo_->findAll();
+  
     if (!users.isEmpty()) {
     emit contactsLoaded(users);
   }
@@ -59,11 +65,15 @@ void ContactService::deleteContact(const QString& uuid) {
   }
 }
 
-void ContactService::disconnectFromServer() {
-  if (network_) {
-    network_->disconnectFromServer();
+void ContactService::deleteAll() {
+  if (userRepo_->removeAll()) {
+    qDebug() << "Tous les contacts supprimés.";
+  } else {
+    qDebug() << "Erreur lors de la suppression de tous les contacts.";
   }
 }
+
+
 
 void ContactService::handleServerResponse(const QJsonObject& root) {
   if (!root.contains("type") || !root["type"].isString()) {
@@ -85,6 +95,7 @@ void ContactService::handleServerResponse(const QJsonObject& root) {
       }
     }
     persistContacts(users);
+    
     emit contactsLoaded(users);
     return;
   }
@@ -97,4 +108,8 @@ void ContactService::persistContacts(const QList<User>& users) {
       qDebug() << "[ContactService] Impossible de persister le user" << user.uuid();
     }
   }
+}
+
+void ContactService::disconnectFromServer() {
+    network_->disconnectFromServer();
 }

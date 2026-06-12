@@ -5,6 +5,7 @@
 #include <QList>
 #include <QObject>
 #include <QString>
+
 #include "Message.h"
 #include "SessionEnum.h"
 
@@ -22,18 +23,21 @@ class IMessageService : public QObject {
   virtual ~IMessageService() = default;
 
  public slots:
-  virtual void sendMessage(const QString& recipientUuid, const QString& content) = 0;
   virtual void loadConversationsFromDatabaseAndServer() = 0;
-  virtual void disconnectFromServer() = 0;
+  virtual void sendMessage(const QString& recipientUuid, const QString& content) = 0;
+  virtual void saveMessage(const Message& message) = 0;
+  virtual void deleteMessage(const QString& uuid) = 0;
   virtual void deleteAll() = 0;
+  virtual void disconnectFromServer() = 0;
 
  signals:
-  void messageSent(const QJsonObject& message);
-  void messageReceived(const QJsonObject& message);
   void conversationsLoaded(const QList<Message>& messages);
-  void contactsLoaded(const QList<QJsonObject>& contacts);
+  void messageSent(const QJsonObject& message);
+  void messageSaved(const Message& message);
+  void messageDeleted(const QString& uuid);
   void messageError(const QString& error);
   void connectionUpdate(ServerType server, bool status);
+  void messageReceived(const QJsonObject& message);
 };
 
 #endif

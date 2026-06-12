@@ -16,12 +16,15 @@
 class MessageService : public IMessageService {
   Q_OBJECT
  public:
-  explicit MessageService(NetworkService* network = nullptr, MessageRepository* messageRepo = nullptr, QObject* parent = nullptr);
-
+  explicit MessageService(NetworkService* network = nullptr,
+                          MessageRepository* messageRepo = nullptr,
+                          QObject* parent = nullptr);
 
  public slots:
-  void sendMessage(const QString& recipientUuid, const QString& content) override;
   void loadConversationsFromDatabaseAndServer() override;
+  void sendMessage(const QString& recipientUuid, const QString& content) override;
+  void saveMessage(const Message& message) override;
+  void deleteMessage(const QString& uuid) override;
   void deleteAll() override;
   void disconnectFromServer() override;
 
@@ -29,6 +32,8 @@ class MessageService : public IMessageService {
   void handleServerResponse(const QJsonObject& root);
 
  private:
+  void persistMessages(const QList<Message>& messages);
+
   NetworkService* network_;
   MessageRepository* messageRepo_;
 };

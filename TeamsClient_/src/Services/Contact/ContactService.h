@@ -27,6 +27,7 @@ class ContactService : public IContactService {
   void loadContactsFromDatabaseAndServer() override;
   void saveContact(const User& user) override;
   void deleteContact(const QString& uuid) override;
+    void deleteAll() override;
   void disconnectFromServer() override;
 
  private slots:
