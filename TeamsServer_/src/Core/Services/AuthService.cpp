@@ -34,7 +34,7 @@ std::optional<User> AuthService::registerUser(const std::string &firstName,
                                               const std::string &password) {
   std::optional<User> user_ = userRepo_->find_by_email(email);
   if (!user_) {
-    User user(Crypto::generate_uuid(), firstName, lastName, email,
+    User user(Crypto::generate_uuid_v4(), firstName, lastName, email,
               Crypto::hash_password(password), Crypto::generate_token(),
               config_.token_expiry_time(), "Online", config_.time(),
               config_.time());

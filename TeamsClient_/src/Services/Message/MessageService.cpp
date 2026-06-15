@@ -46,7 +46,7 @@ void MessageService::sendMessage(const QString& recipientUuid, const QString& co
     return;
   }
 
-  const QString messageUuid = QUuid::createUuid().toString().remove('{').remove('}');
+  const QString messageUuid = "";
   const QString senderUuid = UserState::instance().localUser().uuid();
   const QDateTime timestamp = QDateTime::currentDateTime();
 

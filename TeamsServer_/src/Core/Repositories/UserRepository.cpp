@@ -73,14 +73,6 @@ std::optional<User> UserRepository::find_by_token(const std::string &token) {
     pqxx::work txn(*conn);
     pqxx::result result = txn.exec_params(query, token);
 
-    auto check = txn.exec("SELECT token_expires_at, NOW(), token_expires_at > NOW() FROM " 
-                       + config_.table_users() + " WHERE token = '" + token + "'");
-if (!check.empty()) {
-    std::cout << "[DEBUG] expires_at: " << check[0][0].c_str()
-              << " NOW: "              << check[0][1].c_str()
-              << " valid: "            << check[0][2].c_str() << std::endl;
-}
-
     std::cout << "[DEBUG find_by_token] Result rows: " << result.size()
               << std::endl;
     for (const auto &row : result) {
