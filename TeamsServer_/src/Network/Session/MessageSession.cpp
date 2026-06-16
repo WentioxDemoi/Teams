@@ -20,9 +20,9 @@ void MessageSession::do_read() {
         if (!ec) {
           std::string payload(self->buffer_.data(), bytes);
           std::cout << "Message: " << payload << std::endl;
-          auto callback = [self](std::string response) {
+          auto callback = [self](const std::string& response) {
             asio::post(self->stream_.get_executor(),
-                       [self, response]() { self->handle_response(response); });
+                       [self, response]() { self->send(response); });
           };
           self->messageHandler_->handle_type(payload, callback);
           self->do_read();
@@ -32,7 +32,7 @@ void MessageSession::do_read() {
       });
 }
 
-void MessageSession::handle_response(std::string payload) {
+void MessageSession::send(const std::string& payload) {
   auto self = shared_from_this();
   asio::async_write(stream_, asio::buffer(payload + "\n"),
                     [self](boost::system::error_code ec, std::size_t) {

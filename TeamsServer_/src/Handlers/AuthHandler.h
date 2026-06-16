@@ -18,22 +18,21 @@ using ResponseCallback = std::function<void(std::string)>;
  * via un callback.
  */
 class AuthHandler {
-public:
+ public:
   void handle_login(std::string payload, ResponseCallback respond);
   void handle_register(std::string payload, ResponseCallback respond);
   void handle_token(std::string payload, ResponseCallback respond);
   void handle_type(std::string payload, ResponseCallback respond);
 
-  AuthHandler(ResponseCallback respond) : worker_pool_(Config::instance().worker_pool_size()) {
-    authService_ =
-        std::make_unique<AuthService>(std::make_unique<UserRepository>());
-  };
+  AuthHandler(std::unique_ptr<AuthService> authService)
+      : worker_pool_(Config::instance().worker_pool_size()),
+        authService_(std::move(authService)) {};
   ~AuthHandler() = default;
 
-private:
+ private:
   asio::thread_pool worker_pool_;
 
-protected:
+ protected:
   std::unique_ptr<AuthService> authService_;
 };
 

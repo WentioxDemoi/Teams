@@ -2,6 +2,8 @@
 #define TCPLISTENERMESSAGE_H
 
 #include "../../Utils/BoostErrorHandler.h"
+#include "../../Handlers/AuthHandler.h"
+#include "../../Handlers/MessageHandler.h"
 #include "../../includes.h"
 #include "../Session/MessageSession.h"
 #include <memory>
@@ -10,7 +12,7 @@
 class TcpListenerMessage {
 public:
   TcpListenerMessage(asio::io_context &io_context, ssl::context &ssl_ctx,
-                     tcp::endpoint endpoint);
+                     tcp::endpoint endpoint, std::shared_ptr<MessageHandler> messageHandler);
 
   void send_to(const std::string& user_uuid, const std::string& payload);
   void register_session(const std::string& user_uuid, std::shared_ptr<MessageSession> session);
@@ -19,6 +21,7 @@ public:
 private:
   void do_accept();
 
+  std::shared_ptr<MessageHandler> messageHandler_;
   tcp::acceptor acceptor_;
   ssl::context &ssl_ctx_;
   std::unordered_map<std::string, std::shared_ptr<MessageSession>> sessions_;

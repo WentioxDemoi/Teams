@@ -1,11 +1,14 @@
 #ifndef MESSAGESESSION_H
 #define MESSAGESESSION_H
 
+#include <functional>
 #include <memory>
 
 #include "../../Handlers/MessageHandler.h"
 #include "../../Utils/BoostErrorHandler.h"
 #include "../../includes.h"
+
+using SendToCallback = std::function<void(const std::string&, const std::string&)>;
 
 /**
  * @class MessageSession
@@ -16,20 +19,21 @@
  */
 class MessageSession : public std::enable_shared_from_this<MessageSession> {
  public:
-  MessageSession(tcp::socket socket, ssl::context& ctx) : stream_(std::move(socket), ctx) {
-    messageHandler_ =
-        std::make_unique<MessageHandler>([this](std::string response) { handle_response(std::move(response)); });
+  MessageSession(tcp::socket socket, ssl::context& ctx, std::shared_ptr<MessageHandler> messageHandler, SendToCallback send_to_callback)
+      : stream_(std::move(socket), ctx), messageHandler_(messageHandler), send_to_callback_(send_to_callback) {
   }
 
   void start();
+  void send(const std::string& payload);
 
  private:
   void do_read();
-  void handle_response(std::string payload);
 
   ssl::stream<tcp::socket> stream_;
   std::array<char, 4096> buffer_;
-  std::unique_ptr<MessageHandler> messageHandler_;
+  std::shared_ptr<MessageHandler> messageHandler_;
+
+  SendToCallback send_to_callback_;
 };
 
 #endif
