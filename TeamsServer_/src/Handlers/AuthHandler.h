@@ -24,16 +24,16 @@ class AuthHandler {
   void handle_token(std::string payload, ResponseCallback respond);
   void handle_type(std::string payload, ResponseCallback respond);
 
-  AuthHandler(std::unique_ptr<AuthService> authService)
+  AuthHandler(std::shared_ptr<AuthService> authService)
       : worker_pool_(Config::instance().worker_pool_size()),
-        authService_(std::move(authService)) {};
+        authService_(authService) {};
   ~AuthHandler() = default;
 
  private:
   asio::thread_pool worker_pool_;
 
  protected:
-  std::unique_ptr<AuthService> authService_;
+  std::shared_ptr<AuthService> authService_;
 };
 
 #endif

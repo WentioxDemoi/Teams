@@ -47,7 +47,7 @@ void MessageService::sendMessage(const QString& recipientUuid, const QString& co
   }
 
   const QString messageUuid = "";
-  const QString senderUuid = UserState::instance().localUser().uuid();
+  const QString senderUuid = "";
   const QDateTime timestamp = QDateTime::currentDateTime();
 
   Message msg(messageUuid, senderUuid, recipientUuid, "chat", content, timestamp, true, false);

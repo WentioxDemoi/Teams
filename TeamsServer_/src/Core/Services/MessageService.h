@@ -3,7 +3,9 @@
 
 #include "../../Utils/Crypto.h"
 #include "../Repositories/MessageRepository.h"
+#include "../../Core/Registeries/MessageSessionRegistry.h"
 #include "../Models/Message.h"
+#include <memory>
 
 /**
  * @class MessageService
@@ -15,11 +17,11 @@
  */
 class MessageService {
 public:
-  MessageService(std::unique_ptr<MessageRepository> messageRepo)
-      : messageRepo_(std::move(messageRepo)), config_(Config::instance()) {};
+  MessageService(std::unique_ptr<MessageRepository> messageRepo, std::shared_ptr<MessageSessionRegistry> messageSessionRegistry)
+      : messageRepo_(std::move(messageRepo)), messageSessionRegistry_(messageSessionRegistry), config_(Config::instance()) {};
   virtual ~MessageService() = default;
 
-  virtual std::optional<Message> sendMessage(const std::string &token,
+  virtual std::optional<Message> sendMessage(
                                             const std::string &senderUuid,
                                             const std::string &receiverUuid,
                                             const std::string &content); // A modifier car c'est dans cette fonction qu'on va dépacketer le message
@@ -28,6 +30,7 @@ public:
 
 private:
   std::unique_ptr<MessageRepository> messageRepo_;
+  std::shared_ptr<MessageSessionRegistry> messageSessionRegistry_;
   Config &config_;
 };
 

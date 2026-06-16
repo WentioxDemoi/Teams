@@ -4,11 +4,12 @@
 #include <functional>
 #include <memory>
 
+#include "../../Core/Registeries/MessageSessionRegistry.h"
 #include "../../Handlers/MessageHandler.h"
 #include "../../Utils/BoostErrorHandler.h"
 #include "../../includes.h"
+#include "../../Core/Services/AuthService.h"
 
-using SendToCallback = std::function<void(const std::string&, const std::string&)>;
 
 /**
  * @class MessageSession
@@ -19,9 +20,14 @@ using SendToCallback = std::function<void(const std::string&, const std::string&
  */
 class MessageSession : public std::enable_shared_from_this<MessageSession> {
  public:
-  MessageSession(tcp::socket socket, ssl::context& ctx, std::shared_ptr<MessageHandler> messageHandler, SendToCallback send_to_callback)
-      : stream_(std::move(socket), ctx), messageHandler_(messageHandler), send_to_callback_(send_to_callback) {
-  }
+  MessageSession(tcp::socket socket, ssl::context& ctx,
+                 std::shared_ptr<MessageHandler> messageHandler,
+                 std::shared_ptr<MessageSessionRegistry> messageSessionRegistry,
+                 std::shared_ptr<AuthService> authService)
+      : stream_(std::move(socket), ctx),
+        messageHandler_(messageHandler),
+        messageSessionRegistry_(messageSessionRegistry),
+        authService_(authService) {}
 
   void start();
   void send(const std::string& payload);
@@ -32,8 +38,10 @@ class MessageSession : public std::enable_shared_from_this<MessageSession> {
   ssl::stream<tcp::socket> stream_;
   std::array<char, 4096> buffer_;
   std::shared_ptr<MessageHandler> messageHandler_;
-
-  SendToCallback send_to_callback_;
+  std::shared_ptr<MessageSessionRegistry> messageSessionRegistry_;
+  std::shared_ptr<AuthService> authService_;
+  std::string user_uuid_;
+  bool isFirstMessage_ = true;
 };
 
 #endif
