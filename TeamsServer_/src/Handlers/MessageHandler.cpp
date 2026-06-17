@@ -1,17 +1,19 @@
 #include "MessageHandler.h"
+#include "../Utils/ResponseFormater.h"
+#include "../Utils/PacketHelper.h"
+#include "../Core/Repositories/MessageRepository.h"
 
-void MessageHandler::handle_send_message(std::string senderUuid, std::string payload, ResponseCallback respond) {
-  auto receiverUuid  = HandlerTools::extractValue(payload, "receiverUuid");
-  auto content       = HandlerTools::extractValue(payload, "content");
+void MessageHandler::handle_send_message(std::string uuid, std::string payload, ResponseCallback respond) {
 
-  asio::post(worker_pool_, [this, senderUuid, receiverUuid, content, respond]() {
+  PacketHelper::insertValue(payload, "senderUuid", uuid);
+  asio::post(worker_pool_, [this, payload, respond]() {
     try {
-      auto response = messageService_->sendMessage(senderUuid, receiverUuid, content);
+      auto response = messageService_->sendMessage(payload);
       std::string result;
       if (!response.has_value()) {
         result = R"({"type":"message_sent","error":"Send failed: invalid data or unauthorized."})";
       } else {
-        result = ResponseFormater::format_message_response("message_sent", *response);
+        result = ResponseFormater::format_message_response("message_sent", response.value());
       }
       respond(result);
     } catch (const std::exception& e) {
@@ -21,7 +23,7 @@ void MessageHandler::handle_send_message(std::string senderUuid, std::string pay
   });
 }
 
-void MessageHandler::handle_load_messages(std::string senderUuid, std::string payload, ResponseCallback respond) {
+void MessageHandler::handle_load_messages(std::string uuid, std::string payload, ResponseCallback respond) {
   // auto token    = HandlerTools::extractValue(payload, "token");
   // auto userUuid = HandlerTools::extractValue(payload, "userUuid");
 
@@ -42,16 +44,16 @@ void MessageHandler::handle_load_messages(std::string senderUuid, std::string pa
   // });
 }
 
-void MessageHandler::handle_type(std::string senderUuid, std::string payload, ResponseCallback respond) {
-  std::string type = HandlerTools::extractValue(payload, "type");
+void MessageHandler::handle_type(std::string uuid, std::string payload, ResponseCallback respond) {
+  std::string type = PacketHelper::extractValue(payload, "type");
   std::cout << "type : " << type << std::endl;
   if (type.empty())
     return;
 
   if (type == "send_message") {
-    handle_send_message(senderUuid, payload, respond);
+    handle_send_message(uuid, payload, respond);
   } else if (type == "load_messages") {
-    handle_load_messages(senderUuid, payload, respond);
+    handle_load_messages(uuid, payload, respond);
   } else {
     std::cerr << "[MessageHandler] Unknown message type: " << type << "\n";
   }

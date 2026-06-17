@@ -233,4 +233,5 @@ void QueryBuilder::reset() {
   returning_columns_.clear();
   limit_.reset();
   offset_.reset();
+  insert_columns_.clear();
 }

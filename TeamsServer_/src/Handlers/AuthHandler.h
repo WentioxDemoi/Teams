@@ -1,11 +1,8 @@
 #ifndef AUTHHANDLER_H
 #define AUTHHANDLER_H
 
-#include "../Core/Repositories/UserRepository.h"
 #include "../Core/Services/AuthService.h"
-#include "../Utils/ResponseFormater.h"
-#include "../includes.h"
-#include "HandlerTools.h"
+
 
 using ResponseCallback = std::function<void(std::string)>;
 

@@ -1,4 +1,5 @@
 #include "MessageSession.h"
+#include "../../Utils/PacketHelper.h"
 
 void MessageSession::start() {
   auto self = shared_from_this();
@@ -20,7 +21,7 @@ void MessageSession::do_read() {
           std::cout << "Message: " << payload << std::endl;
 
           if (self->isFirstMessage_) {
-            auto token = HandlerTools::extractValue(payload, "token");
+            auto token = PacketHelper::extractValue(payload, "token");
             auto user = self->authService_->validateToken(token);
             if (!user) {
               std::cerr << "[MessageSession] Invalid token: " << token << "\n";
@@ -39,13 +40,16 @@ void MessageSession::do_read() {
           self->messageHandler_->handle_type(self->user_uuid_, payload, callback);
           self->do_read();
         } else {
-          if (!self->user_uuid_.empty())
+          if (ec == boost::asio::ssl::error::stream_truncated) {
+            std::cout << "[MessageSession] Client disconnected (no clean TLS shutdown)" << std::endl;
             self->messageSessionRegistry_->unregisterMessageSession(self->user_uuid_);
-          BoostErrorHandler::log("MessageSession", "Read", ec);
+            return;
+          }
         }
       });
 }
 
+// Plus tard il faudra utiliser une COROUTINE avec timeout pour gérer les envois de messages
 void MessageSession::send(const std::string& payload) {
   auto self = shared_from_this();
   asio::async_write(stream_, asio::buffer(payload + "\n"),

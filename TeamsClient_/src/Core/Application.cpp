@@ -34,6 +34,8 @@ Application::Application(int& argc, char** argv) : qtApp(argc, argv) {
   qputenv("QT_QUICK_CONTROLS_STYLE", "Basic");
   QCoreApplication::setApplicationName("Teams");
 
+
+
   initializePerms();
 }
 
@@ -64,6 +66,9 @@ void Application::initializeServices() {
 
   stateLocator.registerState<UserState>(&UserState::instance());
   stateLocator.registerState<SessionState>(&SessionState::instance());
+
+  QObject::connect(&qtApp, &QCoreApplication::aboutToQuit,
+      stateLocator.getState<SessionState>(), &SessionState::onApplicationQuit);
 
   serviceLocator.registerService<ITokenManager>(&TokenManager::instance());
 
@@ -112,7 +117,7 @@ void Application::initializeViewModels() {
 
   locator.registerViewModels<AuthViewModel>(authVM);
 
-  auto* chatVM = new ChatViewModel(nullptr, nullptr, appRoot);
+  auto* chatVM = new ChatViewModel(nullptr, nullptr, nullptr, appRoot);
 
   locator.registerViewModels<ChatViewModel>(chatVM);
 

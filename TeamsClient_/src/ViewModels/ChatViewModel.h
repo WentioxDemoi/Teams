@@ -9,6 +9,8 @@
 #include "../Models/UserList.h"
 #include "../Models/User.h"
 #include "Interfaces/IChatService.h"
+#include "StateLocator.h"
+#include "State/SessionState.h"
 
 class MessageRepository; // TMP
 
@@ -35,6 +37,7 @@ class ChatViewModel : public QObject {
  public:
   explicit ChatViewModel(UserList* user = nullptr,
                          IChatService* chatService = nullptr,
+                         SessionState* sessionState = nullptr,
                          QObject* parent = nullptr);
 
   UserList* userList() const;
@@ -51,7 +54,7 @@ class ChatViewModel : public QObject {
   void onLocalUserSaved(const User& user); // TMP
   void onContactsLoaded(const QList<User>& users);
   void onMessagesLoaded(const QList<Message>& messages);
-
+  void onApplicationQuit();
  signals:
   //   void callStarted(const QString& userUuid);
   //   void callError(const QString& error);
@@ -71,6 +74,7 @@ class ChatViewModel : public QObject {
   QHash<QString, MessageList*> messagesByUuid_;
   MessageList* currentMessageList_;  // Displayed by QML
   QVariantMap selectedUser_;
+  SessionState* sessionState_;
 };
 
 #endif

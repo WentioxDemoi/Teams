@@ -1,4 +1,5 @@
 #include "TcpListenerMessage.h"
+#include "../../Utils/BoostErrorHandler.h"
 
 TcpListenerMessage::TcpListenerMessage(
     asio::io_context& io_context, ssl::context& ssl_ctx, tcp::endpoint endpoint,

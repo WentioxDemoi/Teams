@@ -43,7 +43,7 @@ DatabaseManager::DatabaseManager() {
     uuid         TEXT PRIMARY KEY,
     sender_uuid  TEXT NOT NULL,
     receiver_uuid TEXT NOT NULL,
-    type         TEXT,
+    chatType         TEXT,
     content      TEXT,
     timestamp    TEXT,
     is_read      INTEGER DEFAULT 0,

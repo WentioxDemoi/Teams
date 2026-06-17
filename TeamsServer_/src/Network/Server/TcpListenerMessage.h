@@ -5,9 +5,7 @@
 #include <unordered_map>
 
 #include "../../Core/Registeries/MessageSessionRegistry.h"
-#include "../../Handlers/AuthHandler.h"
 #include "../../Handlers/MessageHandler.h"
-#include "../../Utils/BoostErrorHandler.h"
 #include "../../includes.h"
 #include "../Session/MessageSession.h"
 #include "../../Core/Services/AuthService.h"

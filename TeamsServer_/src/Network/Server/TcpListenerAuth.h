@@ -1,9 +1,7 @@
 #ifndef TCPLISTENERAUTH_H
 #define TCPLISTENERAUTH_H
 
-#include "../../Utils/BoostErrorHandler.h"
 #include "../../includes.h"
-#include "../Session/AuthSession.h"
 #include <memory>
 
 /**

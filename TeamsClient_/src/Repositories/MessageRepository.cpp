@@ -11,7 +11,7 @@ MessageRepository::MessageRepository(QObject* parent)
 std::optional<Message> MessageRepository::findByUUID(const QString& uuid) {
   QSqlQuery query(db_);
   query.prepare(R"(
-      SELECT uuid, sender_uuid, receiver_uuid, type, content, timestamp, is_read, from_me
+      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp, is_read, from_me
       FROM messages
       WHERE uuid = :uuid
   )");
@@ -28,7 +28,7 @@ std::optional<Message> MessageRepository::findByUUID(const QString& uuid) {
       query.value("uuid").toString(),
       query.value("sender_uuid").toString(),
       query.value("receiver_uuid").toString(),
-      query.value("type").toString(),
+      query.value("chatType").toString(),
       query.value("content").toString(),
       QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate),
       query.value("from_me").toBool(),
@@ -43,7 +43,7 @@ QList<Message> MessageRepository::findAll() {
   QSqlQuery query(db_);
 
   if (!query.exec(R"(
-      SELECT uuid, sender_uuid, receiver_uuid, type, content, timestamp, is_read, from_me
+      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp, is_read, from_me
       FROM messages
       ORDER BY timestamp ASC
   )")) {
@@ -56,7 +56,7 @@ QList<Message> MessageRepository::findAll() {
         query.value("uuid").toString(),
         query.value("sender_uuid").toString(),
         query.value("receiver_uuid").toString(),
-        query.value("type").toString(),
+        query.value("chatType").toString(),
         query.value("content").toString(),
         QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate),
         query.value("from_me").toBool(),
@@ -70,7 +70,7 @@ QList<Message> MessageRepository::findForConversation(const QString& userUuid1, 
   QList<Message> messages;
   QSqlQuery query(db_);
   query.prepare(R"(
-      SELECT uuid, sender_uuid, receiver_uuid, type, content, timestamp, is_read, from_me
+      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp, is_read, from_me
       FROM messages
       WHERE (sender_uuid = :user1 AND receiver_uuid = :user2)
          OR (sender_uuid = :user2 AND receiver_uuid = :user1)
@@ -89,7 +89,7 @@ QList<Message> MessageRepository::findForConversation(const QString& userUuid1, 
         query.value("uuid").toString(),
         query.value("sender_uuid").toString(),
         query.value("receiver_uuid").toString(),
-        query.value("type").toString(),
+        query.value("chatType").toString(),
         query.value("content").toString(),
         QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate),
         query.value("from_me").toBool(),
@@ -103,7 +103,7 @@ QList<Message> MessageRepository::findForParticipant(const QString& participantU
   QList<Message> messages;
   QSqlQuery query(db_);
   query.prepare(R"(
-      SELECT uuid, sender_uuid, receiver_uuid, type, content, timestamp, is_read, from_me
+      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp, is_read, from_me
       FROM messages
       WHERE sender_uuid = :participant OR receiver_uuid = :participant
       ORDER BY timestamp ASC
@@ -120,7 +120,7 @@ QList<Message> MessageRepository::findForParticipant(const QString& participantU
         query.value("uuid").toString(),
         query.value("sender_uuid").toString(),
         query.value("receiver_uuid").toString(),
-        query.value("type").toString(),
+        query.value("chatType").toString(),
         query.value("content").toString(),
         QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate),
         query.value("from_me").toBool(),
@@ -138,7 +138,7 @@ bool MessageRepository::save(const Message& message) {
             uuid,
             sender_uuid,
             receiver_uuid,
-            type,
+            chatType,
             content,
             timestamp,
             is_read,
@@ -148,7 +148,7 @@ bool MessageRepository::save(const Message& message) {
             :uuid,
             :senderUuid,
             :receiverUuid,
-            :type,
+            :chatType,
             :content,
             :timestamp,
             :isRead,
@@ -159,7 +159,7 @@ bool MessageRepository::save(const Message& message) {
         DO UPDATE SET
             sender_uuid = excluded.sender_uuid,
             receiver_uuid = excluded.receiver_uuid,
-            type = excluded.type,
+            chatType = excluded.chatType,
             content = excluded.content,
             timestamp = excluded.timestamp,
             is_read = excluded.is_read,
@@ -169,7 +169,7 @@ bool MessageRepository::save(const Message& message) {
     query.bindValue(":uuid", message.uuid());
     query.bindValue(":senderUuid", message.senderUuid());
     query.bindValue(":receiverUuid", message.receiverUuid());
-    query.bindValue(":type", message.type());
+    query.bindValue(":chatType", message.chatType());
     query.bindValue(":content", message.content());
     query.bindValue(":timestamp", message.timestamp().toString(Qt::ISODate));
     query.bindValue(":isRead", message.isRead());

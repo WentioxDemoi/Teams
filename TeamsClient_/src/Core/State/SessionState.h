@@ -34,6 +34,9 @@ public:
 public slots:
     void onServerConnectionUpdate(ServerType server, bool status);
 
+signals:
+    void onApplicationQuit();
+
 
 
 private:

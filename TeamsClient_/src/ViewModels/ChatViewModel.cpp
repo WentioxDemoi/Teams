@@ -11,20 +11,25 @@
 #include "ModelLocator.h"
 #include "ServiceLocator.h"
 
-ChatViewModel::ChatViewModel(UserList* userList, IChatService* chatService, QObject* parent)
+
+ChatViewModel::ChatViewModel(UserList* userList, IChatService* chatService, SessionState* sessionState, QObject* parent)
     : QObject(parent),
       chatService_(chatService ? chatService
                                : ServiceLocator::instance().getService<IChatService>()),
       userList_(userList ? userList : ModelLocator::instance().getModel<UserList>()),
       messageRepository_(new MessageRepository(parent)),
       currentMessageList_(nullptr),
+      sessionState_(sessionState ? sessionState : StateLocator::instance().getState<SessionState>()),
       selectedUser_() {
   // TMP
   {
     connect(&UserState::instance(), &UserState::localUserSaved, this,
             &ChatViewModel::onLocalUserSaved);
+    connect(sessionState_, &SessionState::onApplicationQuit, this, &ChatViewModel::onApplicationQuit);
     connect(chatService_, &IChatService::contactsLoaded, this, &ChatViewModel::onContactsLoaded);
     connect(chatService_, &IChatService::conversationsLoaded, this, &ChatViewModel::onMessagesLoaded);
+    connect(chatService_, &IChatService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
+
   }
 }
 
@@ -101,36 +106,36 @@ qDebug() << "[ChatViewModel] seedDatabaseMessages called with localUuid=" << loc
     }
   };
 
-  insertMessage(Message("m1", "uuid-alice", localUuid, "chat",
+  insertMessage(Message("m1", "uuid-alice", localUuid, "message",
                         "Salut ! T'as regardé le doc que j'ai partagé ?",
                         now.addSecs(-3600), false, false));
-  insertMessage(Message("m2", localUuid, "uuid-alice", "chat",
+  insertMessage(Message("m2", localUuid, "uuid-alice", "message",
                         "Pas encore, j'ai été pris dans les réunions", now.addSecs(-3400),
                         true, false));
-  insertMessage(Message("m3", "uuid-alice", localUuid, "chat",
+  insertMessage(Message("m3", "uuid-alice", localUuid, "message",
                         "OK je regarde ça ce soir 👍", now.addSecs(-3200), false, false));
 
-  insertMessage(Message("m4", localUuid, "uuid-bob", "chat",
+  insertMessage(Message("m4", localUuid, "uuid-bob", "message",
                         "Hey, t'as avancé sur le projet ?", now.addSecs(-7200), true, false));
-  insertMessage(Message("m5", "uuid-bob", localUuid, "chat",
+  insertMessage(Message("m5", "uuid-bob", localUuid, "message",
                         "Ouais, presque fini. Il me manque juste un fichier",
                         now.addSecs(-7000), false, false));
-  insertMessage(Message("m6", "uuid-bob", localUuid, "chat", "Tu peux m'envoyer le fichier ?",
+  insertMessage(Message("m6", "uuid-bob", localUuid, "message", "Tu peux m'envoyer le fichier ?",
                         now.addSecs(-6800), false, false));
 
-  insertMessage(Message("m7", localUuid, "uuid-clara", "chat",
+  insertMessage(Message("m7", localUuid, "uuid-clara", "message",
                         "On se retrouve à quelle heure demain ?", now.addSecs(-86400), true,
                         false));
-  insertMessage(Message("m8", "uuid-clara", localUuid, "chat", "10h ça te va ?",
+  insertMessage(Message("m8", "uuid-clara", localUuid, "message", "10h ça te va ?",
                         now.addSecs(-86200), false, false));
-  insertMessage(Message("m9", localUuid, "uuid-clara", "chat", "Nickel !",
+  insertMessage(Message("m9", localUuid, "uuid-clara", "message", "Nickel !",
                         now.addSecs(-86000), true, false));
-  insertMessage(Message("m10", "uuid-clara", localUuid, "chat",
+  insertMessage(Message("m10", "uuid-clara", localUuid, "message",
                         "Parfait, à demain alors !", now.addSecs(-85800), false, false));
 
-  insertMessage(Message("m11", localUuid, "uuid-brice", "chat", "Ça roule ?",
+  insertMessage(Message("m11", localUuid, "uuid-brice", "message", "Ça roule ?",
                         now.addSecs(-172800), true, false));
-  insertMessage(Message("m12", "uuid-brice", localUuid, "chat",
+  insertMessage(Message("m12", "uuid-brice", localUuid, "message",
                         "Parfait, à jamais alors !", now.addSecs(-172600), false, false));
 }
 
@@ -209,4 +214,9 @@ void ChatViewModel::onMessagesLoaded(const QList<Message>& messages) {
     }
 
     selectUser(conversationUuid);
+}
+
+void ChatViewModel::onApplicationQuit() {
+    qDebug() << "[ChatViewModel] Application is quitting. Performing disconnect.";
+    chatService_->disconnectFromServer();
 }

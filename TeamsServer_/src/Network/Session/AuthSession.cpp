@@ -28,7 +28,10 @@ void AuthSession::do_read() {
           self->authHandler_->handle_type(payload, callback);
           self->do_read();
         } else {
-          BoostErrorHandler::log("AuthSession", "Read", ec);
+          if (ec == boost::asio::ssl::error::stream_truncated) {
+              std::cout << "[AuthSession] Client disconnected (no clean TLS shutdown)"  << std::endl;;
+              return;
+          }
         }
       });
 }

@@ -1,8 +1,13 @@
 #include "AuthHandler.h"
+#include "../Utils/ResponseFormater.h"
+#include "../includes.h"
+#include "../Utils/PacketHelper.h"
+#include "../Core/Repositories/UserRepository.h"
+
 
 void AuthHandler::handle_login(std::string payload, ResponseCallback respond) {
-  auto email = HandlerTools::extractValue(payload, "email");
-  auto password = HandlerTools::extractValue(payload, "password");
+  auto email = PacketHelper::extractValue(payload, "email");
+  auto password = PacketHelper::extractValue(payload, "password");
 
   asio::post(worker_pool_, [this, email, password, respond]() {
     try {
@@ -30,10 +35,10 @@ void AuthHandler::handle_login(std::string payload, ResponseCallback respond) {
 
 void AuthHandler::handle_register(std::string payload,
                                   ResponseCallback respond) {
-  auto email     = HandlerTools::extractValue(payload, "email");
-  auto firstName = HandlerTools::extractValue(payload, "firstName");
-  auto lastName  = HandlerTools::extractValue(payload, "lastName");
-  auto password  = HandlerTools::extractValue(payload, "password");
+  auto email     = PacketHelper::extractValue(payload, "email");
+  auto firstName = PacketHelper::extractValue(payload, "firstName");
+  auto lastName  = PacketHelper::extractValue(payload, "lastName");
+  auto password  = PacketHelper::extractValue(payload, "password");
 
   asio::post(worker_pool_, [this, email, firstName, lastName, password, respond]() {
     try {
@@ -59,7 +64,7 @@ void AuthHandler::handle_register(std::string payload,
 }
 
 void AuthHandler::handle_token(std::string payload, ResponseCallback respond) {
-  auto token = HandlerTools::extractValue(payload, "token");
+  auto token = PacketHelper::extractValue(payload, "token");
 
   asio::post(worker_pool_, [this, token, respond]() {
     try {
@@ -85,7 +90,7 @@ void AuthHandler::handle_token(std::string payload, ResponseCallback respond) {
 }
 
 void AuthHandler::handle_type(std::string payload, ResponseCallback respond) {
-  std::string type = HandlerTools::extractValue(payload, "type");
+  std::string type = PacketHelper::extractValue(payload, "type");
   std::string result;
   std::cout << "type : " << type << std::endl;
   if (type.empty())

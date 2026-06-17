@@ -98,7 +98,7 @@ void NetworkService::disconnectFromServer() {
   if (socket_.state() != QAbstractSocket::UnconnectedState) {
     socket_.disconnectFromHost();
     socket_.waitForDisconnected(3000);
+    qDebug() << "Disconnected from server with port" << port_;
   }
-  qDebug() << "Disconnected from server with port" << port_;
   buffer_.clear();
 }

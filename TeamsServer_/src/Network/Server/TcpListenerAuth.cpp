@@ -1,4 +1,6 @@
 #include "TcpListenerAuth.h"
+#include "../Session/AuthSession.h"
+#include "../../Utils/BoostErrorHandler.h"
 
 
 TcpListenerAuth::TcpListenerAuth(asio::io_context &io_context,
@@ -12,7 +14,7 @@ void TcpListenerAuth::do_accept() {
   acceptor_.async_accept([this](boost::system::error_code ec,
                                 tcp::socket socket) {
     if (!ec) {
-      std::cout << "[Server] New connection\n";
+      std::cout << "[AuthServer] New connection\n";
 
       auto session =
           std::make_shared<AuthSession>(std::move(socket), ssl_ctx_, authHandler_);

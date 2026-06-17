@@ -3,12 +3,12 @@
 #include <QJsonObject>
 
 Message::Message(const QString& uuid, const QString& senderUuid, const QString& receiverUuid,
-                 const QString& type, const QString& content, const QDateTime& timestamp,
+                 const QString& chatType, const QString& content, const QDateTime& timestamp,
                  bool fromMe, bool isRead)
     : uuid_(uuid),
       senderUuid_(senderUuid),
       receiverUuid_(receiverUuid),
-      type_(type),
+      chatType_(chatType),
       content_(content),
       timestamp_(timestamp),
       fromMe_(fromMe),
@@ -19,7 +19,7 @@ Message Message::fromJson(const QJsonObject& json) {
       json["uuid"].toString(),
       json["senderUuid"].toString(),
       json["receiverUuid"].toString(),
-      json["type"].toString(),
+      json["chatType"].toString(),
       json["content"].toString(),
       QDateTime::fromString(json["timestamp"].toString(), Qt::ISODate),
       json["fromMe"].toBool(),
@@ -31,7 +31,7 @@ QJsonObject Message::toJson() const {
       {"uuid", uuid_},
       {"senderUuid", senderUuid_},
       {"receiverUuid", receiverUuid_},
-      {"type", type_},
+      {"chatType", chatType_},
       {"content", content_},
       {"timestamp", timestamp_.toString(Qt::ISODate)},
       {"fromMe", fromMe_},

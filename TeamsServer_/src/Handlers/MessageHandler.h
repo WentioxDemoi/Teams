@@ -1,11 +1,7 @@
 #ifndef MESSAGEHANDLER_H
 #define MESSAGEHANDLER_H
 
-#include "../Core/Repositories/MessageRepository.h"
 #include "../Core/Services/MessageService.h"
-#include "../Utils/ResponseFormater.h"
-#include "../includes.h"
-#include "HandlerTools.h"
 
 using ResponseCallback = std::function<void(std::string)>;
 
@@ -24,11 +20,11 @@ class MessageHandler {
         messageService_(std::move(messageService)) {};
   ~MessageHandler() = default;
 
-  void handle_type(std::string senderUuid, std::string payload, ResponseCallback respond);
+  void handle_type(std::string uuid, std::string payload, ResponseCallback respond);
 
  private:
-  void handle_send_message(std::string senderUuid, std::string payload, ResponseCallback respond);
-  void handle_load_messages(std::string senderUuid, std::string payload, ResponseCallback respond);
+  void handle_send_message(std::string uuid, std::string payload, ResponseCallback respond);
+  void handle_load_messages(std::string uuid, std::string payload, ResponseCallback respond);
 
   asio::thread_pool worker_pool_;
   std::unique_ptr<MessageService> messageService_;

@@ -6,7 +6,7 @@ void WebRTCHandler::handle_type(std::string payload,
                                std::shared_ptr<WebRTCSession> session) {
     std::cout << "[WebRTCHandler] handle_type called\n";
 
-    std::string type = HandlerTools::extractValue(payload, "type");
+    std::string type = PacketHelper::extractValue(payload, "type");
     std::cout << "[WebRTCHandler] Message type: '" << type << "'\n";
 
     if (type.empty()) {
@@ -30,7 +30,7 @@ void WebRTCHandler::handle_register(std::string payload,
                                    std::shared_ptr<WebRTCSession> session) {
     std::cout << "[WebRTCHandler] handle_register called\n";
 
-    auto token = HandlerTools::extractValue(payload, "token");
+    auto token = PacketHelper::extractValue(payload, "token");
     std::cout << "[WebRTCHandler] Extracted token: "
               << (token.empty() ? "<empty>" : "<present>") << "\n";
 
@@ -64,7 +64,7 @@ void WebRTCHandler::handle_register(std::string payload,
 }
 
 void WebRTCHandler::handle_send(std::string payload, ResponseCallback respond) {
-    auto target_uuid = HandlerTools::extractValue(payload, "target_uuid");
+    auto target_uuid = PacketHelper::extractValue(payload, "target_uuid");
 
     asio::post(worker_pool_, [this, target_uuid, payload, respond]() {
         if (target_uuid.empty()) {
