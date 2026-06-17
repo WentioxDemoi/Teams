@@ -50,7 +50,7 @@ void MessageService::sendMessage(const QString& recipientUuid, const QString& co
   const QString senderUuid = "";
   const QDateTime timestamp = QDateTime::currentDateTime();
 
-  Message msg(messageUuid, senderUuid, recipientUuid, "chat", content, timestamp, true, false);
+  Message msg(messageUuid, senderUuid, recipientUuid, "send_message", content, timestamp, true, false);
   const QJsonObject messageJson = msg.toJson();
 
   if (!messageJson.contains("uuid") || !messageJson.contains("senderUuid") ||

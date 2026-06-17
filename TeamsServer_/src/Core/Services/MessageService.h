@@ -24,9 +24,9 @@ public:
   virtual std::optional<Message> sendMessage(
                                             const std::string &senderUuid,
                                             const std::string &receiverUuid,
-                                            const std::string &content); // A modifier car c'est dans cette fonction qu'on va dépacketer le message
+                                            const std::string &content) {std::cout << "Sending message..." << std::endl; }; // A modifier car c'est dans cette fonction qu'on va dépacketer le message
   virtual std::optional<std::vector<Message>> loadMessages(const std::string &token,
-                                                           const std::string &userUuid);
+                                                           const std::string &userUuid) {};
 
 private:
   std::unique_ptr<MessageRepository> messageRepo_;

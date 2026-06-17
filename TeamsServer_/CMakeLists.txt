@@ -71,6 +71,12 @@ add_library(server_lib STATIC ${LIB_SOURCES})
 
 target_include_directories(server_lib PUBLIC
     ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src/Common
+    ${CMAKE_SOURCE_DIR}/src/Core
+    ${CMAKE_SOURCE_DIR}/src/Infrastructure
+    ${CMAKE_SOURCE_DIR}/src/Network
+    ${CMAKE_SOURCE_DIR}/src/Handlers
+    ${CMAKE_SOURCE_DIR}/src/Utils
     ${Boost_INCLUDE_DIRS}
     ${ARGON2_INCLUDE_DIRS}
     ${OPENSSL_INCLUDE_DIR}
@@ -93,8 +99,13 @@ target_link_libraries(server_lib PUBLIC
 # ------------------------------
 # Executable (main + lib)
 # ------------------------------
-add_executable(server src/main.cpp)
+set(MAIN_SOURCES
+    src/main.cpp
+    src/AppCompositionRoot.cpp
+    src/AppCompositionRoot.h
+)
 
+add_executable(server ${MAIN_SOURCES})
 target_link_libraries(server PRIVATE server_lib)
 
 # ------------------------------

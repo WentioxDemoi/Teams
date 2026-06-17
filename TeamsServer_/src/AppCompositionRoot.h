@@ -6,6 +6,7 @@
 #include <thread>
 #include <vector>
 
+#include "Core/Services/AuthService.h"
 #include "Core/Registeries/MessageSessionRegistry.h"
 #include "Core/Registeries/WebRTCRegistry.h"
 #include "Handlers/MessageHandler.h"
@@ -26,7 +27,7 @@
  */
 class AppCompositionRoot {
  public:
-  AppCompositionRoot(int auth_threads, int webrtc_threads);
+  AppCompositionRoot(int auth_threads, int message_threads, int webrtc_threads);
 
   void run();
 
@@ -39,9 +40,11 @@ class AppCompositionRoot {
   void initHandlers();
 
   const int auth_threads_;
+  const int message_threads_;
   const int webrtc_threads_;
 
   asio::io_context auth_io_;
+  asio::io_context message_io_;
   asio::io_context webrtc_io_;
   ssl::context ssl_ctx_;
 

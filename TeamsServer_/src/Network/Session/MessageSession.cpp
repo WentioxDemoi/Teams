@@ -31,8 +31,6 @@ void MessageSession::do_read() {
             self->isFirstMessage_ = false;
             self->user_uuid_ = user->uuid;
             self->messageSessionRegistry_->registerMessageSession(self->user_uuid_, self);
-            self->do_read();
-            return;
           }
 
           auto callback = [self](const std::string& response) {

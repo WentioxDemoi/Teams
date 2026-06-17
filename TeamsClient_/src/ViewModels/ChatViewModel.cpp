@@ -65,7 +65,7 @@ void ChatViewModel::sendMessage(const QString& content) {
   QString id = QUuid::createUuid().toString();
   id.remove('{');
   id.remove('}');
-  Message msg(id, localUuid.isEmpty() ? "me" : localUuid, recipient, "chat", content,
+  Message msg(id, localUuid.isEmpty() ? "me" : localUuid, recipient, "send_message", content,
               QDateTime::currentDateTime(), true, false);
   currentMessageList_->addMessage(msg);
   persistMessage(msg);

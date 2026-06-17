@@ -1,12 +1,11 @@
 #include "AppCompositionRoot.h"
 
-#include "Services/Auth/AuthService.h"
-// #include "Services/User/UserService.h"
 #include <iostream>
 #include <memory>
 
-AppCompositionRoot::AppCompositionRoot(int auth_threads, int webrtc_threads)
+AppCompositionRoot::AppCompositionRoot(int auth_threads, int message_threads, int webrtc_threads)
     : auth_threads_(auth_threads),
+      message_threads_(message_threads),
       webrtc_threads_(webrtc_threads),
       ssl_ctx_(ssl::context::tlsv12_server) {
   initSsl();
@@ -44,7 +43,7 @@ void AppCompositionRoot::initListeners() {
       auth_io_, ssl_ctx_, tcp::endpoint(tcp::v4(), 8080), std::move(authHandler_));
 
   message_listener_ = std::make_unique<TcpListenerMessage>(
-      webrtc_io_, ssl_ctx_, tcp::endpoint(tcp::v4(), 8082), std::move(messageHandler_),
+      message_io_, ssl_ctx_, tcp::endpoint(tcp::v4(), 8082), std::move(messageHandler_),
       messageSessionRegistry_, authService_);
 
   // webrtc_listener_ = std::make_unique<TcpListenerWebRTC>(
@@ -56,7 +55,8 @@ void AppCompositionRoot::initListeners() {
 
 void AppCompositionRoot::run() {
   std::cout << "[APP] Auth   listener started on port 8080\n";
-  std::cout << "[APP] WebRTC listener started on port 8081\n";
+  // std::cout << "[APP] WebRTC listener started on port 8081\n";
+  std::cout << "[APP] Message listener started on port 8082\n";
 
   launchThreads();
 
@@ -73,6 +73,13 @@ void AppCompositionRoot::launchThreads() {
       std::cout << "[THREAD] Auth thread " << i << " started\n";
       auth_io_.run();
       std::cout << "[THREAD] Auth thread " << i << " stopped\n";
+    });
+
+  for (int i = 0; i < message_threads_; ++i)
+    threads_.emplace_back([this, i]() {
+      std::cout << "[THREAD] Message thread " << i << " started\n";
+      message_io_.run();
+      std::cout << "[THREAD] Message thread " << i << " stopped\n";
     });
 
   for (int i = 0; i < webrtc_threads_; ++i)
