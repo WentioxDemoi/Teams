@@ -12,7 +12,7 @@
 #include "ServiceLocator.h"
 
 
-ChatViewModel::ChatViewModel(UserList* userList, IChatService* chatService, SessionState* sessionState, QObject* parent)
+ChatViewModel::ChatViewModel(UserList* userList, IChatService* chatService, SessionState* sessionState, SearchResults* searchResults, QObject* parent)
     : QObject(parent),
       chatService_(chatService ? chatService
                                : ServiceLocator::instance().getService<IChatService>()),
@@ -20,6 +20,7 @@ ChatViewModel::ChatViewModel(UserList* userList, IChatService* chatService, Sess
       messageRepository_(new MessageRepository(parent)),
       currentMessageList_(nullptr),
       sessionState_(sessionState ? sessionState : StateLocator::instance().getState<SessionState>()),
+      searchResults_(searchResults ? searchResults : new SearchResults(this)),
       selectedUser_() {
   // TMP
   {
@@ -29,7 +30,7 @@ ChatViewModel::ChatViewModel(UserList* userList, IChatService* chatService, Sess
     connect(chatService_, &IChatService::contactsLoaded, this, &ChatViewModel::onContactsLoaded);
     connect(chatService_, &IChatService::conversationsLoaded, this, &ChatViewModel::onMessagesLoaded);
     connect(chatService_, &IChatService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
-
+    
   }
 }
 
@@ -214,6 +215,29 @@ void ChatViewModel::onMessagesLoaded(const QList<Message>& messages) {
     }
 
     selectUser(conversationUuid);
+}
+
+void ChatViewModel::searchUsers(const QString& query) {
+  qDebug() << "[ChatViewModel] Searching users with query:" << query;
+  if (query.trimmed().isEmpty()) {
+    searchResults_->clear();
+    return;
+  }
+  // appel asynchrone au serveur (NATS/HTTP/whatever),
+  // puis dans le callback de réponse :
+  QList<User> parsedUsers;
+  parsedUsers.append(User("alice@example.com",   "Alice",   "Martin",   "En ligne",  true,  "", "uuid-001", "", "alors"));
+  parsedUsers.append(User("bob@example.com",     "Bob",     "Durand",   "Absent",    false, "", "uuid-002", "", NULL));
+  parsedUsers.append(User("chloe@example.com",   "Chloé",   "Bernard",  "En ligne",  true,  "", "uuid-003", "", NULL));
+  parsedUsers.append(User("david@example.com",   "David",   "Petit",    "Absent",    false, "", "uuid-004", "", NULL));
+  parsedUsers.append(User("emma@example.com",    "Emma",    "Robert",   "En ligne",  true,  "", "uuid-005", "", NULL));
+  parsedUsers.append(User("felix@example.com",   "Félix",   "Richard",  "Absent",    false, "", "uuid-006", "", NULL));
+  parsedUsers.append(User("gabrielle@example.com","Gabrielle","Dubois", "En ligne",  true,  "", "uuid-007", "", NULL));
+  parsedUsers.append(User("hugo@example.com",    "Hugo",    "Moreau",   "Absent",    false, "", "uuid-008", "", NULL));
+  parsedUsers.append(User("ines@example.com",    "Inès",    "Laurent",  "En ligne",  true,  "", "uuid-009", "", NULL));
+  parsedUsers.append(User("jules@example.com",   "Jules",   "Simon",    "Absent",    false, "", "uuid-010", "", NULL));
+
+  searchResults_->setUsers(parsedUsers);
 }
 
 void ChatViewModel::onApplicationQuit() {

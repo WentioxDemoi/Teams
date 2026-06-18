@@ -3,6 +3,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonValue>
+#include <cstddef>
 
 #include "../../Models/User.h"
 
@@ -42,6 +43,8 @@ void ContactService::loadContactsFromDatabaseAndServer() {
                    "Parfait, à demain alors !"));
   saveContact(User("brice@example.com", "Brice", "Roux", "En ligne", false, "", "uuid-brice", "",
                    "Parfait, à jamais  alors !"));
+    saveContact(User("test@example.com", "test", "testt", "En ligne", false, "", "uuid-test", "",
+                   NULL));
 
   QList<User> users = userRepo_->findAll();
   

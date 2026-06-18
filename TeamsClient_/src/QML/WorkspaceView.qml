@@ -10,6 +10,18 @@ Page {
     // ─── État global de navigation ───────────────────────────────────────────
     property int currentIndex: 0
 
+    Timer {
+    id: searchDebounce
+    interval: 300
+    repeat: false
+    onTriggered: {
+        const q = searchField.text.trim()
+        if (q.length > 0) {
+            chatVM.searchUsers(q)
+        }
+    }
+}
+
     // ─── Fond noir général ───────────────────────────────────────────────────
     background: Rectangle {
         color: "#000000"
@@ -48,37 +60,41 @@ Page {
             Item { Layout.fillWidth: true }
 
             // Barre de recherche
-            Rectangle {
-                Layout.preferredWidth: 380
-                Layout.preferredHeight: 34
-                radius: 10
-                color: Qt.rgba(1, 1, 1, 0.08)
+Rectangle {
+    id: searchBarRect
+    Layout.preferredWidth: 380
+    Layout.preferredHeight: 34
+    radius: 10
+    color: Qt.rgba(1, 1, 1, 0.08)
 
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.leftMargin: 10
-                    anchors.rightMargin: 10
-                    spacing: 6
+    RowLayout {
+        anchors.fill: parent
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+        spacing: 6
 
-                    Text {
-                        text: "⌕"
-                        font.pixelSize: 15
-                        color: "#636366"
-                        Layout.alignment: Qt.AlignVCenter
-                    }
+        Text {
+            text: "⌕"
+            font.pixelSize: 15
+            color: "#636366"
+            Layout.alignment: Qt.AlignVCenter
+        }
 
-                    TextField {
-                        Layout.fillWidth: true
-                        placeholderText: "Rechercher"
-                        color: "#ffffff"
-                        font.pixelSize: 15
-                        font.family: "SF Pro Text"
-                        verticalAlignment: TextInput.AlignVCenter
-                        background: Item {}
-                        placeholderTextColor: "#636366"
-                    }
-                }
-            }
+        TextField {
+            id: searchField
+            Layout.fillWidth: true
+            placeholderText: "Rechercher"
+            color: "#ffffff"
+            font.pixelSize: 15
+            font.family: "SF Pro Text"
+            verticalAlignment: TextInput.AlignVCenter
+            background: Item {}
+            placeholderTextColor: "#636366"
+
+            onTextChanged: searchDebounce.restart()
+        }
+    }
+}
 
             Item { Layout.fillWidth: true }
 
@@ -238,6 +254,113 @@ Page {
             }
         }
     }
+
+// ─── Dropdown résultats de recherche ────────────────────────────────────
+Popup {
+    id: searchDropdown
+    parent: searchBarRect
+    x: 0
+    y: searchBarRect.height + 6
+    width: searchBarRect.width
+    height: Math.min(280, Math.max(60, searchResultsList.contentHeight + 16))
+    padding: 8
+    modal: false
+    focus: false
+    closePolicy: Popup.CloseOnPressOutside | Popup.CloseOnEscape
+    visible: searchField.text.trim().length > 0
+
+    background: Rectangle {
+        radius: 12
+        color: Qt.rgba(0.13, 0.13, 0.14, 0.98)
+        border.color: Qt.rgba(1, 1, 1, 0.08)
+        border.width: 1
+    }
+
+    contentItem: ScrollView {
+        clip: true
+        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+
+        ListView {
+            id: searchResultsList
+            model: chatVM.searchResults
+            spacing: 4
+            boundsBehavior: Flickable.StopAtBounds
+
+            Text {
+                anchors.centerIn: parent
+                visible: searchResultsList.count === 0
+                text: "Aucun résultat"
+                font.pixelSize: 13
+                font.family: "SF Pro Text"
+                color: "#636366"
+            }
+
+            delegate: Rectangle {
+                width: searchResultsList.width
+                height: 54
+                radius: 8
+                color: resultHover.containsMouse ? Qt.rgba(1, 1, 1, 0.07) : "transparent"
+                Behavior on color { ColorAnimation { duration: 100 } }
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 8
+                    anchors.rightMargin: 8
+                    spacing: 10
+
+                    Rectangle {
+                        width: 32
+                        height: 32
+                        radius: 16
+                        color: model.avatarColor
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: model.initials
+                            font.pixelSize: 12
+                            font.weight: Font.Bold
+                            font.family: "SF Pro Text"
+                            color: "#ffffff"
+                        }
+
+                        Rectangle {
+                            width: 9
+                            height: 9
+                            radius: 4.5
+                            color: model.online ? "#30D158" : "#636366"
+                            border.color: Qt.rgba(0.13, 0.13, 0.14, 0.98)
+                            border.width: 1.5
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom
+                        }
+                    }
+
+                    Text {
+                        Layout.fillWidth: true
+                        text: model.username
+                        font.pixelSize: 13
+                        font.weight: Font.DemiBold
+                        font.family: "SF Pro Text"
+                        color: "#ffffff"
+                        elide: Text.ElideRight
+                    }
+                }
+
+                MouseArea {
+                    id: resultHover
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: {
+                        chatVM.selectUser(model.uuid)
+                        searchField.text = ""
+                        root.currentIndex = 1
+                        stackView.replace(messageView)
+                    }
+                }
+            }
+        }
+    }
+}
 
     // ─── Composants des vues ─────────────────────────────────────────────────
     Component { id: homeView;     HomeView {}     }

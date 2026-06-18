@@ -6,6 +6,7 @@
 #include <QVariantMap>
 
 #include "../Models/MessageList.h"
+#include "../Models/SearchResults.h"
 #include "../Models/UserList.h"
 #include "../Models/User.h"
 #include "Interfaces/IChatService.h"
@@ -33,19 +34,23 @@ class ChatViewModel : public QObject {
 
   // Exposer le User actuel (sous forme de QVariant car QML ne connait et ne sais pas utiliser la class User)
   Q_PROPERTY(QVariantMap selectedUser READ selectedUser NOTIFY selectedUserChanged)
+  Q_PROPERTY(SearchResults* searchResults READ searchResults CONSTANT)
 
  public:
   explicit ChatViewModel(UserList* user = nullptr,
                          IChatService* chatService = nullptr,
                          SessionState* sessionState = nullptr,
+                         SearchResults* searchResults = nullptr,
                          QObject* parent = nullptr);
 
   UserList* userList() const;
   MessageList* messageList() const;
   QVariantMap selectedUser() const;
+  SearchResults* searchResults() const { return searchResults_; }
 
  public slots:
   void selectUser(const QString& userUuid);
+  void searchUsers(const QString& query); // Used by QML
   void sendMessage(const QString& content);
 
   //   void callUser(const QString& userUuid);
@@ -75,6 +80,7 @@ class ChatViewModel : public QObject {
   MessageList* currentMessageList_;  // Displayed by QML
   QVariantMap selectedUser_;
   SessionState* sessionState_;
+  SearchResults* searchResults_;
 };
 
 #endif

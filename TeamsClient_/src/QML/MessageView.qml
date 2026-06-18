@@ -416,6 +416,40 @@ Item {
                         }
                     }
                 }
+
+                // ─── État vide "Faites coucou" ──────────────────────────────────
+    ColumnLayout {
+        anchors.centerIn: parent
+        spacing: 14
+        z: 2
+        visible: messageList.count === 0 && chatVM.selectedUser && chatVM.selectedUser.uuid
+
+        Text {
+            Layout.alignment: Qt.AlignHCenter
+            text: "👋"
+            font.pixelSize: 52
+        }
+
+        Text {
+            Layout.alignment: Qt.AlignHCenter
+            text: chatVM.selectedUser && chatVM.selectedUser.uuid
+                  ? "Faites coucou à " + chatVM.selectedUser.username + " !"
+                  : ""
+            font.pixelSize: 16
+            font.weight: Font.DemiBold
+            font.family: "SF Pro Text"
+            color: "#ffffff"
+        }
+
+        Text {
+            Layout.alignment: Qt.AlignHCenter
+            text: "Aucun message pour le moment.\nEnvoyez le premier message !"
+            font.pixelSize: 13
+            font.family: "SF Pro Text"
+            color: "#636366"
+            horizontalAlignment: Text.AlignHCenter
+        }
+    }
             }
         }
     }

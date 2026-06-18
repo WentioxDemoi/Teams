@@ -117,7 +117,7 @@ void Application::initializeViewModels() {
 
   locator.registerViewModels<AuthViewModel>(authVM);
 
-  auto* chatVM = new ChatViewModel(nullptr, nullptr, nullptr, appRoot);
+  auto* chatVM = new ChatViewModel(nullptr, nullptr, nullptr, nullptr, appRoot);
 
   locator.registerViewModels<ChatViewModel>(chatVM);
 
