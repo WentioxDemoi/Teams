@@ -1,23 +1,20 @@
 #include "AuthSession.h"
 
 void AuthSession::start() {
-
   auto self = shared_from_this();
-  stream_.async_handshake(
-      ssl::stream_base::server, [self](boost::system::error_code ec) {
-        if (!ec) {
-          self->do_read();
-        } else {
-          BoostErrorHandler::log("AuthSession", "Handshake", ec);
-        }
-      });
+  stream_.async_handshake(ssl::stream_base::server, [self](boost::system::error_code ec) {
+    if (!ec) {
+      self->do_read();
+    } else {
+      BoostErrorHandler::log("AuthSession", "Handshake", ec);
+    }
+  });
 }
 
 void AuthSession::do_read() {
   auto self = shared_from_this();
   stream_.async_read_some(
-      asio::buffer(buffer_),
-      [self](boost::system::error_code ec, std::size_t bytes) {
+      asio::buffer(buffer_), [self](boost::system::error_code ec, std::size_t bytes) {
         if (!ec) {
           std::string payload(self->buffer_.data(), bytes);
           std::cout << "Message: " << payload << std::endl;
@@ -28,10 +25,13 @@ void AuthSession::do_read() {
           self->authHandler_->handle_type(payload, callback);
           self->do_read();
         } else {
-          if (ec == boost::asio::ssl::error::stream_truncated) {
-              std::cout << "[AuthSession] Client disconnected (no clean TLS shutdown)"  << std::endl;;
-              return;
+          if (ec == asio::error::eof || ec == boost::asio::ssl::error::stream_truncated ||
+              ec == asio::error::connection_reset) {
+            std::cout << "[AuthSession] Client disconnected" << std::endl;
+            return;
           }
+
+          std::cerr << "[AuthSession] Read error: " << ec.message() << std::endl;
         }
       });
 }

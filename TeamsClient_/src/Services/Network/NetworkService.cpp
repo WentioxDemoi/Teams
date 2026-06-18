@@ -1,24 +1,26 @@
 #include "NetworkService.h"
+
+#include "../../Core/State/UserState.h"
 #include "SessionEnum.h"
 
 NetworkService::NetworkService(qint16 port, QObject* parent) : QObject(parent), port_(port) {
   switch (port) {
-    case 8080 :
+    case 8080:
       server_ = ServerType::Auth;
       break;
-    case 8081 :
+    case 8081:
       server_ = ServerType::WebRTC;
       break;
-    case 8082 :
+    case 8082:
       server_ = ServerType::Message;
       break;
-    case 8083 :
+    case 8083:
       server_ = ServerType::Call;
       break;
-    case 8084 :
+    case 8084:
       server_ = ServerType::Contact;
       break;
-    default :
+    default:
       qDebug() << "Unknown enum (NetworkService)";
   }
 
@@ -47,9 +49,7 @@ NetworkService::NetworkService(qint16 port, QObject* parent) : QObject(parent), 
   connect(&socket_, &QSslSocket::encrypted, this, [this]() {
     qDebug() << "SSL ready -> flushing queue";
     emit connectionUpdate(server_, true);
-    while (!pendingQueue_.isEmpty())
-      send(pendingQueue_.dequeue());
-    
+    while (!pendingQueue_.isEmpty()) send(pendingQueue_.dequeue());
   });
 
   ensureConnected();

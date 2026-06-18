@@ -32,13 +32,13 @@ inline std::string message_to_json(const Message& msg) {
 
 inline Message message_from_json(const std::string& json) {
     Message msg;
-    msg.id          = PacketHelper::extractValue(json, "id");
-    msg.sender_id   = PacketHelper::extractValue(json, "sender_id");
-    msg.receiver_id = PacketHelper::extractValue(json, "receiver_id");
+    msg.id          = PacketHelper::extractValue(json, "uuid");
+    msg.sender_id   = PacketHelper::extractValue(json, "senderUuid");
+    msg.receiver_id = PacketHelper::extractValue(json, "receiverUuid");
     msg.chatType    = PacketHelper::extractValue(json, "chatType");
     msg.content     = PacketHelper::extractValue(json, "content");
     msg.timestamp   = PacketHelper::extractValue(json, "timestamp");
-    msg.is_read     = PacketHelper::extractValue(json, "is_read") == "true";
+    msg.is_read     = PacketHelper::extractValue(json, "isRead") == "true";
     return msg;
 }
 

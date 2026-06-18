@@ -1,8 +1,6 @@
 #include "MessageRepository.h"
-
 #include <iostream>
-
-#include "../../infrastructure/Database/QueryBuilder.h"
+#include "../../Infrastructure/Database/QueryBuilder.h"
 
 bool MessageRepository::save(const Message& message) {
   try {
@@ -16,7 +14,7 @@ bool MessageRepository::save(const Message& message) {
                                                   "content", "timestamp", "is_read"})
             .values({"$1", "$2", "$3", "$4", "$5", "$6", "$7"})
             .build();
-            
+
     txn.exec_params(query, message.id, message.sender_id, message.receiver_id, message.chatType,
                     message.content, message.timestamp, message.is_read);
 

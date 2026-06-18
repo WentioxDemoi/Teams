@@ -16,6 +16,7 @@ void MessageSessionRegistry::unregisterMessageSession(const std::string& user_uu
 bool MessageSessionRegistry::sendMessage(const std::string& user_uuid, const std::string& payload) {
     std::lock_guard lock(mutex_);
     auto it = messageSessions_.find(user_uuid);
+
     if (it == messageSessions_.end()) {
         std::cout << "[MessageSessionRegistry] No session found for user UUID (probably offline): " << user_uuid << std::endl;
         return false;

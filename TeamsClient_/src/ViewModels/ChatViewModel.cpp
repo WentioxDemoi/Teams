@@ -82,10 +82,10 @@ void ChatViewModel::sendMessage(const QString& content) {
 }
 
 void ChatViewModel::onLocalUserSaved(const User& user) {
-  // const QString localUuid = UserState::instance().localUser().uuid();
-  // if (!localUuid.isEmpty()) {
-  //   seedDatabaseMessages(localUuid); // Pour remplir la DB local de faux messages
-  // }
+  const QString localUuid = UserState::instance().localUser().uuid();
+  if (!localUuid.isEmpty()) {
+    seedDatabaseMessages(localUuid); // Pour remplir la DB local de faux messages
+  }
 
   // Recharger les contacts
   if (chatService_) {
@@ -106,13 +106,13 @@ qDebug() << "[ChatViewModel] seedDatabaseMessages called with localUuid=" << loc
     }
   };
 
-  insertMessage(Message("m1", "uuid-alice", localUuid, "message",
+  insertMessage(Message("m1", "a98ed223-b82a-4f96-b191-dfe5f1a338c0", localUuid, "message",
                         "Salut ! T'as regardé le doc que j'ai partagé ?",
                         now.addSecs(-3600), false, false));
-  insertMessage(Message("m2", localUuid, "uuid-alice", "message",
+  insertMessage(Message("m2", localUuid, "a98ed223-b82a-4f96-b191-dfe5f1a338c0", "message",
                         "Pas encore, j'ai été pris dans les réunions", now.addSecs(-3400),
                         true, false));
-  insertMessage(Message("m3", "uuid-alice", localUuid, "message",
+  insertMessage(Message("m3", "a98ed223-b82a-4f96-b191-dfe5f1a338c0", localUuid, "message",
                         "OK je regarde ça ce soir 👍", now.addSecs(-3200), false, false));
 
   insertMessage(Message("m4", localUuid, "uuid-bob", "message",

@@ -82,10 +82,10 @@ void AppCompositionRoot::launchThreads() {
       std::cout << "[THREAD] Message thread " << i << " stopped\n";
     });
 
-  for (int i = 0; i < webrtc_threads_; ++i)
-    threads_.emplace_back([this, i]() {
-      std::cout << "[THREAD] WebRTC thread " << i << " started\n";
-      webrtc_io_.run();
-      std::cout << "[THREAD] WebRTC thread " << i << " stopped\n";
-    });
+  // for (int i = 0; i < webrtc_threads_; ++i)
+  //   threads_.emplace_back([this, i]() {
+  //     std::cout << "[THREAD] WebRTC thread " << i << " started\n";
+  //     webrtc_io_.run();
+  //     std::cout << "[THREAD] WebRTC thread " << i << " stopped\n";
+  //   });
 }

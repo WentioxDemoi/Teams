@@ -1,21 +1,18 @@
 #include "MessageHandler.h"
-#include "../Utils/ResponseFormater.h"
 #include "../Utils/PacketHelper.h"
-#include "../Core/Repositories/MessageRepository.h"
+#include <optional>
 
 void MessageHandler::handle_send_message(std::string uuid, std::string payload, ResponseCallback respond) {
 
   PacketHelper::insertValue(payload, "senderUuid", uuid);
+  std::cout << "[MessageHandler] Sending message with payload: " << payload << std::endl;
   asio::post(worker_pool_, [this, payload, respond]() {
     try {
-      auto response = messageService_->sendMessage(payload);
-      std::string result;
+      std::optional<std::string> response = messageService_->sendMessage(payload);
       if (!response.has_value()) {
-        result = R"({"type":"message_sent","error":"Send failed: invalid data or unauthorized."})";
-      } else {
-        result = ResponseFormater::format_message_response("message_sent", response.value());
+        response = R"({"type":"message_sent","error":"Send failed: invalid data or unauthorized."})";
       }
-      respond(result);
+      respond(response.value());
     } catch (const std::exception& e) {
       std::cerr << "[MessageHandler] Send error: " << e.what() << "\n";
       respond(R"({"type":"message_sent","error":"Send failed: server error"})");

@@ -17,15 +17,7 @@ ContactService::ContactService(NetworkService* network, UserRepository* userRepo
   connect(network_, &NetworkService::networkError, this, &ContactService::contactError);
   connect(network_, &NetworkService::connectionUpdate, this, &ContactService::connectionUpdate);
 
-  // TMP
-  // saveContact(User("alice@example.com", "Alice", "Martin", "En ligne", false, "", "uuid-alice", "",
-  //                  "OK je regarde ça ce soir 👍"));
-  // saveContact(User("bob@example.com", "Bob", "Dupont", "Absent", false, "", "uuid-bob", "",
-  //                  "Tu peux m'envoyer le fichier ?"));
-  // saveContact(User("clara@example.com", "Clara", "Roux", "En ligne", false, "", "uuid-clara", "",
-  //                  "Parfait, à demain alors !"));
-  // saveContact(User("brice@example.com", "Brice", "Roux", "En ligne", false, "", "uuid-brice", "",
-  //                  "Parfait, à jamais  alors !"));
+  // TMPAlice
 }
 
 void ContactService::loadContactsFromDatabaseAndServer() {
@@ -41,6 +33,15 @@ void ContactService::loadContactsFromDatabaseAndServer() {
   //   payload["type"] = "load_users";
   //   payload["token"] = UserState::instance().localUser().token();
   //   network_->send(payload);
+
+  saveContact(User("alice@example.com", "", "Martin", "En ligne", false, "", "a98ed223-b82a-4f96-b191-dfe5f1a338c0", "",
+                   "OK je regarde ça ce soir 👍"));
+  saveContact(User("bob@example.com", "Bob", "Dupont", "Absent", false, "", "uuid-bob", "",
+                   "Tu peux m'envoyer le fichier ?"));
+  saveContact(User("clara@example.com", "Clara", "Roux", "En ligne", false, "", "uuid-clara", "",
+                   "Parfait, à demain alors !"));
+  saveContact(User("brice@example.com", "Brice", "Roux", "En ligne", false, "", "uuid-brice", "",
+                   "Parfait, à jamais  alors !"));
 
   QList<User> users = userRepo_->findAll();
   

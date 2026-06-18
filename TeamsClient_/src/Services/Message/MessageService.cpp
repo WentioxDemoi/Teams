@@ -4,8 +4,8 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QUuid>
+#include <iostream>
 
-#include "../../Core/State/UserState.h"
 #include "../../Models/Message.h"
 #include "Repositories/MessageRepository.h"
 #include "ServiceLocator.h"
@@ -19,6 +19,8 @@ MessageService::MessageService(NetworkService* network, MessageRepository* messa
   connect(network_, &NetworkService::jsonReceived, this, &MessageService::handleServerResponse);
   connect(network_, &NetworkService::networkError, this, &MessageService::messageError);
   connect(network_, &NetworkService::connectionUpdate, this, &MessageService::connectionUpdate);
+  connect(&UserState::instance(), &UserState::localUserSaved, this,
+          &MessageService::auth);
 }
 
 void MessageService::loadConversationsFromDatabaseAndServer() {
@@ -97,6 +99,13 @@ void MessageService::deleteAll() {
 }
 
 void MessageService::handleServerResponse(const QJsonObject& root) {
+  std::cout << "=== RAW SERVER RESPONSE ===" << std::endl;
+
+  QJsonDocument debugDoc(root);
+
+  std::cout << debugDoc.toJson(QJsonDocument::Indented).constData() << std::endl;
+
+  std::cout << "=== END RAW ===" << std::endl;
   if (!root.contains("type") || !root["type"].isString()) {
     emit messageError("Réponse serveur manquante ou invalide");
     return;
@@ -137,10 +146,19 @@ void MessageService::handleServerResponse(const QJsonObject& root) {
     return;
   }
 
-  if (type == "message_received" && root.contains("message") && root["message"].isObject()) {
-    emit messageReceived(root["message"].toObject());
-    return;
-  }
+  if (type == "new_message" && root.contains("data") && root["data"].isObject()) {
+  std::cout << "=== Nouveau message reçu ===" << std::endl;
+
+  QJsonObject messageJson = root["data"].toObject();
+
+  QJsonDocument doc(messageJson);
+  std::cout << doc.toJson(QJsonDocument::Indented).constData() << std::endl;
+
+  std::cout << "=== Fin message ===" << std::endl;
+
+  emit messageReceived(messageJson);
+  return;
+}
 
   if (type == "conversation_response" && root.contains("userUuid") && root.contains("messages") &&
       root["messages"].isArray()) {
@@ -164,3 +182,9 @@ void MessageService::persistMessages(const QList<Message>& messages) {
 }
 
 void MessageService::disconnectFromServer() { network_->disconnectFromServer(); }
+
+void MessageService::auth(const User& user) {
+  QJsonObject payload;
+  payload["token"] = user.token();
+  network_->send(payload);
+}

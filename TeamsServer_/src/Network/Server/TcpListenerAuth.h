@@ -1,9 +1,8 @@
 #ifndef TCPLISTENERAUTH_H
 #define TCPLISTENERAUTH_H
 
-#include "../../includes.h"
 #include <memory>
-
+#include "../../Handlers/AuthHandler.h"
 /**
  * @class TcpListenerAuth
  * @brief Écouteur TCP sécurisé pour accepter les connexions entrantes.

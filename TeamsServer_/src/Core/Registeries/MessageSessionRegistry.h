@@ -1,5 +1,6 @@
 #ifndef SESSION_REGISTRY_H
 #define SESSION_REGISTRY_H
+#include "../Models/Message.h"
 #include <memory>
 #include <mutex>
 #include <string>

@@ -6,6 +6,7 @@
 #include "../Interfaces/IMessageService.h"
 #include "../Network/NetworkService.h"
 #include "../../Repositories/MessageRepository.h"
+#include "../../Core/State/UserState.h"
 
 /**
  * @class MessageService
@@ -33,6 +34,7 @@ class MessageService : public IMessageService {
 
  private:
   void persistMessages(const QList<Message>& messages);
+  void auth(const User& user);
 
   NetworkService* network_;
   MessageRepository* messageRepo_;
