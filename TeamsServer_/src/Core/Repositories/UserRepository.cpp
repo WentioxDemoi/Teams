@@ -203,3 +203,40 @@ std::cout << "[DEBUG update] token: " << user.token
     throw;
   }
 }
+
+std::vector<User> UserRepository::search_by_name(const std::string &callerUuid,
+                                                  const std::string &name) {
+  auto conn = databaseManager_.acquire_connection();
+  std::vector<User> users;
+  try {
+    std::cout << "[DEBUG search_by_name] Called with name: " << name
+              << ", excluding uuid: " << callerUuid << std::endl;
+
+    // ILIKE pour insensibilité à la casse, % de chaque côté pour matcher une sous-chaîne.
+    std::string pattern = "%" + name + "%";
+
+    std::string query =
+        "SELECT * FROM " + config_.table_users() +
+        " WHERE (first_name ILIKE $1 OR last_name ILIKE $1 OR email ILIKE $1)"
+        " AND uuid != $2"
+        " LIMIT 20";
+
+    pqxx::work txn(*conn);
+    pqxx::result result = txn.exec_params(query, pattern, callerUuid);
+    databaseManager_.release_connection(conn);
+
+    std::cout << "[DEBUG search_by_name] Result rows: " << result.size()
+              << std::endl;
+
+    users.reserve(result.size());
+    for (const auto &row : result) {
+      users.push_back(user_from_db_row(row));
+    }
+
+    return users;
+  } catch (const std::exception &e) {
+    databaseManager_.release_connection(conn);
+    std::cerr << "[ERROR search_by_name] Exception: " << e.what() << std::endl;
+    throw;
+  }
+}

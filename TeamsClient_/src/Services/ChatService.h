@@ -2,6 +2,7 @@
 #define CHATSERVICE_H
 
 #include <QObject>
+#include <QtCore/qcoreapplication.h>
 #include "Interfaces/IChatService.h"
 #include "Interfaces/IMessageService.h"
 #include "Interfaces/IContactService.h"
@@ -26,6 +27,7 @@ class ChatService : public IChatService {
   void sendMessage(const QString& recipientUuid, const QString& content) override;
   void loadConversationsFromDatabaseAndServer() override;
   void loadContactsFromDatabaseAndServer() override;
+  void searchContacts(const QString &query) override;
   void startCall(const QString& calleeUuid) override;
   void acceptCall(const QString& callUuid) override;
   void hangup(const QString& callUuid) override;

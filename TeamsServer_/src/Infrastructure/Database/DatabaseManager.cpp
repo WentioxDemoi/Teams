@@ -56,8 +56,8 @@ void DatabaseManager::initialize_schema() {
     txn.exec("CREATE TABLE IF NOT EXISTS " + config.table_users() +
              " ("
              "email TEXT UNIQUE NOT NULL, "
-             "first_name TEXT UNIQUE, "
-             "last_name TEXT UNIQUE, "
+             "first_name TEXT, "
+             "last_name TEXT, "
              "password_hash TEXT NOT NULL, "
              "uuid TEXT UNIQUE, "
              "token TEXT, "

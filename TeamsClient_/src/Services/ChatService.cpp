@@ -2,9 +2,12 @@
 
 #include "Call/CallService.h"
 #include "Contact/ContactService.h"
+#include "Interfaces/IChatService.h"
+#include "Interfaces/IContactService.h"
 #include "ServiceLocator.h"
 
 #include <QDebug>
+#include <QtCore/qcoreapplication.h>
 
 ChatService::ChatService(IMessageService* messageService,
                          IContactService* contactService,
@@ -27,10 +30,12 @@ ChatService::ChatService(IMessageService* messageService,
   connect(contactService_, &IContactService::contactsLoaded, this, &IChatService::contactsLoaded);
   connect(contactService_, &IContactService::contactError, this, &IChatService::messageError);
   connect(contactService_, &IContactService::connectionUpdate, this, &IChatService::connectionUpdate);
+  connect(contactService_, &IContactService::contactsSearchLoaded, this, &IChatService::contactsSearchLoaded);
 
   connect(callService_, &ICallService::callStarted, this, &IChatService::callStarted);
   connect(callService_, &ICallService::callAccepted, this, &IChatService::callAccepted);
   connect(callService_, &ICallService::callEnded, this, &IChatService::callEnded);
+  connect(contactService_, &IContactService::contactsSearchLoaded, this, &IChatService::contactsSearchLoaded);
   connect(callService_, &ICallService::callError, this, &IChatService::callError);
   connect(callService_, &ICallService::connectionUpdate, this, &IChatService::connectionUpdate);
 }
@@ -93,4 +98,9 @@ void ChatService::disconnectFromServer() {
   if (callService_) {
     callService_->disconnectFromServer();
   }
+}
+
+void ChatService::searchContacts(const QString &query)
+{
+  contactService_->searchContacts(query);
 }

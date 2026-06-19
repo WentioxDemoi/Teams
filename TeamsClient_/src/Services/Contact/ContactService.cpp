@@ -4,6 +4,8 @@
 #include <QJsonDocument>
 #include <QJsonValue>
 #include <cstddef>
+#include "../../Core/State/UserState.h"
+
 
 #include "../../Models/User.h"
 
@@ -17,6 +19,8 @@ ContactService::ContactService(NetworkService* network, UserRepository* userRepo
   connect(network_, &NetworkService::jsonReceived, this, &ContactService::handleServerResponse);
   connect(network_, &NetworkService::networkError, this, &ContactService::contactError);
   connect(network_, &NetworkService::connectionUpdate, this, &ContactService::connectionUpdate);
+  connect(&UserState::instance(), &UserState::localUserSaved, this,
+        &ContactService::auth);
 
   // TMPAlice
 }
@@ -35,16 +39,16 @@ void ContactService::loadContactsFromDatabaseAndServer() {
   //   payload["token"] = UserState::instance().localUser().token();
   //   network_->send(payload);
 
-  saveContact(User("alice@example.com", "", "Martin", "En ligne", false, "", "a98ed223-b82a-4f96-b191-dfe5f1a338c0", "",
-                   "OK je regarde ça ce soir 👍"));
-  saveContact(User("bob@example.com", "Bob", "Dupont", "Absent", false, "", "uuid-bob", "",
-                   "Tu peux m'envoyer le fichier ?"));
-  saveContact(User("clara@example.com", "Clara", "Roux", "En ligne", false, "", "uuid-clara", "",
-                   "Parfait, à demain alors !"));
-  saveContact(User("brice@example.com", "Brice", "Roux", "En ligne", false, "", "uuid-brice", "",
-                   "Parfait, à jamais  alors !"));
-    saveContact(User("test@example.com", "test", "testt", "En ligne", false, "", "uuid-test", "",
-                   NULL));
+  // saveContact(User("alice@example.com", "", "Martin", "En ligne", false, "", "a98ed223-b82a-4f96-b191-dfe5f1a338c0", "",
+  //                  "OK je regarde ça ce soir 👍"));
+  // saveContact(User("bob@example.com", "Bob", "Dupont", "Absent", false, "", "uuid-bob", "",
+  //                  "Tu peux m'envoyer le fichier ?"));
+  // saveContact(User("clara@example.com", "Clara", "Roux", "En ligne", false, "", "uuid-clara", "",
+  //                  "Parfait, à demain alors !"));
+  // saveContact(User("brice@example.com", "Brice", "Roux", "En ligne", false, "", "uuid-brice", "",
+  //                  "Parfait, à jamais  alors !"));
+  //   saveContact(User("test@example.com", "test", "testt", "En ligne", false, "", "uuid-test", "",
+  //                  NULL));
 
   QList<User> users = userRepo_->findAll();
   
@@ -84,23 +88,27 @@ void ContactService::handleServerResponse(const QJsonObject& root) {
     emit contactError("Réponse serveur contact invalide");
     return;
   }
-
+qDebug() << "ALLER";
   const QString type = root["type"].toString();
   if (root.contains("error") && root["error"].isString()) {
     emit contactError(root["error"].toString());
     return;
   }
 
-  if (type == "contacts_response" && root.contains("contacts") && root["contacts"].isArray()) {
+  if (type == "search_contacts_response") {
+    if (!root.contains("data") || !root["data"].isArray()) {
+      emit contactError("Missing data field in server response");
+      return;
+    }
+
     QList<User> users;
-    for (const auto& item : root["contacts"].toArray()) {
+    for (const auto& item : root["data"].toArray()) {
       if (item.isObject()) {
         users.append(User::fromJson(item.toObject()));
       }
     }
-    persistContacts(users);
-    
-    emit contactsLoaded(users);
+    qDebug() << "CONTACT RESPONSE";
+    emit contactsSearchLoaded(users); // adapte le nom du signal selon ta convention
     return;
   }
 }
@@ -112,6 +120,26 @@ void ContactService::persistContacts(const QList<User>& users) {
       qDebug() << "[ContactService] Impossible de persister le user" << user.uuid();
     }
   }
+}
+
+void ContactService::searchContacts(const QString &query)
+{
+    if (query.trimmed().isEmpty()) {
+    return;
+  }
+
+  QJsonObject payload;
+  payload["type"] = "search_contacts";
+  payload["token"] = UserState::instance().localUser().token();
+  payload["query"] = query;
+
+  network_->send(payload);
+}
+
+void ContactService::auth(const User& user) {
+  QJsonObject payload;
+  payload["token"] = user.token();
+  network_->send(payload);
 }
 
 void ContactService::disconnectFromServer() {

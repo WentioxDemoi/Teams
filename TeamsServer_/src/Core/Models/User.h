@@ -51,7 +51,7 @@ inline User user_from_json(const std::string& json) {
     return user;
 }
 
-inline User user_from_db_row(const pqxx::row_ref& row) {
+inline User user_from_db_row(const pqxx::row& row) {
     User user;
     user.uuid             = row["uuid"].as<std::string>();
     user.firstName        = row["first_name"].as<std::string>();

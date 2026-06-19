@@ -52,6 +52,7 @@ class ChatViewModel : public QObject {
   void selectUser(const QString& userUuid);
   void searchUsers(const QString& query); // Used by QML
   void sendMessage(const QString& content);
+  void onContactsSearchLoaded(const QList<User> users);
 
   //   void callUser(const QString& userUuid);
 

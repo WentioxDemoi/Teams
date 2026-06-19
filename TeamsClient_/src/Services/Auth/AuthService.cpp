@@ -41,7 +41,7 @@ void AuthService::loginWithToken(void)
 {
   if (/*!*/tokenManager_->token.isEmpty()) {
     //network_->send({{"type", "validate_token"}, {"token", tokenManager_->token}});
-    network_->send({{"type", "validate_token"}, {"token", "456ff2ca5510cdd71dd9fe228e2c6b9a"}});
+    network_->send({{"type", "validate_token"}, {"token", "d0d6c39c6bf0615748ae8f92282f2572"}});
   } else {
       handleTokenError("No token found");
   }

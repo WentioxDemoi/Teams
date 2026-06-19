@@ -4,27 +4,29 @@
 #include "../Repositories/ContactRepository.h"
 // #include "../../Core/Registeries/ContactSessionRegistry.h"
 #include "../Models/Contact.h"
+#include "Repositories/UserRepository.h"
+#include <memory>
+#include <vector>
 
 class ContactService {
- public:
-  ContactService(
-      std::unique_ptr<ContactRepository> contactRepo
-    //   std::shared_ptr<ContactSessionRegistry> contactSessionRegistry
-    )
-      : contactRepo_(std::move(contactRepo)),
-        // contactSessionRegistry_(contactSessionRegistry),
+public:
+  ContactService(std::unique_ptr<ContactRepository> contactRepo,
+                 std::shared_ptr<UserRepository> userRepo)
+      : contactRepo_(std::move(contactRepo)), userRepo_(userRepo),
         config_(Config::instance()) {}
 
   virtual ~ContactService() = default;
 
-  virtual std::optional<std::string> addContact(const std::string& payload);
-  virtual std::optional<std::string> removeContact(const std::string& payload);
-  virtual std::optional<std::string> loadContacts(const std::string& payload);
+  virtual std::optional<std::string> addContact(const std::string &payload);
+  virtual std::optional<std::string> removeContact(const std::string &payload);
+  virtual std::optional<std::string> loadContacts(const std::string &payload);
+  virtual std::optional<std::vector<User>> searchContacts(const std::string &callerUuid, const std::string &payload);
 
- private:
+private:
   std::unique_ptr<ContactRepository> contactRepo_;
-//   std::shared_ptr<ContactSessionRegistry> contactSessionRegistry_;
-  Config& config_;
+  std::shared_ptr<UserRepository> userRepo_;
+  //   std::shared_ptr<ContactSessionRegistry> contactSessionRegistry_;
+  Config &config_;
 };
 
 #endif

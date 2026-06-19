@@ -16,7 +16,7 @@
  */
 class AuthService {
 public:
-  AuthService(std::unique_ptr<UserRepository> userRepo)
+  AuthService(std::shared_ptr<UserRepository> userRepo)
       : userRepo_(std::move(userRepo)), config_(Config::instance()) {};
   virtual ~AuthService() = default;
 
@@ -25,7 +25,7 @@ public:
   virtual std::optional<User> validateToken(const std::string &token);
 
 private:
-  std::unique_ptr<UserRepository> userRepo_;
+  std::shared_ptr<UserRepository> userRepo_;
   Config &config_;
 };
 

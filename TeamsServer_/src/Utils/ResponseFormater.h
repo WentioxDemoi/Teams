@@ -13,8 +13,9 @@
  * correctement les chaînes afin de produire du JSON valide.
  */
 class ResponseFormater {
- public:
-  static std::string format_user_response(const std::string& type, const User& user) {
+public:
+  static std::string format_user_response(const std::string &type,
+                                          const User &user) {
     return "{"
            "\"type\":\"" +
            type +
@@ -42,7 +43,43 @@ class ResponseFormater {
            "}";
   }
 
-  static std::string format_message_response(const std::string& type, const Message& message) {
+  static std::string format_user_list_response(const std::string &type,
+                                               const std::vector<User> &users) {
+    std::string result = "{"
+                         "\"type\":\"" +
+                         type +
+                         "\","
+                         "\"data\":[";
+
+    for (size_t i = 0; i < users.size(); ++i) {
+      const User &user = users[i];
+      result += "{"
+                "\"firstName\":\"" +
+                json_escape(user.firstName) +
+                "\","
+                "\"lastName\":\"" +
+                json_escape(user.lastName) +
+                "\","
+                "\"email\":\"" +
+                json_escape(user.email) +
+                "\","
+                "\"uuid\":\"" +
+                json_escape(user.uuid) +
+                "\","
+                "\"status\":\"" +
+                json_escape(user.status) +
+                "\""
+                "}";
+      if (i + 1 < users.size())
+        result += ",";
+    }
+
+    result += "]}";
+    return result;
+  }
+
+  static std::string format_message_response(const std::string &type,
+                                             const Message &message) {
     return "{"
            "\"type\":\"" +
            type +
@@ -72,35 +109,35 @@ class ResponseFormater {
            "}";
   }
 
-  static std::string json_escape(const std::string& str) {
+  static std::string json_escape(const std::string &str) {
     std::string result;
     result.reserve(str.size());
     for (char c : str) {
       switch (c) {
-        case '"':
-          result += "\\\"";
-          break;
-        case '\\':
-          result += "\\\\";
-          break;
-        case '\b':
-          result += "\\b";
-          break;
-        case '\f':
-          result += "\\f";
-          break;
-        case '\n':
-          result += "\\n";
-          break;
-        case '\r':
-          result += "\\r";
-          break;
-        case '\t':
-          result += "\\t";
-          break;
-        default:
-          result += c;
-          break;
+      case '"':
+        result += "\\\"";
+        break;
+      case '\\':
+        result += "\\\\";
+        break;
+      case '\b':
+        result += "\\b";
+        break;
+      case '\f':
+        result += "\\f";
+        break;
+      case '\n':
+        result += "\\n";
+        break;
+      case '\r':
+        result += "\\r";
+        break;
+      case '\t':
+        result += "\\t";
+        break;
+      default:
+        result += c;
+        break;
       }
     }
     return result;

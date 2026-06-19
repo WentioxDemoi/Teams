@@ -2,12 +2,13 @@
 #define CONTACTSERVICE_H
 
 #include <QJsonObject>
-#include <QObject>
 #include <QList>
+#include <QObject>
+#include <QtCore/qhashfunctions.h>
 
+#include "../../Repositories/UserRepository.h"
 #include "../Interfaces/IContactService.h"
 #include "../Network/NetworkService.h"
-#include "../../Repositories/UserRepository.h"
 
 /**
  * @class ContactService
@@ -18,26 +19,27 @@
  */
 class ContactService : public IContactService {
   Q_OBJECT
- public:
-  explicit ContactService(NetworkService* network = nullptr,
-                          UserRepository* userRepo = nullptr,
-                          QObject* parent = nullptr);
-
- public slots:
+public:
+  explicit ContactService(NetworkService *network = nullptr,
+                          UserRepository *userRepo = nullptr,
+                          QObject *parent = nullptr);
+  void searchContacts(const QString &query) override;
+public slots:
   void loadContactsFromDatabaseAndServer() override;
-  void saveContact(const User& user) override;
-  void deleteContact(const QString& uuid) override;
-    void deleteAll() override;
+  void saveContact(const User &user) override;
+  void deleteContact(const QString &uuid) override;
+  void deleteAll() override;
   void disconnectFromServer() override;
+  void auth(const User& user) override;
 
- private slots:
-  void handleServerResponse(const QJsonObject& root);
+private slots:
+  void handleServerResponse(const QJsonObject &root);
 
- private:
-  void persistContacts(const QList<User>& users);
+private:
+  void persistContacts(const QList<User> &users);
 
-  NetworkService* network_;
-  UserRepository* userRepo_;
+  NetworkService *network_;
+  UserRepository *userRepo_;
 };
 
 #endif

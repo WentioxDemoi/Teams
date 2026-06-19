@@ -23,15 +23,19 @@ class IContactService : public QObject {
   explicit IContactService(QObject* parent = nullptr) : QObject(parent) {};
   virtual ~IContactService() = default;
 
+  virtual void searchContacts(const QString &query) = 0;
+
  public slots:
   virtual void loadContactsFromDatabaseAndServer() = 0;
   virtual void saveContact(const User& user) = 0;
   virtual void deleteContact(const QString& uuid) = 0;
   virtual void deleteAll() = 0;
   virtual void disconnectFromServer() = 0;
+  virtual void auth(const User& user) = 0;
 
  signals:
   void contactsLoaded(const QList<User>& contacts);
+  void contactsSearchLoaded(const QList<User>& contacts);
   void contactSaved(const User& user);
   void contactDeleted(const QString& uuid);
   void contactError(const QString& error);

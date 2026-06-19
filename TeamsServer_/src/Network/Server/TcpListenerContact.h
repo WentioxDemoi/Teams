@@ -7,7 +7,7 @@
 // #include "../../Core/Registeries/ContactSessionRegistry.h"
 #include "../../Handlers/ContactHandler.h"
 #include "../../includes.h"
-// #include "../Session/ContactSession.h"
+#include "../Session/ContactSession.h"
 #include "../../Core/Services/AuthService.h"
 
 class TcpListenerContact {

@@ -1,4 +1,7 @@
 #include "ContactService.h"
+#include "PacketHelper.h"
+#include "Repositories/UserRepository.h"
+#include <optional>
 
 std::optional<std::string>
 ContactService::addContact(const std::string &payload) {
@@ -56,4 +59,16 @@ ContactService::loadContacts(const std::string &payload) {
   //   return ResponseFormater::format_contacts_response(
   //       "contacts_loaded",
   //       contacts);
+}
+
+std::optional<std::vector<User>> ContactService::searchContacts(const std::string &callerUuid, const std::string &payload)
+{
+    const std::string query = PacketHelper::extractValue(payload, "query");
+
+    auto result = userRepo_->search_by_name(callerUuid, query);
+    
+    if (!result.empty())
+        return result;
+    else
+        return std::nullopt;
 }

@@ -30,6 +30,7 @@ ChatViewModel::ChatViewModel(UserList* userList, IChatService* chatService, Sess
     connect(chatService_, &IChatService::contactsLoaded, this, &ChatViewModel::onContactsLoaded);
     connect(chatService_, &IChatService::conversationsLoaded, this, &ChatViewModel::onMessagesLoaded);
     connect(chatService_, &IChatService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
+    connect(chatService_, &IChatService::contactsSearchLoaded, this, &ChatViewModel::onContactsSearchLoaded);
     
   }
 }
@@ -223,21 +224,30 @@ void ChatViewModel::searchUsers(const QString& query) {
     searchResults_->clear();
     return;
   }
-  // appel asynchrone au serveur (NATS/HTTP/whatever),
-  // puis dans le callback de réponse :
-  QList<User> parsedUsers;
-  parsedUsers.append(User("alice@example.com",   "Alice",   "Martin",   "En ligne",  true,  "", "uuid-001", "", "alors"));
-  parsedUsers.append(User("bob@example.com",     "Bob",     "Durand",   "Absent",    false, "", "uuid-002", "", NULL));
-  parsedUsers.append(User("chloe@example.com",   "Chloé",   "Bernard",  "En ligne",  true,  "", "uuid-003", "", NULL));
-  parsedUsers.append(User("david@example.com",   "David",   "Petit",    "Absent",    false, "", "uuid-004", "", NULL));
-  parsedUsers.append(User("emma@example.com",    "Emma",    "Robert",   "En ligne",  true,  "", "uuid-005", "", NULL));
-  parsedUsers.append(User("felix@example.com",   "Félix",   "Richard",  "Absent",    false, "", "uuid-006", "", NULL));
-  parsedUsers.append(User("gabrielle@example.com","Gabrielle","Dubois", "En ligne",  true,  "", "uuid-007", "", NULL));
-  parsedUsers.append(User("hugo@example.com",    "Hugo",    "Moreau",   "Absent",    false, "", "uuid-008", "", NULL));
-  parsedUsers.append(User("ines@example.com",    "Inès",    "Laurent",  "En ligne",  true,  "", "uuid-009", "", NULL));
-  parsedUsers.append(User("jules@example.com",   "Jules",   "Simon",    "Absent",    false, "", "uuid-010", "", NULL));
+  chatService_->searchContacts(query);
+}
 
-  searchResults_->setUsers(parsedUsers);
+void ChatViewModel::onContactsSearchLoaded(const QList<User> users)
+{
+  qDebug() << "Nombre d'utilisateurs trouvés :" << users.size();
+
+    for (const auto& user : users)
+
+    {
+
+        qDebug() << "User:"
+
+                 << "email =" << user.email()
+
+                 << ", first_name =" << user.firstName()
+
+                 << ", last_name =" << user.lastName()
+
+                 << ", uuid =" << user.uuid();
+
+    }
+  searchResults_->clear();
+  searchResults_->setUsers(users);
 }
 
 void ChatViewModel::onApplicationQuit() {

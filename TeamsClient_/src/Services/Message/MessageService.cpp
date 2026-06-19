@@ -9,6 +9,7 @@
 #include "../../Models/Message.h"
 #include "Repositories/MessageRepository.h"
 #include "ServiceLocator.h"
+#include "../../Core/State/UserState.h"
 
 MessageService::MessageService(NetworkService* network, MessageRepository* messageRepo,
                                QObject* parent)

@@ -21,6 +21,7 @@ class IChatService : public QObject {
  public:
   explicit IChatService(QObject* parent = nullptr) : QObject(parent) {};
   virtual ~IChatService() = default;
+  virtual void searchContacts(const QString &query) = 0;
 
  public slots:
   virtual void sendMessage(const QString& recipientUuid, const QString& content) = 0;
@@ -30,6 +31,7 @@ class IChatService : public QObject {
   virtual void acceptCall(const QString& callUuid) = 0;
   virtual void hangup(const QString& callUuid) = 0;
   virtual void disconnectFromServer() = 0;
+  
 
  signals:
   void messageSent(const QJsonObject& message);
@@ -42,6 +44,11 @@ class IChatService : public QObject {
   void callEnded(const QString& callUuid, const QString& reason);
   void callError(const QString& error);
   void connectionUpdate(ServerType server, bool status);
+
+  void contactsSearchLoaded(const QList<User>& contacts);
+
+
+  
 };
 
 #endif
