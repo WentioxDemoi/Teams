@@ -2,7 +2,7 @@
 #define MESSAGEREPOSITORY_H
 
 #include "../../Infrastructure/Database/DatabaseManager.h"
-#include "../../Utils/Config.h"
+
 #include "../../includes.h"
 #include "../Models/Message.h"
 

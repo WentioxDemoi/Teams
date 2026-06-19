@@ -20,12 +20,8 @@ public:
       : userRepo_(std::move(userRepo)), config_(Config::instance()) {};
   virtual ~AuthService() = default;
 
-  virtual std::optional<User> loginUser(const std::string &email,
-                                        const std::string &password);
-  virtual std::optional<User> registerUser(const std::string &firstName,
-                                           const std::string &lastName,
-                                           const std::string &password,
-                                           const std::string &username);
+  virtual std::optional<User> loginUser(const User &user);
+  virtual std::optional<User> registerUser(const User &user);
   virtual std::optional<User> validateToken(const std::string &token);
 
 private:

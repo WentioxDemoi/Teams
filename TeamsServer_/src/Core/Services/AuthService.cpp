@@ -1,12 +1,11 @@
 #include "AuthService.h"
 
-std::optional<User> AuthService::loginUser(const std::string &email,
-                                           const std::string &password) {
-  std::optional<User> user_ = userRepo_->find_by_email(email);
+std::optional<User> AuthService::loginUser(const User &user) {
+  std::optional<User> user_ = userRepo_->find_by_email(user.email);
   if (!user_)
     return std::nullopt;
 
-  if (Crypto::verify_password(password, user_->password_hash)) {
+  if (Crypto::verify_password(user.plain_password, user_->password_hash)) {
 
     // Mettre à jour la date d'expiration du token
     user_->token_expires_at = config_.token_expiry_time();
@@ -22,26 +21,25 @@ std::optional<User> AuthService::loginUser(const std::string &email,
                 << " for user " << user_->uuid << std::endl;
     }
     user_->password_hash.clear();
+    user_->plain_password.clear();
     return user_;
   }
 
   return std::nullopt;
 }
 
-std::optional<User> AuthService::registerUser(const std::string &firstName,
-                                              const std::string &lastName,
-                                              const std::string &email,
-                                              const std::string &password) {
-  std::optional<User> user_ = userRepo_->find_by_email(email);
-  if (!user_) {
-    User user(Crypto::generate_uuid_v4(), firstName, lastName, email,
-              Crypto::hash_password(password), Crypto::generate_token(),
-              config_.token_expiry_time(), "Online", config_.time(),
-              config_.time());
+std::optional<User> AuthService::registerUser(const User &user) {
+  std::optional<User> existing = userRepo_->find_by_email(user.email);
+  if (!existing) {
+    User newUser(Crypto::generate_uuid_v4(), user.firstName, user.lastName,
+                 user.email, Crypto::hash_password(user.plain_password),
+                 Crypto::generate_token(), config_.token_expiry_time(),
+                 "Online", config_.time(), config_.time());
 
-    if (userRepo_->create(user)) {
-      user.password_hash.clear();
-      return user;
+    if (userRepo_->create(newUser)) {
+      newUser.password_hash.clear();
+      newUser.plain_password.clear();
+      return newUser;
     }
   }
   return std::nullopt;

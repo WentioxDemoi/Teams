@@ -16,20 +16,6 @@ struct Message {
     bool is_read = false;
 };
 
-inline std::string message_to_json(const Message& msg) {
-    std::ostringstream oss;
-    oss << "{"
-        << "\"id\":\"" << msg.id << "\","
-        << "\"sender_id\":\"" << msg.sender_id << "\","
-        << "\"receiver_id\":\"" << msg.receiver_id << "\","
-        << "\"chatType\":\"" << msg.chatType << "\","
-        << "\"content\":\"" << msg.content << "\","
-        << "\"timestamp\":\"" << msg.timestamp << "\","
-        << "\"is_read\":" << (msg.is_read ? "true" : "false")
-        << "}";
-    return oss.str();
-}
-
 inline Message message_from_json(const std::string& json) {
     Message msg;
     msg.id          = PacketHelper::extractValue(json, "uuid");

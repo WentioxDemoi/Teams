@@ -1,4 +1,5 @@
 #include "UserRepository.h"
+#include "../Models/User.h"
 
 std::optional<User> UserRepository::find_by_uuid(const std::string &uuid) {
   auto conn = databaseManager_.acquire_connection();
@@ -19,7 +20,7 @@ std::optional<User> UserRepository::find_by_uuid(const std::string &uuid) {
 
     if (result.empty())
       return std::nullopt;
-    return row_to_user(result[0]);
+    return user_from_db_row(result[0]);
   } catch (const std::exception &e) {
     databaseManager_.release_connection(conn);
     std::cerr << "[ERROR find_by_uuid] Exception: " << e.what() << std::endl;
@@ -47,7 +48,7 @@ std::optional<User> UserRepository::find_by_email(const std::string &email) {
 
     if (result.empty())
       return std::nullopt;
-    return row_to_user(result[0]);
+    return user_from_db_row(result[0]);
   } catch (const std::exception &e) {
     databaseManager_.release_connection(conn);
     std::cerr << "[ERROR find_by_email] Exception: " << e.what() << std::endl;
@@ -91,7 +92,7 @@ std::optional<User> UserRepository::find_by_token(const std::string &token) {
       return std::nullopt;
     }
 
-    return row_to_user(result[0]);
+    return user_from_db_row(result[0]);
   } catch (const std::exception &e) {
     std::cerr << "[ERROR find_by_token] Exception: " << e.what() << std::endl;
     databaseManager_.release_connection(conn);
@@ -122,26 +123,6 @@ bool UserRepository::delete_user(const std::string &uuid) {
   }
 }
 
-User UserRepository::row_to_user(const pqxx::row &row) {
-  User user;
-  user.uuid           = row["uuid"].as<std::string>();
-  user.firstName     = row["first_name"].as<std::string>();
-  user.lastName      = row["last_name"].as<std::string>();
-  user.email          = row["email"].as<std::string>();
-  user.password_hash  = row["password_hash"].as<std::string>();
-  user.status         = row["status"].as<std::string>();
-  user.token          = row["token"].as<std::string>();
-  user.created_at     = config_.string_to_time_point(row["created_at"].as<std::string>());
-  user.last_seen      = config_.string_to_time_point(row["last_seen"].as<std::string>());
-  user.token_expires_at = config_.string_to_time_point(row["token_expires_at"].as<std::string>());
-
-  std::cout << "[DEBUG row_to_user] uuid: " << user.uuid
-          << ", token: " << user.token
-          << ", token_expires_at: " << row["token_expires_at"].c_str()
-          << std::endl;
-
-  return user;
-}
 
 bool UserRepository::create(const User &user) {
   auto conn = databaseManager_.acquire_connection();
