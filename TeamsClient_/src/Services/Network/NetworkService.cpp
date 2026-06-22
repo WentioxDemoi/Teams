@@ -52,6 +52,8 @@ NetworkService::NetworkService(qint16 port, QObject* parent) : QObject(parent), 
     while (!pendingQueue_.isEmpty()) send(pendingQueue_.dequeue());
   });
 
+  connect(&UserState::instance(), &UserState::localUserSaved, this, &NetworkService::auth);
+
   ensureConnected();
 }
 
@@ -82,16 +84,30 @@ void NetworkService::send(const QJsonObject& payload) {
 }
 
 void NetworkService::handleIncomingData(const QByteArray& data) {
-  if (data.trimmed().isEmpty()) return;
+  if (data.isEmpty()) return;
 
-  QJsonParseError error;
-  QJsonDocument doc = QJsonDocument::fromJson(data, &error);
+  QJsonParseError parseError;
+  const QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
 
-  if (error.error != QJsonParseError::NoError || !doc.isObject()) {
+  if (parseError.error != QJsonParseError::NoError || !doc.isObject()) {
     emit networkError("Malformed JSON received from server");
     return;
   }
-  emit jsonReceived(doc.object());
+
+  const QJsonObject root = doc.object();
+
+  if (!root.contains("type") || !root["type"].isString()) {
+    emit networkError("Missing or invalid type field in server response");
+    return;
+  }
+
+  emit jsonReceived(root);
+}
+
+void NetworkService::auth(const User &user) {
+  QJsonObject payload;
+  payload["token"] = user.token();
+  send(payload);
 }
 
 void NetworkService::disconnectFromServer() {

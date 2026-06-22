@@ -27,7 +27,7 @@
 #include "State/UserState.h"
 #include "StateLocator.h"
 #include "UserList.h"
-#include "UserService.h"
+#include "LocalUserService.h"
 #include "ViewModelsLocator.h"
 
 Application::Application(int& argc, char** argv) : qtApp(argc, argv) {
@@ -72,8 +72,8 @@ void Application::initializeServices() {
 
   serviceLocator.registerService<ITokenManager>(&TokenManager::instance());
 
-  auto* userService = new UserService(nullptr, nullptr, appRoot);
-  serviceLocator.registerService<IUserService>(userService);
+  auto* localUserService = new LocalUserService(nullptr, nullptr, appRoot);
+  serviceLocator.registerService<ILocalUserService>(localUserService);
 
   auto* messageService = new MessageService(nullptr, nullptr, appRoot);
   serviceLocator.registerService<IMessageService>(messageService);

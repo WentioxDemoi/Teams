@@ -4,7 +4,7 @@
 #include "../Models/User.h"
 #include "../Repositories/UserRepository.h"
 #include "Core/State/UserState.h"
-#include "Interfaces/IUserService.h"
+#include "Interfaces/ILocalUserService.h"
 
 /**
  * @class UserService
@@ -13,20 +13,21 @@
  * Fournit des méthodes pour sauvegarder, supprimer un utilisateur ou tous les utilisateurs,
  * en s'appuyant sur le UserRepository pour l'accès aux données.
  */
-class UserService : public IUserService {
+// LocalUserService.h (renommé depuis UserService)
+class LocalUserService : public ILocalUserService {
   Q_OBJECT
- public:
-  explicit UserService(UserRepository* userRepo = nullptr, UserState *userState = nullptr, QObject* parent = nullptr);
+public:
+  explicit LocalUserService(UserState *userState = nullptr, UserRepository *userRepo = nullptr, QObject *parent = nullptr);
 
- public slots:
-  void saveUser(const User& user) override;
-  void deleteUser(QString uuid) override;
+  void saveLocalUser(const User &user) override;
   void deleteAll() override;
 
+signals:
+  void localUserSaved(const User &user);
 
- private:
-  UserRepository* userRepo_;
-  UserState* userState_;
+private:
+  UserState *userState_;
+  UserRepository userRepo_;
 };
 
 #endif

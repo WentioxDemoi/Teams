@@ -21,20 +21,16 @@ class MessageService : public IMessageService {
                           MessageRepository* messageRepo = nullptr,
                           QObject* parent = nullptr);
 
- public slots:
   void loadConversationsFromDatabaseAndServer() override;
   void sendMessage(const QString& recipientUuid, const QString& content) override;
   void saveMessage(const Message& message) override;
   void deleteMessage(const QString& uuid) override;
   void deleteAll() override;
   void disconnectFromServer() override;
-
- private slots:
   void handleServerResponse(const QJsonObject& root);
 
  private:
   void persistMessages(const QList<Message>& messages);
-  void auth(const User& user);
 
   NetworkService* network_;
   MessageRepository* messageRepo_;

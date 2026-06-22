@@ -30,9 +30,6 @@ signals:
     void errorToken(const QString& error);
     void noTokenFound();
     void connectionUpdate(ServerType server, bool status);
-
-public slots:
-
 };
 
 #endif

@@ -9,5 +9,6 @@ void UserState::saveLocalUser(const User& user) {
   if (user_.uuid() == user.uuid()) return;
 
   user_ = user;
+  qDebug() << "UserState emitting localUserSaved for" << user_.uuid();
   emit localUserSaved(user_);
 }

@@ -26,10 +26,6 @@ ContactService::ContactService(NetworkService *network,
           &ContactService::contactError);
   connect(network_, &NetworkService::connectionUpdate, this,
           &ContactService::connectionUpdate);
-  connect(&UserState::instance(), &UserState::localUserSaved, this,
-          &ContactService::auth);
-  
-
 }
 
 void ContactService::loadContactsFromServer() {
@@ -62,9 +58,15 @@ void ContactService::saveContact(const User &user) {
   }
 }
 
-void ContactService::deleteContact(const QString &uuid) {
+void ContactService::removeContact(const QString &uuid) {
   if (userRepo_->remove(uuid)) {
-    emit contactDeleted(uuid);
+    QJsonObject payload;
+    payload["type"] = "remove_contact";
+    payload["token"] = UserState::instance().localUser().token();
+    payload["contactUuid"] = uuid;
+
+    network_->send(payload);
+    // emit contactDeleted(uuid); // Pas utilisé pour le moment
   } else {
     emit contactError("Impossible de supprimer le contact");
   }
@@ -79,58 +81,40 @@ void ContactService::deleteAll() {
 }
 
 void ContactService::handleServerResponse(const QJsonObject &root) {
-  if (!root.contains("type") || !root["type"].isString()) {
-    emit contactError("Réponse serveur contact invalide");
-    return;
-  }
+
   const QString type = root["type"].toString();
+
   if (root.contains("error") && root["error"].isString()) {
     emit contactError(root["error"].toString());
     return;
   }
 
+  // Uniquement dans ce Handler là car c'est ici qu'on lance l'initialisation du
+  // client
   if (type == "auth_success") {
-    qDebug() << "Instantiation de loadContact";
     loadContactsFromServer();
-  }
-
-  if (type == "contacts_loaded") {
-    if (!root.contains("data") || !root["data"].isArray()) {
-      emit contactError("Missing data field in server response");
-      return;
-    }
-    QList<User> users;
-    for (const auto &item : root["data"].toArray()) {
-      if (item.isObject()) {
-        users.append(User::fromJson(item.toObject()));
-      }
-    }
-    persistContacts(users);
-    qDebug() << "[ContactService] Contact loaded";
-    loadContactsFromDatabase();
     return;
   }
 
   if (type == "contact_added") {
-    qDebug() << "[ContactService] Contact added";
+    return;
+  }
+
+  if (!root.contains("data") || !root["data"].isArray()) {
+    emit contactError("Missing data field in server response");
+    return;
+  }
+
+  if (type == "contacts_loaded") {
+    QList<User> users = parseUsersArray(root["data"].toArray());
+    persistContacts(users);
+    loadContactsFromDatabase();
     return;
   }
 
   if (type == "search_users_response") {
-    if (!root.contains("data") || !root["data"].isArray()) {
-      emit contactError("Missing data field in server response");
-      return;
-    }
-
-    QList<User> users;
-    for (const auto &item : root["data"].toArray()) {
-      if (item.isObject()) {
-        users.append(User::fromJson(item.toObject()));
-      }
-    }
-    qDebug() << "[ContactService] Users from search request loaded";
-    emit usersSearchLoaded(
-        users); // adapte le nom du signal selon ta convention
+    QList<User> users = parseUsersArray(root["data"].toArray());
+    emit usersSearchLoaded(users);
     return;
   }
 }
@@ -159,10 +143,14 @@ void ContactService::searchUsers(const QString &query) {
   network_->send(payload);
 }
 
-void ContactService::auth(const User &user) {
-  QJsonObject payload;
-  payload["token"] = user.token();
-  network_->send(payload);
+QList<User> ContactService::parseUsersArray(const QJsonArray &array) {
+  QList<User> users;
+  for (const auto &item : array) {
+    if (item.isObject()) {
+      users.append(User::fromJson(item.toObject()));
+    }
+  }
+  return users;
 }
 
 void ContactService::disconnectFromServer() {

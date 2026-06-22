@@ -13,6 +13,7 @@
 #include <QSslSocket>
 #include <QQueue>
 #include "SessionEnum.h"
+#include "User.h"
 
 /**
  * @class NetworkService
@@ -38,6 +39,7 @@ class NetworkService : public QObject {
  private:
   void handleIncomingData(const QByteArray& data);
   void ensureConnected();
+  void auth(const User &user);
 
  private:
   QSslSocket socket_;

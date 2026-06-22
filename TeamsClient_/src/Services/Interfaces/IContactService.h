@@ -24,15 +24,10 @@ class IContactService : public QObject {
   virtual ~IContactService() = default;
 
   virtual void searchUsers(const QString &query) = 0;
-
- public slots:
-  virtual void loadContactsFromServer() = 0;
-  virtual void loadContactsFromDatabase() = 0;
   virtual void saveContact(const User& user) = 0;
-  virtual void deleteContact(const QString& uuid) = 0;
+  virtual void removeContact(const QString& uuid) = 0;
   virtual void deleteAll() = 0;
   virtual void disconnectFromServer() = 0;
-  virtual void auth(const User& user) = 0;
 
  signals:
   void contactsLoaded(const QList<User>& contacts);
