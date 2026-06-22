@@ -59,6 +59,7 @@ void ContactService::loadContactsFromDatabaseAndServer() {
 
 void ContactService::saveContact(const User& user) {
   if (userRepo_->save(user)) {
+    // Rquete vers le server
     emit contactSaved(user);
   } else {
     emit contactError("Impossible de sauvegarder le contact");

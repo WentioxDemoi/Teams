@@ -31,11 +31,11 @@ ChatService::ChatService(IMessageService* messageService,
   connect(contactService_, &IContactService::contactError, this, &IChatService::messageError);
   connect(contactService_, &IContactService::connectionUpdate, this, &IChatService::connectionUpdate);
   connect(contactService_, &IContactService::contactsSearchLoaded, this, &IChatService::contactsSearchLoaded);
+  // Connect saveContact (DB Locale + server)
 
   connect(callService_, &ICallService::callStarted, this, &IChatService::callStarted);
   connect(callService_, &ICallService::callAccepted, this, &IChatService::callAccepted);
   connect(callService_, &ICallService::callEnded, this, &IChatService::callEnded);
-  connect(contactService_, &IContactService::contactsSearchLoaded, this, &IChatService::contactsSearchLoaded);
   connect(callService_, &ICallService::callError, this, &IChatService::callError);
   connect(callService_, &ICallService::connectionUpdate, this, &IChatService::connectionUpdate);
 }
@@ -47,6 +47,8 @@ void ChatService::sendMessage(const QString& recipientUuid, const QString& conte
   }
   messageService_->sendMessage(recipientUuid, content);
 }
+
+void ChatService::saveContact
 
 void ChatService::loadConversationsFromDatabaseAndServer() {
   if (!messageService_) {

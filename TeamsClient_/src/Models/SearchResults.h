@@ -41,6 +41,7 @@ class SearchResults : public QAbstractListModel {
   void removeUser(const User& user);
   void setUsers(const QList<User>& users);  // remplace tout le contenu (recherche)
   void clear();                              // vide la liste (champ de recherche vidé)
+  QList<User> getSearchResultsList() { return users_; }
 
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
   QHash<int, QByteArray> roleNames() const override;

@@ -23,6 +23,8 @@ AuthViewModel::AuthViewModel(IAuthService* authService, UserState* userState,
   connect(authService_, &IAuthService::authError, this, &AuthViewModel::authError);
   connect(authService_, &IAuthService::noTokenFound, this, &AuthViewModel::noTokenFound);
   connect(authService_, &IAuthService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
+  // Pour le connect sur le message received, il faudra faire en sorte de check si le user qui nous envoie le message est présent localement.
+  // Dans le cas où il ne l'est pas, il faudra le créer et l'enregister dans la DB locale et sur serveur.
 }
 
 void AuthViewModel::start() {

@@ -1,60 +1,93 @@
 #include "ChatViewModel.h"
 
+#include <QtCore/Qlist.h>
 #include <QtCore/qdebug.h>
 
 #include <QUuid>
 
 #include "../Core/State/UserState.h"
 #include "../Models/Message.h"
-#include "../Repositories/MessageRepository.h"  // TMP
+#include "../Repositories/MessageRepository.h" // TMP
 #include "Interfaces/IChatService.h"
 #include "ModelLocator.h"
 #include "ServiceLocator.h"
 
-
-ChatViewModel::ChatViewModel(UserList* userList, IChatService* chatService, SessionState* sessionState, SearchResults* searchResults, QObject* parent)
+ChatViewModel::ChatViewModel(UserList *userList, IChatService *chatService,
+                             SessionState *sessionState,
+                             SearchResults *searchResults, QObject *parent)
     : QObject(parent),
-      chatService_(chatService ? chatService
-                               : ServiceLocator::instance().getService<IChatService>()),
-      userList_(userList ? userList : ModelLocator::instance().getModel<UserList>()),
+      chatService_(chatService
+                       ? chatService
+                       : ServiceLocator::instance().getService<IChatService>()),
+      userList_(userList ? userList
+                         : ModelLocator::instance().getModel<UserList>()),
       messageRepository_(new MessageRepository(parent)),
       currentMessageList_(nullptr),
-      sessionState_(sessionState ? sessionState : StateLocator::instance().getState<SessionState>()),
+      sessionState_(sessionState
+                        ? sessionState
+                        : StateLocator::instance().getState<SessionState>()),
       searchResults_(searchResults ? searchResults : new SearchResults(this)),
       selectedUser_() {
   // TMP
   {
     connect(&UserState::instance(), &UserState::localUserSaved, this,
             &ChatViewModel::onLocalUserSaved);
-    connect(sessionState_, &SessionState::onApplicationQuit, this, &ChatViewModel::onApplicationQuit);
-    connect(chatService_, &IChatService::contactsLoaded, this, &ChatViewModel::onContactsLoaded);
-    connect(chatService_, &IChatService::conversationsLoaded, this, &ChatViewModel::onMessagesLoaded);
-    connect(chatService_, &IChatService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
-    connect(chatService_, &IChatService::contactsSearchLoaded, this, &ChatViewModel::onContactsSearchLoaded);
-    
+    connect(sessionState_, &SessionState::onApplicationQuit, this,
+            &ChatViewModel::onApplicationQuit);
+    connect(chatService_, &IChatService::contactsLoaded, this,
+            &ChatViewModel::onContactsLoaded);
+    connect(chatService_, &IChatService::conversationsLoaded, this,
+            &ChatViewModel::onMessagesLoaded);
+    connect(chatService_, &IChatService::connectionUpdate, sessionState_,
+            &SessionState::onServerConnectionUpdate);
+    connect(chatService_, &IChatService::contactsSearchLoaded, this,
+            &ChatViewModel::onContactsSearchLoaded);
   }
 }
 
-UserList* ChatViewModel::userList() const { return userList_; }
+UserList *ChatViewModel::userList() const { return userList_; }
 
-MessageList* ChatViewModel::messageList() const { return currentMessageList_; }
+MessageList *ChatViewModel::messageList() const { return currentMessageList_; }
 
 QVariantMap ChatViewModel::selectedUser() const { return selectedUser_; }
 
-void ChatViewModel::selectUser(const QString& userUuid) {
-  if (!userList_) return;
+void ChatViewModel::selectUser(const QString &userUuid) {
+  if (!userList_)
+    return;
+
+  bool isPresent = false;
+  QList<User> searchResultsList;
 
   selectedUser_.clear();
   for (int i = 0; i < userList_->rowCount(); ++i) {
     QVariantMap u = userList_->get(i);
     if (u["uuid"].toString() == userUuid) {
       selectedUser_ = u;
+      isPresent = true;
       break;
     }
   }
 
+  searchResultsList = searchResults_->getSearchResultsList();
+
+  if (!isPresent) {
+    for (const User &user : searchResultsList) {
+      if (user.uuid() == userUuid) {
+        userList_->addUser(user);
+        for (int i = 0; i < userList_->rowCount(); ++i) {
+          QVariantMap u = userList_->get(i);
+          if (u["uuid"].toString() == userUuid) {
+            selectedUser_ = u;
+          }
+        }
+        break;
+      }
+    }
+  }
+
   // Créer la MessageList si elle n'existe pas encore
-  if (!messagesByUuid_.contains(userUuid)) messagesByUuid_.insert(userUuid, new MessageList(this));
+  if (!messagesByUuid_.contains(userUuid))
+    messagesByUuid_.insert(userUuid, new MessageList(this));
 
   currentMessageList_ = messagesByUuid_[userUuid];
 
@@ -62,8 +95,10 @@ void ChatViewModel::selectUser(const QString& userUuid) {
   emit messageListChanged();
 }
 
-void ChatViewModel::sendMessage(const QString& content) {
-  if (!currentMessageList_ || selectedUser_.isEmpty() || content.trimmed().isEmpty()) return;
+void ChatViewModel::sendMessage(const QString &content) {
+  if (!currentMessageList_ || selectedUser_.isEmpty() ||
+      content.trimmed().isEmpty())
+    return;
 
   const QString recipient = selectedUser_["uuid"].toString();
 
@@ -72,8 +107,9 @@ void ChatViewModel::sendMessage(const QString& content) {
   QString id = QUuid::createUuid().toString();
   id.remove('{');
   id.remove('}');
-  Message msg(id, localUuid.isEmpty() ? "me" : localUuid, recipient, "send_message", content,
-              QDateTime::currentDateTime(), true, false);
+  Message msg(id, localUuid.isEmpty() ? "me" : localUuid, recipient,
+              "send_message", content, QDateTime::currentDateTime(), true,
+              false);
   currentMessageList_->addMessage(msg);
   persistMessage(msg);
 
@@ -83,10 +119,11 @@ void ChatViewModel::sendMessage(const QString& content) {
   }
 }
 
-void ChatViewModel::onLocalUserSaved(const User& user) {
+void ChatViewModel::onLocalUserSaved(const User &user) {
   const QString localUuid = UserState::instance().localUser().uuid();
   if (!localUuid.isEmpty()) {
-    seedDatabaseMessages(localUuid); // Pour remplir la DB local de faux messages
+    seedDatabaseMessages(
+        localUuid); // Pour remplir la DB local de faux messages
   }
 
   // Recharger les contacts
@@ -95,69 +132,80 @@ void ChatViewModel::onLocalUserSaved(const User& user) {
   }
 }
 
-
-
-void ChatViewModel::seedDatabaseMessages(const QString& localUuid) {
-  if (localUuid.isEmpty()) return;
-qDebug() << "[ChatViewModel] seedDatabaseMessages called with localUuid=" << localUuid;
+void ChatViewModel::seedDatabaseMessages(const QString &localUuid) {
+  if (localUuid.isEmpty())
+    return;
+  qDebug() << "[ChatViewModel] seedDatabaseMessages called with localUuid="
+           << localUuid;
   auto now = QDateTime::currentDateTime();
 
-  auto insertMessage = [this](const Message& message) {
+  auto insertMessage = [this](const Message &message) {
     if (!messageRepository_->save(message)) {
-      qDebug() << "[ChatViewModel] Échec de l'enregistrement du message" << message.uuid();
+      qDebug() << "[ChatViewModel] Échec de l'enregistrement du message"
+               << message.uuid();
     }
   };
 
-  insertMessage(Message("m1", "a98ed223-b82a-4f96-b191-dfe5f1a338c0", localUuid, "message",
-                        "Salut ! T'as regardé le doc que j'ai partagé ?",
-                        now.addSecs(-3600), false, false));
-  insertMessage(Message("m2", localUuid, "a98ed223-b82a-4f96-b191-dfe5f1a338c0", "message",
-                        "Pas encore, j'ai été pris dans les réunions", now.addSecs(-3400),
-                        true, false));
-  insertMessage(Message("m3", "a98ed223-b82a-4f96-b191-dfe5f1a338c0", localUuid, "message",
-                        "OK je regarde ça ce soir 👍", now.addSecs(-3200), false, false));
+  // insertMessage(Message("m1", "a98ed223-b82a-4f96-b191-dfe5f1a338c0",
+  // localUuid, "message",
+  //                       "Salut ! T'as regardé le doc que j'ai partagé ?",
+  //                       now.addSecs(-3600), false, false));
+  // insertMessage(Message("m2", localUuid,
+  // "a98ed223-b82a-4f96-b191-dfe5f1a338c0", "message",
+  //                       "Pas encore, j'ai été pris dans les réunions",
+  //                       now.addSecs(-3400), true, false));
+  // insertMessage(Message("m3", "a98ed223-b82a-4f96-b191-dfe5f1a338c0",
+  // localUuid, "message",
+  //                       "OK je regarde ça ce soir 👍", now.addSecs(-3200),
+  //                       false, false));
 
-  insertMessage(Message("m4", localUuid, "uuid-bob", "message",
-                        "Hey, t'as avancé sur le projet ?", now.addSecs(-7200), true, false));
-  insertMessage(Message("m5", "uuid-bob", localUuid, "message",
-                        "Ouais, presque fini. Il me manque juste un fichier",
-                        now.addSecs(-7000), false, false));
-  insertMessage(Message("m6", "uuid-bob", localUuid, "message", "Tu peux m'envoyer le fichier ?",
-                        now.addSecs(-6800), false, false));
+  // insertMessage(Message("m4", localUuid, "uuid-bob", "message",
+  //                       "Hey, t'as avancé sur le projet ?",
+  //                       now.addSecs(-7200), true, false));
+  // insertMessage(Message("m5", "uuid-bob", localUuid, "message",
+  //                       "Ouais, presque fini. Il me manque juste un fichier",
+  //                       now.addSecs(-7000), false, false));
+  // insertMessage(Message("m6", "uuid-bob", localUuid, "message", "Tu peux
+  // m'envoyer le fichier ?",
+  //                       now.addSecs(-6800), false, false));
 
-  insertMessage(Message("m7", localUuid, "uuid-clara", "message",
-                        "On se retrouve à quelle heure demain ?", now.addSecs(-86400), true,
-                        false));
-  insertMessage(Message("m8", "uuid-clara", localUuid, "message", "10h ça te va ?",
-                        now.addSecs(-86200), false, false));
-  insertMessage(Message("m9", localUuid, "uuid-clara", "message", "Nickel !",
-                        now.addSecs(-86000), true, false));
-  insertMessage(Message("m10", "uuid-clara", localUuid, "message",
-                        "Parfait, à demain alors !", now.addSecs(-85800), false, false));
+  // insertMessage(Message("m7", localUuid, "uuid-clara", "message",
+  //                       "On se retrouve à quelle heure demain ?",
+  //                       now.addSecs(-86400), true, false));
+  // insertMessage(Message("m8", "uuid-clara", localUuid, "message", "10h ça te
+  // va ?",
+  //                       now.addSecs(-86200), false, false));
+  // insertMessage(Message("m9", localUuid, "uuid-clara", "message", "Nickel !",
+  //                       now.addSecs(-86000), true, false));
+  // insertMessage(Message("m10", "uuid-clara", localUuid, "message",
+  //                       "Parfait, à demain alors !", now.addSecs(-85800),
+  //                       false, false));
 
-  insertMessage(Message("m11", localUuid, "uuid-brice", "message", "Ça roule ?",
-                        now.addSecs(-172800), true, false));
-  insertMessage(Message("m12", "uuid-brice", localUuid, "message",
-                        "Parfait, à jamais alors !", now.addSecs(-172600), false, false));
+  // insertMessage(Message("m11", localUuid, "uuid-brice", "message", "Ça roule
+  // ?",
+  //                       now.addSecs(-172800), true, false));
+  // insertMessage(Message("m12", "uuid-brice", localUuid, "message",
+  //                       "Parfait, à jamais alors !", now.addSecs(-172600),
+  //                       false, false));
 }
 
-void ChatViewModel::persistMessage(const Message& message) {
+void ChatViewModel::persistMessage(const Message &message) {
   if (!messageRepository_->save(message)) {
-    qDebug() << "[ChatViewModel] Erreur enregistrer le message" << message.uuid();
+    qDebug() << "[ChatViewModel] Erreur enregistrer le message"
+             << message.uuid();
   }
 }
 
-
 ////
-//// Ne pas oublier lors du Emit noTokenFound ou en gros lorsque le token est invalide de supprimer toute la DB Locale (Contacts + Messages pour le moment)
-void ChatViewModel::onContactsLoaded(const QList<User>& users) {
-  for (const User& user : users) {
+//// Ne pas oublier lors du Emit noTokenFound ou en gros lorsque le token est
+///invalide de supprimer toute la DB Locale (Contacts + Messages pour le moment)
+void ChatViewModel::onContactsLoaded(const QList<User> &users) {
+  for (const User &user : users) {
     userList_->addUser(user);
   }
 
   chatService_->loadConversationsFromDatabaseAndServer();
 }
-
 
 // void ChatViewModel::refreshConversationsFromDatabase() {
 //   if (!userList_) return;
@@ -174,8 +222,9 @@ void ChatViewModel::onContactsLoaded(const QList<User>& users) {
 //     if (contactUuid.isEmpty()) continue;
 
 //     auto* list = new MessageList(this);
-//     QList<Message> messages = messageRepository_->findForConversation(localUuid, contactUuid);
-//     for (const Message& msg : messages) {
+//     QList<Message> messages =
+//     messageRepository_->findForConversation(localUuid, contactUuid); for
+//     (const Message& msg : messages) {
 //       list->addMessage(msg);
 //     }
 
@@ -192,33 +241,31 @@ void ChatViewModel::onContactsLoaded(const QList<User>& users) {
 //   emit messageListChanged();
 // }
 
-void ChatViewModel::onMessagesLoaded(const QList<Message>& messages) {
-    qDeleteAll(messagesByUuid_);
-    messagesByUuid_.clear();
+void ChatViewModel::onMessagesLoaded(const QList<Message> &messages) {
+  qDeleteAll(messagesByUuid_);
+  messagesByUuid_.clear();
 
-    QString conversationUuid;
+  QString conversationUuid;
 
-    for (const Message& message : messages) {
+  for (const Message &message : messages) {
 
-
-
-        if (message.fromMe()) {
-            conversationUuid = message.receiverUuid();
-        } else {
-            conversationUuid = message.senderUuid();
-        }
-
-        if (!messagesByUuid_.contains(conversationUuid)) {
-            messagesByUuid_[conversationUuid] = new MessageList(this);
-        }
-
-        messagesByUuid_[conversationUuid]->addMessage(message);
+    if (message.fromMe()) {
+      conversationUuid = message.receiverUuid();
+    } else {
+      conversationUuid = message.senderUuid();
     }
 
-    selectUser(conversationUuid);
+    if (!messagesByUuid_.contains(conversationUuid)) {
+      messagesByUuid_[conversationUuid] = new MessageList(this);
+    }
+
+    messagesByUuid_[conversationUuid]->addMessage(message);
+  }
+
+  selectUser(conversationUuid);
 }
 
-void ChatViewModel::searchUsers(const QString& query) {
+void ChatViewModel::searchUsers(const QString &query) {
   qDebug() << "[ChatViewModel] Searching users with query:" << query;
   if (query.trimmed().isEmpty()) {
     searchResults_->clear();
@@ -227,30 +274,28 @@ void ChatViewModel::searchUsers(const QString& query) {
   chatService_->searchContacts(query);
 }
 
-void ChatViewModel::onContactsSearchLoaded(const QList<User> users)
-{
+void ChatViewModel::onContactsSearchLoaded(const QList<User> users) {
   qDebug() << "Nombre d'utilisateurs trouvés :" << users.size();
 
-    for (const auto& user : users)
+  for (const auto &user : users)
 
-    {
+  {
 
-        qDebug() << "User:"
+    qDebug() << "User:"
 
-                 << "email =" << user.email()
+             << "email =" << user.email()
 
-                 << ", first_name =" << user.firstName()
+             << ", first_name =" << user.firstName()
 
-                 << ", last_name =" << user.lastName()
+             << ", last_name =" << user.lastName()
 
-                 << ", uuid =" << user.uuid();
-
-    }
+             << ", uuid =" << user.uuid();
+  }
   searchResults_->clear();
   searchResults_->setUsers(users);
 }
 
 void ChatViewModel::onApplicationQuit() {
-    qDebug() << "[ChatViewModel] Application is quitting. Performing disconnect.";
-    chatService_->disconnectFromServer();
+  qDebug() << "[ChatViewModel] Application is quitting. Performing disconnect.";
+  chatService_->disconnectFromServer();
 }
