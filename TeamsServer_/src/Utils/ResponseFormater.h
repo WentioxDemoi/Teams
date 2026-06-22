@@ -1,6 +1,7 @@
 #ifndef RESPONSEFORMATER_H
 #define RESPONSEFORMATER_H
 
+#include "../Core/Models/Contact.h"
 #include "../Core/Models/Message.h"
 #include "../Core/Models/User.h"
 #include "../includes.h"
@@ -105,6 +106,23 @@ public:
            "\","
            "\"isRead\":" +
            (message.is_read ? "true" : "false") +
+           "}"
+           "}";
+  }
+
+  static std::string format_contact_response(const std::string &type,
+                                             const Contact &contact) {
+    return "{"
+           "\"type\":\"" +
+           type +
+           "\","
+           "\"data\":{"
+           "\"userUuid\":\"" +
+           json_escape(contact.user_id) +
+           "\","
+           "\"contactUuid\":\"" +
+           json_escape(contact.contact_id) +
+           "\""
            "}"
            "}";
   }

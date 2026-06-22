@@ -263,7 +263,7 @@ Item {
                                 id: mouseArea
                                 anchors.fill: parent
                                 hoverEnabled: true
-                                onClicked: chatVM.selectUser(model.uuid)
+                                onClicked: chatVM.selectContact(model.uuid)
                             }
                         }
                     }

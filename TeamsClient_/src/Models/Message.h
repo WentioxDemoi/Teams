@@ -5,6 +5,7 @@
 #include <QString>
 
 #include <QJsonObject>
+#include <QtCore/qdatetime.h>
 
 /**
  * @class Message
@@ -17,8 +18,8 @@ class Message {
  public:
     Message() = default;
     Message(const QString& uuid, const QString& senderUuid, const QString& receiverUuid,
-      const QString& chatType, const QString& content, const QDateTime& timestamp,
-      bool fromMe = false, bool isRead = false);
+        const QString& chatType, const QString& content, const QDateTime& timestamp,
+        bool fromMe = false, bool isRead = false);
 
   QString uuid() const { return uuid_; }
   QString senderUuid() const { return senderUuid_; }
@@ -43,6 +44,11 @@ class Message {
   void setReceiverUuid(const QString& receiverUuid) { receiverUuid_ = receiverUuid; }
   void setChatType(const QString& chatType) { chatType_ = chatType; }
   void setTimestamp(const QDateTime& timestamp) { timestamp_ = timestamp; }
+
+  static Message createOutgoing(const QString& receiverUuid, const QString& chatType,
+                                  const QString& content);
+
+  static QString generateUuid();
 
  private:
   QString uuid_;

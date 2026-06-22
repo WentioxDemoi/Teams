@@ -44,6 +44,7 @@ private:
     bool connectedToWebRTC = false;
     bool connectedToMessage = false;
     bool connectedToCall = false;
+    bool connectedToContact = false;
 };
 
 #endif

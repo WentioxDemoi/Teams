@@ -34,7 +34,7 @@ private:
   void handle_load_contacts(std::string uuid, std::string payload,
                             ResponseCallback respond);
                             
-void handle_search_contacts(const std::string &uuid, std::string payload,
+void handle_search_users(const std::string &uuid, std::string payload,
                             ResponseCallback respond);
 
 private:

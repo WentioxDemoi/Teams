@@ -23,13 +23,15 @@ public:
   explicit ContactService(NetworkService *network = nullptr,
                           UserRepository *userRepo = nullptr,
                           QObject *parent = nullptr);
-  void searchContacts(const QString &query) override;
+  void searchUsers(const QString &query) override;
 public slots:
-  void loadContactsFromDatabaseAndServer() override;
+  void loadContactsFromServer() override;
+  void loadContactsFromDatabase() override;
   void saveContact(const User &user) override;
   void deleteContact(const QString &uuid) override;
   void deleteAll() override;
   void disconnectFromServer() override;
+
   void auth(const User& user) override;
 
 private slots:

@@ -3,35 +3,34 @@
 bool ContactRepository::create(const Contact& contact) {
   auto conn = databaseManager_.acquire_connection();
 
-//   try {
-//     QueryBuilder qb;
+  try {
+    QueryBuilder qb;
 
-//     std::string query =
-//         qb.insert_into(
-//               config_.table_contacts(),
-//               {"user_uuid", "contact_uuid", "created_at"})
-//             .values({"$1", "$2", "$3"})
-//             .build();
+    std::string query =
+        qb.insert_into(
+              config_.table_contacts(),
+              {"user_uuid", "contact_uuid"})
+            .values({"$1", "$2"})
+            .build();
 
-//     pqxx::work txn(*conn);
+    pqxx::work txn(*conn);
 
-//     pqxx::result result =
-//         txn.exec_params(
-//             query,
-//             contact.user_uuid,
-//             contact.contact_uuid,
-//             config_.time_point_to_string(contact.created_at));
+    pqxx::result result =
+        txn.exec_params(
+            query,
+            contact.user_id,
+            contact.contact_id);
 
-//     txn.commit();
+    txn.commit();
 
-//     databaseManager_.release_connection(conn);
+    databaseManager_.release_connection(conn);
 
-//     return result.affected_rows() == 1;
+    return result.affected_rows() == 1;
 
-//   } catch (...) {
-//     databaseManager_.release_connection(conn);
-//     throw;
-//   }
+  } catch (...) {
+    databaseManager_.release_connection(conn);
+    throw;
+  }
 }
 
 bool ContactRepository::remove(
@@ -72,43 +71,44 @@ bool ContactRepository::remove(
 std::vector<User> ContactRepository::find_contacts(
     const std::string& userUuid) {
 
-//   auto conn = databaseManager_.acquire_connection();
+  auto conn = databaseManager_.acquire_connection();
 
-//   try {
-//     std::vector<User> contacts;
+  try {
+    std::vector<User> contacts;
 
-//     std::string query = R"(
-//       SELECT u.*
-//       FROM contacts c
-//       JOIN users u
-//         ON u.uuid = c.contact_uuid
-//       WHERE c.user_uuid = $1
-//       ORDER BY u.first_name
-//     )";
+    std::string query = R"(
+      SELECT u.*
+      FROM contacts c
+      JOIN users u
+        ON u.uuid = c.contact_uuid
+      WHERE c.user_uuid = $1
+      ORDER BY u.first_name
+    )";
 
-//     pqxx::work txn(*conn);
+    pqxx::work txn(*conn);
 
-//     pqxx::result result =
-//         txn.exec_params(query, userUuid);
+    pqxx::result result = txn.exec_params(query, userUuid);
 
-//     for (const auto& row : result) {
-//       User user;
+    for (const auto& row : result) {
+      User user;
 
-//       user.uuid = row["uuid"].as<std::string>();
-//       user.firstName = row["first_name"].as<std::string>();
-//       user.lastName = row["last_name"].as<std::string>();
-//       user.email = row["email"].as<std::string>();
-//       user.status = row["status"].as<std::string>();
+      user.uuid = row["uuid"].as<std::string>();
+      user.firstName = row["first_name"].as<std::string>();
+      user.lastName = row["last_name"].as<std::string>();
+      user.email = row["email"].as<std::string>();
+      user.status = row["status"].as<std::string>();
 
-//       contacts.push_back(user);
-//     }
+      contacts.push_back(user);
+    }
 
-//     databaseManager_.release_connection(conn);
+    txn.commit();
 
-//     return contacts;
+    databaseManager_.release_connection(conn);
 
-//   } catch (...) {
-//     databaseManager_.release_connection(conn);
-//     throw;
-//   }
+    return contacts;
+
+  } catch (...) {
+    databaseManager_.release_connection(conn);
+    throw;
+  }
 }

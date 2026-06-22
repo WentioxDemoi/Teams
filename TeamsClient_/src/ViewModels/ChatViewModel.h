@@ -10,8 +10,10 @@
 #include "../Models/UserList.h"
 #include "../Models/User.h"
 #include "Interfaces/IChatService.h"
+#include "Interfaces/IContactService.h"
 #include "StateLocator.h"
 #include "State/SessionState.h"
+#include "Contact/ContactService.h"
 
 class MessageRepository; // TMP
 
@@ -39,6 +41,7 @@ class ChatViewModel : public QObject {
  public:
   explicit ChatViewModel(UserList* user = nullptr,
                          IChatService* chatService = nullptr,
+                         IContactService *contactService = nullptr,
                          SessionState* sessionState = nullptr,
                          SearchResults* searchResults = nullptr,
                          QObject* parent = nullptr);
@@ -50,14 +53,14 @@ class ChatViewModel : public QObject {
 
  public slots:
   void selectUser(const QString& userUuid);
+  void selectContact(const QString &userUuid);
   void searchUsers(const QString& query); // Used by QML
   void sendMessage(const QString& content);
-  void onContactsSearchLoaded(const QList<User> users);
+  void onUsersSearchLoaded(const QList<User> users);
 
   //   void callUser(const QString& userUuid);
 
  private slots:
-  void onLocalUserSaved(const User& user); // TMP
   void onContactsLoaded(const QList<User>& users);
   void onMessagesLoaded(const QList<Message>& messages);
   void onApplicationQuit();
@@ -71,12 +74,12 @@ class ChatViewModel : public QObject {
 
  private:
   // void refreshConversationsFromDatabase();
-  void persistMessage(const Message& message);
-  void seedDatabaseMessages(const QString& localUuid);
+  // void persistMessage(const Message& message);
 
   IChatService* chatService_;
+  IContactService* contactService_;
   UserList* userList_;
-  MessageRepository* messageRepository_; // TMP
+  // MessageRepository* messageRepository_; // TMP
   QHash<QString, MessageList*> messagesByUuid_;
   MessageList* currentMessageList_;  // Displayed by QML
   QVariantMap selectedUser_;

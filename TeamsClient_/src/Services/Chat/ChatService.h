@@ -19,15 +19,12 @@ class ChatService : public IChatService {
   Q_OBJECT
  public:
   explicit ChatService(IMessageService* messageService = nullptr,
-                       IContactService* contactService = nullptr,
                        ICallService* callService = nullptr,
                        QObject* parent = nullptr);
 
  public slots:
   void sendMessage(const QString& recipientUuid, const QString& content) override;
   void loadConversationsFromDatabaseAndServer() override;
-  void loadContactsFromDatabaseAndServer() override;
-  void searchContacts(const QString &query) override;
   void startCall(const QString& calleeUuid) override;
   void acceptCall(const QString& callUuid) override;
   void hangup(const QString& callUuid) override;
@@ -35,7 +32,6 @@ class ChatService : public IChatService {
 
  private:
   IMessageService* messageService_;
-  IContactService* contactService_;
   ICallService* callService_;
 };
 

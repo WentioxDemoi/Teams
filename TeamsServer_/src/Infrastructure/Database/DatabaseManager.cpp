@@ -95,6 +95,19 @@ void DatabaseManager::initialize_schema() {
     txn.exec("CREATE INDEX IF NOT EXISTS idx_messages_receiver ON " +
              config.table_messages() + "(receiver_id);");
 
+             // Contacts table
+txn.exec("CREATE TABLE IF NOT EXISTS " + config.table_contacts() +
+         " ("
+         "user_uuid TEXT NOT NULL, "
+         "contact_uuid TEXT NOT NULL, "
+         "PRIMARY KEY (user_uuid, contact_uuid), "
+         "FOREIGN KEY (user_uuid) REFERENCES " + config.table_users() + "(uuid), "
+         "FOREIGN KEY (contact_uuid) REFERENCES " + config.table_users() + "(uuid)"
+         ");");
+
+txn.exec("CREATE INDEX IF NOT EXISTS idx_contacts_user ON " +
+         config.table_contacts() + "(user_uuid);");
+
     txn.commit();
     release_connection(conn);
 

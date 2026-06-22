@@ -2,22 +2,23 @@
 #include "PacketHelper.h"
 #include "Repositories/UserRepository.h"
 #include <optional>
+#include "../../Utils/ResponseFormater.h"
 
 std::optional<std::string>
 ContactService::addContact(const std::string &payload) {
 
-  //   Contact contact = contact_from_json(payload);
+    Contact contact = contact_from_json(payload);
 
-  //   if (!contactRepo_->save(contact)) {
-  //     return std::nullopt;
-  //   }
+    if (!contactRepo_->create(contact)) {
+      return std::nullopt;
+    }
 
-  //   std::string response =
-  //       ResponseFormater::format_contact_response(
-  //           "contact_added",
-  //           contact);
+    std::string response =
+        ResponseFormater::format_contact_response(
+            "contact_added",
+            contact);
 
-  //   return response;
+    return response;
 }
 
 std::optional<std::string>
@@ -46,22 +47,22 @@ ContactService::removeContact(const std::string &payload) {
 std::optional<std::string>
 ContactService::loadContacts(const std::string &payload) {
 
-  //   auto userUuid =
-  //       PacketHelper::extractValue(payload, "userUuid");
+    auto userUuid =
+        PacketHelper::extractValue(payload, "userUuid");
 
-  //   if (userUuid.empty()) {
-  //     return std::nullopt;
-  //   }
+    if (userUuid.empty()) {
+      return std::nullopt;
+    }
 
-  //   auto contacts =
-  //       contactRepo_->findByUserUuid(userUuid);
+    auto contacts =
+        contactRepo_->find_contacts(userUuid);
 
-  //   return ResponseFormater::format_contacts_response(
-  //       "contacts_loaded",
-  //       contacts);
+    return ResponseFormater::format_user_list_response(
+        "contacts_loaded",
+        contacts);
 }
 
-std::optional<std::vector<User>> ContactService::searchContacts(const std::string &callerUuid, const std::string &payload)
+std::optional<std::vector<User>> ContactService::searchUsers(const std::string &callerUuid, const std::string &payload)
 {
     const std::string query = PacketHelper::extractValue(payload, "query");
 

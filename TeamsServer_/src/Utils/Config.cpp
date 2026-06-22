@@ -27,6 +27,7 @@ void Config::load_from_env() {
 
   // Tables (with defaults)
   table_users_ = get_env("TABLE_USERS", "users");
+  table_contacts_ = get_env("TABLE_CONTACTS", "contacts");
   table_channels_ = get_env("TABLE_CHANNELS", "channels");
   table_channel_members_ = get_env("TABLE_CHANNEL_MEMBERS", "channel_members");
   table_messages_ = get_env("TABLE_MESSAGES", "messages");

@@ -13,7 +13,7 @@ std::optional<std::string> MessageService::sendMessage(const std::string& payloa
   } 
 
   Message msg = message_from_json(payload);
-  msg.id = Crypto::generate_uuid_v7();
+  // msg.id = Crypto::generate_uuid_v7(); // A ajouter plus tard avec un vrai système j'ajout local côté client. (UUID tmp coté client à remplacer par UUID généré côté serveur)
 
   if (!messageRepo_->save(msg)) {
     return std::nullopt;

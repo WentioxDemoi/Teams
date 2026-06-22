@@ -20,7 +20,7 @@ public:
   virtual std::optional<std::string> addContact(const std::string &payload);
   virtual std::optional<std::string> removeContact(const std::string &payload);
   virtual std::optional<std::string> loadContacts(const std::string &payload);
-  virtual std::optional<std::vector<User>> searchContacts(const std::string &callerUuid, const std::string &payload);
+  virtual std::optional<std::vector<User>> searchUsers(const std::string &callerUuid, const std::string &payload);
 
 private:
   std::unique_ptr<ContactRepository> contactRepo_;

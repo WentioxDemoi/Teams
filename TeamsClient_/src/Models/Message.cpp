@@ -1,12 +1,13 @@
 #include "Message.h"
 
 #include <QJsonObject>
+#include "Core/State/UserState.h"
 
 Message::Message(const QString& uuid, const QString& senderUuid, const QString& receiverUuid,
                  const QString& chatType, const QString& content, const QDateTime& timestamp,
                  bool fromMe, bool isRead)
-    : uuid_(uuid),
-      senderUuid_(senderUuid),
+    : uuid_(uuid.isEmpty() ? generateUuid() : uuid),
+      senderUuid_(!senderUuid.isEmpty() ? senderUuid : UserState::instance().localUser().uuid()),
       receiverUuid_(receiverUuid),
       chatType_(chatType),
       content_(content),
@@ -37,4 +38,17 @@ QJsonObject Message::toJson() const {
       {"fromMe", fromMe_},
       {"isRead", isRead_},
   };
+}
+
+Message Message::createOutgoing(const QString& receiverUuid, const QString& chatType,
+                                  const QString& content) {
+  return Message(generateUuid(), UserState::instance().localUser().uuid(), receiverUuid,
+                 chatType, content, QDateTime::currentDateTime(), true, false);
+}
+
+QString Message::generateUuid() {
+  QString id = QUuid::createUuid().toString();
+  id.remove('{');
+  id.remove('}');
+  return id;
 }

@@ -11,15 +11,15 @@
 #include "../ViewModels/AuthViewModel.h"
 #include "../ViewModels/ChatViewModel.h"
 #include "Auth/AuthService.h"
-#include "Call/CallService.h"
-#include "ChatService.h"
+#include "Chat/Call/CallService.h"
+#include "Chat/ChatService.h"
 #include "Contact/ContactService.h"
 #include "Interfaces/ICallService.h"
 #include "Interfaces/IChatService.h"
 #include "Interfaces/IAuthService.h"
 #include "Interfaces/IContactService.h"
 #include "Interfaces/IMessageService.h"
-#include "Message/MessageService.h"
+#include "Chat/Message/MessageService.h"
 #include "MessageList.h"
 #include "ModelLocator.h"
 #include "ServiceLocator.h"
@@ -84,7 +84,7 @@ void Application::initializeServices() {
   auto* callService = new CallService(nullptr, appRoot);
   serviceLocator.registerService<ICallService>(callService);
 
-  auto* chatService = new ChatService(nullptr, nullptr, nullptr, appRoot);
+  auto* chatService = new ChatService(nullptr, nullptr, appRoot);
   serviceLocator.registerService<IChatService>(chatService);
 
   // AuthService EN DERNIER
@@ -117,7 +117,7 @@ void Application::initializeViewModels() {
 
   locator.registerViewModels<AuthViewModel>(authVM);
 
-  auto* chatVM = new ChatViewModel(nullptr, nullptr, nullptr, nullptr, appRoot);
+  auto* chatVM = new ChatViewModel(nullptr, nullptr, nullptr, nullptr, nullptr, appRoot);
 
   locator.registerViewModels<ChatViewModel>(chatVM);
 
