@@ -47,6 +47,7 @@ void ChatViewModel::selectContact(const QString &contactUuid) {
 
   selectedContact_ = contactList_->findByUuid(contactUuid);
   activateConversation(contactUuid);
+  contactList_->setUnreadCount(contactUuid, 0);
 
   emit selectedContactChanged();
   emit messageListChanged();
@@ -82,7 +83,7 @@ void ChatViewModel::sendMessage(const QString &content) {
 
   Message message = Message::createOutgoing(recipient, "message", content);
   currentMessageList_->addMessage(message);
-
+  contactList_->updateLastMessage(message.receiverUuid(), message.content());
   if (chatService_) {
     chatService_->sendMessage(message);
   }
@@ -92,6 +93,7 @@ void ChatViewModel::onContactsLoaded(const QList<User> &contacts) {
   for (const User &contact : contacts) {
     contactList_->addUser(contact);
   }
+  // Une fois les conversation loaded, il faudra trouver un moyen d'update le last message de chacun des contacts
   // chatService_->loadConversationsFromDatabaseAndServer();
 }
 
@@ -137,16 +139,43 @@ void ChatViewModel::activateConversation(const QString &userUuid) {
 
 void ChatViewModel::onMessageReceived(const Message &message) {
   qDebug() << "[ChatViewModel] Message Received";
-  if (!messagesByUuid_.contains(message.senderUuid())) {
-    messagesByUuid_.insert(message.senderUuid(), new MessageList(this));
-    contactService_->resolveUserByUuid(message.senderUuid());
+
+  const QString senderUuid = message.senderUuid();
+  const bool isNewContact = !messagesByUuid_.contains(senderUuid);
+
+  if (isNewContact) {
+    messagesByUuid_.insert(senderUuid, new MessageList(this));
+    contactService_->resolveUserByUuid(senderUuid);
   }
-  messagesByUuid_[message.senderUuid()]->addMessage(message);
+
+  messagesByUuid_[senderUuid]->addMessage(message);
+
+  if (isNewContact) {
+    pendingLastMessage_[senderUuid] = message;
+    pendingUnread_[senderUuid] = pendingUnread_.value(senderUuid, 0) + 1;
+  } else {
+    contactList_->updateLastMessage(senderUuid, message.content());
+    if (senderUuid != selectedContact_["uuid"].toString()) {
+      contactList_->incrementUnreadCount(senderUuid);
+    }
+  }
 }
 
-void ChatViewModel::onUserResolved(const User &user)
-{
+void ChatViewModel::onUserResolved(const User &user) {
   contactList_->addUser(user);
+
+  const QString uuid = user.uuid();
+
+  if (pendingLastMessage_.contains(uuid)) {
+    contactList_->updateLastMessage(uuid, pendingLastMessage_[uuid].content());
+    pendingLastMessage_.remove(uuid);
+  }
+
+  if (pendingUnread_.contains(uuid)) {
+    contactList_->setUnreadCount(uuid, pendingUnread_[uuid]);
+    pendingUnread_.remove(uuid);
+  }
+  
   emit messageListChanged();
 }
 

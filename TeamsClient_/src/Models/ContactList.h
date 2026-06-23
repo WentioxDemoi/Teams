@@ -34,10 +34,14 @@ public:
     AvatarColorRole, // couleur hex
     OnlineRole,      // bool
     UuidRole,
+    UnreadRole,
   };
 
   void addUser(const User &user);
   void removeUser(const User &user); // Deuxième temps
+  void updateLastMessage(const QString &uuid, const QString &message);
+  void setUnreadCount(const QString &uuid, int value);
+  void incrementUnreadCount(const QString &uuid);
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   QHash<int, QByteArray> roleNames() const override;

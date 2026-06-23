@@ -245,15 +245,31 @@ Item {
 
                                     RowLayout {
                                         width: parent.width
-                                        spacing: 4
+                                        spacing: 6
 
                                         Text {
                                             Layout.fillWidth: true
+                                            Layout.alignment: Qt.AlignVCenter
                                             text: model.lastMessage
                                             font.pixelSize: 12
-                                            font.family: "SF Pro Text"
                                             color: "#636366"
                                             elide: Text.ElideRight
+                                        }
+
+                                        Rectangle {
+                                            visible: model.unreadCount > 0
+                                            Layout.preferredWidth: 16
+                                            Layout.preferredHeight: 16
+                                            radius: 8
+                                            color: "#FF3B30"
+
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: model.unreadCount > 9 ? "9+" : model.unreadCount
+                                                font.pixelSize: 9
+                                                font.bold: true
+                                                color: "white"
+                                            }
                                         }
                                     }
                                 }
@@ -355,7 +371,6 @@ Item {
                             anchors.rightMargin: 12
                             spacing: 10
 
-                            
                             // Inputfield message
                             Rectangle {
                                 Layout.fillWidth: true
@@ -418,38 +433,36 @@ Item {
                 }
 
                 // ─── État vide "Faites coucou" ──────────────────────────────────
-    ColumnLayout {
-        anchors.centerIn: parent
-        spacing: 14
-        z: 2
-        visible: messageList.count === 0 && chatVM.selectedContact && chatVM.selectedContact.uuid
+                ColumnLayout {
+                    anchors.centerIn: parent
+                    spacing: 14
+                    z: 2
+                    visible: messageList.count === 0 && chatVM.selectedContact && chatVM.selectedContact.uuid
 
-        Text {
-            Layout.alignment: Qt.AlignHCenter
-            text: "👋"
-            font.pixelSize: 52
-        }
+                    Text {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: "👋"
+                        font.pixelSize: 52
+                    }
 
-        Text {
-            Layout.alignment: Qt.AlignHCenter
-            text: chatVM.selectedContact && chatVM.selectedContact.uuid
-                  ? "Faites coucou à " + chatVM.selectedContact.username + " !"
-                  : ""
-            font.pixelSize: 16
-            font.weight: Font.DemiBold
-            font.family: "SF Pro Text"
-            color: "#ffffff"
-        }
+                    Text {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: chatVM.selectedContact && chatVM.selectedContact.uuid ? "Faites coucou à " + chatVM.selectedContact.username + " !" : ""
+                        font.pixelSize: 16
+                        font.weight: Font.DemiBold
+                        font.family: "SF Pro Text"
+                        color: "#ffffff"
+                    }
 
-        Text {
-            Layout.alignment: Qt.AlignHCenter
-            text: "Aucun message pour le moment.\nEnvoyez le premier message !"
-            font.pixelSize: 13
-            font.family: "SF Pro Text"
-            color: "#636366"
-            horizontalAlignment: Text.AlignHCenter
-        }
-    }
+                    Text {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: "Aucun message pour le moment.\nEnvoyez le premier message !"
+                        font.pixelSize: 13
+                        font.family: "SF Pro Text"
+                        color: "#636366"
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                }
             }
         }
     }

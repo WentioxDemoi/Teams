@@ -79,7 +79,11 @@ private:
   IChatService *chatService_;
   IContactService *contactService_;
   ContactList *contactList_;
+
   QHash<QString, MessageList *> messagesByUuid_;
+  QHash<QString, Message> pendingLastMessage_;
+  QHash<QString, int> pendingUnread_;
+
   MessageList *currentMessageList_; // Displayed by QML
   QVariantMap selectedContact_;
   SessionState *sessionState_;

@@ -22,10 +22,9 @@ void ContactList::removeUser(const User &user) {
 
 QHash<int, QByteArray> ContactList::roleNames() const {
   return {
-      {UsernameRole, "username"}, {StatusRole, "status"},
-      {AvatarRole, "avatar"},     {LastMessageRole, "lastMessage"},
-      {InitialsRole, "initials"}, {AvatarColorRole, "avatarColor"},
-      {OnlineRole, "online"},     {UuidRole, "uuid"},
+      {UsernameRole, "username"},       {StatusRole, "status"},     {AvatarRole, "avatar"},
+      {LastMessageRole, "lastMessage"}, {InitialsRole, "initials"}, {AvatarColorRole, "avatarColor"},
+      {OnlineRole, "online"},           {UuidRole, "uuid"}, {UnreadRole, "unreadCount"},
   };
 }
 
@@ -51,6 +50,8 @@ QVariant ContactList::data(const QModelIndex &index, int role) const {
     return user.online();
   case UuidRole:
     return user.uuid();
+  case UnreadRole:
+    return user.unreadCount();
   default:
     qDebug() << "ContactList: Undefined role.";
   }
@@ -90,6 +91,48 @@ QVariantMap ContactList::findByUuid(const QString &userUuid) const {
     }
   }
   return {};
+}
+
+void ContactList::updateLastMessage(const QString &uuid, const QString &message) {
+  for (int row = 0; row < users_.size(); ++row) {
+    if (users_[row].uuid() == uuid) {
+
+      users_[row].setLastMessage(message);
+
+      QModelIndex idx = index(row);
+      emit dataChanged(idx, idx, {LastMessageRole});
+
+      return;
+    }
+  }
+}
+
+void ContactList::setUnreadCount(const QString &uuid, int value) {
+  for (int i = 0; i < users_.size(); ++i) {
+    if (users_[i].uuid() == uuid) {
+
+      users_[i].setUnreadCount(value);
+
+      QModelIndex idx = index(i);
+      emit dataChanged(idx, idx, {UnreadRole});
+
+      return;
+    }
+  }
+}
+
+void ContactList::incrementUnreadCount(const QString &uuid)
+{
+    for (int i = 0; i < users_.size(); ++i) {
+        if (users_[i].uuid() == uuid) {
+
+            int newValue = users_[i].unreadCount() + 1;
+            users_[i].setUnreadCount(newValue);
+
+            emit dataChanged(index(i), index(i), {UnreadRole});
+            return;
+        }
+    }
 }
 
 ContactList::ContactList(QObject *parent) : QAbstractListModel(parent) {}

@@ -27,12 +27,13 @@ class User {
   Q_PROPERTY(bool online READ online CONSTANT)
   Q_PROPERTY(QString lastMessage READ lastMessage CONSTANT)
   Q_PROPERTY(QString status READ status CONSTANT)
+  Q_PROPERTY(int unreadCount READ unreadCount WRITE setUnreadCount NOTIFY unreadCountChanged)
 
- public:
+public:
   User() = default;
-  User(const QString& email, const QString& firstName, const QString& lastName,
-       const QString& status, bool isMe = false, const QString& token = "",
-       const QString& uuid = "", const QString& avatar = "", const QString& lastMessage = "");
+  User(const QString &email, const QString &firstName, const QString &lastName, const QString &status,
+       bool isMe = false, const QString &token = "", const QString &uuid = "", const QString &avatar = "",
+       const QString &lastMessage = "");
 
   // Getters
   QString email() const { return email_; }
@@ -52,37 +53,45 @@ class User {
   QString uuid() const { return uuid_; }
   QString avatar() const { return avatar_; }
   QString lastMessage() const { return lastMessage_; }
+  int unreadCount() const { return unreadCount_; }
 
   // Setters
-  void setEmail(const QString& v) { email_ = v; }
-  void setFirstName(const QString& v) { firstName_ = v; }
-  void setLastName(const QString& v) { lastName_ = v; }
-  void setStatus(const QString& v) { status_ = v; }
+  void setEmail(const QString &v) { email_ = v; }
+  void setFirstName(const QString &v) { firstName_ = v; }
+  void setLastName(const QString &v) { lastName_ = v; }
+  void setStatus(const QString &v) { status_ = v; }
   void setIsMe(bool v) { isMe_ = v; }
-  void setToken(const QString& v) { token_ = v; }
-  void setUuid(const QString& v) { uuid_ = v; }
-  void setAvatar(const QString& v) { avatar_ = v; }
-  void setLastMessage(const QString& v) { lastMessage_ = v; }
+  void setToken(const QString &v) { token_ = v; }
+  void setUuid(const QString &v) { uuid_ = v; }
+  void setAvatar(const QString &v) { avatar_ = v; }
+  void setLastMessage(const QString &v) { lastMessage_ = v; }
+  void setUnreadCount(int v) {
+    if (unreadCount_ == v)
+      return;
 
+    unreadCount_ = v;
+    // emit unreadCountChanged();
+  }
   void clearToken() { token_.clear(); }
   bool isValid() const { return !email_.isEmpty() && !firstName_.isEmpty() && !uuid_.isEmpty(); }
 
   QJsonObject toJson() const;
-  static User fromJson(const QJsonObject& json);
+  static User fromJson(const QJsonObject &json);
 
-  bool operator==(const User& other) const { return uuid_ == other.uuid_; }
+  bool operator==(const User &other) const { return uuid_ == other.uuid_; }
 
   void print() const {
-    qDebug() << "{ email:" << email_ << ", name:" << fullName() << ", status:" << status_
-             << ", uuid:" << uuid_ << ", isMe:" << isMe_ << "}";
+    qDebug() << "{ email:" << email_ << ", name:" << fullName() << ", status:" << status_ << ", uuid:" << uuid_
+             << ", isMe:" << isMe_ << "}";
   }
 
- private:
-  static QString generateAvatarColor(const QString& seed) {
+private:
+  static QString generateAvatarColor(const QString &seed) {
     static const QStringList colors = {
         "#FF6B6B", "#FF9F43", "#FECA57", "#48DBFB", "#1DD1A1", "#0A84FF", "#BF5AF2", "#FF375F",
     };
-    if (seed.isEmpty()) return colors[0];
+    if (seed.isEmpty())
+      return colors[0];
     uint hash = qHash(seed);
     return colors[hash % colors.size()];
   }
@@ -96,6 +105,7 @@ class User {
   QString uuid_;
   QString avatar_;
   QString lastMessage_;
+  int unreadCount_ = 0;
 };
 
 #endif
