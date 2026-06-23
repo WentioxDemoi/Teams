@@ -46,6 +46,7 @@ class SearchResults : public QAbstractListModel {
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
   QHash<int, QByteArray> roleNames() const override;
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+  void onUsersSearchLoaded(const QList<User> users);
 
   Q_INVOKABLE QVariantMap get(int row) const;
 

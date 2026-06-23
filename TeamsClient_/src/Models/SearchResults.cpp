@@ -94,4 +94,9 @@ User SearchResults::findByUuid(const QString& uuid) const {
   return User();
 }
 
+void SearchResults::onUsersSearchLoaded(const QList<User> users) {
+  clear();
+  setUsers(users);
+}
+
 SearchResults::SearchResults(QObject* parent) : QAbstractListModel(parent) {}

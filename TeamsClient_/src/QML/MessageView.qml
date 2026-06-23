@@ -56,11 +56,11 @@ Item {
                         width: 28
                         height: 28
                         radius: 14
-                        color: chatVM.selectedUser && chatVM.selectedUser.uuid ? chatVM.selectedUser.avatarColor : "#636366"
+                        color: chatVM.selectedContact && chatVM.selectedContact.uuid ? chatVM.selectedContact.avatarColor : "#636366"
 
                         Text {
                             anchors.centerIn: parent
-                            text: chatVM.selectedUser && chatVM.selectedUser.uuid ? chatVM.selectedUser.initials : ""
+                            text: chatVM.selectedContact && chatVM.selectedContact.uuid ? chatVM.selectedContact.initials : ""
                             font.pixelSize: 11
                             font.weight: Font.Bold
                             font.family: "SF Pro Text"
@@ -71,7 +71,7 @@ Item {
                             width: 8
                             height: 8
                             radius: 4
-                            color: chatVM.selectedUser && chatVM.selectedUser.online ? "#30D158" : "#636366"
+                            color: chatVM.selectedContact && chatVM.selectedContact.online ? "#30D158" : "#636366"
                             border.color: Qt.rgba(0.11, 0.11, 0.12, 0.92)
                             border.width: 1.5
                             anchors.right: parent.right
@@ -85,7 +85,7 @@ Item {
                         Layout.fillWidth: true
 
                         Text {
-                            text: chatVM.selectedUser && chatVM.selectedUser.uuid ? chatVM.selectedUser.username : ""
+                            text: chatVM.selectedContact && chatVM.selectedContact.uuid ? chatVM.selectedContact.username : ""
                             font.pixelSize: 14
                             font.weight: Font.DemiBold
                             font.family: "SF Pro Text"
@@ -93,10 +93,10 @@ Item {
                         }
 
                         Text {
-                            text: chatVM.selectedUser && chatVM.selectedUser.online ? "En ligne" : "Hors ligne"
+                            text: chatVM.selectedContact && chatVM.selectedContact.online ? "En ligne" : "Hors ligne"
                             font.pixelSize: 11
                             font.family: "SF Pro Text"
-                            color: chatVM.selectedUser && chatVM.selectedUser.online ? "#30D158" : "#636366"
+                            color: chatVM.selectedContact && chatVM.selectedContact.online ? "#30D158" : "#636366"
                         }
                     }
 
@@ -176,7 +176,7 @@ Item {
 
                     ListView {
                         id: contactList
-                        model: chatVM.userList
+                        model: chatVM.contactList
                         spacing: 4
                         boundsBehavior: Flickable.StopAtBounds
 
@@ -184,7 +184,7 @@ Item {
                             width: contactList.width
                             height: 62
                             radius: 10
-                            color: mouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.07) : (model.uuid === ((chatVM.selectedUser && chatVM.selectedUser.uuid) ? chatVM.selectedUser.uuid : "") ? Qt.rgba(0.04, 0.52, 1.0, 0.18) : "transparent")
+                            color: mouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.07) : (model.uuid === ((chatVM.selectedContact && chatVM.selectedContact.uuid) ? chatVM.selectedContact.uuid : "") ? Qt.rgba(0.04, 0.52, 1.0, 0.18) : "transparent")
                             Behavior on color {
                                 ColorAnimation {
                                     duration: 100
@@ -422,7 +422,7 @@ Item {
         anchors.centerIn: parent
         spacing: 14
         z: 2
-        visible: messageList.count === 0 && chatVM.selectedUser && chatVM.selectedUser.uuid
+        visible: messageList.count === 0 && chatVM.selectedContact && chatVM.selectedContact.uuid
 
         Text {
             Layout.alignment: Qt.AlignHCenter
@@ -432,8 +432,8 @@ Item {
 
         Text {
             Layout.alignment: Qt.AlignHCenter
-            text: chatVM.selectedUser && chatVM.selectedUser.uuid
-                  ? "Faites coucou à " + chatVM.selectedUser.username + " !"
+            text: chatVM.selectedContact && chatVM.selectedContact.uuid
+                  ? "Faites coucou à " + chatVM.selectedContact.username + " !"
                   : ""
             font.pixelSize: 16
             font.weight: Font.DemiBold

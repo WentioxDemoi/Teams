@@ -26,7 +26,7 @@
 #include "State/SessionState.h"
 #include "State/UserState.h"
 #include "StateLocator.h"
-#include "UserList.h"
+#include "ContactList.h"
 #include "LocalUserService.h"
 #include "ViewModelsLocator.h"
 
@@ -99,9 +99,9 @@ void Application::initializeServices() {
 void Application::initializeModels() {
   auto& locator = ModelLocator::instance();
 
-  auto* userListModel = new UserList(appRoot);
+  auto* contactListModel = new ContactList(appRoot);
 
-  locator.registerModel<UserList>(userListModel);
+  locator.registerModel<ContactList>(contactListModel);
 
   auto* messageListModel = new MessageList(appRoot);
 

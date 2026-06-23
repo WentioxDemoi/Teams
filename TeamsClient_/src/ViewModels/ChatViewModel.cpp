@@ -5,101 +5,84 @@
 
 #include <QUuid>
 
-#include "../Core/State/UserState.h"
 #include "../Models/Message.h"
-#include "../Repositories/MessageRepository.h" // TMP
 #include "Interfaces/IChatService.h"
 #include "Interfaces/IContactService.h"
 #include "ModelLocator.h"
 #include "ServiceLocator.h"
+#include "StateLocator.h"
 
-ChatViewModel::ChatViewModel(UserList *userList, IChatService *chatService,
-                             IContactService *contactService,
-                             SessionState *sessionState,
-                             SearchResults *searchResults, QObject *parent)
+ChatViewModel::ChatViewModel(ContactList* contactList, IChatService* chatService,
+                             IContactService* contactService, SessionState* sessionState,
+                             SearchResults* searchResults, QObject* parent)
     : QObject(parent),
-      chatService_(chatService
-                       ? chatService
-                       : ServiceLocator::instance().getService<IChatService>()),
-      contactService_(
-          contactService
-              ? contactService
-              : ServiceLocator::instance().getService<IContactService>()),
-      userList_(userList ? userList
-                         : ModelLocator::instance().getModel<UserList>()),
+      chatService_(chatService ? chatService
+                               : ServiceLocator::instance().getService<IChatService>()),
+      contactService_(contactService ? contactService
+                                     : ServiceLocator::instance().getService<IContactService>()),
+      contactList_(contactList ? contactList : ModelLocator::instance().getModel<ContactList>()),
       currentMessageList_(nullptr),
-      sessionState_(sessionState
-                        ? sessionState
-                        : StateLocator::instance().getState<SessionState>()),
+      sessionState_(sessionState ? sessionState
+                                 : StateLocator::instance().getState<SessionState>()),
       searchResults_(searchResults ? searchResults : new SearchResults(this)),
-      selectedUser_() {
-  // TMP
-  {
-    connect(sessionState_, &SessionState::onApplicationQuit, this,
-            &ChatViewModel::onApplicationQuit);
-    connect(chatService_, &IChatService::conversationsLoaded, this,
-            &ChatViewModel::onMessagesLoaded);
-    connect(chatService_, &IChatService::connectionUpdate, sessionState_,
-            &SessionState::onServerConnectionUpdate);
+      selectedContact_() {
+  connect(sessionState_, &SessionState::onApplicationQuit, this, &ChatViewModel::onApplicationQuit);
 
-    connect(contactService_, &IContactService::contactsLoaded, this,
-            &ChatViewModel::onContactsLoaded);
-    // connect(contactService_, &IContactService::contactError, this,
-    // &IChatService::messageError); // MessageError à créer
-    connect(contactService_, &IContactService::connectionUpdate, sessionState_,
-            &SessionState::onServerConnectionUpdate);
-    connect(contactService_, &IContactService::usersSearchLoaded, this,
-            &ChatViewModel::onUsersSearchLoaded);
-    connect(contactService_, &IContactService::connectionUpdate, sessionState_,
-            &SessionState::onServerConnectionUpdate);
-  }
+  connect(chatService_, &IChatService::conversationsLoaded, this, &ChatViewModel::onMessagesLoaded);
+  connect(chatService_, &IChatService::connectionUpdate, sessionState_,
+          &SessionState::onServerConnectionUpdate);
+
+  connect(contactService_, &IContactService::contactsLoaded, this,
+          &ChatViewModel::onContactsLoaded);
+  connect(contactService_, &IContactService::connectionUpdate, sessionState_,
+          &SessionState::onServerConnectionUpdate);
+  connect(contactService_, &IContactService::usersSearchLoaded, searchResults_,
+          &SearchResults::onUsersSearchLoaded);
+  connect(contactService_, &IContactService::connectionUpdate, sessionState_,
+          &SessionState::onServerConnectionUpdate);
 }
 
-UserList *ChatViewModel::userList() const { return userList_; }
+ContactList* ChatViewModel::contactList() const { return contactList_; }
 
-MessageList *ChatViewModel::messageList() const { return currentMessageList_; }
+MessageList* ChatViewModel::messageList() const { return currentMessageList_; }
 
-QVariantMap ChatViewModel::selectedUser() const { return selectedUser_; }
+QVariantMap ChatViewModel::selectedContact() const { return selectedContact_; }
 
-void ChatViewModel::selectContact(const QString &userUuid) {
-  if (!userList_)
-    return;
+void ChatViewModel::selectContact(const QString& contactUuid) {
+  if (!contactList_) return;
 
-  selectedUser_ = findInUserList(userUuid);
-  activateConversation(userUuid);
+  selectedContact_ = contactList_->findByUuid(contactUuid);
+  activateConversation(contactUuid);
 
-  emit selectedUserChanged();
+  emit selectedContactChanged();
   emit messageListChanged();
 }
 
 // Dans le cas d'une recherche d'utilisateur sur le serveur via la TopBar
-void ChatViewModel::selectUser(const QString &userUuid) {
-  if (!userList_)
-    return;
+void ChatViewModel::selectUser(const QString& userUuid) {
+  if (!contactList_) return;
 
-  selectedUser_ = findInUserList(userUuid);
+  selectedContact_ = contactList_->findByUuid(userUuid);
 
-  if (selectedUser_.isEmpty()) {
+  if (selectedContact_.isEmpty()) {
     const User user = searchResults_->findByUuid(userUuid);
     if (user.isValid()) {
-      userList_->addUser(user);
+      contactList_->addUser(user);
       contactService_->saveContact(user);
-      selectedUser_ = userList_->toVariantMap(user);
+      selectedContact_ = contactList_->toVariantMap(user);
     }
   }
 
   activateConversation(userUuid);
 
-  emit selectedUserChanged();
+  emit selectedContactChanged();
   emit messageListChanged();
 }
 
-void ChatViewModel::sendMessage(const QString &content) {
-  if (!currentMessageList_ || selectedUser_.isEmpty() ||
-      content.trimmed().isEmpty())
-    return;
+void ChatViewModel::sendMessage(const QString& content) {
+  if (!currentMessageList_ || selectedContact_.isEmpty() || content.trimmed().isEmpty()) return;
 
-  const QString recipient = selectedUser_["uuid"].toString();
+  const QString recipient = selectedContact_["uuid"].toString();
 
   Message msg = Message::createOutgoing(recipient, "send_message", content);
   currentMessageList_->addMessage(msg);
@@ -112,22 +95,20 @@ void ChatViewModel::sendMessage(const QString &content) {
 // Ne pas oublier lors du Emit noTokenFound ou en gros lorsque le token est
 // invalide de supprimer toute la DB Locale (Contacts + Messages pour le
 // moment)
-void ChatViewModel::onContactsLoaded(const QList<User> &users) {
-  for (const User &user : users) {
-    userList_->addUser(user);
+void ChatViewModel::onContactsLoaded(const QList<User>& contacts) {
+  for (const User& contact : contacts) {
+    contactList_->addUser(contact);
   }
   // chatService_->loadConversationsFromDatabaseAndServer();
 }
 
-void ChatViewModel::onMessagesLoaded(const QList<Message> &messages) {
-  if (messages.empty())
-    return;
+void ChatViewModel::onMessagesLoaded(const QList<Message>& messages) {
+  if (messages.empty()) return;
   messagesByUuid_.clear();
 
   QString conversationUuid;
 
-  for (const Message &message : messages) {
-
+  for (const Message& message : messages) {
     if (message.fromMe()) {
       conversationUuid = message.receiverUuid();
     } else {
@@ -144,7 +125,7 @@ void ChatViewModel::onMessagesLoaded(const QList<Message> &messages) {
   selectUser(conversationUuid);
 }
 
-void ChatViewModel::searchUsers(const QString &query) {
+void ChatViewModel::searchUsers(const QString& query) {
   qDebug() << "[ChatViewModel] Searching users with query:" << query;
   if (query.trimmed().isEmpty()) {
     searchResults_->clear();
@@ -153,36 +134,15 @@ void ChatViewModel::searchUsers(const QString &query) {
   contactService_->searchUsers(query);
 }
 
-void ChatViewModel::onUsersSearchLoaded(const QList<User> users) {
-  searchResults_->clear();
-  searchResults_->setUsers(users);
-}
-
-QVariantMap ChatViewModel::findInUserList(const QString &userUuid) const {
-  if (!userList_)
-    return {};
-
-  for (int i = 0; i < userList_->rowCount(); ++i) {
-    QVariantMap u = userList_->get(i);
-    if (u["uuid"].toString() == userUuid) {
-      return u;
-    }
-  }
-  return {};
-}
-
-void ChatViewModel::activateConversation(const QString &userUuid) {
-  if (!messagesByUuid_.contains(userUuid))
-    messagesByUuid_.insert(userUuid, new MessageList(this));
+void ChatViewModel::activateConversation(const QString& userUuid) {
+  if (!messagesByUuid_.contains(userUuid)) messagesByUuid_.insert(userUuid, new MessageList(this));
 
   currentMessageList_ = messagesByUuid_[userUuid];
 }
 
 void ChatViewModel::onApplicationQuit() {
   qDebug() << "[ChatViewModel] Application is quitting. Performing disconnect.";
-  if (chatService_)
-    chatService_->disconnectFromServer();
+  if (chatService_) chatService_->disconnectFromServer();
 
-  if (contactService_)
-    contactService_->disconnectFromServer();
+  if (contactService_) contactService_->disconnectFromServer();
 }
