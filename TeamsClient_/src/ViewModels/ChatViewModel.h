@@ -73,8 +73,8 @@ class ChatViewModel : public QObject {
   void chatError(const QString& error);
 
  private:
-  // void refreshConversationsFromDatabase();
-  // void persistMessage(const Message& message);
+  QVariantMap findInUserList(const QString &userUuid) const;
+void activateConversation(const QString &userUuid);
 
   IChatService* chatService_;
   IContactService* contactService_;

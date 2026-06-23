@@ -71,4 +71,17 @@ int UserList::rowCount(const QModelIndex& parent) const {
   return users_.size();
 }
 
+QVariantMap UserList::toVariantMap(const User& user) const {
+  QVariantMap map;
+  map["username"]    = user.fullName();
+  map["status"]      = user.status();
+  map["avatar"]      = user.avatar();
+  map["lastMessage"] = user.lastMessage();
+  map["initials"]    = user.initials();
+  map["avatarColor"] = user.avatarColor();
+  map["online"]      = user.online();
+  map["uuid"]         = user.uuid();
+  return map;
+}
+
 UserList::UserList(QObject* parent) : QAbstractListModel(parent) { }

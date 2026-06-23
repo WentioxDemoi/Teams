@@ -85,4 +85,13 @@ int SearchResults::rowCount(const QModelIndex& parent) const {
   return users_.size();
 }
 
+User SearchResults::findByUuid(const QString& uuid) const {
+  for (const User& user : users_) {
+    if (user.uuid() == uuid) {
+      return user;
+    }
+  }
+  return User();
+}
+
 SearchResults::SearchResults(QObject* parent) : QAbstractListModel(parent) {}

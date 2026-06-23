@@ -4,7 +4,6 @@
 #include <Qlist.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qtmetamacros.h>
-#include <arm/types.h>
 
 #include <QAbstractListModel>
 #include <QDebug>
@@ -42,6 +41,7 @@ class SearchResults : public QAbstractListModel {
   void setUsers(const QList<User>& users);  // remplace tout le contenu (recherche)
   void clear();                              // vide la liste (champ de recherche vidé)
   QList<User> getSearchResultsList() { return users_; }
+  User findByUuid(const QString& uuid) const;
 
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
   QHash<int, QByteArray> roleNames() const override;

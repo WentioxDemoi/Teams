@@ -4,7 +4,6 @@
 #include <Qlist.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qtmetamacros.h>
-#include <arm/types.h>
 
 #include <QAbstractListModel>
 #include <QDebug>
@@ -45,6 +44,8 @@ class UserList : public QAbstractListModel {
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
   Q_INVOKABLE QVariantMap get(int row) const;
+
+  QVariantMap toVariantMap(const User& user) const;
 
   explicit UserList(QObject *parent = nullptr);
 

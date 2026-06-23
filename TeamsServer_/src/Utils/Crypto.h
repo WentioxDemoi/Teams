@@ -50,6 +50,7 @@ public:
            ARGON2_OK;
   }
 
+  // A refactor en JWT
   static std::string generate_token() {
     static std::random_device rd;
     static std::mt19937 gen(rd());
