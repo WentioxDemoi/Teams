@@ -17,7 +17,7 @@ ChatService::ChatService(IMessageService* messageService,
   Q_ASSERT(messageService_);
   Q_ASSERT(callService_);
 
-  connect(messageService_, &IMessageService::messageSent, this, &IChatService::messageSent);
+  // connect(messageService_, &IMessageService::messageSent, this, &IChatService::messageSent);
   connect(messageService_, &IMessageService::messageReceived, this, &IChatService::messageReceived);
   connect(messageService_, &IMessageService::conversationsLoaded, this, &IChatService::conversationsLoaded);
   connect(messageService_, &IMessageService::messageError, this, &IChatService::messageError);
@@ -30,12 +30,12 @@ ChatService::ChatService(IMessageService* messageService,
   connect(callService_, &ICallService::connectionUpdate, this, &IChatService::connectionUpdate);
 }
 
-void ChatService::sendMessage(const QString& recipientUuid, const QString& content) {
+void ChatService::sendMessage(const Message& message) {
   if (!messageService_) {
     emit messageError("Service de messagerie indisponible");
     return;
   }
-  messageService_->sendMessage(recipientUuid, content);
+  messageService_->sendMessage(message);
 }
 
 void ChatService::loadConversationsFromDatabaseAndServer() {

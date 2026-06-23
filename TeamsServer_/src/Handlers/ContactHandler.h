@@ -16,26 +16,22 @@ using ResponseCallback = std::function<void(std::string)>;
 class ContactHandler {
 public:
   ContactHandler(std::unique_ptr<ContactService> contactService)
-      : worker_pool_(Config::instance().worker_pool_size()),
-        contactService_(std::move(contactService)) {}
+      : worker_pool_(Config::instance().worker_pool_size()), contactService_(std::move(contactService)) {}
 
   ~ContactHandler() = default;
 
-  void handle_type(std::string uuid, std::string payload,
-                   ResponseCallback respond);
+  void handle_type(std::string uuid, std::string payload, ResponseCallback respond);
 
 private:
-  void handle_add_contact(std::string uuid, std::string payload,
-                          ResponseCallback respond);
+  void handle_add_contact(std::string uuid, std::string payload, ResponseCallback respond);
 
-  void handle_remove_contact(std::string uuid, std::string payload,
-                             ResponseCallback respond);
+  void handle_remove_contact(std::string uuid, std::string payload, ResponseCallback respond);
 
-  void handle_load_contacts(std::string uuid, std::string payload,
-                            ResponseCallback respond);
-                            
-void handle_search_users(const std::string &uuid, std::string payload,
-                            ResponseCallback respond);
+  void handle_load_contacts(std::string uuid, std::string payload, ResponseCallback respond);
+
+  void handle_search_users(const std::string &uuid, std::string payload, ResponseCallback respond);
+
+  void handle_resolve_user_by_uuid(const std::string &uuid, std::string payload, ResponseCallback respond);
 
 private:
   asio::thread_pool worker_pool_;

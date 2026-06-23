@@ -62,7 +62,6 @@ void DatabaseManager::initialize_schema() {
              "uuid TEXT UNIQUE, "
              "token TEXT, "
              "token_expires_at TIMESTAMP WITH TIME ZONE, "
-             "status TEXT DEFAULT 'offline', "
              "last_seen TIMESTAMP WITH TIME ZONE DEFAULT NOW(), "
              "created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()"
              ");");

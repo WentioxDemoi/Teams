@@ -52,3 +52,12 @@ QString Message::generateUuid() {
   id.remove('}');
   return id;
 }
+
+bool Message::isValid() const {
+    return !uuid_.isEmpty() &&
+           !senderUuid_.isEmpty() &&
+           !receiverUuid_.isEmpty() &&
+           !chatType_.isEmpty() &&
+           !content_.isEmpty() &&
+           timestamp_.isValid();
+}

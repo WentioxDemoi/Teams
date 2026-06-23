@@ -132,8 +132,8 @@ bool UserRepository::create(const User &user) {
         qb.insert_into(config_.table_users(),
                        {"uuid", "first_name", "last_name", "email",
                         "password_hash", "token", "token_expires_at",
-                        "status", "last_seen", "created_at"})
-            .values({"$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9", "$10"})
+                         "last_seen", "created_at"})
+            .values({"$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9"})
             .returning({"uuid"})
             .build();
 
@@ -147,7 +147,6 @@ bool UserRepository::create(const User &user) {
         user.password_hash,
         user.token,
         config_.time_point_to_string(user.token_expires_at),
-        user.status,
         config_.time_point_to_string(user.last_seen),
         config_.time_point_to_string(user.created_at));
 
@@ -172,9 +171,8 @@ bool UserRepository::update(const User &user) {
                             .set("password_hash", "$4")
                             .set("token", "$5")
                             .set("token_expires_at", "$6")
-                            .set("status", "$7")
                             .set("last_seen", "NOW()")
-                            .where("uuid", "=", "$8")
+                            .where("uuid", "=", "$7")
                             .build();
 
     pqxx::work txn(*conn);
@@ -190,7 +188,6 @@ std::cout << "[DEBUG update] token: " << user.token
         user.password_hash,
         user.token,
         config_.time_point_to_string(user.token_expires_at),
-        user.status,
         user.uuid);
 
     txn.commit();

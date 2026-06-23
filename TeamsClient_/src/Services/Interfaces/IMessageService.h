@@ -24,7 +24,7 @@ class IMessageService : public QObject {
 
  public slots:
   virtual void loadConversationsFromDatabaseAndServer() = 0;
-  virtual void sendMessage(const QString& recipientUuid, const QString& content) = 0;
+  virtual void sendMessage(const Message& message) = 0;
   virtual void saveMessage(const Message& message) = 0;
   virtual void deleteMessage(const QString& uuid) = 0;
   virtual void deleteAll() = 0;
@@ -32,12 +32,12 @@ class IMessageService : public QObject {
 
  signals:
   void conversationsLoaded(const QList<Message>& messages);
-  void messageSent(const QJsonObject& message);
+  // void messageSent(const Message& message); //Pas aencore utilisé
   void messageSaved(const Message& message);
   void messageDeleted(const QString& uuid);
   void messageError(const QString& error);
   void connectionUpdate(ServerType server, bool status);
-  void messageReceived(const QJsonObject& message);
+  void messageReceived(const Message& message);
 };
 
 #endif

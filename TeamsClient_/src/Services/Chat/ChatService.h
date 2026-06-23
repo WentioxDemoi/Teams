@@ -7,6 +7,7 @@
 #include "Interfaces/IMessageService.h"
 #include "Interfaces/IContactService.h"
 #include "Interfaces/ICallService.h"
+#include "Message.h"
 
 /**
  * @class ChatService
@@ -22,13 +23,17 @@ class ChatService : public IChatService {
                        ICallService* callService = nullptr,
                        QObject* parent = nullptr);
 
- public slots:
-  void sendMessage(const QString& recipientUuid, const QString& content) override;
+  void sendMessage(const Message& message) override;
   void loadConversationsFromDatabaseAndServer() override;
+
   void startCall(const QString& calleeUuid) override;
   void acceptCall(const QString& callUuid) override;
   void hangup(const QString& callUuid) override;
+
   void disconnectFromServer() override;
+
+  private:
+
 
  private:
   IMessageService* messageService_;

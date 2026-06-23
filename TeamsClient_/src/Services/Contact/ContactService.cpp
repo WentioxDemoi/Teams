@@ -12,20 +12,15 @@
 #include "SessionEnum.h"
 #include "State/SessionState.h"
 
-ContactService::ContactService(NetworkService *network,
-                               UserRepository *userRepo, QObject *parent)
-    : IContactService(parent),
-      network_(network ? network : new NetworkService(8084, parent)),
+ContactService::ContactService(NetworkService *network, UserRepository *userRepo, QObject *parent)
+    : IContactService(parent), network_(network ? network : new NetworkService(8084, parent)),
       userRepo_(userRepo ? userRepo : new UserRepository(parent)) {
   Q_ASSERT(network_);
   Q_ASSERT(userRepo_);
 
-  connect(network_, &NetworkService::jsonReceived, this,
-          &ContactService::handleServerResponse);
-  connect(network_, &NetworkService::networkError, this,
-          &ContactService::contactError);
-  connect(network_, &NetworkService::connectionUpdate, this,
-          &ContactService::connectionUpdate);
+  connect(network_, &NetworkService::jsonReceived, this, &ContactService::handleServerResponse);
+  connect(network_, &NetworkService::networkError, this, &ContactService::contactError);
+  connect(network_, &NetworkService::connectionUpdate, this, &ContactService::connectionUpdate);
 }
 
 void ContactService::loadContactsFromServer() {
@@ -42,6 +37,15 @@ void ContactService::loadContactsFromDatabase() {
   if (!users.isEmpty()) {
     emit contactsLoaded(users);
   }
+}
+
+void ContactService::resolveUserByUuid(const QString &uuid) {
+  QJsonObject payload;
+  payload["type"] = "resolve_user_by_uuid";
+  payload["token"] = UserState::instance().localUser().token();
+  payload["contactUuid"] = uuid;
+
+  network_->send(payload);
 }
 
 void ContactService::saveContact(const User &user) {
@@ -89,33 +93,54 @@ void ContactService::handleServerResponse(const QJsonObject &root) {
     return;
   }
 
-  // Uniquement dans ce Handler là car c'est ici qu'on lance l'initialisation du
-  // client
-  if (type == "auth_success") {
-    loadContactsFromServer();
-    return;
-  }
+  if (type == "auth_success" || type == "contact_added" || type == "resolve_user_response") {
 
-  if (type == "contact_added") {
-    return;
-  }
+    // Uniquement dans ce Handler là car c'est ici qu'on lance l'initialisation du
+    // client
+    if (type == "auth_success") {
+      loadContactsFromServer();
+      return;
+    }
 
-  if (!root.contains("data") || !root["data"].isArray()) {
-    emit contactError("Missing data field in server response");
-    return;
-  }
+    // Sécurité pour les payloads contenant un seul éléments (d'où le .toObject).
+    if (!root.contains("data") || !root["data"].isObject()) {
+      emit contactError("Réponse serveur resolve_user_response invalide");
+      return;
+    }
+    if (type == "contact_added") {
+      return;
+    }
+    if (type == "resolve_user_response") {
+      const User user = User::fromJson(root["data"].toObject());
 
-  if (type == "contacts_loaded") {
-    QList<User> users = parseUsersArray(root["data"].toArray());
-    persistContacts(users);
-    loadContactsFromDatabase();
-    return;
-  }
+      if (!user.isValid()) {
+        emit contactError("Utilisateur résolu invalide");
+        return;
+      }
+      saveContact(user);
+      emit userResolved(user);
+      return;
+    }
+  } else if (type == "contacts_loaded" || type == "search_users_response") {
 
-  if (type == "search_users_response") {
-    QList<User> users = parseUsersArray(root["data"].toArray());
-    emit usersSearchLoaded(users);
-    return;
+    // Sécurité pour les payloads contenant plusieurs éléments (d'où le .toArray).
+    if (!root.contains("data") || !root["data"].isArray()) {
+      emit contactError("Missing data field in server response");
+      return;
+    }
+
+    if (type == "contacts_loaded") {
+      QList<User> users = parseUsersArray(root["data"].toArray());
+      persistContacts(users);
+      loadContactsFromDatabase();
+      return;
+    }
+
+    if (type == "search_users_response") {
+      QList<User> users = parseUsersArray(root["data"].toArray());
+      emit usersSearchLoaded(users);
+      return;
+    }
   }
 }
 
@@ -124,8 +149,7 @@ void ContactService::handleServerResponse(const QJsonObject &root) {
 void ContactService::persistContacts(const QList<User> &users) {
   for (const User &user : users) {
     if (!userRepo_->save(user)) {
-      qDebug() << "[ContactService] Impossible de persister le user"
-               << user.uuid();
+      qDebug() << "[ContactService] Impossible de persister le user" << user.uuid();
     }
   }
 }

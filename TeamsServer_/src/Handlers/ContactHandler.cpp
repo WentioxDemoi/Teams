@@ -99,19 +99,40 @@ void ContactHandler::handle_search_users(const std::string &uuid,
   asio::post(worker_pool_, [this, uuid, payload, respond]() {
     try {
       auto response = contactService_->searchUsers(uuid, payload);
-      std::string result;
 
       if (!response.has_value()) {
-        result = R"({"type":"contacts_loaded","error":"Load failed."})";
-      } else {
-        result = ResponseFormater::format_user_list_response("search_users_response", response.value());
+        response = R"({"type":"contacts_loaded","error":"Load failed."})";
       }
-      respond(result);
+      respond(response.value());
     } catch (const std::exception &e) {
       std::cerr << "[ContactHandler] Search error: " << e.what() << "\n";
 
       respond(
           R"({"type":"users_searched,"error":"Search failed: server error"})");
+    }
+  });
+}
+
+void ContactHandler::handle_resolve_user_by_uuid(const std::string &uuid,
+                                            std::string payload,
+                                            ResponseCallback respond) {
+
+  std::cout << "[ContactHandler] Searching user with payload: " << payload
+            << std::endl;
+
+  asio::post(worker_pool_, [this, payload, respond]() {
+    try {
+      auto response = contactService_->resolveUserByUuid(payload);
+
+      if (!response.has_value()) {
+        response = R"({"type":"resolve_user_response","error":"Load failed."})";
+      }
+      respond(response.value());
+    } catch (const std::exception &e) {
+      std::cerr << "[ContactHandler] Resolve error: " << e.what() << "\n";
+
+      respond(
+          R"({"type":"user_resolved,"error":"Search failed: server error"})");
     }
   });
 }
@@ -134,6 +155,8 @@ void ContactHandler::handle_type(std::string uuid, std::string payload,
     handle_load_contacts(uuid, payload, respond);
   } else if (type == "search_users") {
     handle_search_users(uuid, payload, respond);
+  } else if (type == "resolve_user_by_uuid") {
+    handle_resolve_user_by_uuid(uuid, payload, respond);
   } else {
     std::cerr << "[ContactHandler] Unknown contact type: " << type << "\n";
   }

@@ -25,7 +25,7 @@ public:
                           QObject *parent = nullptr);
 
   void searchUsers(const QString &query) override;
-
+  void resolveUserByUuid(const QString &uuid) override;
   void saveContact(const User &user) override;
   void removeContact(const QString &uuid) override;
   void deleteAll() override;

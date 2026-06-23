@@ -50,11 +50,13 @@ class Message {
 
   static QString generateUuid();
 
+  bool isValid() const;
+
  private:
   QString uuid_;
   QString senderUuid_;
   QString receiverUuid_;
-  QString chatType_ = "message";
+  QString chatType_ = "message"; //image ou git/vidéo
   QString content_;
   QDateTime timestamp_;
   bool isRead_ = false;

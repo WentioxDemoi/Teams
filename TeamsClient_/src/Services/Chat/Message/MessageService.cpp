@@ -11,18 +11,15 @@
 #include "Repositories/MessageRepository.h"
 #include "ServiceLocator.h"
 
-MessageService::MessageService(NetworkService *network,
-                               MessageRepository *messageRepo, QObject *parent)
-    : IMessageService(parent),
-      network_(network ? network : new NetworkService(8082, parent)),
+MessageService::MessageService(NetworkService *network, MessageRepository *messageRepo, QObject *parent)
+    : IMessageService(parent), network_(network ? network : new NetworkService(8082, parent)),
       messageRepo_(messageRepo ? messageRepo : new MessageRepository(parent)) {
   Q_ASSERT(network_);
-  connect(network_, &NetworkService::jsonReceived, this,
-          &MessageService::handleServerResponse);
-  connect(network_, &NetworkService::networkError, this,
-          &MessageService::messageError);
-  connect(network_, &NetworkService::connectionUpdate, this,
-          &MessageService::connectionUpdate);
+  connect(network_, &NetworkService::jsonReceived, this, &MessageService::handleServerResponse);
+  connect(network_, &NetworkService::networkError, this, &MessageService::messageError);
+  connect(network_, &NetworkService::connectionUpdate, this, &MessageService::connectionUpdate);
+
+  connect(this, &MessageService::messageReceived, this, &MessageService::saveMessage);
 }
 
 void MessageService::loadConversationsFromDatabaseAndServer() {
@@ -45,26 +42,13 @@ void MessageService::loadConversationsFromDatabaseAndServer() {
   }
 }
 
-void MessageService::sendMessage(const QString &recipientUuid,
-                                 const QString &content) {
-  if (recipientUuid.trimmed().isEmpty() || content.trimmed().isEmpty()) {
-    emit messageError("Destinataire ou contenu invalide");
+void MessageService::sendMessage(const Message &message) {
+  if (!message.isValid()) {
+    emit messageError("[MessageService] Message incomplet");
     return;
   }
 
-  const QString messageUuid = "";
-  const QString senderUuid = "";
-  const QDateTime timestamp = QDateTime::currentDateTime();
-
-  Message msg(messageUuid, senderUuid, recipientUuid, "message", content,
-              timestamp, true, false);
-  const QJsonObject messageJson = msg.toJson();
-
-  if (!messageJson.contains("uuid") || !messageJson.contains("senderUuid") ||
-      !messageJson.contains("receiverUuid")) {
-    emit messageError("Message construit incomplet");
-    return;
-  }
+  const QJsonObject messageJson = message.toJson();
 
   QJsonObject payload;
   payload["type"] = "send_message";
@@ -81,18 +65,18 @@ void MessageService::sendMessage(const QString &recipientUuid,
 
 void MessageService::saveMessage(const Message &message) {
   if (messageRepo_->save(message)) {
-    emit messageSaved(message);
+    // emit messageSaved(message); // Pas encore utilisé
   } else {
     emit messageError("Impossible de sauvegarder le message");
   }
 }
 
 void MessageService::deleteMessage(const QString &uuid) {
-  if (messageRepo_->remove(uuid)) {
-    emit messageDeleted(uuid);
-  } else {
-    emit messageError("Impossible de supprimer le message");
-  }
+  // if (messageRepo_->remove(uuid)) {
+  //   emit messageDeleted(uuid); // Pas encore utilisé
+  // } else {
+  //   emit messageError("Impossible de supprimer le message");
+  // }
 }
 
 void MessageService::deleteAll() {
@@ -103,9 +87,7 @@ void MessageService::deleteAll() {
   }
 }
 
-// A REFACTOR POUR ÊTRE SUR LA MËME BASE QUE DANS AUTH OU CONTACT SERVICE (Pour le template des messages reçus en tout cas)
-
-void MessageService::handleServerResponse(const QJsonObject& root) {
+void MessageService::handleServerResponse(const QJsonObject &root) {
   const QString type = root["type"].toString();
 
   if (root.contains("error") && root["error"].isString()) {
@@ -113,52 +95,44 @@ void MessageService::handleServerResponse(const QJsonObject& root) {
     return;
   }
 
-  if (type == "message_sent") {
-    if (root.contains("status") && root["status"].isString() &&
-        root["status"].toString() != "success") {
-      emit messageError("Échec de l'envoi du message");
-      return;
-    }
-
-    if (!root.contains("message") || !root["message"].isObject()) {
-      emit messageError("Réponse serveur message_sent invalide");
-      return;
-    }
-
-    const QJsonObject messageJson = root["message"].toObject();
-    const Message message = Message::fromJson(messageJson);
-
-    if (message.uuid().isEmpty() || message.senderUuid().isEmpty() ||
-        message.receiverUuid().isEmpty()) {
-      emit messageError("Message serveur invalide");
-      return;
-    }
-
-    persistMessages({message});
-    emit messageSent(messageJson);
-    return;
-  }
-
-  if (type == "new_message") {
+  if (type == "message_sent" || type == "new_message") {
+    // Sécurité pour les payloads contenant un seul éléments (d'où le .toObject).
     if (!root.contains("data") || !root["data"].isObject()) {
-      emit messageError("Réponse serveur new_message invalide");
+      emit messageError("[MessageService] Réponse serveur new_message invalide");
       return;
     }
 
-    emit messageReceived(root["data"].toObject());
-    return;
+    if (type == "message_sent") {
+      const Message message = Message::fromJson(root["data"].toObject());
+
+      // emit messageSent(message); // Plus tard, grâce à ce signal, on pourra vérifier que le message ayant été affiché et
+                                 // ayant un uuid temporaire a bien été envoyé et ainsi remplacer son uuid temporaire
+      return;
+    }
+
+    if (type == "new_message") {
+
+      emit messageReceived(Message::fromJson(root["data"].toObject()));
+      return;
+    }
+  } else if (type == "messages_loaded") {
+    // Sécurité pour les payloads contenant plusieurs éléments (d'où le .toArray).
+    if (!root.contains("data") || !root["data"].isArray()) {
+      emit messageError("[MessageService] Missing data field in server response");
+      return;
+    }
+    if (type == "messages_loaded") {
+      return;
+    }
   }
 }
 
 void MessageService::persistMessages(const QList<Message> &messages) {
   for (const Message &message : messages) {
     if (!messageRepo_->save(message)) {
-      qDebug() << "[MessageService] Impossible de persister le message"
-               << message.uuid();
+      qDebug() << "[MessageService] Impossible de persister le message" << message.uuid();
     }
   }
 }
 
-void MessageService::disconnectFromServer() {
-  network_->disconnectFromServer();
-}
+void MessageService::disconnectFromServer() { network_->disconnectFromServer(); }

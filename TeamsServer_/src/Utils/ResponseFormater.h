@@ -36,10 +36,7 @@ public:
            "\","
            "\"token\":\"" +
            json_escape(user.token) +
-           "\","
-           "\"status\":\"" +
-           json_escape(user.status) +
-           "\""
+           "\"" +
            "}"
            "}";
   }
@@ -66,10 +63,7 @@ public:
                 "\","
                 "\"uuid\":\"" +
                 json_escape(user.uuid) +
-                "\","
-                "\"status\":\"" +
-                json_escape(user.status) +
-                "\""
+                "\"" +
                 "}";
       if (i + 1 < users.size())
         result += ",";

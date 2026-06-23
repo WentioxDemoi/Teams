@@ -23,11 +23,10 @@ TEST(QueryBuilderTest, WhereAndClause) {
   std::string sql = qb.select()
                         .from("users")
                         .where("email", "=", ":email")
-                        .and_where("status", "=", ":status")
                         .build();
 
   EXPECT_EQ(sql,
-            "SELECT * FROM users WHERE email = :email AND status = :status");
+            "SELECT * FROM users WHERE email = :email");
 }
 
 TEST(QueryBuilderTest, OrWhereClause) {

@@ -23,7 +23,7 @@ class IChatService : public QObject {
   virtual ~IChatService() = default;
 
  public slots:
-  virtual void sendMessage(const QString& recipientUuid, const QString& content) = 0;
+  virtual void sendMessage(const Message& message) = 0;
   virtual void loadConversationsFromDatabaseAndServer() = 0;
   virtual void startCall(const QString& calleeUuid) = 0;
   virtual void acceptCall(const QString& callUuid) = 0;
@@ -32,14 +32,16 @@ class IChatService : public QObject {
   
 
  signals:
-  void messageSent(const QJsonObject& message);
-  void messageReceived(const QJsonObject& message);
-  void conversationsLoaded(const QList<Message>& messages);
+  // void messageSent(const QJsonObject& message); //Pas aencore utilisé
+  void messageReceived(const Message& message);
   void messageError(const QString& error);
+  void conversationsLoaded(const QList<Message>& messages);
+
   void callStarted(const QString& callUuid, const QString& calleeUuid);
   void callAccepted(const QString& callUuid, const QString& callerUuid);
   void callEnded(const QString& callUuid, const QString& reason);
   void callError(const QString& error);
+  
   void connectionUpdate(ServerType server, bool status);
 
 

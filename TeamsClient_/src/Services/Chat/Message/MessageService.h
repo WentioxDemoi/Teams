@@ -22,7 +22,7 @@ class MessageService : public IMessageService {
                           QObject* parent = nullptr);
 
   void loadConversationsFromDatabaseAndServer() override;
-  void sendMessage(const QString& recipientUuid, const QString& content) override;
+  void sendMessage(const Message& message) override;
   void saveMessage(const Message& message) override;
   void deleteMessage(const QString& uuid) override;
   void deleteAll() override;

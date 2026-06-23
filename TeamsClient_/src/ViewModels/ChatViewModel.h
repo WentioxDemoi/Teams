@@ -53,10 +53,10 @@ public:
   QVariantMap selectedContact() const;
   SearchResults *searchResults() const { return searchResults_; }
 
-  void selectUser(const QString &userUuid);
-  void selectContact(const QString &contactUuid);
-  void searchUsers(const QString &query); // Used by QML
-  void sendMessage(const QString &content);
+  Q_INVOKABLE void selectUser(const QString &userUuid);
+  Q_INVOKABLE void selectContact(const QString &contactUuid);
+  Q_INVOKABLE void searchUsers(const QString &query); // Used by QML
+  Q_INVOKABLE void sendMessage(const QString &content);
 
 signals:
   void messageListChanged();
@@ -65,7 +65,13 @@ signals:
 
 private:
   void onContactsLoaded(const QList<User> &contacts);
+
+  // void onMessageSent(const Message &message); // Pour remplacer l'UUID temporaire
   void onMessagesLoaded(const QList<Message> &messages);
+  void onMessageReceived(const Message &message);
+
+  void onUserResolved(const User &user);
+
   void onApplicationQuit();
   
   void activateConversation(const QString &userUuid);
@@ -73,7 +79,6 @@ private:
   IChatService *chatService_;
   IContactService *contactService_;
   ContactList *contactList_;
-  // MessageRepository* messageRepository_; // TMP
   QHash<QString, MessageList *> messagesByUuid_;
   MessageList *currentMessageList_; // Displayed by QML
   QVariantMap selectedContact_;

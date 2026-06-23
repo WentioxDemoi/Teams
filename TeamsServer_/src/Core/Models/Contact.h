@@ -9,7 +9,6 @@
 struct Contact {
     std::string user_id;      // UUID v4 - propriétaire de la liste de contacts
     std::string contact_id;   // UUID v4 - contact ajouté
-    // std::string status = "pending"; // pending / accepted / blocked
     std::string created_at;   // ISO 8601, ex: "2025-01-15T14:30:00.000Z"
 };
 
@@ -17,7 +16,6 @@ inline Contact contact_from_json(const std::string& json) {
     Contact contact;
     contact.user_id    = PacketHelper::extractValue(json, "userUuid");
     contact.contact_id = PacketHelper::extractValue(json, "contactUuid");
-    // contact.status     = PacketHelper::extractValue(json, "status");
     contact.created_at = PacketHelper::extractValue(json, "createdAt");
     return contact;
 }

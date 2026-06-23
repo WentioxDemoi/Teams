@@ -34,7 +34,7 @@ std::optional<User> AuthService::registerUser(const User &user) {
     User newUser(Crypto::generate_uuid_v4(), user.firstName, user.lastName,
                  user.email, Crypto::hash_password(user.plain_password),
                  Crypto::generate_token(), config_.token_expiry_time(),
-                 "Online", config_.time(), config_.time());
+                 config_.time(), config_.time());
 
     if (userRepo_->create(newUser)) {
       newUser.password_hash.clear();

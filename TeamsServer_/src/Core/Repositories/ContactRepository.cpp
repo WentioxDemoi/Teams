@@ -96,7 +96,6 @@ std::vector<User> ContactRepository::find_contacts(
       user.firstName = row["first_name"].as<std::string>();
       user.lastName = row["last_name"].as<std::string>();
       user.email = row["email"].as<std::string>();
-      user.status = row["status"].as<std::string>();
 
       contacts.push_back(user);
     }
