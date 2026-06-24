@@ -26,4 +26,15 @@ inline Message message_from_json(const std::string& json) {
     return msg;
 }
 
+inline Message message_from_db_row(const pqxx::row& row) {
+  Message msg;
+  msg.id = row["id"].as<std::string>();
+  msg.sender_id = row["sender_id"].as<std::string>();
+  msg.receiver_id = row["receiver_id"].as<std::string>();
+  msg.chatType = row["chat_type"].as<std::string>();
+  msg.content = row["content"].as<std::string>();
+  msg.timestamp = row["timestamp"].as<std::string>();
+  return msg;
+}
+
 #endif

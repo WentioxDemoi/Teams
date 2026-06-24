@@ -1,9 +1,9 @@
 #ifndef MESSAGESERVICE_H
 #define MESSAGESERVICE_H
 
-#include "../Repositories/MessageRepository.h"
 #include "../../Core/Registeries/MessageSessionRegistry.h"
 #include "../Models/Message.h"
+#include "../Repositories/MessageRepository.h"
 #include <memory>
 
 /**
@@ -16,13 +16,14 @@
  */
 class MessageService {
 public:
-  MessageService(std::unique_ptr<MessageRepository> messageRepo, std::shared_ptr<MessageSessionRegistry> messageSessionRegistry)
-      : messageRepo_(std::move(messageRepo)), messageSessionRegistry_(messageSessionRegistry), config_(Config::instance()) {};
+  MessageService(std::unique_ptr<MessageRepository> messageRepo,
+                 std::shared_ptr<MessageSessionRegistry> messageSessionRegistry)
+      : messageRepo_(std::move(messageRepo)), messageSessionRegistry_(messageSessionRegistry),
+        config_(Config::instance()) {};
   virtual ~MessageService() = default;
 
-  virtual std::optional<std::string> sendMessage(const std::string& payload);
-  // virtual std::optional<std::vector<Message>> loadMessages(const std::string &token,
-  //                                                          const std::string &userUuid) {};
+  virtual std::optional<std::string> sendMessage(const std::string &payload);
+  virtual std::optional<std::string> loadConversations(const std::string &userUuid);
 
 private:
   std::unique_ptr<MessageRepository> messageRepo_;

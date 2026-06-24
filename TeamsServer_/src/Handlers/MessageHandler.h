@@ -24,7 +24,7 @@ class MessageHandler {
 
  private:
   void handle_send_message(std::string uuid, std::string payload, ResponseCallback respond);
-  void handle_load_messages(std::string uuid, std::string payload, ResponseCallback respond);
+  void handle_load_conversations(std::string uuid, std::string payload, ResponseCallback respond);
 
   asio::thread_pool worker_pool_;
   std::unique_ptr<MessageService> messageService_;

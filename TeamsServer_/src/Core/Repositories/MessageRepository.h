@@ -15,11 +15,11 @@ public:
 
   virtual bool save(const Message &message);
   virtual bool remove(const std::string &uuid);
+  virtual std::optional<std::vector<Message>> findConversationsByUserUuid(const std::string& userUuid);
 
   virtual ~MessageRepository() = default;
 
 private:
-  Message row_to_message(const pqxx::row &row);
 
   Config &config_;
   DatabaseManager &databaseManager_;

@@ -44,33 +44,14 @@ void MessageService::loadConversationsFromDatabase() {
 }
 
 void MessageService::loadConversationsFromServer() {
-  // TODO
-  // 1. Fetch des messages depuis le serveur
-  // 2. Enregistrement des messages dans la DB locale (merge)
-  // 3. Fetch des messages depuis la DB locale et émission du signal
-  // conversationsLoaded
-
-  // A venir pour mettre à jour la liste de messages depuis le serveur
-  //   QJsonObject payload;
-  //   payload["type"] = "load_messages";
-  //   payload["token"] = UserState::instance().localUser().token();
-  //   network_->send(payload);
-
-  QList<Message> messages = messageRepo_->findAll();
-
-  if (!messages.isEmpty()) {
-    emit conversationsLoaded(messages);
-  }
+    QJsonObject payload;
+    payload["type"] = "load_conversations";
+    payload["token"] = UserState::instance().localUser().token();
+    network_->send(payload);
 }
 
 void MessageService::sendMessage(const Message &message) {
-  if (!message.isValid()) {
-    qDebug() << "[MessageService] Message incomplet\n";
-    // emit messageError("[MessageService] Message incomplet");
-    return;
-  }
-
-  if (messageRepo_->save(message)) {
+  if (saveMessage(message)) {
     const QJsonObject messageJson = message.toJson();
 
     QJsonObject payload;
@@ -84,16 +65,22 @@ void MessageService::sendMessage(const Message &message) {
     qDebug() << "=== Fin envoi ===";
 
     network_->send(payload);
-  } else {
-    qDebug() << "[MessageService] Enregistrement du message impossible";
   }
 }
 
-void MessageService::saveMessage(const Message &message) {
+bool MessageService::saveMessage(const Message &message) {
+  if (!message.isValid()) {
+    qDebug() << "[MessageService] Message incomplet\n";
+    // emit messageError("[MessageService] Message incomplet");
+    return false;
+  }
   if (messageRepo_->save(message)) {
+    return true;
     // emit messageSaved(message); // Pas encore utilisé
   } else {
-    emit messageError("Impossible de sauvegarder le message");
+    qDebug() << "[MessageService] Enregistrement du message impossible";
+    // emit messageError("Impossible de sauvegarder le message");
+    return false;
   }
 }
 
@@ -141,13 +128,16 @@ void MessageService::handleServerResponse(const QJsonObject &root) {
       emit messageReceived(Message::fromJson(root["data"].toObject()));
       return;
     }
-  } else if (type == "messages_loaded") {
+  } else if (type == "conversations_loaded") {
     // Sécurité pour les payloads contenant plusieurs éléments (d'où le .toArray).
     if (!root.contains("data") || !root["data"].isArray()) {
       emit messageError("[MessageService] Missing data field in server response");
       return;
     }
-    if (type == "messages_loaded") {
+    if (type == "conversations_loaded") {
+      QList<Message> conversations = parseMessagesArray(root["data"].toArray());
+      persistMessages(conversations);
+      loadConversationsFromDatabase();
       return;
     }
   }
@@ -159,6 +149,16 @@ void MessageService::persistMessages(const QList<Message> &messages) {
       qDebug() << "[MessageService] Impossible de persister le message" << message.uuid();
     }
   }
+}
+
+QList<Message> MessageService::parseMessagesArray(const QJsonArray &array) {
+  QList<Message> conversations;
+  for (const auto &item : array) {
+    if (item.isObject()) {
+      conversations.append(Message::fromJson(item.toObject()));
+    }
+  }
+  return conversations;
 }
 
 void MessageService::disconnectFromServer() { network_->disconnectFromServer(); }

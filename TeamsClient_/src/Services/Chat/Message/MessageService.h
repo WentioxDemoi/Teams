@@ -23,7 +23,7 @@ class MessageService : public IMessageService {
 
   void loadConversationsFromServer() override;
   void sendMessage(const Message& message) override;
-  void saveMessage(const Message& message) override;
+  bool saveMessage(const Message& message) override;
   void deleteMessage(const QString& uuid) override;
   void deleteAll() override;
   void disconnectFromServer() override;
@@ -32,6 +32,7 @@ class MessageService : public IMessageService {
  private:
  void loadConversationsFromDatabase();
   void persistMessages(const QList<Message>& messages);
+  QList<Message> parseMessagesArray(const QJsonArray &array);
 
   NetworkService* network_;
   MessageRepository* messageRepo_;

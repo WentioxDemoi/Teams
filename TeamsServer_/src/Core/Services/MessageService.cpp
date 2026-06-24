@@ -18,10 +18,7 @@ std::optional<std::string> MessageService::sendMessage(const std::string& payloa
   if (!messageRepo_->save(message)) {
     return std::nullopt;
   }
-  
   std::string payload_receiver = ResponseFormater::format_message_response("new_message", message);
-
-  // Envoie au destinataire
   messageSessionRegistry_->sendMessage(message.receiver_id, payload_receiver);
   // Ici avec le return de sendMessage, on pourrait faire le "double check" de whatsapp pour savoir si le message a été distribué au client
 
@@ -29,4 +26,12 @@ std::optional<std::string> MessageService::sendMessage(const std::string& payloa
   std::string payload_sender = ResponseFormater::format_message_response("message_sent", message);
   // Renvoie au client
   return payload_sender;
+}
+
+std::optional<std::string> MessageService::loadConversations(const std::string& userUuid) {
+  std::optional<std::vector<Message>> conversations = messageRepo_->findConversationsByUserUuid(userUuid);
+
+  if (!conversations.has_value()) {
+    return std::nullopt;
+  } return ResponseFormater::format_conversations_response("conversations_loaded", conversations.value());
 }

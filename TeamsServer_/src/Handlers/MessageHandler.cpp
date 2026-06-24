@@ -20,25 +20,20 @@ void MessageHandler::handle_send_message(std::string uuid, std::string payload, 
   });
 }
 
-void MessageHandler::handle_load_messages(std::string uuid, std::string payload, ResponseCallback respond) {
-  // auto token    = HandlerTools::extractValue(payload, "token");
-  // auto userUuid = HandlerTools::extractValue(payload, "userUuid");
+void MessageHandler::handle_load_conversations(std::string uuid, std::string payload, ResponseCallback respond) {
 
-  // asio::post(worker_pool_, [this, token, userUuid, respond]() {
-  //   try {
-  //     auto response = messageService_->loadMessages(token, userUuid);
-  //     std::string result;
-  //     if (!response.has_value()) {
-  //       result = R"({"type":"conversation_response","error":"Load failed: invalid token or user."})";
-  //     } else {
-  //       // result = ResponseFormater::format_messages_response("conversation_response", userUuid, *response);
-  //     }
-  //     respond(result);
-  //   } catch (const std::exception& e) {
-  //     std::cerr << "[MessageHandler] Load error: " << e.what() << "\n";
-  //     respond(R"({"type":"conversation_response","error":"Load failed: server error"})");
-  //   }
-  // });
+  asio::post(worker_pool_, [this, uuid, respond]() {
+    try {
+      auto response = messageService_->loadConversations(uuid);
+      if (!response.has_value()) {
+        response = R"({"type":"conversation_response","error":"Load failed: invalid token or user."})";
+      }
+      respond(response.value());
+    } catch (const std::exception& e) {
+      std::cerr << "[MessageHandler] Load error: " << e.what() << "\n";
+      respond(R"({"type":"conversations_loaded","error":"Load failed: server error"})");
+    }
+  });
 }
 
 void MessageHandler::handle_type(std::string uuid, std::string payload, ResponseCallback respond) {
@@ -49,8 +44,8 @@ void MessageHandler::handle_type(std::string uuid, std::string payload, Response
 
   if (type == "send_message") {
     handle_send_message(uuid, payload, respond);
-  } else if (type == "load_messages") {
-    handle_load_messages(uuid, payload, respond);
+  } else if (type == "load_conversations") {
+    handle_load_conversations(uuid, payload, respond);
   } else {
     std::cerr << "[MessageHandler] Unknown message type: " << type << "\n";
   }

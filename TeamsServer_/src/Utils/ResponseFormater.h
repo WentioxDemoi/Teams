@@ -15,8 +15,7 @@
  */
 class ResponseFormater {
 public:
-  static std::string format_user_response(const std::string &type,
-                                          const User &user) {
+  static std::string format_user_response(const std::string &type, const User &user) {
     return "{"
            "\"type\":\"" +
            type +
@@ -35,14 +34,12 @@ public:
            json_escape(user.uuid) +
            "\","
            "\"token\":\"" +
-           json_escape(user.token) +
-           "\"" +
+           json_escape(user.token) + "\"" +
            "}"
            "}";
   }
 
-  static std::string format_user_list_response(const std::string &type,
-                                               const std::vector<User> &users) {
+  static std::string format_user_list_response(const std::string &type, const std::vector<User> &users) {
     std::string result = "{"
                          "\"type\":\"" +
                          type +
@@ -62,9 +59,7 @@ public:
                 json_escape(user.email) +
                 "\","
                 "\"uuid\":\"" +
-                json_escape(user.uuid) +
-                "\"" +
-                "}";
+                json_escape(user.uuid) + "\"" + "}";
       if (i + 1 < users.size())
         result += ",";
     }
@@ -73,13 +68,40 @@ public:
     return result;
   }
 
-  static std::string format_message_response(const std::string &type,
-                                             const Message &message) {
+  static std::string format_message_response(const std::string &type, const Message &message) {
+    return "{\"type\":\"" + type + "\",\"data\":" + message_to_json_object(message) + "}";
+  }
+
+  static std::string format_conversations_response(const std::string &type, const std::vector<Message> &messages) {
+    std::string result = "{\"type\":\"" + type + "\",\"data\":[";
+    for (size_t i = 0; i < messages.size(); ++i) {
+      result += message_to_json_object(messages[i]);
+      if (i + 1 < messages.size())
+        result += ",";
+    }
+    result += "]}";
+    return result;
+  }
+
+  static std::string format_contact_response(const std::string &type, const Contact &contact) {
     return "{"
            "\"type\":\"" +
            type +
            "\","
            "\"data\":{"
+           "\"userUuid\":\"" +
+           json_escape(contact.user_id) +
+           "\","
+           "\"contactUuid\":\"" +
+           json_escape(contact.contact_id) +
+           "\""
+           "}"
+           "}";
+  }
+
+private:
+  static std::string message_to_json_object(const Message &message) {
+    return "{"
            "\"uuid\":\"" +
            json_escape(message.id) +
            "\","
@@ -97,27 +119,7 @@ public:
            "\","
            "\"timestamp\":\"" +
            json_escape(message.timestamp) +
-           "\","
-           "\"isRead\":" +
-           (message.is_read ? "true" : "false") +
-           "}"
-           "}";
-  }
-
-  static std::string format_contact_response(const std::string &type,
-                                             const Contact &contact) {
-    return "{"
-           "\"type\":\"" +
-           type +
-           "\","
-           "\"data\":{"
-           "\"userUuid\":\"" +
-           json_escape(contact.user_id) +
-           "\","
-           "\"contactUuid\":\"" +
-           json_escape(contact.contact_id) +
            "\""
-           "}"
            "}";
   }
 
