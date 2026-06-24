@@ -79,11 +79,10 @@ void ChatViewModel::sendMessage(const QString &content) {
   if (!currentMessageList_ || selectedContact_.isEmpty() || content.trimmed().isEmpty())
     return;
 
-  const QString recipient = selectedContact_["uuid"].toString();
-
-  Message message = Message::createOutgoing(recipient, "message", content);
+  Message message = Message::createOutgoing(selectedContact_["uuid"].toString(), "message", content);
   currentMessageList_->addMessage(message);
   contactList_->updateLastMessage(message.receiverUuid(), message.content());
+  contactList_->moveToTop(selectedContact_["uuid"].toString());
   if (chatService_) {
     chatService_->sendMessage(message);
   }
@@ -100,9 +99,20 @@ void ChatViewModel::onContactsLoaded(const QList<User> &contacts) {
 // Faudra faire en sorte de ne load que les derniers messages dans le cas d'une authentification par token (qui implique des données dans la DB)
 // Si Authentification classique (DB Vierge) faudra faire en sorte de ne load que les derniers messages pour éviter une trop grosse charge réseau.
 // Une fois le tirage sur le serveur implémenté, il faudra passer dans la fonction la dernière fois que le serveur nous a vu pour pouvoir faire un tri entre les nouveaux messages et les messages déjà lu
-void ChatViewModel::onConversationsLoaded(const QList<Message> &messages) {
+void ChatViewModel::onConversationsLoaded(const QList<Message> &messages, const QString &lastSeen) {
   if (messages.isEmpty())
     return;
+
+  qDebug() << "[ChatViewModel] lastSeen raw string from server:" << lastSeen;
+
+  QDateTime lastSeenDt = QDateTime::fromString(lastSeen, Qt::ISODateWithMs);
+  if (!lastSeenDt.isValid()) {
+    lastSeenDt = QDateTime::fromString(lastSeen, Qt::ISODate);
+  }
+
+  qDebug() << "[ChatViewModel] lastSeen parsed QDateTime:" << lastSeenDt
+           << "valid:" << lastSeenDt.isValid()
+           << "toUTC:" << lastSeenDt.toUTC();
 
   QList<Message> sortedMessages = messages;
   std::stable_sort(sortedMessages.begin(), sortedMessages.end(),
@@ -110,8 +120,14 @@ void ChatViewModel::onConversationsLoaded(const QList<Message> &messages) {
                       return a.timestamp() < b.timestamp();
                     });
 
+  QHash<QString, int> unreadCounts;
+
   for (const Message &message : sortedMessages) {
     const QString conversationUuid = message.fromMe() ? message.receiverUuid() : message.senderUuid();
+
+    qDebug() << "[ChatViewModel] message.timestamp():" << message.timestamp()
+             << "fromMe:" << message.fromMe()
+             << "conversationUuid:" << conversationUuid;
 
     if (!messagesByUuid_.contains(conversationUuid)) {
       messagesByUuid_.insert(conversationUuid, new MessageList(this));
@@ -119,6 +135,15 @@ void ChatViewModel::onConversationsLoaded(const QList<Message> &messages) {
 
     messagesByUuid_[conversationUuid]->addMessage(message);
     contactList_->updateLastMessage(conversationUuid, message.content());
+
+    if (!message.fromMe() && lastSeenDt.isValid() && message.timestamp() > lastSeenDt) {
+      unreadCounts[conversationUuid] = unreadCounts.value(conversationUuid, 0) + 1;
+    }
+  }
+
+  for (auto it = unreadCounts.constBegin(); it != unreadCounts.constEnd(); ++it) {
+    qDebug() << "[ChatViewModel] Setting unread count for" << it.key() << "=" << it.value();
+    contactList_->setUnreadCount(it.key(), it.value());
   }
 }
 

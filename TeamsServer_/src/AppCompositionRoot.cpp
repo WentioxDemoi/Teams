@@ -47,7 +47,7 @@ void AppCompositionRoot::initServices() {
 void AppCompositionRoot::initHandlers() {
   authHandler_ = std::make_shared<AuthHandler>(authService_);
   messageHandler_ =
-      std::make_shared<MessageHandler>(std::move(messageService_));
+      std::make_shared<MessageHandler>(std::move(messageService_), userRepository_);
   contactHandler_ =
       std::make_shared<ContactHandler>(std::move(contactService_));
   // webrtcHandler_ =

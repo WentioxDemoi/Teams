@@ -47,7 +47,7 @@ void MessageSession::do_read() {
       if (ec == asio::error::eof || ec == boost::asio::ssl::error::stream_truncated ||
           ec == asio::error::connection_reset) {
         std::cout << "[MessageSession] Client disconnected" << std::endl;
-
+        self->messageHandler_->update_last_seen(self->user_uuid_);
         self->messageSessionRegistry_->unregisterMessageSession(self->user_uuid_);
         return;
       }

@@ -130,9 +130,28 @@ void ContactList::incrementUnreadCount(const QString &uuid)
             users_[i].setUnreadCount(newValue);
 
             emit dataChanged(index(i), index(i), {UnreadRole});
+            moveToTop(uuid);
             return;
         }
     }
+}
+
+void ContactList::moveToTop(const QString &uuid)
+{
+    int row = -1;
+    for (int i = 0; i < users_.size(); ++i) {
+        if (users_[i].uuid() == uuid) {
+            row = i;
+            break;
+        }
+    }
+
+    if (row <= 0)
+        return;
+
+    beginMoveRows(QModelIndex(), row, row, QModelIndex(), 0);
+    users_.move(row, 0);
+    endMoveRows();
 }
 
 ContactList::ContactList(QObject *parent) : QAbstractListModel(parent) {}

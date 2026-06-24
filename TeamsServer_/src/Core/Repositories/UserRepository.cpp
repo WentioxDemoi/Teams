@@ -237,3 +237,52 @@ std::vector<User> UserRepository::search_by_name(const std::string &callerUuid,
     throw;
   }
 }
+
+bool UserRepository::update_last_seen(const std::string &uuid) {
+  auto conn = databaseManager_.acquire_connection();
+  try {
+    QueryBuilder qb;
+    std::string query = qb.update(config_.table_users())
+                            .set("last_seen", "NOW()")
+                            .where("uuid", "=", "$1")
+                            .build();
+
+    pqxx::work txn(*conn);
+    pqxx::result result = txn.exec_params(query, uuid);
+    txn.commit();
+
+    databaseManager_.release_connection(conn);
+
+    return result.affected_rows() == 1;
+  } catch (const std::exception &e) {
+    databaseManager_.release_connection(conn);
+    std::cerr << "[ERROR update_last_seen] Exception: " << e.what() << std::endl;
+    throw;
+  }
+}
+
+std::optional<std::string> UserRepository::get_last_seen(const std::string &uuid) {
+  auto conn = databaseManager_.acquire_connection();
+  try {
+    std::cout << "[DEBUG get_last_seen] Called with uuid: " << uuid << std::endl;
+
+    QueryBuilder qb;
+    std::string query = qb.select({"last_seen"})
+                            .from(config_.table_users())
+                            .where("uuid", "=", "$1")
+                            .build();
+
+    pqxx::work txn(*conn);
+    pqxx::result result = txn.exec_params(query, uuid);
+    databaseManager_.release_connection(conn);
+
+    if (result.empty())
+      return std::nullopt;
+
+    return result[0]["last_seen"].c_str();
+  } catch (const std::exception &e) {
+    databaseManager_.release_connection(conn);
+    std::cerr << "[ERROR get_last_seen] Exception: " << e.what() << std::endl;
+    throw;
+  }
+}

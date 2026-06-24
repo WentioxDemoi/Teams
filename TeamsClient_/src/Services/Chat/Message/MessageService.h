@@ -30,7 +30,7 @@ class MessageService : public IMessageService {
   void handleServerResponse(const QJsonObject& root);
 
  private:
- void loadConversationsFromDatabase();
+ void loadConversationsFromDatabase(const QString &lastSeen);
   void persistMessages(const QList<Message>& messages);
   QList<Message> parseMessagesArray(const QJsonArray &array);
 

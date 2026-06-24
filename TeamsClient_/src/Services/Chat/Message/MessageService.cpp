@@ -23,23 +23,11 @@ MessageService::MessageService(NetworkService *network, MessageRepository *messa
   connect(this, &MessageService::messageReceived, this, &MessageService::saveMessage);
 }
 
-void MessageService::loadConversationsFromDatabase() {
-  // TODO
-  // 1. Fetch des messages depuis le serveur
-  // 2. Enregistrement des messages dans la DB locale (merge)
-  // 3. Fetch des messages depuis la DB locale et émission du signal
-  // conversationsLoaded
-
-  // A venir pour mettre à jour la liste de messages depuis le serveur
-  //   QJsonObject payload;
-  //   payload["type"] = "load_messages";
-  //   payload["token"] = UserState::instance().localUser().token();
-  //   network_->send(payload);
-
+void MessageService::loadConversationsFromDatabase(const QString &lastSeen) {
   QList<Message> messages = messageRepo_->findAll();
 
   if (!messages.isEmpty()) {
-    emit conversationsLoaded(messages);
+    emit conversationsLoaded(messages, lastSeen);
   }
 }
 
@@ -135,9 +123,10 @@ void MessageService::handleServerResponse(const QJsonObject &root) {
       return;
     }
     if (type == "conversations_loaded") {
+      const QString lastSeen = root["last_seen"].toString();
       QList<Message> conversations = parseMessagesArray(root["data"].toArray());
       persistMessages(conversations);
-      loadConversationsFromDatabase();
+      loadConversationsFromDatabase(lastSeen);
       return;
     }
   }

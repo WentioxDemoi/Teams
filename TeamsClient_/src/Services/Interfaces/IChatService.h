@@ -35,7 +35,7 @@ class IChatService : public QObject {
   // void messageSent(const QJsonObject& message); //Pas aencore utilisé
   void messageReceived(const Message& message);
   void messageError(const QString& error);
-  void conversationsLoaded(const QList<Message>& messages);
+  void conversationsLoaded(const QList<Message>& messages, const QString &lastSeen);
 
   void callStarted(const QString& callUuid, const QString& calleeUuid);
   void callAccepted(const QString& callUuid, const QString& callerUuid);
