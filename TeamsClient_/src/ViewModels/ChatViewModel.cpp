@@ -23,7 +23,7 @@ ChatViewModel::ChatViewModel(ContactList *contactList, IChatService *chatService
 
   connect(sessionState_, &SessionState::onApplicationQuit, this, &ChatViewModel::onApplicationQuit);
 
-  connect(chatService_, &IChatService::conversationsLoaded, this, &ChatViewModel::onMessagesLoaded);
+  connect(chatService_, &IChatService::conversationsLoaded, this, &ChatViewModel::onConversationsLoaded);
   connect(chatService_, &IChatService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
   connect(chatService_, &IChatService::messageReceived, this, &ChatViewModel::onMessageReceived);
 
@@ -94,31 +94,32 @@ void ChatViewModel::onContactsLoaded(const QList<User> &contacts) {
     contactList_->addUser(contact);
   }
   // Une fois les conversation loaded, il faudra trouver un moyen d'update le last message de chacun des contacts
-  // chatService_->loadConversationsFromDatabaseAndServer();
+  chatService_->loadConversationsFromDatabaseAndServer();
 }
 
-void ChatViewModel::onMessagesLoaded(const QList<Message> &messages) {
-  // if (messages.empty())
-  //   return;
-  // messagesByUuid_.clear();
+// Faudra faire en sorte de ne load que les derniers messages dans le cas d'une authentification par token (qui implique des données dans la DB)
+// Si Authentification classique (DB Vierge) faudra faire en sorte de ne load que les derniers messages pour éviter une trop grosse charge réseau.
+// Une fois le tirage sur le serveur implémenté, il faudra passer dans la fonction la dernière fois que le serveur nous a vu pour pouvoir faire un tri entre les nouveaux messages et les messages déjà lu
+void ChatViewModel::onConversationsLoaded(const QList<Message> &messages) {
+  if (messages.isEmpty())
+    return;
 
-  // QString conversationUuid;
+  QList<Message> sortedMessages = messages;
+  std::stable_sort(sortedMessages.begin(), sortedMessages.end(),
+                    [](const Message &a, const Message &b) {
+                      return a.timestamp() < b.timestamp();
+                    });
 
-  // for (const Message &message : messages) {
-  //   if (message.fromMe()) {
-  //     conversationUuid = message.receiverUuid();
-  //   } else {
-  //     conversationUuid = message.senderUuid();
-  //   }
+  for (const Message &message : sortedMessages) {
+    const QString conversationUuid = message.fromMe() ? message.receiverUuid() : message.senderUuid();
 
-  //   if (!messagesByUuid_.contains(conversationUuid)) {
-  //     messagesByUuid_[conversationUuid] = new MessageList(this);
-  //   }
+    if (!messagesByUuid_.contains(conversationUuid)) {
+      messagesByUuid_.insert(conversationUuid, new MessageList(this));
+    }
 
-  //   messagesByUuid_[conversationUuid]->addMessage(message);
-  // }
-
-  // selectUser(conversationUuid);
+    messagesByUuid_[conversationUuid]->addMessage(message);
+    contactList_->updateLastMessage(conversationUuid, message.content());
+  }
 }
 
 void ChatViewModel::searchUsers(const QString &query) {

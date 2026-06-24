@@ -14,7 +14,7 @@
  * @brief Répertoire d'accès aux données de messages.
  *
  * Stocke les messages localement avec toutes les métadonnées nécessaires
- * (senderUuid, receiverUuid, type, content, timestamp, isRead, fromMe).
+ * (senderUuid, receiverUuid, type, content, timestamp, isRead).
  */
 class MessageRepository : public QObject {
   Q_OBJECT

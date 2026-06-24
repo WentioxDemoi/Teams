@@ -23,7 +23,7 @@ class IMessageService : public QObject {
   virtual ~IMessageService() = default;
 
  public slots:
-  virtual void loadConversationsFromDatabaseAndServer() = 0;
+  virtual void loadConversationsFromServer() = 0;
   virtual void sendMessage(const Message& message) = 0;
   virtual void saveMessage(const Message& message) = 0;
   virtual void deleteMessage(const QString& uuid) = 0;

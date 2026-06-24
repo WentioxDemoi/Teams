@@ -58,6 +58,7 @@ void ContactService::saveContact(const User &user) {
     network_->send(payload);
     // emit contactSaved(user); // Pas utilisé pour le moment
   } else {
+    qDebug() << "[ContactService] Enregistrement du contact impossible";
     emit contactError("Impossible de sauvegarder le contact");
   }
 }

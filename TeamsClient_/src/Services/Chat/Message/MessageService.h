@@ -21,7 +21,7 @@ class MessageService : public IMessageService {
                           MessageRepository* messageRepo = nullptr,
                           QObject* parent = nullptr);
 
-  void loadConversationsFromDatabaseAndServer() override;
+  void loadConversationsFromServer() override;
   void sendMessage(const Message& message) override;
   void saveMessage(const Message& message) override;
   void deleteMessage(const QString& uuid) override;
@@ -30,6 +30,7 @@ class MessageService : public IMessageService {
   void handleServerResponse(const QJsonObject& root);
 
  private:
+ void loadConversationsFromDatabase();
   void persistMessages(const QList<Message>& messages);
 
   NetworkService* network_;

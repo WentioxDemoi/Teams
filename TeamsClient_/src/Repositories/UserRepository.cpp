@@ -21,8 +21,7 @@ bool UserRepository::save(const User& user) {
             uuid,
             is_me,
             token,
-            avatar,
-            last_message
+            avatar
         )
         VALUES (
             :email,
@@ -32,8 +31,7 @@ bool UserRepository::save(const User& user) {
             :uuid,
             :isMe,
             :token,
-            :avatar,
-            :lastMessage
+            :avatar
         )
 
         ON CONFLICT(uuid)
@@ -43,8 +41,7 @@ bool UserRepository::save(const User& user) {
             last_name = excluded.last_name,
             status = excluded.status,
             token = excluded.token,
-            avatar = excluded.avatar,
-            last_message = excluded.last_message
+            avatar = excluded.avatar
     )");
 
     query.bindValue(":email", user.email());
@@ -55,7 +52,6 @@ bool UserRepository::save(const User& user) {
     query.bindValue(":isMe", user.isMe());
     query.bindValue(":token", user.token());
     query.bindValue(":avatar", user.avatar());
-    query.bindValue(":lastMessage", user.lastMessage());
 
     if (!query.exec()) {
         qDebug() << "[save] Failed:" << query.lastError().text();
@@ -77,8 +73,7 @@ std::optional<User> UserRepository::findByUUID(const QString& uuid) {
             uuid,
             is_me,
             token,
-            avatar,
-            last_message
+            avatar
         FROM users
         WHERE uuid = :uuid
     )");
@@ -104,7 +99,6 @@ std::optional<User> UserRepository::findByUUID(const QString& uuid) {
     user.setIsMe(query.value("is_me").toBool());
     user.setToken(query.value("token").toString());
     user.setAvatar(query.value("avatar").toString());
-    user.setLastMessage(query.value("last_message").toString());
 
     return user;
 }
@@ -123,8 +117,7 @@ QList<User> UserRepository::findAll() {
             uuid,
             is_me,
             token,
-            avatar,
-            last_message
+            avatar
         FROM users
     )")) {
         qDebug() << "[findAll] Failed:" << query.lastError().text();
@@ -142,7 +135,6 @@ QList<User> UserRepository::findAll() {
         user.setIsMe(query.value("is_me").toBool());
         user.setToken(query.value("token").toString());
         user.setAvatar(query.value("avatar").toString());
-        user.setLastMessage(query.value("last_message").toString());
 
         users.append(user);
     }

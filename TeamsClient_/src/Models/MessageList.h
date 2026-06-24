@@ -21,7 +21,6 @@ class MessageList : public QAbstractListModel {
     SenderUuidRole,
     ContentRole,
     TimestampRole,
-    IsReadRole,
     FromMeRole,
   };
 

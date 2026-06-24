@@ -8,7 +8,7 @@ int MessageList::rowCount(const QModelIndex& parent) const {
 QHash<int, QByteArray> MessageList::roleNames() const {
   return {
       {UuidRole, "uuid"},           {SenderUuidRole, "senderUuid"}, {ContentRole, "content"},
-      {TimestampRole, "timestamp"}, {IsReadRole, "isRead"}, {FromMeRole,     "fromMe"},
+      {TimestampRole, "timestamp"}, {FromMeRole,     "fromMe"},
   };
 }
 
@@ -26,8 +26,6 @@ QVariant MessageList::data(const QModelIndex& index, int role) const {
       return message.content();
     case TimestampRole:
       return message.timestamp();
-    case IsReadRole:
-      return message.isRead();
     case FromMeRole:
       return message.fromMe();
     default:

@@ -27,9 +27,7 @@ DatabaseManager::DatabaseManager() {
     uuid       TEXT PRIMARY KEY,
     is_me      INTEGER DEFAULT 0,
     token      TEXT,
-    avatar     TEXT,
-    last_message TEXT
-);
+    avatar     TEXT);
     )";
 
   if (!query.exec(createTable)) {
@@ -45,10 +43,7 @@ DatabaseManager::DatabaseManager() {
     receiver_uuid TEXT NOT NULL,
     chatType         TEXT,
     content      TEXT,
-    timestamp    TEXT,
-    is_read      INTEGER DEFAULT 0,
-    from_me      INTEGER DEFAULT 0
-);
+    timestamp    TEXT);
     )";
 
   if (!query.exec(createMessageTable)) {

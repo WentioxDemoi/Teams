@@ -4,6 +4,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QUuid>
+#include <QtCore/qlogging.h>
 #include <iostream>
 
 #include "../../Core/State/UserState.h"
@@ -22,7 +23,27 @@ MessageService::MessageService(NetworkService *network, MessageRepository *messa
   connect(this, &MessageService::messageReceived, this, &MessageService::saveMessage);
 }
 
-void MessageService::loadConversationsFromDatabaseAndServer() {
+void MessageService::loadConversationsFromDatabase() {
+  // TODO
+  // 1. Fetch des messages depuis le serveur
+  // 2. Enregistrement des messages dans la DB locale (merge)
+  // 3. Fetch des messages depuis la DB locale et émission du signal
+  // conversationsLoaded
+
+  // A venir pour mettre à jour la liste de messages depuis le serveur
+  //   QJsonObject payload;
+  //   payload["type"] = "load_messages";
+  //   payload["token"] = UserState::instance().localUser().token();
+  //   network_->send(payload);
+
+  QList<Message> messages = messageRepo_->findAll();
+
+  if (!messages.isEmpty()) {
+    emit conversationsLoaded(messages);
+  }
+}
+
+void MessageService::loadConversationsFromServer() {
   // TODO
   // 1. Fetch des messages depuis le serveur
   // 2. Enregistrement des messages dans la DB locale (merge)
@@ -44,23 +65,28 @@ void MessageService::loadConversationsFromDatabaseAndServer() {
 
 void MessageService::sendMessage(const Message &message) {
   if (!message.isValid()) {
-    emit messageError("[MessageService] Message incomplet");
+    qDebug() << "[MessageService] Message incomplet\n";
+    // emit messageError("[MessageService] Message incomplet");
     return;
   }
 
-  const QJsonObject messageJson = message.toJson();
+  if (messageRepo_->save(message)) {
+    const QJsonObject messageJson = message.toJson();
 
-  QJsonObject payload;
-  payload["type"] = "send_message";
-  payload["token"] = UserState::instance().localUser().token();
-  payload["message"] = messageJson;
+    QJsonObject payload;
+    payload["type"] = "send_message";
+    payload["token"] = UserState::instance().localUser().token();
+    payload["message"] = messageJson;
 
-  QJsonDocument doc(payload);
-  qDebug() << "=== Envoi de message ===";
-  qDebug().noquote() << doc.toJson(QJsonDocument::Indented);
-  qDebug() << "=== Fin envoi ===";
+    QJsonDocument doc(payload);
+    qDebug() << "=== Envoi de message ===";
+    qDebug().noquote() << doc.toJson(QJsonDocument::Indented);
+    qDebug() << "=== Fin envoi ===";
 
-  network_->send(payload);
+    network_->send(payload);
+  } else {
+    qDebug() << "[MessageService] Enregistrement du message impossible";
+  }
 }
 
 void MessageService::saveMessage(const Message &message) {
@@ -105,8 +131,8 @@ void MessageService::handleServerResponse(const QJsonObject &root) {
     if (type == "message_sent") {
       const Message message = Message::fromJson(root["data"].toObject());
 
-      // emit messageSent(message); // Plus tard, grâce à ce signal, on pourra vérifier que le message ayant été affiché et
-                                 // ayant un uuid temporaire a bien été envoyé et ainsi remplacer son uuid temporaire
+      // emit messageSent(message); // Plus tard, grâce à ce signal, on pourra vérifier que le message ayant été affiché
+      // et ayant un uuid temporaire a bien été envoyé et ainsi remplacer son uuid temporaire
       return;
     }
 

@@ -67,7 +67,7 @@ private:
   void onContactsLoaded(const QList<User> &contacts);
 
   // void onMessageSent(const Message &message); // Pour remplacer l'UUID temporaire
-  void onMessagesLoaded(const QList<Message> &messages);
+  void onConversationsLoaded(const QList<Message> &messages);
   void onMessageReceived(const Message &message);
 
   void onUserResolved(const User &user);

@@ -43,7 +43,7 @@ void ChatService::loadConversationsFromDatabaseAndServer() {
     emit messageError("Service de messagerie indisponible");
     return;
   }
-  messageService_->loadConversationsFromDatabaseAndServer();
+  messageService_->loadConversationsFromServer();
 }
 
 void ChatService::startCall(const QString& calleeUuid) {

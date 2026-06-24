@@ -5,13 +5,12 @@
 
 #include "../Database/DatabaseManager.h"
 
-MessageRepository::MessageRepository(QObject* parent)
-    : QObject(parent), db_(DatabaseManager::instance().database()) {}
+MessageRepository::MessageRepository(QObject *parent) : QObject(parent), db_(DatabaseManager::instance().database()) {}
 
-std::optional<Message> MessageRepository::findByUUID(const QString& uuid) {
+std::optional<Message> MessageRepository::findByUUID(const QString &uuid) {
   QSqlQuery query(db_);
   query.prepare(R"(
-      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp, is_read, from_me
+      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp
       FROM messages
       WHERE uuid = :uuid
   )");
@@ -22,28 +21,23 @@ std::optional<Message> MessageRepository::findByUUID(const QString& uuid) {
     return std::nullopt;
   }
 
-  if (!query.next()) return std::nullopt;
+  if (!query.next())
+    return std::nullopt;
 
-  Message message(
-      query.value("uuid").toString(),
-      query.value("sender_uuid").toString(),
-      query.value("receiver_uuid").toString(),
-      query.value("chatType").toString(),
-      query.value("content").toString(),
-      QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate),
-      query.value("from_me").toBool(),
-      query.value("is_read").toBool());
+  Message message(query.value("uuid").toString(), query.value("sender_uuid").toString(),
+                  query.value("receiver_uuid").toString(), query.value("chatType").toString(),
+                  query.value("content").toString(),
+                  QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate));
 
   return message;
 }
-
 
 QList<Message> MessageRepository::findAll() {
   QList<Message> messages;
   QSqlQuery query(db_);
 
   if (!query.exec(R"(
-      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp, is_read, from_me
+      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp
       FROM messages
       ORDER BY timestamp ASC
   )")) {
@@ -52,25 +46,20 @@ QList<Message> MessageRepository::findAll() {
   }
 
   while (query.next()) {
-    messages.append(Message(
-        query.value("uuid").toString(),
-        query.value("sender_uuid").toString(),
-        query.value("receiver_uuid").toString(),
-        query.value("chatType").toString(),
-        query.value("content").toString(),
-        QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate),
-        query.value("from_me").toBool(),
-        query.value("is_read").toBool()));
+    messages.append(Message(query.value("uuid").toString(), query.value("sender_uuid").toString(),
+                            query.value("receiver_uuid").toString(), query.value("chatType").toString(),
+                            query.value("content").toString(),
+                            QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate)));
   }
 
   return messages;
 }
 
-QList<Message> MessageRepository::findForConversation(const QString& userUuid1, const QString& userUuid2) {
+QList<Message> MessageRepository::findForConversation(const QString &userUuid1, const QString &userUuid2) {
   QList<Message> messages;
   QSqlQuery query(db_);
   query.prepare(R"(
-      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp, is_read, from_me
+      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp
       FROM messages
       WHERE (sender_uuid = :user1 AND receiver_uuid = :user2)
          OR (sender_uuid = :user2 AND receiver_uuid = :user1)
@@ -85,25 +74,20 @@ QList<Message> MessageRepository::findForConversation(const QString& userUuid1, 
   }
 
   while (query.next()) {
-    messages.append(Message(
-        query.value("uuid").toString(),
-        query.value("sender_uuid").toString(),
-        query.value("receiver_uuid").toString(),
-        query.value("chatType").toString(),
-        query.value("content").toString(),
-        QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate),
-        query.value("from_me").toBool(),
-        query.value("is_read").toBool()));
+    messages.append(Message(query.value("uuid").toString(), query.value("sender_uuid").toString(),
+                            query.value("receiver_uuid").toString(), query.value("chatType").toString(),
+                            query.value("content").toString(),
+                            QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate)));
   }
 
   return messages;
 }
 
-QList<Message> MessageRepository::findForParticipant(const QString& participantUuid) {
+QList<Message> MessageRepository::findForParticipant(const QString &participantUuid) {
   QList<Message> messages;
   QSqlQuery query(db_);
   query.prepare(R"(
-      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp, is_read, from_me
+      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp
       FROM messages
       WHERE sender_uuid = :participant OR receiver_uuid = :participant
       ORDER BY timestamp ASC
@@ -116,33 +100,26 @@ QList<Message> MessageRepository::findForParticipant(const QString& participantU
   }
 
   while (query.next()) {
-    messages.append(Message(
-        query.value("uuid").toString(),
-        query.value("sender_uuid").toString(),
-        query.value("receiver_uuid").toString(),
-        query.value("chatType").toString(),
-        query.value("content").toString(),
-        QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate),
-        query.value("from_me").toBool(),
-        query.value("is_read").toBool()));
+    messages.append(Message(query.value("uuid").toString(), query.value("sender_uuid").toString(),
+                            query.value("receiver_uuid").toString(), query.value("chatType").toString(),
+                            query.value("content").toString(),
+                            QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate)));
   }
 
   return messages;
 }
 
-bool MessageRepository::save(const Message& message) {
-    QSqlQuery query(db_);
+bool MessageRepository::save(const Message &message) {
+  QSqlQuery query(db_);
 
-    query.prepare(R"(
+  query.prepare(R"(
         INSERT INTO messages (
             uuid,
             sender_uuid,
             receiver_uuid,
             chatType,
             content,
-            timestamp,
-            is_read,
-            from_me
+            timestamp
         )
         VALUES (
             :uuid,
@@ -150,9 +127,7 @@ bool MessageRepository::save(const Message& message) {
             :receiverUuid,
             :chatType,
             :content,
-            :timestamp,
-            :isRead,
-            :fromMe
+            :timestamp
         )
 
         ON CONFLICT(uuid)
@@ -161,29 +136,25 @@ bool MessageRepository::save(const Message& message) {
             receiver_uuid = excluded.receiver_uuid,
             chatType = excluded.chatType,
             content = excluded.content,
-            timestamp = excluded.timestamp,
-            is_read = excluded.is_read,
-            from_me = excluded.from_me
+            timestamp = excluded.timestamp
     )");
 
-    query.bindValue(":uuid", message.uuid());
-    query.bindValue(":senderUuid", message.senderUuid());
-    query.bindValue(":receiverUuid", message.receiverUuid());
-    query.bindValue(":chatType", message.chatType());
-    query.bindValue(":content", message.content());
-    query.bindValue(":timestamp", message.timestamp().toString(Qt::ISODate));
-    query.bindValue(":isRead", message.isRead());
-    query.bindValue(":fromMe", message.fromMe());
+  query.bindValue(":uuid", message.uuid());
+  query.bindValue(":senderUuid", message.senderUuid());
+  query.bindValue(":receiverUuid", message.receiverUuid());
+  query.bindValue(":chatType", message.chatType());
+  query.bindValue(":content", message.content());
+  query.bindValue(":timestamp", message.timestamp().toString(Qt::ISODate));
 
-    if (!query.exec()) {
-        qDebug() << "[save] Failed:" << query.lastError().text();
-        return false;
-    }
+  if (!query.exec()) {
+    qDebug() << "[save] Failed:" << query.lastError().text();
+    return false;
+  }
 
-    return true;
+  return true;
 }
 
-bool MessageRepository::remove(const QString& uuid) {
+bool MessageRepository::remove(const QString &uuid) {
   QSqlQuery query(db_);
   query.prepare("DELETE FROM messages WHERE uuid = :uuid");
   query.bindValue(":uuid", uuid);
