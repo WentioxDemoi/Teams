@@ -35,6 +35,8 @@ private:
 
   void handle_update_last_read_at(std::string uuid, std::string payload, ResponseCallback respond);
 
+  void handle_update_status(std::string uuid, std::string status);
+
 private:
   asio::thread_pool worker_pool_;
   std::unique_ptr<ContactService> contactService_;

@@ -1,6 +1,7 @@
 #include "ContactSession.h"
 
 #include "../../Utils/PacketHelper.h"
+#include <cstddef>
 
 void ContactSession::start() {
   auto self = shared_from_this();
@@ -31,7 +32,10 @@ void ContactSession::do_read() {
         }
         self->isFirstMessage_ = false;
         self->user_uuid_ = user->uuid;
+        self->contactSessionRegistry_->registerContactSession(self->user_uuid_, self);
+
         std::cout << "[ContactSession] User authenticated with UUID: " << self->user_uuid_ << "\n";
+        self->contactHandler_->handle_type(self->user_uuid_, R"({"type":"update_status","status":"Online"})", NULL);
         self->send(R"({"type":"auth_success"})");
         self->do_read();
         return;
@@ -48,6 +52,8 @@ void ContactSession::do_read() {
       if (ec == asio::error::eof || ec == boost::asio::ssl::error::stream_truncated ||
           ec == asio::error::connection_reset) {
         std::cout << "[ContactSession] Client disconnected" << std::endl;
+        self->contactHandler_->handle_type(self->user_uuid_, R"({"type":"update_status","status":"Offline"})", NULL);
+        self->contactSessionRegistry_->unregisterContactSession(self->user_uuid_);
 
         return;
       }

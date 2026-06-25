@@ -62,13 +62,17 @@ std::optional<std::string> ContactService::loadContacts(const std::string &paylo
 
   auto contacts = contactRepo_->find_contacts(userUuid);
 
+  for (User &contact : contacts) {
+    contact.status = contactSessionRegistry_->hasContactSession(contact.uuid) ? "Online" : "Offline";
+  }
+
   return ResponseFormater::format_user_list_response("contacts_loaded", contacts);
 }
 
-std::optional<std::string> ContactService::searchUsers(const std::string &callerUuid, const std::string &payload) {
+std::optional<std::string> ContactService::searchUsers(const std::string &userUuid, const std::string &payload) {
   const std::string query = PacketHelper::extractValue(payload, "query");
 
-  auto result = userRepo_->search_by_name(callerUuid, query);
+  auto result = userRepo_->search_by_name(userUuid, query);
 
   if (!result.empty())
     return ResponseFormater::format_user_list_response("search_users_response", result);
@@ -90,4 +94,29 @@ std::optional<std::string> ContactService::lastReadAt(const std::string &userUui
   }
 
   return R"({"type":"last_read_at_updated","success":true})";
+}
+
+std::optional<std::string> ContactService::updateStatus(
+    const std::string &userUuid,
+    const std::string &payload) {
+
+    const std::string status =
+        PacketHelper::extractValue(payload, "status");
+
+    auto contacts = contactRepo_->find_contacts(userUuid);
+
+    const std::string notification =
+        ResponseFormater::format_contact_status_update_response(
+            userUuid,
+            status);
+
+    for (User &contact : contacts) {
+        if (contactSessionRegistry_->hasContactSession(contact.uuid)) {
+            contactSessionRegistry_->sendMessage(
+                contact.uuid,
+                notification);
+        }
+    }
+
+    return std::nullopt;
 }

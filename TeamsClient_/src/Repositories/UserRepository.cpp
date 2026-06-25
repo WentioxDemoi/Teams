@@ -171,7 +171,7 @@ bool UserRepository::removeAll() {
   return true;
 }
 
-bool UserRepository::updateLastReadAt(const QString &uuid, const QDateTime &lastReadAt) {
+bool UserRepository::updateLastReadAt(const QString &uuid, const QString &lastReadAt) {
   QSqlQuery query(db_);
 
   query.prepare(R"(
@@ -180,7 +180,7 @@ bool UserRepository::updateLastReadAt(const QString &uuid, const QDateTime &last
       WHERE uuid = :uuid
   )");
 
-  query.bindValue(":lastReadAt", lastReadAt.toUTC().toString(Qt::ISODate));
+  query.bindValue(":lastReadAt", lastReadAt);
   query.bindValue(":uuid", uuid);
 
   if (!query.exec()) {

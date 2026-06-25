@@ -29,9 +29,10 @@ ChatViewModel::ChatViewModel(ContactList *contactList, IChatService *chatService
 
   connect(contactService_, &IContactService::contactsLoaded, this, &ChatViewModel::onContactsLoaded);
   connect(contactService_, &IContactService::userResolved, this, &ChatViewModel::onUserResolved);
+  connect(contactService_, &IContactService::contactStatusUpdated, this, &ChatViewModel::onContactStatusUpdated);
+  connect(contactService_, &IContactService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
   connect(contactService_, &IContactService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
   connect(contactService_, &IContactService::usersSearchLoaded, searchResults_, &SearchResults::onUsersSearchLoaded);
-  connect(contactService_, &IContactService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
 }
 
 ContactList *ChatViewModel::contactList() const { return contactList_; }
@@ -98,18 +99,18 @@ void ChatViewModel::onContactsLoaded(const QList<User> &contacts) {
   chatService_->loadConversationsFromDatabaseAndServer();
 }
 
-// Faudra faire en sorte de ne load que les derniers messages dans le cas d'une authentification par token (qui implique des données dans la DB)
-// Si Authentification classique (DB Vierge) faudra faire en sorte de ne load que les derniers messages pour éviter une trop grosse charge réseau.
-// Une fois le tirage sur le serveur implémenté, il faudra passer dans la fonction la dernière fois que le serveur nous a vu pour pouvoir faire un tri entre les nouveaux messages et les messages déjà lu
+// Faudra faire en sorte de ne load que les derniers messages dans le cas d'une authentification par token (qui implique
+// des données dans la DB) Si Authentification classique (DB Vierge) faudra faire en sorte de ne load que les derniers
+// messages pour éviter une trop grosse charge réseau. Une fois le tirage sur le serveur implémenté, il faudra passer
+// dans la fonction la dernière fois que le serveur nous a vu pour pouvoir faire un tri entre les nouveaux messages et
+// les messages déjà lu
 void ChatViewModel::onConversationsLoaded(const QList<Message> &messages) {
   if (messages.isEmpty())
     return;
 
   QList<Message> sortedMessages = messages;
   std::stable_sort(sortedMessages.begin(), sortedMessages.end(),
-                    [](const Message &a, const Message &b) {
-                      return a.timestamp() < b.timestamp();
-                    });
+                   [](const Message &a, const Message &b) { return a.timestamp() < b.timestamp(); });
 
   QHash<QString, int> unreadCounts;
 
@@ -193,8 +194,21 @@ void ChatViewModel::onUserResolved(const User &user) {
     contactList_->setUnreadCount(uuid, pendingUnread_[uuid]);
     pendingUnread_.remove(uuid);
   }
-  
+
   emit messageListChanged();
+}
+
+void ChatViewModel::onContactStatusUpdated(const QString &uuid, const QString &status) {
+  if (!contactList_)
+    return;
+
+  contactList_->updateStatus(uuid, status);
+
+  if (selectedContact_.value("uuid").toString() == uuid) {
+    selectedContact_ = contactList_->findByUuid(uuid);
+    emit selectedContactChanged();
+    emit messageListChanged();
+  }
 }
 
 void ChatViewModel::onApplicationQuit() {

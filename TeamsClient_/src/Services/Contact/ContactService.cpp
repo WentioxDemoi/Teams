@@ -5,14 +5,13 @@
 #include <QJsonDocument>
 #include <QJsonValue>
 #include <QtCore/qdatetime.h>
+#include <QtCore/qdebug.h>
 #include <QtCore/qlogging.h>
 #include <QtCore/qnamespace.h>
 #include <cstddef>
 
 #include "../../Models/User.h"
 #include "Network/NetworkService.h"
-#include "SessionEnum.h"
-#include "State/SessionState.h"
 
 ContactService::ContactService(NetworkService *network, UserRepository *userRepo, QObject *parent)
     : IContactService(parent), network_(network ? network : new NetworkService(8084, parent)),
@@ -40,14 +39,19 @@ void ContactService::loadContactsFromDatabase() {
     emit contactsLoaded(users);
   }
 }
- 
+
 void ContactService::updateLastReadAt(const QString &uuid) {
-  QJsonObject payload;
-  payload["type"] = "update_last_read_at";
-  payload["token"] = UserState::instance().localUser().token();
-  payload["contactUuid"] = uuid;
-  payload["lastReadAt"] = QDateTime::currentDateTimeUtc().toString(Qt::ISODate);
-  network_->send(payload);
+
+  QString timestamp = QDateTime::currentDateTimeUtc().toString(Qt::ISODate);
+
+  if (userRepo_->updateLastReadAt(uuid, timestamp)) {
+    QJsonObject payload;
+    payload["type"] = "update_last_read_at";
+    payload["token"] = UserState::instance().localUser().token();
+    payload["contactUuid"] = uuid;
+    payload["lastReadAt"] = timestamp;
+    network_->send(payload);
+  }
 }
 
 void ContactService::resolveUserByUuid(const QString &uuid) {
@@ -105,7 +109,8 @@ void ContactService::handleServerResponse(const QJsonObject &root) {
     return;
   }
 
-  if (type == "auth_success" || type == "contact_added" || type == "resolve_user_response") {
+  if (type == "auth_success" || type == "contact_added" || type == "resolve_user_response" ||
+      type == "contact_status_update") {
 
     // Uniquement dans ce Handler là car c'est ici qu'on lance l'initialisation du
     // client
@@ -119,10 +124,10 @@ void ContactService::handleServerResponse(const QJsonObject &root) {
       emit contactError("Réponse serveur resolve_user_response invalide");
       return;
     }
+
     if (type == "contact_added") {
       return;
-    }
-    if (type == "resolve_user_response") {
+    } else if (type == "resolve_user_response") {
       const User user = User::fromJson(root["data"].toObject());
 
       if (!user.isValid()) {
@@ -131,6 +136,14 @@ void ContactService::handleServerResponse(const QJsonObject &root) {
       }
       saveContact(user);
       emit userResolved(user);
+      return;
+    } else if (type == "contact_status_update") {
+      QJsonObject data = root["data"].toObject();
+
+      QString uuid = data["uuid"].toString();
+      QString status = data["status"].toString();
+
+      emit contactStatusUpdated(uuid, status);
       return;
     }
   } else if (type == "contacts_loaded" || type == "search_users_response") {
@@ -160,6 +173,7 @@ void ContactService::handleServerResponse(const QJsonObject &root) {
 // user reçu.
 void ContactService::persistContacts(const QList<User> &users) {
   for (const User &user : users) {
+    user.print();
     if (!userRepo_->save(user)) {
       qDebug() << "[ContactService] Impossible de persister le user" << user.uuid();
     }

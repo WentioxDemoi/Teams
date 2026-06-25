@@ -139,6 +139,17 @@ void ContactHandler::handle_update_last_read_at(std::string uuid, std::string pa
   });
 }
 
+void ContactHandler::handle_update_status(std::string uuid, std::string payload) {
+    asio::post(worker_pool_, [this, uuid, payload]() {
+    try { 
+      contactService_->updateStatus(uuid, payload);
+    }
+    catch (const std::exception &e) {
+      std::cerr << "[ContactHandler] UpdateStatus error: " << e.what() << "\n";
+    }
+});
+}
+
 void ContactHandler::handle_type(std::string uuid, std::string payload, ResponseCallback respond) {
 
   std::string type = PacketHelper::extractValue(payload, "type");
@@ -160,7 +171,10 @@ void ContactHandler::handle_type(std::string uuid, std::string payload, Response
     handle_resolve_user_by_uuid(uuid, payload, respond);
   } else if (type == "update_last_read_at") {
     handle_update_last_read_at(uuid, payload, respond);
-  } else {
+  } else if (type == "update_status") {
+    handle_update_status(uuid, payload);
+  }
+  else {
     std::cerr << "[ContactHandler] Unknown contact type: " << type << "\n";
   }
 }

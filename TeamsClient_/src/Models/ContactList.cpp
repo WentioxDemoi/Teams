@@ -122,6 +122,18 @@ void ContactList::setUnreadCount(const QString &uuid, int value) {
   }
 }
 
+void ContactList::updateStatus(const QString& uuid, const QString& status)
+{
+    for (int row = 0; row < users_.size(); ++row) {
+        if (users_[row].uuid() == uuid) {
+            users_[row].setStatus(status);
+            QModelIndex idx = index(row);
+            emit dataChanged(idx, idx, {StatusRole, OnlineRole});
+            return;
+        }
+    }
+}
+
 void ContactList::incrementUnreadCount(const QString &uuid)
 {
     for (int i = 0; i < users_.size(); ++i) {

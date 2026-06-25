@@ -19,6 +19,7 @@ struct User {
   std::chrono::system_clock::time_point created_at;
 
   std::string lastReadAt;
+  std::string status;
 
   User() = default;
 

@@ -2,6 +2,7 @@
 #include "../../Utils/PacketHelper.h"
 #include "../../Utils/Crypto.h"
 #include "../../Utils/ResponseFormater.h"
+#include <optional>
 
 
 

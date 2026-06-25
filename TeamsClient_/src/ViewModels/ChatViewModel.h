@@ -65,6 +65,7 @@ signals:
 
 private:
   void onContactsLoaded(const QList<User> &contacts);
+  void onContactStatusUpdated(const QString& uuid, const QString& status);
 
   // void onMessageSent(const Message &message); // Pour remplacer l'UUID temporaire
   void onConversationsLoaded(const QList<Message> &messages);

@@ -1,5 +1,6 @@
 #include "AppCompositionRoot.h"
 #include "ContactHandler.h"
+#include "Registeries/ContactSessionRegistry.h"
 #include "Repositories/ContactRepository.h"
 #include "Server/TcpListenerContact.h"
 #include "Services/ContactService.h"
@@ -32,6 +33,7 @@ void AppCompositionRoot::initRepositories() {
 
 void AppCompositionRoot::initRegistries() {
   messageSessionRegistry_ = std::make_shared<MessageSessionRegistry>();
+  contactSessionRegistry_ = std::make_shared<ContactSessionRegistry>();
   // webRTCRegistry_ = std::make_shared<WebRTCRegistry>();
 }
 
@@ -40,7 +42,7 @@ void AppCompositionRoot::initServices() {
   messageService_ = std::make_unique<MessageService>(
       std::make_unique<MessageRepository>(), messageSessionRegistry_);
   contactService_ = std::make_unique<ContactService>(
-      std::move(contactRepository_), userRepository_);
+      std::move(contactRepository_), userRepository_, contactSessionRegistry_);
   // webRTCService_ = std::make_shared<WebRTCService>();
 }
 
@@ -65,7 +67,7 @@ void AppCompositionRoot::initListeners() {
 
   contact_listener_ = std::make_unique<TcpListenerContact>(
       contact_io_, ssl_ctx_, tcp::endpoint(tcp::v4(), 8084),
-      std::move(contactHandler_), authService_);
+      std::move(contactHandler_), contactSessionRegistry_, authService_);
 
   // webrtc_listener_ = std::make_unique<TcpListenerWebRTC>(
   //     webrtc_io_,

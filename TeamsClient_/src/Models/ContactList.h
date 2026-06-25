@@ -42,6 +42,7 @@ public:
   void updateLastMessage(const QString &uuid, const QString &message);
   void setUnreadCount(const QString &uuid, int value);
   void incrementUnreadCount(const QString &uuid);
+  void updateStatus(const QString& uuid, const QString& status);
   void moveToTop(const QString &uuid);  
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   QHash<int, QByteArray> roleNames() const override;

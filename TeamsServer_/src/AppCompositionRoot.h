@@ -60,6 +60,7 @@ class AppCompositionRoot {
 
 
   std::shared_ptr<MessageSessionRegistry> messageSessionRegistry_;
+  std::shared_ptr<ContactSessionRegistry> contactSessionRegistry_;
   // std::shared_ptr<WebRTCRegistry> webRTCRegistry_; A venir pour gérer les sessions WebRTC
 
   std::unique_ptr<TcpListenerAuth> auth_listener_;

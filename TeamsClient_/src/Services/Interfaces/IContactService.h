@@ -19,27 +19,29 @@ class User;
  */
 class IContactService : public QObject {
   Q_OBJECT
- public:
-  explicit IContactService(QObject* parent = nullptr) : QObject(parent) {};
+public:
+  explicit IContactService(QObject *parent = nullptr) : QObject(parent) {};
   virtual ~IContactService() = default;
 
   virtual void searchUsers(const QString &query) = 0;
   virtual void resolveUserByUuid(const QString &uuid) = 0;
-  virtual void saveContact(const User& user) = 0;
-  virtual void removeContact(const QString& uuid) = 0;
+  virtual void saveContact(const User &user) = 0;
+  virtual void removeContact(const QString &uuid) = 0;
   virtual void updateLastReadAt(const QString &uuid) = 0;
   virtual void deleteAll() = 0;
   virtual void disconnectFromServer() = 0;
 
- signals:
- void userResolved(const User &user);
- void usersSearchLoaded(const QList<User>& contacts);
+signals:
+  void userResolved(const User &user);
+  void usersSearchLoaded(const QList<User> &contacts);
 
-  void contactsLoaded(const QList<User>& contacts);
-  void contactSaved(const User& user);
-  void contactDeleted(const QString& uuid);
-  void contactError(const QString& error);
   
+  void contactStatusUpdated(const QString &uuid, const QString &status);
+  void contactsLoaded(const QList<User> &contacts);
+  void contactSaved(const User &user);
+  void contactDeleted(const QString &uuid);
+  void contactError(const QString &error);
+
   void connectionUpdate(ServerType server, bool status);
 };
 

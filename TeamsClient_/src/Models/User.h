@@ -46,7 +46,7 @@ public:
     return QString(f) + QString(l);
   }
   QString avatarColor() const { return generateAvatarColor(uuid_); }
-  bool online() const { return status_ == "En ligne"; }
+  bool online() const { return status_ == "Online"; }
   QString status() const { return status_; }
   bool isMe() const { return isMe_; }
   QString token() const { return token_; }
@@ -67,8 +67,7 @@ public:
   void setAvatar(const QString &v) { avatar_ = v; }
   void setLastMessage(const QString &v) { lastMessage_ = v; }
   void setUnreadCount(int v) { unreadCount_ = v; }
-  // Setter, à côté de setUnreadCount
-void setLastReadAt(const QDateTime &v) { lastReadAt_ = v.toUTC(); }
+  void setLastReadAt(const QDateTime &v) { lastReadAt_ = v.toUTC(); }
   void clearToken() { token_.clear(); }
   bool isValid() const { return !email_.isEmpty() && !firstName_.isEmpty() && !uuid_.isEmpty(); }
 

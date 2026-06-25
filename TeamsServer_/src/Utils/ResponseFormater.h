@@ -62,7 +62,12 @@ public:
                 json_escape(user.uuid) +
                 "\","
                 "\"lastReadAt\":\"" +
-                json_escape(user.lastReadAt) + "\"" + "}";
+                json_escape(user.lastReadAt) +
+                "\","
+                "\"status\":\"" +
+                json_escape(user.status) +
+                "\""
+                "}";
       if (i + 1 < users.size())
         result += ",";
     }
@@ -97,6 +102,21 @@ public:
            "\","
            "\"contactUuid\":\"" +
            json_escape(contact.contact_id) +
+           "\""
+           "}"
+           "}";
+  }
+
+  static std::string format_contact_status_update_response(const std::string &userUuid, const std::string &status) {
+
+    return "{"
+           "\"type\":\"contact_status_update\","
+           "\"data\":{"
+           "\"uuid\":\"" +
+           json_escape(userUuid) +
+           "\","
+           "\"status\":\"" +
+           json_escape(status) +
            "\""
            "}"
            "}";
