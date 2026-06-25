@@ -28,6 +28,7 @@ public:
 
     bool removeAll();
     bool removeAllContacts();
+    bool updateLastReadAt(const QString &uuid, const QDateTime &lastReadAt);
 
 signals:
     void error(const QString& message);

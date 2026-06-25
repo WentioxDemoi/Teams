@@ -29,6 +29,7 @@ public:
   void saveContact(const User &user) override;
   void removeContact(const QString &uuid) override;
   void deleteAll() override;
+  void updateLastReadAt(const QString &uuid) override;
   void disconnectFromServer() override;
 
 

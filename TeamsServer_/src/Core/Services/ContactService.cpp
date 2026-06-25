@@ -75,3 +75,19 @@ std::optional<std::string> ContactService::searchUsers(const std::string &caller
   else
     return std::nullopt;
 }
+
+std::optional<std::string> ContactService::lastReadAt(const std::string &userUuid, const std::string &payload) {
+
+  auto contactUuid = PacketHelper::extractValue(payload, "contactUuid");
+  auto lastReadAt = PacketHelper::extractValue(payload, "lastReadAt");
+
+  if (contactUuid.empty()) {
+    return std::nullopt;
+  }
+
+  if (!contactRepo_->update_last_read_at(userUuid, contactUuid, lastReadAt)) {
+    return std::nullopt;
+  }
+
+  return R"({"type":"last_read_at_updated","success":true})";
+}

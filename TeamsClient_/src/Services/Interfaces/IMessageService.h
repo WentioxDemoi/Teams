@@ -31,7 +31,7 @@ class IMessageService : public QObject {
   virtual void disconnectFromServer() = 0;
 
  signals:
-  void conversationsLoaded(const QList<Message>& messages, const QString &lastSeen);
+  void conversationsLoaded(const QList<Message>& messages);
   // void messageSent(const Message& message); //Pas aencore utilisé
   void messageSaved(const Message& message);
   void messageDeleted(const QString& uuid);

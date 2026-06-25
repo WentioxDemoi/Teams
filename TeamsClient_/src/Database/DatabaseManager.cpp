@@ -27,7 +27,8 @@ DatabaseManager::DatabaseManager() {
     uuid       TEXT PRIMARY KEY,
     is_me      INTEGER DEFAULT 0,
     token      TEXT,
-    avatar     TEXT);
+    avatar     TEXT,
+    last_read_at TEXT);
     )";
 
   if (!query.exec(createTable)) {
@@ -41,7 +42,7 @@ DatabaseManager::DatabaseManager() {
     uuid         TEXT PRIMARY KEY,
     sender_uuid  TEXT NOT NULL,
     receiver_uuid TEXT NOT NULL,
-    chatType         TEXT,
+    chat_type         TEXT,
     content      TEXT,
     timestamp    TEXT);
     )";

@@ -20,7 +20,7 @@ Message Message::fromJson(const QJsonObject& json) {
       json["receiverUuid"].toString(),
       json["chatType"].toString(),
       json["content"].toString(),
-      QDateTime::fromString(json["timestamp"].toString(), Qt::ISODate));
+      QDateTime::fromString(json["timestamp"].toString(), Qt::ISODate).toUTC());
 }
 
 QJsonObject Message::toJson() const {
@@ -30,14 +30,14 @@ QJsonObject Message::toJson() const {
       {"receiverUuid", receiverUuid_},
       {"chatType", chatType_},
       {"content", content_},
-      {"timestamp", timestamp_.toString(Qt::ISODate)}
+      {"timestamp", timestamp_.toUTC().toString(Qt::ISODate)}
   };
 }
 
 Message Message::createOutgoing(const QString& receiverUuid, const QString& chatType,
                                   const QString& content) {
   return Message(generateUuid(), UserState::instance().localUser().uuid(), receiverUuid,
-                 chatType, content, QDateTime::currentDateTime());
+                 chatType, content, QDateTime::currentDateTimeUtc());
 }
 
 // Génération d'un UUID qui devra être temporaire pour ensuite être remplacé par le UUID V7 créé par le serveur

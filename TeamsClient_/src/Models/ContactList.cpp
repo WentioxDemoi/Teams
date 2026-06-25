@@ -80,6 +80,7 @@ QVariantMap ContactList::toVariantMap(const User &user) const {
   map["avatarColor"] = user.avatarColor();
   map["online"] = user.online();
   map["uuid"] = user.uuid();
+  map["lastReadAt"] = user.lastReadAt();
   return map;
 }
 

@@ -59,7 +59,10 @@ public:
                 json_escape(user.email) +
                 "\","
                 "\"uuid\":\"" +
-                json_escape(user.uuid) + "\"" + "}";
+                json_escape(user.uuid) +
+                "\","
+                "\"lastReadAt\":\"" +
+                json_escape(user.lastReadAt) + "\"" + "}";
       if (i + 1 < users.size())
         result += ",";
     }

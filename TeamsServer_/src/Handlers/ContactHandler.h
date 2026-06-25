@@ -33,6 +33,8 @@ private:
 
   void handle_resolve_user_by_uuid(const std::string &uuid, std::string payload, ResponseCallback respond);
 
+  void handle_update_last_read_at(std::string uuid, std::string payload, ResponseCallback respond);
+
 private:
   asio::thread_pool worker_pool_;
   std::unique_ptr<ContactService> contactService_;

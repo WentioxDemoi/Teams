@@ -4,7 +4,9 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonValue>
+#include <QtCore/qdatetime.h>
 #include <QtCore/qlogging.h>
+#include <QtCore/qnamespace.h>
 #include <cstddef>
 
 #include "../../Models/User.h"
@@ -37,6 +39,15 @@ void ContactService::loadContactsFromDatabase() {
   if (!users.isEmpty()) {
     emit contactsLoaded(users);
   }
+}
+ 
+void ContactService::updateLastReadAt(const QString &uuid) {
+  QJsonObject payload;
+  payload["type"] = "update_last_read_at";
+  payload["token"] = UserState::instance().localUser().token();
+  payload["contactUuid"] = uuid;
+  payload["lastReadAt"] = QDateTime::currentDateTimeUtc().toString(Qt::ISODate);
+  network_->send(payload);
 }
 
 void ContactService::resolveUserByUuid(const QString &uuid) {

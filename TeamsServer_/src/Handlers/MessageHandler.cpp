@@ -5,7 +5,7 @@
 void MessageHandler::handle_send_message(std::string uuid, std::string payload, ResponseCallback respond) {
 
   PacketHelper::insertValue(payload, "senderUuid", uuid);
-  std::cout << "[MessageHandler] Sending message with payload: " << payload << std::endl;
+  // std::cout << "[MessageHandler] Sending message with payload: " << payload << std::endl;
   asio::post(worker_pool_, [this, payload, respond]() {
     try {
       std::optional<std::string> response = messageService_->sendMessage(payload);
@@ -27,15 +27,9 @@ void MessageHandler::handle_load_conversations(std::string uuid, std::string pay
       auto response = messageService_->loadConversations(uuid);
       if (!response.has_value()) {
         response = R"({"type":"conversation_response","error":"Load failed: invalid token or user."})";
-        respond(response.value());
-        return;
       }
 
-      std::string last_seen = get_last_seen(uuid);
-      std::string enrichedResponse = response.value();
-      PacketHelper::insertValue(enrichedResponse, "last_seen", last_seen);
-
-      respond(enrichedResponse);
+      respond(response.value());
     } catch (const std::exception& e) {
       std::cerr << "[MessageHandler] Load error: " << e.what() << "\n";
       respond(R"({"type":"conversations_loaded","error":"Load failed: server error"})");
@@ -56,18 +50,4 @@ void MessageHandler::handle_type(std::string uuid, std::string payload, Response
   } else {
     std::cerr << "[MessageHandler] Unknown message type: " << type << "\n";
   }
-}
-
-
-void MessageHandler::update_last_seen(const std::string &uuid)
-{
-    userRepo_->update_last_seen(uuid);
-}
-
-std::string MessageHandler::get_last_seen(const std::string &uuid)
-{
-  std::optional<std::string> timestamp = userRepo_->get_last_seen(uuid);
-  if (timestamp.has_value())
-    return timestamp.value();
-  return "";
 }

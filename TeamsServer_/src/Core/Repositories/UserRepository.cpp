@@ -132,8 +132,8 @@ bool UserRepository::create(const User &user) {
         qb.insert_into(config_.table_users(),
                        {"uuid", "first_name", "last_name", "email",
                         "password_hash", "token", "token_expires_at",
-                         "last_seen", "created_at"})
-            .values({"$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9"})
+                          "created_at"})
+            .values({"$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8"})
             .returning({"uuid"})
             .build();
 
@@ -147,7 +147,6 @@ bool UserRepository::create(const User &user) {
         user.password_hash,
         user.token,
         config_.time_point_to_string(user.token_expires_at),
-        config_.time_point_to_string(user.last_seen),
         config_.time_point_to_string(user.created_at));
 
     txn.commit();
@@ -171,7 +170,6 @@ bool UserRepository::update(const User &user) {
                             .set("password_hash", "$4")
                             .set("token", "$5")
                             .set("token_expires_at", "$6")
-                            .set("last_seen", "NOW()")
                             .where("uuid", "=", "$7")
                             .build();
 
@@ -234,55 +232,6 @@ std::vector<User> UserRepository::search_by_name(const std::string &callerUuid,
   } catch (const std::exception &e) {
     databaseManager_.release_connection(conn);
     std::cerr << "[ERROR search_by_name] Exception: " << e.what() << std::endl;
-    throw;
-  }
-}
-
-bool UserRepository::update_last_seen(const std::string &uuid) {
-  auto conn = databaseManager_.acquire_connection();
-  try {
-    QueryBuilder qb;
-    std::string query = qb.update(config_.table_users())
-                            .set("last_seen", "NOW()")
-                            .where("uuid", "=", "$1")
-                            .build();
-
-    pqxx::work txn(*conn);
-    pqxx::result result = txn.exec_params(query, uuid);
-    txn.commit();
-
-    databaseManager_.release_connection(conn);
-
-    return result.affected_rows() == 1;
-  } catch (const std::exception &e) {
-    databaseManager_.release_connection(conn);
-    std::cerr << "[ERROR update_last_seen] Exception: " << e.what() << std::endl;
-    throw;
-  }
-}
-
-std::optional<std::string> UserRepository::get_last_seen(const std::string &uuid) {
-  auto conn = databaseManager_.acquire_connection();
-  try {
-    std::cout << "[DEBUG get_last_seen] Called with uuid: " << uuid << std::endl;
-
-    QueryBuilder qb;
-    std::string query = qb.select({"last_seen"})
-                            .from(config_.table_users())
-                            .where("uuid", "=", "$1")
-                            .build();
-
-    pqxx::work txn(*conn);
-    pqxx::result result = txn.exec_params(query, uuid);
-    databaseManager_.release_connection(conn);
-
-    if (result.empty())
-      return std::nullopt;
-
-    return result[0]["last_seen"].c_str();
-  } catch (const std::exception &e) {
-    databaseManager_.release_connection(conn);
-    std::cerr << "[ERROR get_last_seen] Exception: " << e.what() << std::endl;
     throw;
   }
 }

@@ -22,11 +22,11 @@ public:
   virtual std::optional<std::string> loadContacts(const std::string &payload);
   virtual std::optional<std::string> searchUsers(const std::string &callerUuid, const std::string &payload);
   virtual std::optional<std::string> resolveUserByUuid(const std::string &uuid);
+  virtual std::optional<std::string> lastReadAt(const std::string &uuid, const std::string &timestamp);
 
 private:
   std::unique_ptr<ContactRepository> contactRepo_;
   std::shared_ptr<UserRepository> userRepo_;
-  //   std::shared_ptr<ContactSessionRegistry> contactSessionRegistry_;
   Config &config_;
 };
 

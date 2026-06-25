@@ -19,7 +19,7 @@ void MessageSession::do_read() {
                                                         std::size_t bytes) {
     if (!ec) {
       std::string payload(self->buffer_.data(), bytes);
-      std::cout << "Message: " << payload << std::endl;
+      // std::cout << "Message: " << payload << std::endl;
 
       if (self->isFirstMessage_) {
         auto token = PacketHelper::extractValue(payload, "token");
@@ -47,7 +47,6 @@ void MessageSession::do_read() {
       if (ec == asio::error::eof || ec == boost::asio::ssl::error::stream_truncated ||
           ec == asio::error::connection_reset) {
         std::cout << "[MessageSession] Client disconnected" << std::endl;
-        self->messageHandler_->update_last_seen(self->user_uuid_);
         self->messageSessionRegistry_->unregisterMessageSession(self->user_uuid_);
         return;
       }

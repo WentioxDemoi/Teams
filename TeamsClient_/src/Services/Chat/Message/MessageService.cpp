@@ -23,11 +23,11 @@ MessageService::MessageService(NetworkService *network, MessageRepository *messa
   connect(this, &MessageService::messageReceived, this, &MessageService::saveMessage);
 }
 
-void MessageService::loadConversationsFromDatabase(const QString &lastSeen) {
+void MessageService::loadConversationsFromDatabase() {
   QList<Message> messages = messageRepo_->findAll();
 
   if (!messages.isEmpty()) {
-    emit conversationsLoaded(messages, lastSeen);
+    emit conversationsLoaded(messages);
   }
 }
 
@@ -48,9 +48,9 @@ void MessageService::sendMessage(const Message &message) {
     payload["message"] = messageJson;
 
     QJsonDocument doc(payload);
-    qDebug() << "=== Envoi de message ===";
-    qDebug().noquote() << doc.toJson(QJsonDocument::Indented);
-    qDebug() << "=== Fin envoi ===";
+    // qDebug() << "=== Envoi de message ===";
+    // qDebug().noquote() << doc.toJson(QJsonDocument::Indented);
+    // qDebug() << "=== Fin envoi ===";
 
     network_->send(payload);
   }
@@ -123,10 +123,9 @@ void MessageService::handleServerResponse(const QJsonObject &root) {
       return;
     }
     if (type == "conversations_loaded") {
-      const QString lastSeen = root["last_seen"].toString();
       QList<Message> conversations = parseMessagesArray(root["data"].toArray());
       persistMessages(conversations);
-      loadConversationsFromDatabase(lastSeen);
+      loadConversationsFromDatabase();
       return;
     }
   }

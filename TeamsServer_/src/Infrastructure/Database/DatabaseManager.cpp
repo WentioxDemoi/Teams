@@ -99,6 +99,7 @@ txn.exec("CREATE TABLE IF NOT EXISTS " + config.table_contacts() +
          " ("
          "user_uuid TEXT NOT NULL, "
          "contact_uuid TEXT NOT NULL, "
+         "last_read_at TIMESTAMP WITH TIME ZONE, "
          "PRIMARY KEY (user_uuid, contact_uuid), "
          "FOREIGN KEY (user_uuid) REFERENCES " + config.table_users() + "(uuid), "
          "FOREIGN KEY (contact_uuid) REFERENCES " + config.table_users() + "(uuid)"

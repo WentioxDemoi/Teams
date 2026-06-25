@@ -53,6 +53,7 @@ public:
   QString uuid() const { return uuid_; }
   QString avatar() const { return avatar_; }
   QString lastMessage() const { return lastMessage_; }
+  QDateTime lastReadAt() const { return lastReadAt_; }
   int unreadCount() const { return unreadCount_; }
 
   // Setters
@@ -65,13 +66,9 @@ public:
   void setUuid(const QString &v) { uuid_ = v; }
   void setAvatar(const QString &v) { avatar_ = v; }
   void setLastMessage(const QString &v) { lastMessage_ = v; }
-  void setUnreadCount(int v) {
-    if (unreadCount_ == v)
-      return;
-
-    unreadCount_ = v;
-    // emit unreadCountChanged();
-  }
+  void setUnreadCount(int v) { unreadCount_ = v; }
+  // Setter, à côté de setUnreadCount
+void setLastReadAt(const QDateTime &v) { lastReadAt_ = v.toUTC(); }
   void clearToken() { token_.clear(); }
   bool isValid() const { return !email_.isEmpty() && !firstName_.isEmpty() && !uuid_.isEmpty(); }
 
@@ -105,6 +102,7 @@ private:
   QString uuid_;
   QString avatar_;
   QString lastMessage_;
+  QDateTime lastReadAt_;
   int unreadCount_ = 0;
 };
 

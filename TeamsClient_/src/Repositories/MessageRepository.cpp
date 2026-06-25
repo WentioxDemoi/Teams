@@ -10,7 +10,7 @@ MessageRepository::MessageRepository(QObject *parent) : QObject(parent), db_(Dat
 std::optional<Message> MessageRepository::findByUUID(const QString &uuid) {
   QSqlQuery query(db_);
   query.prepare(R"(
-      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp
+      SELECT uuid, sender_uuid, receiver_uuid, chat_type, content, timestamp
       FROM messages
       WHERE uuid = :uuid
   )");
@@ -25,9 +25,9 @@ std::optional<Message> MessageRepository::findByUUID(const QString &uuid) {
     return std::nullopt;
 
   Message message(query.value("uuid").toString(), query.value("sender_uuid").toString(),
-                  query.value("receiver_uuid").toString(), query.value("chatType").toString(),
+                  query.value("receiver_uuid").toString(), query.value("chat_type").toString(),
                   query.value("content").toString(),
-                  QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate));
+                  QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate).toUTC());
 
   return message;
 }
@@ -37,7 +37,7 @@ QList<Message> MessageRepository::findAll() {
   QSqlQuery query(db_);
 
   if (!query.exec(R"(
-      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp
+      SELECT uuid, sender_uuid, receiver_uuid, chat_type, content, timestamp
       FROM messages
       ORDER BY timestamp ASC
   )")) {
@@ -47,9 +47,9 @@ QList<Message> MessageRepository::findAll() {
 
   while (query.next()) {
     messages.append(Message(query.value("uuid").toString(), query.value("sender_uuid").toString(),
-                            query.value("receiver_uuid").toString(), query.value("chatType").toString(),
+                            query.value("receiver_uuid").toString(), query.value("chat_type").toString(),
                             query.value("content").toString(),
-                            QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate)));
+                            QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate).toUTC()));
   }
 
   return messages;
@@ -59,7 +59,7 @@ QList<Message> MessageRepository::findForConversation(const QString &userUuid1, 
   QList<Message> messages;
   QSqlQuery query(db_);
   query.prepare(R"(
-      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp
+      SELECT uuid, sender_uuid, receiver_uuid, chat_type, content, timestamp
       FROM messages
       WHERE (sender_uuid = :user1 AND receiver_uuid = :user2)
          OR (sender_uuid = :user2 AND receiver_uuid = :user1)
@@ -75,9 +75,9 @@ QList<Message> MessageRepository::findForConversation(const QString &userUuid1, 
 
   while (query.next()) {
     messages.append(Message(query.value("uuid").toString(), query.value("sender_uuid").toString(),
-                            query.value("receiver_uuid").toString(), query.value("chatType").toString(),
+                            query.value("receiver_uuid").toString(), query.value("chat_type").toString(),
                             query.value("content").toString(),
-                            QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate)));
+                            QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate).toUTC()));
   }
 
   return messages;
@@ -87,7 +87,7 @@ QList<Message> MessageRepository::findForParticipant(const QString &participantU
   QList<Message> messages;
   QSqlQuery query(db_);
   query.prepare(R"(
-      SELECT uuid, sender_uuid, receiver_uuid, chatType, content, timestamp
+      SELECT uuid, sender_uuid, receiver_uuid, chat_type, content, timestamp
       FROM messages
       WHERE sender_uuid = :participant OR receiver_uuid = :participant
       ORDER BY timestamp ASC
@@ -101,9 +101,9 @@ QList<Message> MessageRepository::findForParticipant(const QString &participantU
 
   while (query.next()) {
     messages.append(Message(query.value("uuid").toString(), query.value("sender_uuid").toString(),
-                            query.value("receiver_uuid").toString(), query.value("chatType").toString(),
+                            query.value("receiver_uuid").toString(), query.value("chat_type").toString(),
                             query.value("content").toString(),
-                            QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate)));
+                            QDateTime::fromString(query.value("timestamp").toString(), Qt::ISODate).toUTC()));
   }
 
   return messages;
@@ -117,7 +117,7 @@ bool MessageRepository::save(const Message &message) {
             uuid,
             sender_uuid,
             receiver_uuid,
-            chatType,
+            chat_type,
             content,
             timestamp
         )
@@ -125,16 +125,13 @@ bool MessageRepository::save(const Message &message) {
             :uuid,
             :senderUuid,
             :receiverUuid,
-            :chatType,
+            :chat_type,
             :content,
             :timestamp
         )
 
         ON CONFLICT(uuid)
         DO UPDATE SET
-            sender_uuid = excluded.sender_uuid,
-            receiver_uuid = excluded.receiver_uuid,
-            chatType = excluded.chatType,
             content = excluded.content,
             timestamp = excluded.timestamp
     )");
@@ -142,9 +139,9 @@ bool MessageRepository::save(const Message &message) {
   query.bindValue(":uuid", message.uuid());
   query.bindValue(":senderUuid", message.senderUuid());
   query.bindValue(":receiverUuid", message.receiverUuid());
-  query.bindValue(":chatType", message.chatType());
+  query.bindValue(":chat_type", message.chatType());
   query.bindValue(":content", message.content());
-  query.bindValue(":timestamp", message.timestamp().toString(Qt::ISODate));
+  query.bindValue(":timestamp", message.timestamp().toUTC().toString(Qt::ISODate));
 
   if (!query.exec()) {
     qDebug() << "[save] Failed:" << query.lastError().text();

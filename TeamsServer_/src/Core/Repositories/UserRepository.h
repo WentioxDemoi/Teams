@@ -32,9 +32,7 @@ public:
 
   virtual bool create(const User &user);
   virtual bool update(const User &user);
-  virtual bool update_last_seen(const std::string &uuid);
   virtual bool delete_user(const std::string &uuid);
-  virtual std::optional<std::string> get_last_seen(const std::string &uuid);
 
   virtual ~UserRepository() = default;
 

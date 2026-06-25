@@ -1,4 +1,5 @@
 #include "User.h"
+#include <QtCore/qdatetime.h>
 
 User::User(const QString& email, const QString& firstName, const QString& lastName,
            const QString& status, bool isMe, const QString& token,
@@ -36,5 +37,6 @@ User User::fromJson(const QJsonObject& json) {
   if (json.contains("token")     && json["token"].isString())     user.setToken(json["token"].toString());
   if (json.contains("uuid")      && json["uuid"].isString())      user.setUuid(json["uuid"].toString());
   if (json.contains("avatar")    && json["avatar"].isString())    user.setAvatar(json["avatar"].toString());
+  if (json.contains("lastReadAt")    && json["lastReadAt"].isString())    user.setLastReadAt(QDateTime::fromString(json["lastReadAt"].toString(),Qt::ISODate));
   return user;
 }

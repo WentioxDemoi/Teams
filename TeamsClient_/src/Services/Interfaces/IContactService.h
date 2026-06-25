@@ -27,6 +27,7 @@ class IContactService : public QObject {
   virtual void resolveUserByUuid(const QString &uuid) = 0;
   virtual void saveContact(const User& user) = 0;
   virtual void removeContact(const QString& uuid) = 0;
+  virtual void updateLastReadAt(const QString &uuid) = 0;
   virtual void deleteAll() = 0;
   virtual void disconnectFromServer() = 0;
 

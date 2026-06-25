@@ -18,6 +18,8 @@ struct User {
   std::chrono::system_clock::time_point last_seen;
   std::chrono::system_clock::time_point created_at;
 
+  std::string lastReadAt;
+
   User() = default;
 
   User(std::string uuid_, std::string firstName_, std::string lastName_,

@@ -81,6 +81,6 @@ Config::string_to_time_point(const std::string &str) {
     throw std::runtime_error("Invalid time format");
   }
 
-  std::time_t t = std::mktime(&tm);
+  std::time_t t = timegm(&tm);
   return std::chrono::system_clock::from_time_t(t);
 }
