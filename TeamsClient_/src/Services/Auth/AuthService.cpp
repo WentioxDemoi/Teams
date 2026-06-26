@@ -45,7 +45,7 @@ void AuthService::loginWithToken(void)
   // Temporaire pour. éviter d'avoir à tapper le code du PC à chaque démarrage pour que l'app ait accès au token
   if (/*!*/tokenManager_->token.isEmpty()) {
     //network_->send({{"type", "validate_token"}, {"token", tokenManager_->token}});
-    network_->send({{"type", "validate_token"}, {"token", "2a3841a340ac4f683c34e03e6b033822e"}});
+    network_->send({{"type", "validate_token"}, {"token", "00f3f79fdc6f30cf40a50b078102caef"}});
   } else {
       handleTokenError("No token found");
   }

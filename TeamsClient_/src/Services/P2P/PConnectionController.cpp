@@ -93,6 +93,26 @@ void PConnectionController::addIceCandidate(const std::string& candidate, const 
   }
 }
 
+PConnectionController::~PConnectionController() {
+  // Ferme et libère tout ce qui dépend des threads WebRTC AVANT de les arrêter,
+  // pendant qu'ils tournent encore (peer_->Close() poste sur signaling_thread_).
+  if (peer_) {
+    peer_->Close();
+    peer_ = nullptr;
+  }
+  observer_ = nullptr;
+  factory_ = nullptr;
+
+  // Les threads ne sont arrêtés qu'une fois qu'il n'existe plus aucun objet
+  // WebRTC vivant susceptible d'en avoir besoin. L'ordre de déclaration des
+  // membres (voir le .h) les détruira ensuite dans l'ordre network → worker
+  // → signaling, mais on les Stop() explicitement ici pour que l'arrêt de la
+  // boucle de message soit synchrone et déterministe avant la destruction.
+  if (signaling_thread_) signaling_thread_->Stop();
+  if (worker_thread_) worker_thread_->Stop();
+  if (network_thread_) network_thread_->Stop();
+}
+
 void PConnectionController::close() {
   if (peer_) peer_->Close();
 }

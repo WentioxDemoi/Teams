@@ -16,6 +16,7 @@
 class PConnectionController {
  public:
   PConnectionController();
+  ~PConnectionController();
 
   void createOffer();
   void createAnswer();
@@ -30,13 +31,25 @@ class PConnectionController {
   std::function<void(bool inProgress)> onP2PChange;
 
  private:
-  webrtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;
-  webrtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_;
-  webrtc::scoped_refptr<PConnectionObserver> observer_;
-
+  // IMPORTANT — ordre de déclaration volontaire.
+  // En C++, les membres sont détruits dans l'ordre INVERSE de leur déclaration.
+  // peer_/observer_/factory_ ont besoin que les threads WebRTC soient encore
+  // vivants pour se détruire proprement (le proxy interne de PeerConnection
+  // poste sur signaling_thread_ lors de sa destruction). Si les threads sont
+  // arrêtés/détruits avant peer_, on obtient un accès mémoire invalide
+  // (EXC_BAD_ACCESS dans ~PeerConnectionProxyWithInternal()).
+  //
+  // Threads déclarés EN PREMIER → détruits EN DERNIER.
   std::unique_ptr<webrtc::Thread> network_thread_;
   std::unique_ptr<webrtc::Thread> worker_thread_;
   std::unique_ptr<webrtc::Thread> signaling_thread_;
+
+  // factory_ détruite avant les threads, après peer_/observer_.
+  webrtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;
+
+  // observer_ et peer_ déclarés EN DERNIER → détruits EN PREMIER, threads encore vivants.
+  webrtc::scoped_refptr<PConnectionObserver> observer_;
+  webrtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_;
 };
 
 #endif

@@ -29,6 +29,7 @@
 #include "ContactList.h"
 #include "LocalUserService.h"
 #include "ViewModelsLocator.h"
+#include "WebRTCViewModel.h"
 
 Application::Application(int& argc, char** argv) : qtApp(argc, argv) {
   qputenv("QT_QUICK_CONTROLS_STYLE", "Basic");
@@ -87,11 +88,13 @@ void Application::initializeServices() {
   auto* chatService = new ChatService(nullptr, nullptr, appRoot);
   serviceLocator.registerService<IChatService>(chatService);
 
-  // AuthService EN DERNIER
   auto* authService =
       new AuthService(nullptr, nullptr, nullptr, nullptr, appRoot);
-
   serviceLocator.registerService<IAuthService>(authService);
+
+  auto* webRTCService =
+      new WebRTCService(appRoot);
+  serviceLocator.registerService<WebRTCService>(webRTCService);
 
   initializeModels();
 }
@@ -121,8 +124,13 @@ void Application::initializeViewModels() {
 
   locator.registerViewModels<ChatViewModel>(chatVM);
 
+  auto* WebRTCVM = new WebRTCViewModel(&engine, nullptr, appRoot);
+
+  locator.registerViewModels<WebRTCViewModel>(WebRTCVM);
+
   engine.rootContext()->setContextProperty("authVM", authVM);
   engine.rootContext()->setContextProperty("chatVM", chatVM);
+  engine.rootContext()->setContextProperty("webRTCVM", WebRTCVM);
 
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreationFailed, &qtApp,

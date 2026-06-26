@@ -10,6 +10,9 @@ Item {
     Connections {
         target: chatVM
     }
+    Connections {
+        target: webRTCVM
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -111,6 +114,8 @@ Item {
                                 duration: 100
                             }
                         }
+                        enabled: chatVM.selectedContact && chatVM.selectedContact.uuid
+                        opacity: enabled ? 1.0 : 0.4
 
                         Text {
                             anchors.centerIn: parent
@@ -122,31 +127,12 @@ Item {
                             id: phoneHover
                             anchors.fill: parent
                             hoverEnabled: true
-                        }
-                    }
-
-                    // Bouton caméra
-                    Rectangle {
-                        width: 32
-                        height: 32
-                        radius: 8
-                        color: camHover.containsMouse ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(1, 1, 1, 0.07)
-                        Behavior on color {
-                            ColorAnimation {
-                                duration: 100
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                if (chatVM.selectedContact && chatVM.selectedContact.uuid) {
+                                    webRTCVM.startCall(chatVM.selectedContact.uuid, chatVM.selectedContact.username);
+                                }
                             }
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "📷"
-                            font.pixelSize: 15
-                        }
-
-                        MouseArea {
-                            id: camHover
-                            anchors.fill: parent
-                            hoverEnabled: true
                         }
                     }
                 }
