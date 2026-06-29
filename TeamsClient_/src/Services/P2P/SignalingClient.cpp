@@ -7,7 +7,7 @@ SignalingClient::SignalingClient(QObject* parent)
     : QObject(parent),
       network_(new NetworkService(8081, this))  // UUID de e@gmail.com e
 {
-  connect(network_, &NetworkService::jsonReceived, this, &SignalingClient::handleServerResponse);
+  // connect(network_, &NetworkService::jsonReceived, this, &SignalingClient::handleServerResponse);
 
   connect(network_, &NetworkService::networkError, this,
           [](const QString& err) { qWarning() << "Network error in SignalingClient:" << err; });

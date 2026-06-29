@@ -86,7 +86,7 @@ void Application::initializeServices() {
       new WebRTCService(appRoot);
   serviceLocator.registerService<WebRTCService>(webRTCService);
 
-  auto* callService = new CallService(&engine, nullptr, nullptr, appRoot);
+  auto* callService = new CallService(nullptr, nullptr, appRoot);
   serviceLocator.registerService<ICallService>(callService);
 
   auto* chatService = new ChatService(nullptr, nullptr, appRoot);

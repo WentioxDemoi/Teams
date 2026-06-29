@@ -27,7 +27,7 @@ class SignalingClient : public QObject {
   void iceReceived(QString candidate, QString mid, int index);
 
  private slots:
-  void handleServerResponse(const QJsonObject& root);
+  // void handleServerResponse(const QJsonObject& root);
 
  public slots:
   void registerWithServer4WebRTC(QString UUID); // A refactor
