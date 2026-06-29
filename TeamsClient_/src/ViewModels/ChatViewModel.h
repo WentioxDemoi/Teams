@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QVariantMap>
+#include <QtCore/qtmetamacros.h>
 
 #include "../Models/ContactList.h"
 #include "../Models/MessageList.h"
@@ -57,10 +58,12 @@ public:
   Q_INVOKABLE void selectContact(const QString &contactUuid);
   Q_INVOKABLE void searchUsers(const QString &query); // Used by QML
   Q_INVOKABLE void sendMessage(const QString &content);
+  Q_INVOKABLE void startCall(const QString &contactUuid, const QString &contactUsername);
 
 signals:
   void messageListChanged();
   void selectedContactChanged();
+  void incomingCall(const QVariantMap &contact);
   void chatError(const QString &error);
 
 private:
@@ -70,6 +73,8 @@ private:
   // void onMessageSent(const Message &message); // Pour remplacer l'UUID temporaire
   void onConversationsLoaded(const QList<Message> &messages);
   void onMessageReceived(const Message &message);
+
+  void onIncomingCallReceived(const QString &callerUuid);
 
   void onUserResolved(const User &user);
 
@@ -89,6 +94,8 @@ private:
   QVariantMap selectedContact_;
   SessionState *sessionState_;
   SearchResults *searchResults_;
+
+  QString pendingIncomingCallUuid_;
 };
 
 #endif

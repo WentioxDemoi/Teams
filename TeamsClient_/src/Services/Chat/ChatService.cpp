@@ -28,6 +28,8 @@ ChatService::ChatService(IMessageService* messageService,
   connect(callService_, &ICallService::callEnded, this, &IChatService::callEnded);
   connect(callService_, &ICallService::callError, this, &IChatService::callError);
   connect(callService_, &ICallService::connectionUpdate, this, &IChatService::connectionUpdate);
+  connect(callService_, &ICallService::incomingCallReceived, this, &IChatService::incomingCallReceived);
+  
 }
 
 void ChatService::sendMessage(const Message& message) {
@@ -46,28 +48,36 @@ void ChatService::loadConversationsFromDatabaseAndServer() {
   messageService_->loadConversationsFromServer();
 }
 
-void ChatService::startCall(const QString& calleeUuid) {
+void ChatService::startCall(const QString &contactUuid, const QString &contactUsername) {
   if (!callService_) {
     emit callError("Service d'appel indisponible");
     return;
   }
-  callService_->startCall(calleeUuid);
+  callService_->startCall(contactUuid, contactUsername);
 }
 
-void ChatService::acceptCall(const QString& callUuid) {
+void ChatService::acceptCall() {
   if (!callService_) {
     emit callError("Service d'appel indisponible");
     return;
   }
-  callService_->acceptCall(callUuid);
+  callService_->acceptCall();
 }
 
-void ChatService::hangup(const QString& callUuid) {
+void ChatService::rejectCall() {
   if (!callService_) {
     emit callError("Service d'appel indisponible");
     return;
   }
-  callService_->hangup(callUuid);
+  callService_->rejectCall();
+}
+
+void ChatService::hangup() {
+  if (!callService_) {
+    emit callError("Service d'appel indisponible");
+    return;
+  }
+  callService_->hangup();
 }
 
 void ChatService::disconnectFromServer() {

@@ -25,10 +25,11 @@ class IChatService : public QObject {
  public slots:
   virtual void sendMessage(const Message& message) = 0;
   virtual void loadConversationsFromDatabaseAndServer() = 0;
-  virtual void startCall(const QString& calleeUuid) = 0;
-  virtual void acceptCall(const QString& callUuid) = 0;
-  virtual void hangup(const QString& callUuid) = 0;
+  virtual void startCall(const QString &contactUuid, const QString &contactUsername) = 0;
+  virtual void acceptCall() = 0;
+  virtual void hangup() = 0;
   virtual void disconnectFromServer() = 0;
+  virtual void rejectCall() = 0;
   
 
  signals:
@@ -37,7 +38,10 @@ class IChatService : public QObject {
   void messageError(const QString& error);
   void conversationsLoaded(const QList<Message>& messages);
 
-  void callStarted(const QString& callUuid, const QString& calleeUuid);
+  void incomingCallReceived(const QString &callerUuid);
+
+  void callReceived(const QString &callUuid, const QString& callerUuid);
+  void callStarted(const QString &callUuid);
   void callAccepted(const QString& callUuid, const QString& callerUuid);
   void callEnded(const QString& callUuid, const QString& reason);
   void callError(const QString& error);

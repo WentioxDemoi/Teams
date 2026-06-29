@@ -42,61 +42,6 @@ public:
 public slots:
   void initP2P(); // OLD
 
-  /**
-   * @brief Ouvre la fenêtre d'appel et initialise l'état pour le contact donné.
-   *
-   * Caméra et micro démarrent désactivés. Le QQmlContext créé est parenté à la
-   * fenêtre : il (et donc tout contextProperty qu'il porte) est détruit
-   * automatiquement à la fermeture de la fenêtre.
-   */
-  void startCall(const QString &contactUuid, const QString &contactUsername) {
-    if (callWindow_) {
-      qWarning() << "Un appel est déjà en cours.";
-      return;
-    }
-
-    remoteUsername_ = contactUsername;
-    emit remoteUsernameChanged();
-
-    cameraEnabled_ = false;
-    micEnabled_ = false;
-    emit cameraEnabledChanged();
-    emit micEnabledChanged();
-
-    QQmlComponent component(engine_, QUrl(QStringLiteral("qrc:/qt/qml/TeamsClient/src/QML/CallWindow.qml")));
-    QQmlContext *context = new QQmlContext(engine_->rootContext());
-    context->setContextProperty("webrtcVM", this);
-
-    QObject *obj = component.create(context);
-
-    if (!obj) {
-      qWarning() << component.errors();
-      delete context;
-      return;
-    }
-
-    auto *window = qobject_cast<QQuickWindow *>(obj);
-    if (!window) {
-      qWarning() << "Root QML is not a Window";
-      delete obj;
-      delete context;
-      return;
-    }
-
-    context->setParent(window);
-    callWindow_ = window;
-    connect(window, &QObject::destroyed, this, [this]() {
-      callWindow_ = nullptr;
-      localVideoSink_ = nullptr;
-      remoteVideoSink_ = nullptr;
-    });
-
-    window->show();
-    window->raise();
-    window->requestActivate();
-
-    // TODO: appel au service de signaling (WebRTCService) avec contactUuid
-  }
 
   void setLocalVideoSink(QVideoSink *sink) { localVideoSink_ = sink; }
   void setRemoteVideoSink(QVideoSink *sink) { remoteVideoSink_ = sink; }

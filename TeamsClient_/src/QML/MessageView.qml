@@ -130,7 +130,7 @@ Item {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
                                 if (chatVM.selectedContact && chatVM.selectedContact.uuid) {
-                                    webRTCVM.startCall(chatVM.selectedContact.uuid, chatVM.selectedContact.username);
+                                    chatVM.startCall(chatVM.selectedContact.uuid, chatVM.selectedContact.username);
                                 }
                             }
                         }

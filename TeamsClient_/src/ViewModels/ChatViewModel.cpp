@@ -26,6 +26,8 @@ ChatViewModel::ChatViewModel(ContactList *contactList, IChatService *chatService
   connect(chatService_, &IChatService::conversationsLoaded, this, &ChatViewModel::onConversationsLoaded);
   connect(chatService_, &IChatService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
   connect(chatService_, &IChatService::messageReceived, this, &ChatViewModel::onMessageReceived);
+  connect(chatService_, &IChatService::incomingCallReceived, this, &ChatViewModel::onIncomingCallReceived);
+  
 
   connect(contactService_, &IContactService::contactsLoaded, this, &ChatViewModel::onContactsLoaded);
   connect(contactService_, &IContactService::userResolved, this, &ChatViewModel::onUserResolved);
@@ -195,6 +197,11 @@ void ChatViewModel::onUserResolved(const User &user) {
     pendingUnread_.remove(uuid);
   }
 
+  if (pendingIncomingCallUuid_ == uuid) {
+        pendingIncomingCallUuid_.clear();
+        emit incomingCall(contactList_->findByUuid(uuid));
+    }
+
   emit messageListChanged();
 }
 
@@ -218,4 +225,34 @@ void ChatViewModel::onApplicationQuit() {
 
   if (contactService_)
     contactService_->disconnectFromServer();
+}
+
+void ChatViewModel::startCall(const QString &contactUuid, const QString &contactUsername) {
+
+if (contactUuid.trimmed().isEmpty()) {
+    qDebug() << "UUID du destinataire invalide";
+    return;
+  }
+  if (!(contactList_->findByUuid(contactUuid)["status"] == "Online")) {
+    qDebug() << "Contact hors ligne";
+    return;
+  }
+    chatService_->startCall(contactUuid, contactUsername);
+    // TODO: appel au service de signaling (WebRTCService) avec contactUuid
+  }
+
+void ChatViewModel::onIncomingCallReceived(const QString &callerUuid)
+{
+    if (!contactList_)
+        return;
+
+    QVariantMap contact = contactList_->findByUuid(callerUuid);
+
+    if (!contact.isEmpty()) {
+        emit incomingCall(contact);
+        return;
+    }
+
+    pendingIncomingCallUuid_ = callerUuid;
+    contactService_->resolveUserByUuid(callerUuid);
 }

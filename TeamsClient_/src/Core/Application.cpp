@@ -82,7 +82,11 @@ void Application::initializeServices() {
   auto* contactService = new ContactService(nullptr, nullptr, appRoot);
   serviceLocator.registerService<IContactService>(contactService);
 
-  auto* callService = new CallService(nullptr, appRoot);
+    auto* webRTCService =
+      new WebRTCService(appRoot);
+  serviceLocator.registerService<WebRTCService>(webRTCService);
+
+  auto* callService = new CallService(&engine, nullptr, nullptr, appRoot);
   serviceLocator.registerService<ICallService>(callService);
 
   auto* chatService = new ChatService(nullptr, nullptr, appRoot);
@@ -92,9 +96,7 @@ void Application::initializeServices() {
       new AuthService(nullptr, nullptr, nullptr, nullptr, appRoot);
   serviceLocator.registerService<IAuthService>(authService);
 
-  auto* webRTCService =
-      new WebRTCService(appRoot);
-  serviceLocator.registerService<WebRTCService>(webRTCService);
+
 
   initializeModels();
 }

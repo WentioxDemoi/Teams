@@ -24,22 +24,7 @@ void SignalingClient::sendAnswer(const QString& sdp) { sendMessage("answer", sdp
 
 void SignalingClient::sendIce(const QString& payload) { sendMessage("ice", payload); }
 
-void SignalingClient::handleServerResponse(const QJsonObject& root) {
-  qDebug() << "[SignalingClient] RAW RECEIVED:" << root;
-  if (!root.contains("type") || !root["type"].isString()) return;
-  qDebug() << "[SignalingClient] handleServerResponse, type=" << root.value("type").toString()
-           << "keys=" << root.keys();
-  const QString type = root["type"].toString();
 
-  if (type == "offer" && root.contains("sdp") && root["sdp"].isString()) {
-    emit offerReceived(root["sdp"].toString());
-  } else if (type == "answer" && root.contains("sdp") && root["sdp"].isString()) {
-    emit answerReceived(root["sdp"].toString());
-  } else if (type == "ice" && root.contains("candidate") && root.contains("mid") &&
-             root.contains("index")) {
-    emit iceReceived(root["candidate"].toString(), root["mid"].toString(), root["index"].toInt());
-  }
-}
 
 void SignalingClient::sendMessage(const QString& type, const QString& payload) {
   QJsonObject message;

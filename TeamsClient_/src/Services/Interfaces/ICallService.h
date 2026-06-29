@@ -19,17 +19,30 @@ class ICallService : public QObject {
   virtual ~ICallService() = default;
 
  public slots:
-  virtual void startCall(const QString& calleeUuid) = 0;
-  virtual void acceptCall(const QString& callUuid) = 0;
-  virtual void hangup(const QString& callUuid) = 0;
+  virtual void startCall(const QString &contactUuid, const QString &contactUsername) = 0;
+  virtual void acceptCall() = 0;
+  virtual void hangup() = 0;
   virtual void disconnectFromServer() = 0;
+  virtual void rejectCall() = 0;
 
  signals:
+ void incomingCallReceived(const QString &callerUuid);
   void callStarted(const QString& callUuid, const QString& calleeUuid);
   void callAccepted(const QString& callUuid, const QString& callerUuid);
   void callEnded(const QString& callUuid, const QString& reason);
   void callError(const QString& error);
   void connectionUpdate(ServerType server, bool status);
+
+  void offerReceived(QString sdp);
+  void answerReceived(QString sdp);
+  void iceReceived(QString candidate, QString mid, int index);
+
+  void onP2PChange(bool inProgress);
+
+  signals:
+    void openCallWindow(const QString &remoteUsername);
+    void closeCallWindow();
+
 };
 
 #endif
