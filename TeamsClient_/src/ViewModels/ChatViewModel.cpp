@@ -238,7 +238,6 @@ if (contactUuid.trimmed().isEmpty()) {
     return;
   }
     chatService_->startCall(contactUuid, contactUsername);
-    // TODO: appel au service de signaling (WebRTCService) avec contactUuid
   }
 
 void ChatViewModel::onIncomingCallReceived(const QString &callerUuid)
@@ -249,6 +248,7 @@ void ChatViewModel::onIncomingCallReceived(const QString &callerUuid)
     QVariantMap contact = contactList_->findByUuid(callerUuid);
 
     if (!contact.isEmpty()) {
+      qDebug() << "incoming call\n";
         emit incomingCall(contact);
         return;
     }

@@ -126,7 +126,7 @@ void Application::initializeViewModels() {
 
   locator.registerViewModels<ChatViewModel>(chatVM);
 
-  auto* WebRTCVM = new WebRTCViewModel(&engine, nullptr, appRoot);
+  auto* WebRTCVM = new WebRTCViewModel(&engine, nullptr, nullptr, appRoot);
 
   locator.registerViewModels<WebRTCViewModel>(WebRTCVM);
 

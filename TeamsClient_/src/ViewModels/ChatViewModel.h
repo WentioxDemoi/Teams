@@ -74,6 +74,7 @@ private:
   void onConversationsLoaded(const QList<Message> &messages);
   void onMessageReceived(const Message &message);
 
+  void onOpenCallWindow();
   void onIncomingCallReceived(const QString &callerUuid);
 
   void onUserResolved(const User &user);

@@ -26,7 +26,6 @@ class ICallService : public QObject {
   virtual void rejectCall() = 0;
 
  signals:
- void incomingCallReceived(const QString &callerUuid);
   void callStarted(const QString& callUuid, const QString& calleeUuid);
   void callAccepted(const QString& callUuid, const QString& callerUuid);
   void callEnded(const QString& callUuid, const QString& reason);
@@ -39,7 +38,15 @@ class ICallService : public QObject {
 
   void onP2PChange(bool inProgress);
 
-  signals:
+
+    // Émis côté callee quand une offer arrive et qu'on doit afficher le popup d'appel entrant.
+ void incomingCallReceived(const QString &callerUuid);
+
+  // Émis côté callee si le caller annule avant que l'utilisateur ait répondu au popup.
+  void incomingCallCancelled(const QString &callerUuid);
+  // Émis côté caller une fois que le serveur a confirmé que le callee est joignable;
+  // déclenche WebRTCService::createOffer() en aval.
+  void triggerCreateOffer();
     void openCallWindow(const QString &remoteUsername);
     void closeCallWindow();
 

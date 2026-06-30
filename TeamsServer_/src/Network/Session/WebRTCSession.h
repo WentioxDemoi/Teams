@@ -25,7 +25,7 @@ private:
   void handle_response(std::string payload);
   std::string read_buffer_;
 
-  std::array<char, 4096> buffer_;
+  boost::asio::streambuf buffer_;
   std::shared_ptr<WebRTCHandler> webRTCHandler_;
   std::shared_ptr<WebRTCRegistry> webRTCSessionRegistry_;
   std::shared_ptr<AuthService> authService_;

@@ -42,13 +42,7 @@ class CallService : public ICallService {
   void handleServerResponse(const QJsonObject& root);
 
  signals:
-  // Émis côté callee quand une offer arrive et qu'on doit afficher le popup d'appel entrant.
-  void incomingCallReceived(const QString &callerUuid);
-  // Émis côté callee si le caller annule avant que l'utilisateur ait répondu au popup.
-  void incomingCallCancelled(const QString &callerUuid);
-  // Émis côté caller une fois que le serveur a confirmé que le callee est joignable;
-  // déclenche WebRTCService::createOffer() en aval.
-  void triggerCreateOffer();
+
 
  private:
   QString remoteUuid_;

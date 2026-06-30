@@ -10,7 +10,7 @@ ApplicationWindow {
     minimumWidth: 480
     minimumHeight: 320
     visible: true
-    title: "Appel — " + (webrtcVM ? webrtcVM.remoteUsername : "")
+    title: "Appel — " + (webRTCVM ? webRTCVM.remoteUsername : "")
     color: "#000000"
 
     flags: Qt.Window
@@ -19,7 +19,7 @@ ApplicationWindow {
         // Empêche la destruction "silencieuse" par la croix native : on repasse
         // toujours par endCall() côté C++ pour que callWindow_ soit correctement
         // remis à nullptr et que deleteLater() soit appelé une seule fois, au bon endroit.
-        if (webrtcVM) webrtcVM.endCall();
+        if (webRTCVM) webRTCVM.endCall();
     }
 
     // ─── Vidéo distante : plein écran ──────────────────────────────────────
@@ -28,7 +28,7 @@ ApplicationWindow {
         anchors.fill: parent
         fillMode: VideoOutput.PreserveAspectCrop
 
-        Component.onCompleted: if (webrtcVM) webrtcVM.setRemoteVideoSink(videoSink)
+        Component.onCompleted: if (webRTCVM) webRTCVM.setRemoteVideoSink(videoSink)
     }
 
     // Placeholder quand le flux distant n'a pas encore démarré
@@ -39,7 +39,7 @@ ApplicationWindow {
 
         // Petit hack pour détecter "pas encore de frame" sans dépendre d'une API spécifique :
         // on se contente d'afficher tant que rien ne semble avoir été peint.
-        // Si tu exposes plus tard un état explicite (ex: webrtcVM.remoteConnected),
+        // Si tu exposes plus tard un état explicite (ex: webRTCVM.remoteConnected),
         // remplace cette condition par lui — ce sera plus fiable.
         Timer {
             id: hasRemoteFrame
@@ -58,7 +58,7 @@ ApplicationWindow {
 
             Text {
                 anchors.centerIn: parent
-                text: webrtcVM && webrtcVM.remoteUsername.length > 0 ? webrtcVM.remoteUsername.charAt(0).toUpperCase() : "?"
+                text: webRTCVM && webRTCVM.remoteUsername.length > 0 ? webRTCVM.remoteUsername.charAt(0).toUpperCase() : "?"
                 font.pixelSize: 36
                 font.weight: Font.Bold
                 color: "#ffffff"
@@ -67,7 +67,7 @@ ApplicationWindow {
 
         Text {
             Layout.alignment: Qt.AlignHCenter
-            text: webrtcVM ? webrtcVM.remoteUsername : ""
+            text: webRTCVM ? webRTCVM.remoteUsername : ""
             font.pixelSize: 18
             font.weight: Font.DemiBold
             font.family: "SF Pro Text"
@@ -102,16 +102,16 @@ ApplicationWindow {
             id: localVideoOutput
             anchors.fill: parent
             fillMode: VideoOutput.PreserveAspectCrop
-            visible: webrtcVM && webrtcVM.cameraEnabled
+            visible: webRTCVM && webRTCVM.cameraEnabled
 
-            Component.onCompleted: if (webrtcVM) webrtcVM.setLocalVideoSink(videoSink)
+            Component.onCompleted: if (webRTCVM) webRTCVM.setLocalVideoSink(videoSink)
         }
 
         // Placeholder quand la caméra locale est désactivée
         ColumnLayout {
             anchors.centerIn: parent
             spacing: 6
-            visible: !(webrtcVM && webrtcVM.cameraEnabled)
+            visible: !(webRTCVM && webRTCVM.cameraEnabled)
 
             Text {
                 Layout.alignment: Qt.AlignHCenter
@@ -145,20 +145,20 @@ ApplicationWindow {
             width: 44
             height: 44
             radius: 22
-            color: webrtcVM && webrtcVM.cameraEnabled ? Qt.rgba(1, 1, 1, 0.14) : "#FF3B30"
+            color: webRTCVM && webRTCVM.cameraEnabled ? Qt.rgba(1, 1, 1, 0.14) : "#FF3B30"
 
             Behavior on color { ColorAnimation { duration: 120 } }
 
             Text {
                 anchors.centerIn: parent
-                text: webrtcVM && webrtcVM.cameraEnabled ? "📷" : "📷"
+                text: webRTCVM && webRTCVM.cameraEnabled ? "📷" : "📷"
                 font.pixelSize: 16
             }
 
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
-                onClicked: if (webrtcVM) webrtcVM.toggleCamera()
+                onClicked: if (webRTCVM) webRTCVM.toggleCamera()
             }
         }
 
@@ -167,20 +167,20 @@ ApplicationWindow {
             width: 44
             height: 44
             radius: 22
-            color: webrtcVM && webrtcVM.micEnabled ? Qt.rgba(1, 1, 1, 0.14) : "#FF3B30"
+            color: webRTCVM && webRTCVM.micEnabled ? Qt.rgba(1, 1, 1, 0.14) : "#FF3B30"
 
             Behavior on color { ColorAnimation { duration: 120 } }
 
             Text {
                 anchors.centerIn: parent
-                text: webrtcVM && webrtcVM.micEnabled ? "🎙️" : "🔇"
+                text: webRTCVM && webRTCVM.micEnabled ? "🎙️" : "🔇"
                 font.pixelSize: 16
             }
 
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
-                onClicked: if (webrtcVM) webrtcVM.toggleMic()
+                onClicked: if (webRTCVM) webRTCVM.toggleMic()
             }
         }
 
@@ -202,13 +202,13 @@ ApplicationWindow {
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
-                onClicked: if (webrtcVM) webrtcVM.endCall()
+                onClicked: if (webRTCVM) webRTCVM.endCall()
             }
         }
     }
 
     Connections {
-        target: webrtcVM
+        target: webRTCVM
         function onCallEnded() {
             callWindow.close();
         }

@@ -2,6 +2,7 @@
 #define WEBRTCVIEWMODEL_H
 
 #include "../Services/P2P/WebRTCService.h"
+#include "Chat/ChatService.h"
 #include "ViewModelsTools.h"
 #include <QQmlComponent>
 #include <QQuickWindow>
@@ -31,7 +32,7 @@ class WebRTCViewModel : public QObject {
   Q_PROPERTY(QString remoteUsername READ remoteUsername NOTIFY remoteUsernameChanged)
 
 public:
-  explicit WebRTCViewModel(QQmlEngine *engine, WebRTCService *webRTCService = nullptr, QObject *parent = nullptr);
+  explicit WebRTCViewModel(QQmlEngine *engine, WebRTCService *webRTCService = nullptr, IChatService *chatService = nullptr, QObject *parent = nullptr);
 
   void start(); // OLD
 
@@ -58,33 +59,21 @@ public slots:
     emit micEnabledChanged();
   }
 
-  void endCall() {
-    if (!callWindow_) return;  // déjà en cours de fermeture / déjà fermé
-
-    // TODO: fermer la PeerConnection, notifier le pair distant via signaling.
-    QQuickWindow *window = callWindow_;
-    callWindow_ = nullptr;  // évite un double deleteLater() si endCall() est appelé deux fois
-                              // (ex: clic sur le bouton ✕ QML puis fermeture native de la fenêtre)
-
-    window->close();
-    window->deleteLater();  // close() masque seulement la fenêtre ; deleteLater()
-                              // détruit réellement l'objet (et donc le QQmlContext
-                              // parenté, libérant ses ressources avant la fermeture
-                              // de l'application).
-    emit callEnded();
-  }
+  void onOpenCallWindow(const QString &remoteUsername);
+  void onCloseCallWindow();
+  void endCall() {qDebug() << "EndCall"; };
 
 signals:
   void onP2PChange(bool inProgress);
-  void registerWithServer4WebRTC(QString UUID); // OLD
+  void onCallEnded();
   void cameraEnabledChanged();
   void micEnabledChanged();
   void remoteUsernameChanged();
-  void callEnded();
 
 private:
   QQmlEngine *engine_;
   WebRTCService *webRTCService_;
+  IChatService *chatService_;
 
   QQuickWindow *callWindow_ = nullptr;
   QVideoSink *localVideoSink_ = nullptr;

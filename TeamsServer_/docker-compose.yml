@@ -50,6 +50,7 @@ services:
       - "${SERVERAUTH_PORT}:${SERVERAUTH_PORT}"
       - "${SERVERCHAT_PORT}:${SERVERCHAT_PORT}"
       - "${SERVERCONTACT_PORT}:${SERVERCONTACT_PORT}"
+      - "${SERVERWEBRTC_PORT}:${SERVERWEBRTC_PORT}"
     tty: true
 
 volumes:

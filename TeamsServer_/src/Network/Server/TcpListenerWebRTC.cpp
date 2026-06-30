@@ -15,6 +15,8 @@ TcpListenerWebRTC::TcpListenerWebRTC(asio::io_context &io_context,
 void TcpListenerWebRTC::do_accept() {
     acceptor_.async_accept([this](boost::system::error_code ec, tcp::socket socket) {
         if (!ec) {
+            std::cout << "[CallServer] New connection\n";
+
             auto session = std::make_shared<WebRTCSession>(
                 std::move(socket), ssl_ctx_, webRTCHandler_, webRTCRegistry_, authService_
             );

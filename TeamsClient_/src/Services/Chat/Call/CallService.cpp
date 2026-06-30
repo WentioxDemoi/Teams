@@ -17,6 +17,8 @@ CallService::CallService(NetworkService *network, WebRTCService *webRTCService, 
   connect(this, &ICallService::answerReceived, webRTCService_, &WebRTCService::onRemoteAnswer);
   connect(this, &ICallService::iceReceived, webRTCService_, &WebRTCService::onRemoteIce);
 
+  connect(this, &ICallService::triggerCreateOffer, webRTCService_, &WebRTCService::startCall);
+
   std::function<void(const std::string &sdp)> onLocalOffer = [this](const std::string &sdp) {
     QJsonObject data;
     data["sdp"] = QString::fromStdString(sdp);
@@ -66,7 +68,7 @@ void CallService::startCall(const QString &contactUuid, const QString &contactUs
   // Ouverture de la fenêtre d'appel sortant (état "ça sonne...") déléguée à
   // WebRTCViewModel via signal ; CallService n'attend pas de confirmation.
   emit openCallWindow(contactUsername);
-
+  qDebug() << "StartCall\n";
   // On notifie le serveur qu'on souhaite appeler ce contact.
   // Le serveur doit vérifier la présence du callee avant de relayer quoi que ce soit;
   // tant qu'on n'a pas reçu "call_request_ack", on ne déclenche PAS encore CreateOffer().
@@ -77,6 +79,7 @@ void CallService::startCall(const QString &contactUuid, const QString &contactUs
 
 // === CALLEE : popup affiché, l'utilisateur refuse ===
 void CallService::rejectCall() {
+  qDebug() << "RejectCall\n";
   network_->send({{"type", "call_reject"}, {"targetUuid", remoteUuid_}});
   inCall_ = false;
   remoteUuid_.clear();
@@ -87,7 +90,7 @@ void CallService::rejectCall() {
 
 // === CALLEE : popup affiché, l'utilisateur accepte ===
 void CallService::acceptCall() {
-
+  qDebug() << "AcceptCall\n";
   if (pendingOfferSdp_.isEmpty()) {
     qWarning() << "acceptCall appelé sans offer en attente.";
     emit callError("Aucun appel entrant à accepter");
@@ -111,6 +114,7 @@ void CallService::acceptCall() {
 // === Raccroche un appel en cours (caller ou callee, après acceptation) ===
 void CallService::hangup() {
 
+  qDebug() << "HangUp\n";
   if (!remoteUuid_.isEmpty()) {
     network_->send({{"type", "call_hangup"}, {"targetUuid", remoteUuid_}});
   }
@@ -128,7 +132,7 @@ void CallService::hangup() {
 }
 
 void CallService::handleServerResponse(const QJsonObject &root) {
-  qDebug() << "[SignalingClient] RAW RECEIVED:" << root;
+  qDebug() << "[CallService] RAW RECEIVED:" << root;
   if (!root.contains("type") || !root["type"].isString())
     return;
 

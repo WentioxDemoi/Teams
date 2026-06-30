@@ -29,6 +29,7 @@ ChatService::ChatService(IMessageService* messageService,
   connect(callService_, &ICallService::callError, this, &IChatService::callError);
   connect(callService_, &ICallService::connectionUpdate, this, &IChatService::connectionUpdate);
   connect(callService_, &ICallService::incomingCallReceived, this, &IChatService::incomingCallReceived);
+  connect(callService_, &CallService::openCallWindow, this, &IChatService::openCallWindow);
   
 }
 

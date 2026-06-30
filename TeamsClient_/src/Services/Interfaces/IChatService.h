@@ -45,6 +45,9 @@ class IChatService : public QObject {
   void callAccepted(const QString& callUuid, const QString& callerUuid);
   void callEnded(const QString& callUuid, const QString& reason);
   void callError(const QString& error);
+
+  void openCallWindow(const QString &remoteUsername);
+  void closeCallWindow();
   
   void connectionUpdate(ServerType server, bool status);
 
