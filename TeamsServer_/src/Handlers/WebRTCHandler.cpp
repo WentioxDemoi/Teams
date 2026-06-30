@@ -1,85 +1,93 @@
 #include "WebRTCHandler.h"
 #include "../Network/Session/WebRTCSession.h"
+#include "../Utils/PacketHelper.h"
 
-void WebRTCHandler::handle_type(std::string payload,
-                               ResponseCallback respond,
-                               std::shared_ptr<WebRTCSession> session) {
-    std::cout << "[WebRTCHandler] handle_type called\n";
+void WebRTCHandler::handle_type(std::string uuid, std::string payload, ResponseCallback respond) {
+  std::string type = PacketHelper::extractValue(payload, "type");
+  std::cout << "[WebRTCHandler] Message type: '" << type << "'\n";
 
-    std::string type = PacketHelper::extractValue(payload, "type");
-    std::cout << "[WebRTCHandler] Message type: '" << type << "'\n";
+  if (type.empty()) {
+    std::cerr << "[WebRTCHandler] Empty message type\n";
+    return;
+  }
 
-    if (type.empty()) {
-        std::cerr << "[WebRTCHandler] Empty message type\n";
-        return;
-    }
-
-    if (type == "register") {
-        std::cout << "[WebRTCHandler] Dispatching to handle_register\n";
-        handle_register(payload, respond, session);
-    } else if (type == "offer" || type == "answer" || type == "ice") {
-        std::cout << "[WebRTCHandler] Dispatching to handle_send\n";
-        handle_send(payload, respond);
-    } else {
-        std::cerr << "[WebRTCHandler] Unknown message type: " << type << "\n";
-    }
+  if (type == "call_request") {
+    handle_call_request(uuid, payload, respond);
+  } else if (type == "call_accept") {
+    handle_call_accept(uuid, payload, respond);
+  } else if (type == "call_reject") {
+    handle_call_reject(uuid, payload, respond);
+  } else if (type == "call_cancel") {
+    handle_call_cancel(uuid, payload, respond);
+  } else if (type == "call_hangup") {
+    handle_call_hangup(uuid, payload, respond);
+  } else if (type == "offer" || type == "answer" || type == "ice") {
+    handle_signaling_relay(uuid, payload, respond);
+  } else {
+    std::cerr << "[WebRTCHandler] Unknown message type: " << type << "\n";
+  }
 }
 
-void WebRTCHandler::handle_register(std::string payload,
-                                   ResponseCallback respond,
-                                   std::shared_ptr<WebRTCSession> session) {
-    std::cout << "[WebRTCHandler] handle_register called\n";
+void WebRTCHandler::handle_call_request(const std::string &uuid, std::string payload, ResponseCallback respond) {
+  std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
 
-    auto token = PacketHelper::extractValue(payload, "token");
-    std::cout << "[WebRTCHandler] Extracted token: "
-              << (token.empty() ? "<empty>" : "<present>") << "\n";
-
-    asio::post(worker_pool_, [this, token, respond, session]() {
-        std::cout << "[WebRTCHandler][Worker] Processing register request\n";
-
-        try {
-            auto user = WebRTCService_->find_by_token(token);
-
-            if (!user.has_value()) {
-                std::cerr << "[WebRTCHandler][Worker] Invalid token\n";
-                respond(R"({"type":"register_response","error":"Registration failed: invalid token."})");
-                return;
-            }
-
-            std::cout << "[WebRTCHandler][Worker] User authenticated, uuid="
-                      << user->uuid << "\n";
-
-            session->set_uuid(user->uuid);
-            registry_->register_session(user->uuid, session);
-
-            std::cout << "[WebRTCHandler][Worker] Session registered\n";
-            respond(R"({"type":"register_response","status":"ok"})");
-
-        } catch (const std::exception& e) {
-            std::cerr << "[WebRTCHandler][Worker] Register exception: "
-                      << e.what() << "\n";
-            respond(R"({"type":"register_response","error":"Registration failed: server error"})");
-        }
-    });
+  asio::post(worker_pool_, [this, uuid, targetUuid, respond]() {
+    try {
+      auto response = webRTCService_->requestCall(uuid, targetUuid);
+      if (response.has_value()) {
+        respond(response.value());
+      }
+    } catch (const std::exception &e) {
+      std::cerr << "[WebRTCHandler] call_request error: " << e.what() << "\n";
+      respond(R"({"type":"error","error":"call_request failed"})");
+    }
+  });
 }
 
-void WebRTCHandler::handle_send(std::string payload, ResponseCallback respond) {
-    auto target_uuid = PacketHelper::extractValue(payload, "target_uuid");
+void WebRTCHandler::handle_call_accept(const std::string &uuid, std::string payload, ResponseCallback respond) {
+  std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
 
-    asio::post(worker_pool_, [this, target_uuid, payload, respond]() {
-        if (target_uuid.empty()) {
-            respond(R"({"type":"send_response","error":"Missing target_uuid"})");
-            return;
-        }
-        auto target = registry_->find(target_uuid);
-        if (!target) {
-            respond(R"({"type":"send_response","error":"User not connected"})");
-            return;
-        }
-        // On forward le payload brut tel quel au destinataire
-        asio::post(target->stream_.get_executor(), [target, payload]() {
-            target->send(payload);
-        });
-        respond(R"({"type":"send_response","status":"ok"})");
-    });
+  asio::post(worker_pool_, [this, uuid, targetUuid]() {
+    webRTCService_->acceptCall(uuid, targetUuid);
+  });
+}
+
+void WebRTCHandler::handle_call_reject(const std::string &uuid, std::string payload, ResponseCallback respond) {
+  std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
+
+  asio::post(worker_pool_, [this, uuid, targetUuid]() {
+    if (!webRTCService_->rejectCall(uuid, targetUuid)) {
+      std::cerr << "[WebRTCHandler] call_reject: caller " << targetUuid << " déconnecté\n";
+    }
+  });
+}
+
+void WebRTCHandler::handle_call_cancel(const std::string &uuid, std::string payload, ResponseCallback respond) {
+  std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
+
+  asio::post(worker_pool_, [this, uuid, targetUuid]() {
+    if (!webRTCService_->cancelCall(uuid, targetUuid)) {
+      std::cerr << "[WebRTCHandler] call_cancel: callee " << targetUuid << " déconnecté\n";
+    }
+  });
+}
+
+void WebRTCHandler::handle_call_hangup(const std::string &uuid, std::string payload, ResponseCallback respond) {
+  std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
+
+  asio::post(worker_pool_, [this, uuid, targetUuid]() {
+    if (!webRTCService_->hangupCall(uuid, targetUuid)) {
+      std::cerr << "[WebRTCHandler] call_hangup: pair " << targetUuid << " déjà déconnecté\n";
+    }
+  });
+}
+
+void WebRTCHandler::handle_signaling_relay(const std::string &uuid, std::string payload, ResponseCallback respond) {
+  std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
+
+  asio::post(worker_pool_, [this, uuid, targetUuid, payload]() {
+    if (!webRTCService_->relaySignaling(uuid, targetUuid, payload)) {
+      std::cerr << "[WebRTCHandler] signaling relay: target " << targetUuid << " déconnecté\n";
+    }
+  });
 }

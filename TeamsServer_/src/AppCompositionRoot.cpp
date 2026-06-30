@@ -4,6 +4,8 @@
 #include "Repositories/ContactRepository.h"
 #include "Server/TcpListenerContact.h"
 #include "Services/ContactService.h"
+#include "Services/WebRTCService.h"
+#include "WebRTCHandler.h"
 
 #include <iostream>
 #include <memory>
@@ -34,7 +36,7 @@ void AppCompositionRoot::initRepositories() {
 void AppCompositionRoot::initRegistries() {
   messageSessionRegistry_ = std::make_shared<MessageSessionRegistry>();
   contactSessionRegistry_ = std::make_shared<ContactSessionRegistry>();
-  // webRTCRegistry_ = std::make_shared<WebRTCRegistry>();
+  webRTCRegistry_ = std::make_shared<WebRTCRegistry>();
 }
 
 void AppCompositionRoot::initServices() {
@@ -43,7 +45,7 @@ void AppCompositionRoot::initServices() {
       std::make_unique<MessageRepository>(), messageSessionRegistry_);
   contactService_ = std::make_unique<ContactService>(
       std::move(contactRepository_), userRepository_, contactSessionRegistry_);
-  // webRTCService_ = std::make_shared<WebRTCService>();
+  webRTCService_ = std::make_unique<WebRTCService>(webRTCRegistry_);
 }
 
 void AppCompositionRoot::initHandlers() {
@@ -52,8 +54,8 @@ void AppCompositionRoot::initHandlers() {
       std::make_shared<MessageHandler>(std::move(messageService_));
   contactHandler_ =
       std::make_shared<ContactHandler>(std::move(contactService_));
-  // webrtcHandler_ =
-  // std::make_shared<WebRTCHandler>(std::make_unique<WebRTCService>());
+  webrtcHandler_ =
+  std::make_shared<WebRTCHandler>(std::move(webRTCService_));
 }
 
 void AppCompositionRoot::initListeners() {
@@ -69,16 +71,20 @@ void AppCompositionRoot::initListeners() {
       contact_io_, ssl_ctx_, tcp::endpoint(tcp::v4(), 8084),
       std::move(contactHandler_), contactSessionRegistry_, authService_);
 
-  // webrtc_listener_ = std::make_unique<TcpListenerWebRTC>(
-  //     webrtc_io_,
-  //     ssl_ctx_,
-  //     tcp::endpoint(tcp::v4(), 8081)
-  // );
+  webrtc_listener_ = std::make_unique<TcpListenerWebRTC>(
+      webrtc_io_,
+      ssl_ctx_,
+      tcp::endpoint(tcp::v4(), 8083),
+      webRTCRegistry_,
+      webrtcHandler_,
+      authService_
+  );
 }
 
 void AppCompositionRoot::run() {
   std::cout << "[APP] Auth   listener started on port 8080\n";
   std::cout << "[APP] Message listener started on port 8082\n";
+  std::cout << "[APP] WebRTC listener started on port 8082\n";
   std::cout << "[APP] Contact listener started on port 8084\n";
 
   launchThreads();
@@ -112,10 +118,10 @@ void AppCompositionRoot::launchThreads() {
       contact_io_.run();
       std::cout << "[THREAD] Contact thread " << i << " stopped\n";
     });
-  // for (int i = 0; i < webrtc_threads_; ++i)
-  //   threads_.emplace_back([this, i]() {
-  //     std::cout << "[THREAD] WebRTC thread " << i << " started\n";
-  //     webrtc_io_.run();
-  //     std::cout << "[THREAD] WebRTC thread " << i << " stopped\n";
-  //   });
+  for (int i = 0; i < webrtc_threads_; ++i)
+    threads_.emplace_back([this, i]() {
+      std::cout << "[THREAD] WebRTC thread " << i << " started\n";
+      webrtc_io_.run();
+      std::cout << "[THREAD] WebRTC thread " << i << " stopped\n";
+    });
 }

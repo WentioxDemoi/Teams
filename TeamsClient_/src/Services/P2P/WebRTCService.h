@@ -5,7 +5,6 @@
 #include <functional>
 
 #include "PConnectionController.h"
-#include "SignalingClient.h"
 
 
 /**

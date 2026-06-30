@@ -1,27 +1,22 @@
-
-#ifndef WEBRTCREGISTERY_H
-#define WEBRTCREGISTERY_H
-
-#include "../Repositories/UserRepository.h"
-#include "../Services/AuthService.h"
-#include "../../Utils/ResponseFormater.h"
-#include "../../includes.h"
+#ifndef WEBRTC_REGISTRY_H
+#define WEBRTC_REGISTRY_H
+#include <memory>
+#include <mutex>
+#include <string>
+#include <unordered_map>
 
 class WebRTCSession;
 
 class WebRTCRegistry {
 public:
-    void register_session(const std::string& uuid,
+    void register_session(const std::string& user_uuid,
                           std::shared_ptr<WebRTCSession> session);
-
-    std::shared_ptr<WebRTCSession> find(const std::string& uuid);
-
-    void unregister_session(const std::string& uuid);
+    void unregister_session(const std::string& user_uuid);
+    bool sendMessage(const std::string& user_uuid, const std::string& payload);
+    bool isConnected(const std::string& user_uuid) const;
 
 private:
-    std::unordered_map<std::string,
-        std::weak_ptr<WebRTCSession>> sessions_;
-    std::mutex mutex_;
+    mutable std::mutex mutex_;
+    std::unordered_map<std::string, std::shared_ptr<WebRTCSession>> webRTCSessions_;
 };
-
 #endif
