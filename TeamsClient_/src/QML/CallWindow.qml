@@ -15,11 +15,12 @@ ApplicationWindow {
 
     flags: Qt.Window
 
-    onClosing: function(close) {
+    onClosing: function (close) {
         // Empêche la destruction "silencieuse" par la croix native : on repasse
         // toujours par endCall() côté C++ pour que callWindow_ soit correctement
         // remis à nullptr et que deleteLater() soit appelé une seule fois, au bon endroit.
-        if (webRTCVM) webRTCVM.endCall();
+        if (webRTCVM)
+            webRTCVM.hangup();
     }
 
     // ─── Vidéo distante : plein écran ──────────────────────────────────────
@@ -28,7 +29,8 @@ ApplicationWindow {
         anchors.fill: parent
         fillMode: VideoOutput.PreserveAspectCrop
 
-        Component.onCompleted: if (webRTCVM) webRTCVM.setRemoteVideoSink(videoSink)
+        Component.onCompleted: if (webRTCVM)
+            webRTCVM.setRemoteVideoSink(videoSink)
     }
 
     // Placeholder quand le flux distant n'a pas encore démarré
@@ -86,46 +88,58 @@ ApplicationWindow {
     // ─── Vidéo locale : PiP en bas à gauche ────────────────────────────────
     Rectangle {
         id: localVideoFrame
-        width: 200
-        height: 150
-        radius: 12
-        color: '#9c9cc2'
-        clip: true
+
+        width: 320
+        height: 180      // 16:9
+
         anchors.left: parent.left
-        anchors.bottom: controlsBar.top
-        anchors.leftMargin: 16
-        anchors.bottomMargin: 16
-        border.color: Qt.rgba(1, 1, 1, 0.12)
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 20
+        anchors.bottomMargin: 20
+
+        radius: 14
+        clip: true
+        color: "#202020"
+
+        border.color: Qt.rgba(1, 1, 1, 0.15)
         border.width: 1
 
         VideoOutput {
             id: localVideoOutput
             anchors.fill: parent
-            fillMode: VideoOutput.PreserveAspectCrop
-            visible: webRTCVM && webRTCVM.cameraEnabled
+            fillMode: VideoOutput.PreserveAspectFit
 
-            Component.onCompleted: if (webRTCVM) webRTCVM.setLocalVideoSink(videoSink)
+            Component.onCompleted: {
+                if (webRTCVM)
+                    webRTCVM.setLocalVideoSink(videoSink);
+            }
         }
 
-        // Placeholder quand la caméra locale est désactivée
-        ColumnLayout {
-            anchors.centerIn: parent
-            spacing: 6
+        // Placeholder lorsque la caméra est coupée
+        Rectangle {
+            anchors.fill: parent
+            color: "#303030"
             visible: !(webRTCVM && webRTCVM.cameraEnabled)
 
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: "📷"
-                font.pixelSize: 28
-                opacity: 0.5
-            }
+            Column {
+                anchors.centerIn: parent
+                spacing: 10
 
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: "Caméra désactivée"
-                font.pixelSize: 11
-                font.family: "SF Pro Text"
-                color: "#8E8E93"
+                Text {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: "📷"
+                    font.pixelSize: 36
+                    color: "white"
+                    opacity: 0.6
+                }
+
+                Text {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: "Caméra désactivée"
+                    font.pixelSize: 15
+                    color: "white"
+                    opacity: 0.8
+                }
             }
         }
     }
@@ -147,7 +161,11 @@ ApplicationWindow {
             radius: 22
             color: webRTCVM && webRTCVM.cameraEnabled ? Qt.rgba(1, 1, 1, 0.14) : "#FF3B30"
 
-            Behavior on color { ColorAnimation { duration: 120 } }
+            Behavior on color {
+                ColorAnimation {
+                    duration: 120
+                }
+            }
 
             Text {
                 anchors.centerIn: parent
@@ -158,7 +176,8 @@ ApplicationWindow {
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
-                onClicked: if (webRTCVM) webRTCVM.toggleCamera()
+                onClicked: if (webRTCVM)
+                    webRTCVM.toggleCamera()
             }
         }
 
@@ -169,7 +188,11 @@ ApplicationWindow {
             radius: 22
             color: webRTCVM && webRTCVM.micEnabled ? Qt.rgba(1, 1, 1, 0.14) : "#FF3B30"
 
-            Behavior on color { ColorAnimation { duration: 120 } }
+            Behavior on color {
+                ColorAnimation {
+                    duration: 120
+                }
+            }
 
             Text {
                 anchors.centerIn: parent
@@ -180,7 +203,8 @@ ApplicationWindow {
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
-                onClicked: if (webRTCVM) webRTCVM.toggleMic()
+                onClicked: if (webRTCVM)
+                    webRTCVM.toggleMic()
             }
         }
 
@@ -202,7 +226,8 @@ ApplicationWindow {
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
-                onClicked: if (webRTCVM) webRTCVM.endCall()
+                onClicked: if (webRTCVM)
+                    webRTCVM.hangup()
             }
         }
     }
