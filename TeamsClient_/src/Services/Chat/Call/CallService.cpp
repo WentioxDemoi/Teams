@@ -115,20 +115,22 @@ void CallService::acceptCall() {
 void CallService::hangup() {
 
   qDebug() << "HangUp\n";
-  if (!remoteUuid_.isEmpty()) {
-    network_->send({{"type", "call_hangup"}, {"targetUuid", remoteUuid_}});
+  if (inCall_) {
+    if (!remoteUuid_.isEmpty()) {
+      network_->send({{"type", "call_hangup"}, {"targetUuid", remoteUuid_}});
+    }
+
+    if (callTimeoutTimer_) {
+      callTimeoutTimer_->stop();
+    }
+
+    inCall_ = false;
+    remoteUuid_.clear();
+    pendingOfferSdp_.clear();
+
+    // Fermeture de la fenêtre d'appel si elle existe encore (gérée par WebRTCViewModel).
+    emit closeCallWindow();
   }
-
-  if (callTimeoutTimer_) {
-    callTimeoutTimer_->stop();
-  }
-
-  inCall_ = false;
-  remoteUuid_.clear();
-  pendingOfferSdp_.clear();
-
-  // Fermeture de la fenêtre d'appel si elle existe encore (gérée par WebRTCViewModel).
-  emit closeCallWindow();
 }
 
 void CallService::handleServerResponse(const QJsonObject &root) {
@@ -272,7 +274,7 @@ void CallService::startCallTimeoutTimer() {
 
     emit callError("Pas de réponse");
   });
-  callTimeoutTimer_->start(30000); // 30s, à ajuster
+  callTimeoutTimer_->start(30000);
 }
 
 void CallService::disconnectFromServer() { network_->disconnectFromServer(); }

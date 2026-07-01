@@ -29,7 +29,8 @@ ChatService::ChatService(IMessageService* messageService,
   connect(callService_, &ICallService::callError, this, &IChatService::callError);
   connect(callService_, &ICallService::connectionUpdate, this, &IChatService::connectionUpdate);
   connect(callService_, &ICallService::incomingCallReceived, this, &IChatService::incomingCallReceived);
-  connect(callService_, &CallService::openCallWindow, this, &IChatService::openCallWindow);
+  connect(callService_, &ICallService::openCallWindow, this, &IChatService::openCallWindow);
+  connect(callService_, &ICallService::closeCallWindow, this, &IChatService::closeCallWindow);
   
 }
 
@@ -57,7 +58,7 @@ void ChatService::startCall(const QString &contactUuid, const QString &contactUs
   callService_->startCall(contactUuid, contactUsername);
 }
 
-void ChatService::acceptCall() {
+void ChatService::acceptIncomingCall() {
   if (!callService_) {
     emit callError("Service d'appel indisponible");
     return;
@@ -65,7 +66,7 @@ void ChatService::acceptCall() {
   callService_->acceptCall();
 }
 
-void ChatService::rejectCall() {
+void ChatService::rejectIncomingCall() {
   if (!callService_) {
     emit callError("Service d'appel indisponible");
     return;

@@ -31,9 +31,9 @@ class CallService : public ICallService {
 
  public slots:
   void startCall(const QString &contactUuid, const QString &contactUsername) override;
-  void acceptCall() override;
   void hangup() override;
   void disconnectFromServer() override;
+  void acceptCall() override;
   void rejectCall() override;
 
  private slots:

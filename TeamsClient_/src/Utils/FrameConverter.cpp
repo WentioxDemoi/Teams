@@ -37,7 +37,7 @@ webrtc::scoped_refptr<webrtc::I420Buffer> FrameConverter::NV12ToI420(const QVide
   return i420Buffer;
 }
 
-QVideoFrame FrameConverter::I420ToVideoFrame(webrtc::scoped_refptr<webrtc::I420Buffer> i420Buffer) {
+QVideoFrame FrameConverter::I420ToVideoFrame(webrtc::scoped_refptr<webrtc::I420BufferInterface> i420Buffer) {
   if (!i420Buffer) return QVideoFrame();
 
   int width = i420Buffer->width();

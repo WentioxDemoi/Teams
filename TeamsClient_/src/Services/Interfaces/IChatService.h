@@ -26,11 +26,12 @@ class IChatService : public QObject {
   virtual void sendMessage(const Message& message) = 0;
   virtual void loadConversationsFromDatabaseAndServer() = 0;
   virtual void startCall(const QString &contactUuid, const QString &contactUsername) = 0;
-  virtual void acceptCall() = 0;
   virtual void hangup() = 0;
   virtual void disconnectFromServer() = 0;
-  virtual void rejectCall() = 0;
   
+  virtual void acceptIncomingCall() = 0;
+  virtual void rejectIncomingCall() = 0;
+
 
  signals:
   // void messageSent(const QJsonObject& message); //Pas aencore utilisé

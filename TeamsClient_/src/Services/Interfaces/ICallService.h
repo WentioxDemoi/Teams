@@ -25,6 +25,7 @@ class ICallService : public QObject {
   virtual void disconnectFromServer() = 0;
   virtual void rejectCall() = 0;
 
+
  signals:
   void callStarted(const QString& callUuid, const QString& calleeUuid);
   void callAccepted(const QString& callUuid, const QString& callerUuid);

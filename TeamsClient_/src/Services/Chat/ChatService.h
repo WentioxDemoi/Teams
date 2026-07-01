@@ -27,9 +27,9 @@ class ChatService : public IChatService {
   void loadConversationsFromDatabaseAndServer() override;
 
   void startCall(const QString &contactUuid, const QString &contactUsername) override;
-  void acceptCall() override;
   void hangup() override;
-  void rejectCall() override;
+  void acceptIncomingCall() override;
+  void rejectIncomingCall() override;
 
   void disconnectFromServer() override;
 

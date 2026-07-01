@@ -4,7 +4,11 @@
 #include "../Services/P2P/WebRTCService.h"
 #include "Chat/ChatService.h"
 #include "ViewModelsTools.h"
+#include <QCamera>
+#include <QMediaCaptureSession>
+#include <QObject>
 #include <QQmlComponent>
+#include <QPointer>
 #include <QQuickWindow>
 #include <QVideoSink>
 #include <QtQml/qqmlcontext.h>
@@ -32,24 +36,26 @@ class WebRTCViewModel : public QObject {
   Q_PROPERTY(QString remoteUsername READ remoteUsername NOTIFY remoteUsernameChanged)
 
 public:
-  explicit WebRTCViewModel(QQmlEngine *engine, WebRTCService *webRTCService = nullptr, IChatService *chatService = nullptr, QObject *parent = nullptr);
+  explicit WebRTCViewModel(QQmlEngine *engine, WebRTCService *webRTCService = nullptr,
+                           IChatService *chatService = nullptr, QObject *parent = nullptr);
 
-  void start(); // OLD
-
-  bool cameraEnabled() const { return cameraEnabled_; }
-  bool micEnabled() const { return micEnabled_; }
-  QString remoteUsername() const { return remoteUsername_; }
+  Q_INVOKABLE bool cameraEnabled() const { return cameraEnabled_; }
+  Q_INVOKABLE bool micEnabled() const { return micEnabled_; }
+  Q_INVOKABLE QString remoteUsername() const { return remoteUsername_; }
 
 public slots:
-  void initP2P(); // OLD
 
-
-  void setLocalVideoSink(QVideoSink *sink) { localVideoSink_ = sink; }
+  void setLocalVideoSink(QVideoSink *sink);
   void setRemoteVideoSink(QVideoSink *sink) { remoteVideoSink_ = sink; }
 
   void toggleCamera() {
+    if (!cameraEnabled_) {
+      startCamera();
+    } else {
+      stopCamera();
+    }
     cameraEnabled_ = !cameraEnabled_;
-    // TODO: activer/désactiver réellement la capture caméra / le track WebRTC correspondant.
+
     emit cameraEnabledChanged();
   }
 
@@ -59,9 +65,16 @@ public slots:
     emit micEnabledChanged();
   }
 
+  void acceptIncomingCall();
+  void rejectIncomingCall();
+  void hangup();
+
   void onOpenCallWindow(const QString &remoteUsername);
   void onCloseCallWindow();
-  void endCall() {qDebug() << "EndCall"; };
+
+private:
+  void startCamera();
+  void stopCamera();
 
 signals:
   void onP2PChange(bool inProgress);
@@ -74,9 +87,12 @@ private:
   QQmlEngine *engine_;
   WebRTCService *webRTCService_;
   IChatService *chatService_;
+  QCamera *camera_ = nullptr;
+  QVideoSink *captureSink_ = nullptr;
+  QMediaCaptureSession captureSession_;
 
   QQuickWindow *callWindow_ = nullptr;
-  QVideoSink *localVideoSink_ = nullptr;
+  QPointer<QVideoSink> localVideoSink_ = nullptr;
   QVideoSink *remoteVideoSink_ = nullptr;
 
   bool cameraEnabled_ = false;
