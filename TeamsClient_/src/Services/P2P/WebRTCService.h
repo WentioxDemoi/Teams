@@ -34,6 +34,11 @@ void setCallBacks(std::function<void(const std::string &sdp)> onLocalOffer,
   void onRemoteAnswer(QString sdp);
   void onRemoteIce(QString candidate, QString mid, int index);
 
+  void setMicEnabled(bool enabled) {
+    if (pConnectionController_)
+      pConnectionController_->setMicEnabled(enabled);
+  }
+
 signals:
   void connected();
   void disconnected();

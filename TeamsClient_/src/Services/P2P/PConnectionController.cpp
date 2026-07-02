@@ -20,8 +20,7 @@ PConnectionController::PConnectionController() {
   factory_ = webrtc::CreatePeerConnectionFactory(
       network_thread_.get(), worker_thread_.get(), signaling_thread_.get(), nullptr,
       webrtc::CreateBuiltinAudioEncoderFactory(), webrtc::CreateBuiltinAudioDecoderFactory(),
-      webrtc::CreateBuiltinVideoEncoderFactory(), webrtc::CreateBuiltinVideoDecoderFactory(),
-      nullptr, nullptr);
+      webrtc::CreateBuiltinVideoEncoderFactory(), webrtc::CreateBuiltinVideoDecoderFactory(), nullptr, nullptr);
   RTC_CHECK(factory_) << "Failed to create PeerConnectionFactory";
 
   webrtc::PeerConnectionInterface::RTCConfiguration config;
@@ -37,52 +36,53 @@ PConnectionController::PConnectionController() {
 
   auto videoTrack = factory_->CreateVideoTrack(Sources::instance().localVideo(), "video0");
   peer_->AddTrack(videoTrack, {"stream0"});
+
+  // Audio : la capture micro est gérée en interne par l'AudioDeviceModule
+  // (créé implicitement puisqu'on a passé nullptr en 4e argument de
+  // CreatePeerConnectionFactory), pas besoin de pousser des frames nous-mêmes.
+  webrtc::scoped_refptr<webrtc::AudioSourceInterface> audioSource = factory_->CreateAudioSource(webrtc::AudioOptions());
+  audioTrack_ = factory_->CreateAudioTrack("audio0", audioSource.get());
+  peer_->AddTrack(audioTrack_, {"stream0"});
 }
 
 void PConnectionController::createOffer() {
   qDebug() << "[createOffer] called";
-  auto obs = webrtc::scoped_refptr<CreateSdpObserver>(
-      new CreateSdpObserver([this](const std::string& sdp) {
-        qDebug() << "[createOffer] OnSuccess, sdp size=" << sdp.size();
-        peer_->SetLocalDescription(
-            webrtc::CreateSessionDescription(webrtc::SdpType::kOffer, sdp),
-            webrtc::scoped_refptr<SetLocalSdpObserver>(new SetLocalSdpObserver()));
-        if (onLocalOffer) {
-          qDebug() << "[createOffer] calling onLocalOffer";
-          onLocalOffer(sdp);
-        } else {
-          RTC_LOG(LS_ERROR) << "[createOffer] onLocalOffer is NULL";
-        }
-      }));
+  auto obs = webrtc::scoped_refptr<CreateSdpObserver>(new CreateSdpObserver([this](const std::string &sdp) {
+    qDebug() << "[createOffer] OnSuccess, sdp size=" << sdp.size();
+    peer_->SetLocalDescription(webrtc::CreateSessionDescription(webrtc::SdpType::kOffer, sdp),
+                               webrtc::scoped_refptr<SetLocalSdpObserver>(new SetLocalSdpObserver()));
+    if (onLocalOffer) {
+      qDebug() << "[createOffer] calling onLocalOffer";
+      onLocalOffer(sdp);
+    } else {
+      RTC_LOG(LS_ERROR) << "[createOffer] onLocalOffer is NULL";
+    }
+  }));
   peer_->CreateOffer(obs.get(), {});
   qDebug() << "[createOffer] CreateOffer submitted";
 }
 
 void PConnectionController::createAnswer() {
-  auto obs = webrtc::scoped_refptr<CreateSdpObserver>(
-      new CreateSdpObserver([this](const std::string& sdp) {
-        peer_->SetLocalDescription(
-            webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp),
-            webrtc::scoped_refptr<SetLocalSdpObserver>(new SetLocalSdpObserver()));
-        if (onLocalAnswer) onLocalAnswer(sdp);
-      }));
+  auto obs = webrtc::scoped_refptr<CreateSdpObserver>(new CreateSdpObserver([this](const std::string &sdp) {
+    peer_->SetLocalDescription(webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp),
+                               webrtc::scoped_refptr<SetLocalSdpObserver>(new SetLocalSdpObserver()));
+    if (onLocalAnswer)
+      onLocalAnswer(sdp);
+  }));
   peer_->CreateAnswer(obs.get(), {});
 }
 
-void PConnectionController::setRemoteOffer(const std::string& sdp) {
-  peer_->SetRemoteDescription(
-      webrtc::CreateSessionDescription(webrtc::SdpType::kOffer, sdp),
-      webrtc::scoped_refptr<SetRemoteSdpObserver>(new SetRemoteSdpObserver()));
+void PConnectionController::setRemoteOffer(const std::string &sdp) {
+  peer_->SetRemoteDescription(webrtc::CreateSessionDescription(webrtc::SdpType::kOffer, sdp),
+                              webrtc::scoped_refptr<SetRemoteSdpObserver>(new SetRemoteSdpObserver()));
 }
 
-void PConnectionController::setRemoteAnswer(const std::string& sdp) {
-  peer_->SetRemoteDescription(
-      webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp),
-      webrtc::scoped_refptr<SetRemoteSdpObserver>(new SetRemoteSdpObserver()));
+void PConnectionController::setRemoteAnswer(const std::string &sdp) {
+  peer_->SetRemoteDescription(webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp),
+                              webrtc::scoped_refptr<SetRemoteSdpObserver>(new SetRemoteSdpObserver()));
 }
 
-void PConnectionController::addIceCandidate(const std::string& candidate, const std::string& mid,
-                                            int index) {
+void PConnectionController::addIceCandidate(const std::string &candidate, const std::string &mid, int index) {
   webrtc::SdpParseError error;
   auto ice = webrtc::CreateIceCandidate(mid, index, candidate, &error);
   if (ice) {
@@ -108,11 +108,15 @@ PConnectionController::~PConnectionController() {
   // membres (voir le .h) les détruira ensuite dans l'ordre network → worker
   // → signaling, mais on les Stop() explicitement ici pour que l'arrêt de la
   // boucle de message soit synchrone et déterministe avant la destruction.
-  if (signaling_thread_) signaling_thread_->Stop();
-  if (worker_thread_) worker_thread_->Stop();
-  if (network_thread_) network_thread_->Stop();
+  if (signaling_thread_)
+    signaling_thread_->Stop();
+  if (worker_thread_)
+    worker_thread_->Stop();
+  if (network_thread_)
+    network_thread_->Stop();
 }
 
 void PConnectionController::close() {
-  if (peer_) peer_->Close();
+  if (peer_)
+    peer_->Close();
 }

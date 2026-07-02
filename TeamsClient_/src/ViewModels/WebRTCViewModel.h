@@ -66,7 +66,7 @@ public slots:
 
   void toggleMic() {
     micEnabled_ = !micEnabled_;
-    // TODO: idem pour la piste audio.
+    webRTCService_->setMicEnabled(micEnabled_);  // à exposer/relayer jusqu'au PConnectionController
     emit micEnabledChanged();
   }
 
