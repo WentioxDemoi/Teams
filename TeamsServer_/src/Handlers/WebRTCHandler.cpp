@@ -23,6 +23,8 @@ void WebRTCHandler::handle_type(std::string uuid, std::string payload, ResponseC
     handle_call_hangup(uuid, payload, respond);
   } else if (type == "offer" || type == "answer" || type == "ice") {
     handle_signaling_relay(uuid, payload, respond);
+  } else if (type == "camera_enabled_change") {
+    handle_camera_enabled_change(uuid, payload, respond);
   } else {
     std::cerr << "[WebRTCHandler] Unknown message type: " << type << "\n";
   }
@@ -48,7 +50,9 @@ void WebRTCHandler::handle_call_accept(const std::string &uuid, std::string payl
   std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
 
   asio::post(worker_pool_, [this, uuid, targetUuid]() {
-    webRTCService_->acceptCall(uuid, targetUuid);
+    if (!webRTCService_->acceptCall(uuid, targetUuid)) {
+      std::cerr << "[WebRTCHandler] call_accept: caller " << targetUuid << " déconnecté\n";
+    }
   });
 }
 
@@ -88,6 +92,16 @@ void WebRTCHandler::handle_signaling_relay(const std::string &uuid, std::string 
   asio::post(worker_pool_, [this, uuid, targetUuid, payload]() {
     if (!webRTCService_->relaySignaling(uuid, targetUuid, payload)) {
       std::cerr << "[WebRTCHandler] signaling relay: target " << targetUuid << " déconnecté\n";
+    }
+  });
+}
+
+void WebRTCHandler::handle_camera_enabled_change(const std::string &uuid, std::string payload, ResponseCallback respond) {
+  std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
+
+  asio::post(worker_pool_, [this, uuid, targetUuid, payload]() {
+    if (!webRTCService_->cameraEnabledChange(uuid, targetUuid, payload)) {
+      std::cerr << "[WebRTCHandler] camera_enabled_change: target " << targetUuid << " déconnecté\n";
     }
   });
 }

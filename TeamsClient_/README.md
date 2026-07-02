@@ -112,3 +112,5 @@ ctest -V # Ou alors ./TeamsClient_Tests
 - Service de check du token enregistré localement en faisant une requete sur le serveur
 - Créer db et services associés 
 - Faire tests unitaires
+- Lorsqu'on se connecte au même compte avec deux instance en même temps, on casse la session, il faut redémarrer le software
+

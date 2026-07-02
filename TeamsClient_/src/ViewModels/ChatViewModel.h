@@ -59,11 +59,15 @@ public:
   Q_INVOKABLE void searchUsers(const QString &query); // Used by QML
   Q_INVOKABLE void sendMessage(const QString &content);
   Q_INVOKABLE void startCall(const QString &contactUuid, const QString &contactUsername);
+public slots:
+  void acceptIncomingCall(const QString &remoteUsername);
+  void rejectIncomingCall();
 
 signals:
   void messageListChanged();
   void selectedContactChanged();
   void incomingCall(const QVariantMap &contact);
+  void cancelIncomingCall(const QVariantMap &contact);
   void chatError(const QString &error);
 
 private:
@@ -76,6 +80,8 @@ private:
 
   void onOpenCallWindow();
   void onIncomingCallReceived(const QString &callerUuid);
+  void onIncomingCallCancelled(const QString &callerUuid);
+
 
   void onUserResolved(const User &user);
 

@@ -11,14 +11,13 @@ WebRTCViewModel::WebRTCViewModel(QQmlEngine *engine, WebRTCService *webRTCServic
       engine_(engine), QObject(parent) {
     connect(chatService_, &IChatService::openCallWindow, this, &WebRTCViewModel::onOpenCallWindow);
     connect(chatService_, &IChatService::closeCallWindow, this, &WebRTCViewModel::onCloseCallWindow);
-
+    connect(chatService_, &IChatService::isContactConnectedChanged, this, &WebRTCViewModel::onIsContactConnectedChanged);
     captureSink_ = new QVideoSink(this);
     connect(captureSink_, &QVideoSink::videoFrameChanged, this, [this](const QVideoFrame& frame) {
         if (!frame.isValid()) {
             qWarning() << "[WebRTCViewModel] captureSink_ frame invalide";
             return;
         }
-      qDebug() << "Frame :" << frame.isValid() << frame.size();
         if (localVideoSink_) {
             localVideoSink_->setVideoFrame(frame);
         }
@@ -30,6 +29,8 @@ WebRTCViewModel::WebRTCViewModel(QQmlEngine *engine, WebRTCService *webRTCServic
         }
         Sources::instance().localVideo()->PushFrame(i420);
     });
+
+    connect(chatService_, &IChatService::onCameraEnabledChanged, this, &WebRTCViewModel::onRemoteCameraEnabledChanged);
 }
 
 void WebRTCViewModel::onOpenCallWindow(const QString &remoteUsername) {
@@ -94,11 +95,16 @@ void WebRTCViewModel::onCloseCallWindow() {
 
   localVideoSink_ = nullptr;
   remoteVideoSink_ = nullptr;
+  
+  cameraEnabled_ = false;
+  micEnabled_ = false;
 
-    if (captureSink_) {
-      delete captureSink_;
-      captureSink_ = nullptr;
-  }
+  isContactConnected_ = false;
+  isRemoteCameraEnabled_ = false;
+  cameraEnabledChanged();
+  micEnabledChanged();
+  isRemoteCameraEnabledChanged();
+  isContactConnectedChanged();
 
   remoteUsername_.clear();
   stopCamera();
@@ -108,18 +114,6 @@ void WebRTCViewModel::onCloseCallWindow() {
 void WebRTCViewModel::hangup() {
   if (chatService_) {
     chatService_->hangup();
-  }
-}
-
-void WebRTCViewModel::acceptIncomingCall() {
-  if (chatService_) {
-    chatService_->acceptIncomingCall();
-  }
-}
-
-void WebRTCViewModel::rejectIncomingCall() {
-  if (chatService_) {
-    chatService_->rejectIncomingCall();
   }
 }
 
@@ -134,7 +128,6 @@ void WebRTCViewModel::startCamera() {
 
 void WebRTCViewModel::setLocalVideoSink(QVideoSink *sink) {
     localVideoSink_ = sink;
-qDebug() << "Local sink reçu :" << sink;
     if (!captureSink_) {
         qWarning() << "[WebRTCViewModel] setLocalVideoSink appelé sans captureSink_ existant";
         return;
@@ -144,7 +137,6 @@ qDebug() << "Local sink reçu :" << sink;
         captureSession_.setVideoSink(captureSink_);
     }
 
-    qDebug() << "[WebRTCViewModel] sink local configuré";
 }
 
 void WebRTCViewModel::stopCamera() {

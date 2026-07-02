@@ -16,9 +16,6 @@ ApplicationWindow {
     flags: Qt.Window
 
     onClosing: function (close) {
-        // Empêche la destruction "silencieuse" par la croix native : on repasse
-        // toujours par endCall() côté C++ pour que callWindow_ soit correctement
-        // remis à nullptr et que deleteLater() soit appelé une seule fois, au bon endroit.
         if (webRTCVM)
             webRTCVM.hangup();
     }
@@ -33,23 +30,11 @@ ApplicationWindow {
             webRTCVM.setRemoteVideoSink(videoSink)
     }
 
-    // Placeholder quand le flux distant n'a pas encore démarré
+    // ─── Overlay : en attente de connexion OU caméra distante coupée ──────
     ColumnLayout {
         anchors.centerIn: parent
         spacing: 12
-        visible: !hasRemoteFrame.active
-
-        // Petit hack pour détecter "pas encore de frame" sans dépendre d'une API spécifique :
-        // on se contente d'afficher tant que rien ne semble avoir été peint.
-        // Si tu exposes plus tard un état explicite (ex: webRTCVM.remoteConnected),
-        // remplace cette condition par lui — ce sera plus fiable.
-        Timer {
-            id: hasRemoteFrame
-            property bool active: false
-            interval: 1500
-            running: true
-            onTriggered: active = true
-        }
+        visible: webRTCVM && (!webRTCVM.isContactConnected || !webRTCVM.isRemoteCameraEnabled)
 
         Rectangle {
             Layout.alignment: Qt.AlignHCenter
@@ -78,7 +63,15 @@ ApplicationWindow {
 
         Text {
             Layout.alignment: Qt.AlignHCenter
-            text: "En cours de connexion…"
+            text: {
+                if (!webRTCVM)
+                    return "";
+                if (!webRTCVM.isContactConnected)
+                    return "En attente de la connexion de " + webRTCVM.remoteUsername;
+                if (!webRTCVM.isRemoteCameraEnabled)
+                    return webRTCVM.remoteUsername + " a désactivé sa caméra";
+                return "";
+            }
             font.pixelSize: 13
             font.family: "SF Pro Text"
             color: "#9A9A9E"
@@ -100,6 +93,10 @@ ApplicationWindow {
         radius: 14
         clip: true
         color: "#202020"
+        
+        layer.enabled: true
+
+        layer.smooth: true
 
         border.color: Qt.rgba(1, 1, 1, 0.15)
         border.width: 1

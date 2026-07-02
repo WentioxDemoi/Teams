@@ -27,6 +27,7 @@ ChatViewModel::ChatViewModel(ContactList *contactList, IChatService *chatService
   connect(chatService_, &IChatService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
   connect(chatService_, &IChatService::messageReceived, this, &ChatViewModel::onMessageReceived);
   connect(chatService_, &IChatService::incomingCallReceived, this, &ChatViewModel::onIncomingCallReceived);
+  connect(chatService_, &IChatService::incomingCallCancelled, this, &ChatViewModel::onIncomingCallCancelled);
   
 
   connect(contactService_, &IContactService::contactsLoaded, this, &ChatViewModel::onContactsLoaded);
@@ -71,6 +72,7 @@ void ChatViewModel::selectUser(const QString &userUuid) {
       contactList_->addUser(user);
       contactService_->saveContact(user);
       selectedContact_ = contactList_->toVariantMap(user);
+      // contactService_-> // Créer un méthode pour récupérer le status de l'utilisateur.
     }
   }
 
@@ -255,4 +257,34 @@ void ChatViewModel::onIncomingCallReceived(const QString &callerUuid)
 
     pendingIncomingCallUuid_ = callerUuid;
     contactService_->resolveUserByUuid(callerUuid);
+}
+
+void ChatViewModel::onIncomingCallCancelled(const QString &callerUuid) {
+  if (!contactList_)
+    return;
+
+  // Nettoyage de l'état interne uniquement si l'annulation concerne un appel
+  // dont le contact était encore en cours de résolution.
+  if (pendingIncomingCallUuid_ == callerUuid) {
+    pendingIncomingCallUuid_.clear();
+  }
+
+  // Le popup doit se fermer dans tous les cas, que le contact ait été
+  // en attente de résolution ou déjà connu et affiché.
+  QVariantMap contact = contactList_->findByUuid(callerUuid);
+  emit cancelIncomingCall(contact);
+}
+
+void ChatViewModel::acceptIncomingCall(const QString &remoteUsername) {
+  if (chatService_) {
+    chatService_->acceptIncomingCall(remoteUsername);
+    pendingIncomingCallUuid_.clear();
+  }
+}
+
+void ChatViewModel::rejectIncomingCall() {
+  if (chatService_) {
+    chatService_->rejectIncomingCall();
+    pendingIncomingCallUuid_.clear();
+  }
 }

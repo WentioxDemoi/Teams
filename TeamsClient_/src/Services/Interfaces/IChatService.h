@@ -29,8 +29,9 @@ class IChatService : public QObject {
   virtual void hangup() = 0;
   virtual void disconnectFromServer() = 0;
   
-  virtual void acceptIncomingCall() = 0;
+  virtual void acceptIncomingCall(const QString &remoteUsername) = 0;
   virtual void rejectIncomingCall() = 0;
+  virtual void cameraEnabledChanged(bool cameraEnabled) = 0;
 
 
  signals:
@@ -40,12 +41,17 @@ class IChatService : public QObject {
   void conversationsLoaded(const QList<Message>& messages);
 
   void incomingCallReceived(const QString &callerUuid);
+  void incomingCallCancelled(const QString &callerUuid);
+
 
   void callReceived(const QString &callUuid, const QString& callerUuid);
   void callStarted(const QString &callUuid);
   void callAccepted(const QString& callUuid, const QString& callerUuid);
   void callEnded(const QString& callUuid, const QString& reason);
   void callError(const QString& error);
+
+  void isContactConnectedChanged(bool isConnected);
+  void onCameraEnabledChanged(bool cameraEnabled);
 
   void openCallWindow(const QString &remoteUsername);
   void closeCallWindow();

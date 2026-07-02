@@ -29,10 +29,10 @@ void WebRTCService::onRemoteIce(QString candidate, QString mid, int index) {
 void WebRTCService::setCallBacks(std::function<void(const std::string &sdp)> onLocalOffer,
                   std::function<void(const std::string &sdp)> onLocalAnswer,
                   std::function<void(const std::string &candidate, const std::string &mid, int index)> onLocalIce,
-                  std::function<void(bool inProgress)> onP2PChange)
+                  std::function<void(bool isConnected)> isContactConnectedChanged)
                   {
                     pConnectionController_->onLocalOffer = onLocalOffer;
                     pConnectionController_->onLocalAnswer = onLocalAnswer;
                     pConnectionController_->onLocalIce = onLocalIce;
-                    pConnectionController_->onP2PChange = onP2PChange;
+                    pConnectionController_->isContactConnectedChanged = isContactConnectedChanged;
                   }

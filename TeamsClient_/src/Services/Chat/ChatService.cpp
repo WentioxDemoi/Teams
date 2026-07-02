@@ -29,8 +29,11 @@ ChatService::ChatService(IMessageService* messageService,
   connect(callService_, &ICallService::callError, this, &IChatService::callError);
   connect(callService_, &ICallService::connectionUpdate, this, &IChatService::connectionUpdate);
   connect(callService_, &ICallService::incomingCallReceived, this, &IChatService::incomingCallReceived);
+  connect(callService_, &ICallService::incomingCallCancelled, this, &IChatService::incomingCallCancelled);
   connect(callService_, &ICallService::openCallWindow, this, &IChatService::openCallWindow);
   connect(callService_, &ICallService::closeCallWindow, this, &IChatService::closeCallWindow);
+  connect(callService_, &ICallService::isContactConnectedChanged, this, &IChatService::isContactConnectedChanged);
+  connect(callService_, &ICallService::onCameraEnabledChanged, this, &IChatService::onCameraEnabledChanged);
   
 }
 
@@ -58,12 +61,12 @@ void ChatService::startCall(const QString &contactUuid, const QString &contactUs
   callService_->startCall(contactUuid, contactUsername);
 }
 
-void ChatService::acceptIncomingCall() {
+void ChatService::acceptIncomingCall(const QString &remoteUsername) {
   if (!callService_) {
     emit callError("Service d'appel indisponible");
     return;
   }
-  callService_->acceptCall();
+  callService_->acceptCall(remoteUsername);
 }
 
 void ChatService::rejectIncomingCall() {
@@ -89,4 +92,8 @@ void ChatService::disconnectFromServer() {
   if (callService_) {
     callService_->disconnectFromServer();
   }
+}
+
+void ChatService::cameraEnabledChanged(bool cameraEnabled) {
+  callService_->cameraEnabledChanged(cameraEnabled);
 }

@@ -20,7 +20,8 @@ class ICallService : public QObject {
 
  public slots:
   virtual void startCall(const QString &contactUuid, const QString &contactUsername) = 0;
-  virtual void acceptCall() = 0;
+  virtual void acceptCall(const QString &remoteUsername) = 0;
+  virtual void cameraEnabledChanged(bool cameraEnabled) = 0;
   virtual void hangup() = 0;
   virtual void disconnectFromServer() = 0;
   virtual void rejectCall() = 0;
@@ -37,8 +38,8 @@ class ICallService : public QObject {
   void answerReceived(QString sdp);
   void iceReceived(QString candidate, QString mid, int index);
 
-  void onP2PChange(bool inProgress);
-
+  void isContactConnectedChanged(bool isConnected);
+  void onCameraEnabledChanged(bool cameraEnabled);
 
     // Émis côté callee quand une offer arrive et qu'on doit afficher le popup d'appel entrant.
  void incomingCallReceived(const QString &callerUuid);

@@ -34,6 +34,8 @@ class WebRTCViewModel : public QObject {
   Q_PROPERTY(bool cameraEnabled READ cameraEnabled NOTIFY cameraEnabledChanged)
   Q_PROPERTY(bool micEnabled READ micEnabled NOTIFY micEnabledChanged)
   Q_PROPERTY(QString remoteUsername READ remoteUsername NOTIFY remoteUsernameChanged)
+  Q_PROPERTY(bool isContactConnected READ isContactConnected NOTIFY isContactConnectedChanged)
+  Q_PROPERTY(bool isRemoteCameraEnabled READ isRemoteCameraEnabled NOTIFY isRemoteCameraEnabledChanged)
 
 public:
   explicit WebRTCViewModel(QQmlEngine *engine, WebRTCService *webRTCService = nullptr,
@@ -42,6 +44,8 @@ public:
   Q_INVOKABLE bool cameraEnabled() const { return cameraEnabled_; }
   Q_INVOKABLE bool micEnabled() const { return micEnabled_; }
   Q_INVOKABLE QString remoteUsername() const { return remoteUsername_; }
+  Q_INVOKABLE bool isContactConnected() const { return isContactConnected_; }
+  Q_INVOKABLE bool isRemoteCameraEnabled() const { return isRemoteCameraEnabled_; }
 
 public slots:
 
@@ -56,6 +60,7 @@ public slots:
     }
     cameraEnabled_ = !cameraEnabled_;
 
+    chatService_->cameraEnabledChanged(cameraEnabled_);
     emit cameraEnabledChanged();
   }
 
@@ -65,8 +70,7 @@ public slots:
     emit micEnabledChanged();
   }
 
-  void acceptIncomingCall();
-  void rejectIncomingCall();
+
   void hangup();
 
   void onOpenCallWindow(const QString &remoteUsername);
@@ -75,13 +79,28 @@ public slots:
 private:
   void startCamera();
   void stopCamera();
+  void onIsContactConnectedChanged(bool isConnected) {
+    qDebug() << "Is contact connected changed:" << isConnected;
+    isContactConnected_ = isConnected;
+    emit isContactConnectedChanged();
+  }
+  void onRemoteCameraEnabledChanged(bool cameraEnabled) {
+    isRemoteCameraEnabled_ = cameraEnabled;
+    if (!cameraEnabled && remoteVideoSink_) {
+    // Aucune nouvelle frame n'arrivera tant que la caméra distante est coupée :
+    // sans ça, QVideoSink continue d'afficher la dernière frame reçue indéfiniment.
+    remoteVideoSink_->setVideoFrame(QVideoFrame());
+  }
+    emit isRemoteCameraEnabledChanged();
+  }
 
 signals:
-  void onP2PChange(bool inProgress);
   void onCallEnded();
   void cameraEnabledChanged();
   void micEnabledChanged();
   void remoteUsernameChanged();
+  void isRemoteCameraEnabledChanged();
+  void isContactConnectedChanged();
 
 private:
   QQmlEngine *engine_;
@@ -98,6 +117,8 @@ private:
   bool cameraEnabled_ = false;
   bool micEnabled_ = false;
   QString remoteUsername_;
+  bool isContactConnected_ = false;
+  bool isRemoteCameraEnabled_ = false;
 };
 
 #endif

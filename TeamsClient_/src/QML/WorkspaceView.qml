@@ -321,7 +321,7 @@ Page {
                         anchors.fill: parent
                         onClicked: {
                             incomingCallPopup.close();
-                            webRTCVM.acceptIncomingCall();
+                            chatVM.acceptIncomingCall(incomingCallPopup.contact.username);
                         }
                     }
 
@@ -343,7 +343,7 @@ Page {
                         anchors.fill: parent
                         onClicked: {
                             incomingCallPopup.close();
-                            webRTCVM.rejectIncomingCall();
+                            chatVM.rejectIncomingCall();
                         }
                     }
 
@@ -482,8 +482,14 @@ Page {
         target: chatVM
 
         function onIncomingCall(contact) {
+            console.log("QML: incomingCall reçu pour", contact.username);
             incomingCallPopup.contact = contact;
             incomingCallPopup.open();
+        }
+        function onCancelIncomingCall(contact) {
+            console.log("QML: cancelIncomingCall reçu, popup visible avant close:", incomingCallPopup.visible);
+            incomingCallPopup.contact = null;
+            incomingCallPopup.close();
         }
     }
 }

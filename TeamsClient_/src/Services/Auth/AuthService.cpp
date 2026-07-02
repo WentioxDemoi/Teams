@@ -31,6 +31,7 @@ void AuthService::loginUser(const QString& email, const QString& password) {
   network_->send({{"type", "login"}, {"email", email}, {"password", password}});
 }
 
+// Lors du register d'un user, lorsqu'il est auth (et n'a pas encore d'amis), son status de présence n'est envoyé à personne. Voir fonction selectUser dans ChatViewModel
 void AuthService::registerUser(const QString& firstName, const QString& lastName,
                                const QString& email, const QString& password) {
   network_->send({{"type", "register"},

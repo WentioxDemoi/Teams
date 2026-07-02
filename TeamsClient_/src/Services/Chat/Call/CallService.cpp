@@ -40,17 +40,17 @@ CallService::CallService(NetworkService *network, WebRTCService *webRTCService, 
         sendSignalingMessage(WebRTCMessageType::ice, data);
       };
 
-  std::function<void(bool inProgress)> onP2PChange = [this](bool inProgress) {
+  std::function<void(bool inProgress)> isContactConnectedChanged = [this](bool inProgress) {
     QMetaObject::invokeMethod(
         this,
         [this, inProgress]() {
-          qDebug() << "[WebRTCService] onP2PChange connected=" << inProgress;
-          emit this->onP2PChange(inProgress);
+          qDebug() << "[WebRTCService] isContactConnectedChanged connected=" << inProgress;
+          // emit this->isContactConnectedChanged(inProgress);
         },
         Qt::QueuedConnection);
   };
 
-  webRTCService_->setCallBacks(onLocalOffer, onLocalAnswer, onLocalIce, onP2PChange);
+  webRTCService_->setCallBacks(onLocalOffer, onLocalAnswer, onLocalIce, isContactConnectedChanged);
 }
 
 // === CALLER : démarre un appel sortant ===
@@ -89,23 +89,21 @@ void CallService::rejectCall() {
 }
 
 // === CALLEE : popup affiché, l'utilisateur accepte ===
-void CallService::acceptCall() {
+void CallService::acceptCall(const QString &remoteUsername) {
   qDebug() << "AcceptCall\n";
   if (pendingOfferSdp_.isEmpty()) {
     qWarning() << "acceptCall appelé sans offer en attente.";
     emit callError("Aucun appel entrant à accepter");
     return;
   }
-
-  // Ouverture de la fenêtre d'appel côté callee, au moment de l'acceptation
-  // (et non à la réception de l'offer, pour ne pas afficher une fenêtre tant
-  // que l'utilisateur n'a pas explicitement décroché). Délégué à WebRTCViewModel.
-  emit openCallWindow(remoteUsername_);
-
+  
+  emit openCallWindow(remoteUsername);
+  
   // On déclenche la suite de la négociation WebRTC seulement maintenant:
   // WebRTCService::onRemoteOffer va appeler SetRemoteDescription -> CreateAnswer -> SetLocalDescription
   // ce qui re-déclenchera onLocalAnswer -> sendSignalingMessage(answer) automatiquement.
   emit offerReceived(pendingOfferSdp_);
+  emit isContactConnectedChanged(true);
   pendingOfferSdp_.clear();
 
   network_->send({{"type", "call_accept"}, {"targetUuid", remoteUuid_}});
@@ -131,6 +129,10 @@ void CallService::hangup() {
     // Fermeture de la fenêtre d'appel si elle existe encore (gérée par WebRTCViewModel).
     emit closeCallWindow();
   }
+}
+
+void CallService::cameraEnabledChanged(bool cameraEnabled) {
+  network_->send({{"type", "camera_enabled_change"}, {"value", cameraEnabled ? "true" : "false"}, {"targetUuid", remoteUuid_}});
 }
 
 void CallService::handleServerResponse(const QJsonObject &root) {
@@ -213,6 +215,11 @@ void CallService::handleServerResponse(const QJsonObject &root) {
     remoteUuid_.clear();
     emit closeCallWindow();
     emit callError("Le contact est déjà en appel");
+  } else if (type == "camera_enabled_change" && root.contains("value") && root["value"].isString()) {
+    bool isEnabled = root["value"].toString() == "true";
+    emit onCameraEnabledChanged(isEnabled);
+  } else if (type == "call_accept") {
+    emit isContactConnectedChanged(true);
   }
 }
 
@@ -259,7 +266,7 @@ void CallService::startCallTimeoutTimer() {
     callTimeoutTimer_->deleteLater();
     callTimeoutTimer_ = nullptr;
   }
-
+  
   callTimeoutTimer_ = new QTimer(this);
   callTimeoutTimer_->setSingleShot(true);
   connect(callTimeoutTimer_, &QTimer::timeout, this, [this]() {
@@ -271,7 +278,6 @@ void CallService::startCallTimeoutTimer() {
 
     // La fenêtre du caller doit se fermer automatiquement si personne ne répond.
     emit closeCallWindow();
-
     emit callError("Pas de réponse");
   });
   callTimeoutTimer_->start(30000);

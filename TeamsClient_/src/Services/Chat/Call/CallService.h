@@ -33,7 +33,8 @@ class CallService : public ICallService {
   void startCall(const QString &contactUuid, const QString &contactUsername) override;
   void hangup() override;
   void disconnectFromServer() override;
-  void acceptCall() override;
+  void acceptCall(const QString &remoteUsername) override;
+  void cameraEnabledChanged(bool cameraEnabled) override;
   void rejectCall() override;
 
  private slots:

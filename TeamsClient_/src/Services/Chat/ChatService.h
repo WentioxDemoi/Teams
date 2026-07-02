@@ -28,8 +28,9 @@ class ChatService : public IChatService {
 
   void startCall(const QString &contactUuid, const QString &contactUsername) override;
   void hangup() override;
-  void acceptIncomingCall() override;
+  void acceptIncomingCall(const QString &remoteUsername) override;
   void rejectIncomingCall() override;
+  void cameraEnabledChanged(bool cameraEnabled) override; 
 
   void disconnectFromServer() override;
 

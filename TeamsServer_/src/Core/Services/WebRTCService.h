@@ -26,7 +26,7 @@ public:
 
   // Pas de réponse directe nécessaire pour l'instant (le callee attendra l'answer
   // généré par sa propre négociation WebRTC côté client).
-  void acceptCall(const std::string &calleeUuid, const std::string &targetUuid);
+  bool acceptCall(const std::string &calleeUuid, const std::string &targetUuid);
 
   // Relaye le refus au caller. Retourne false si le caller n'est plus connecté.
   bool rejectCall(const std::string &calleeUuid, const std::string &targetUuid);
@@ -39,6 +39,9 @@ public:
 
   // --- Relai pur des messages de signaling SDP/ICE (offer / answer / ice) ---
   bool relaySignaling(const std::string &senderUuid, const std::string &targetUuid, const std::string &payload);
+
+  bool cameraEnabledChange(const std::string &senderUuid, const std::string &targetUuid, const std::string &payload);
+
 
 private:
   // Injecte senderUuid dans le payload et le transmet au destinataire via le registre.

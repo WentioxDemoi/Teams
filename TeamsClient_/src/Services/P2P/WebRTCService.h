@@ -25,7 +25,7 @@ public:
 void setCallBacks(std::function<void(const std::string &sdp)> onLocalOffer,
                    std::function<void(const std::string &sdp)> onLocalAnswer,
                    std::function<void(const std::string &candidate, const std::string &mid, int index)> onLocalIce,
-                   std::function<void(bool inProgress)> onP2PChange);
+                   std::function<void(bool isConnected)> isContactConnectedChanged);
   void startCall();
   void acceptCall();
   void hangup();
