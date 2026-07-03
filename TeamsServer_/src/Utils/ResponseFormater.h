@@ -15,7 +15,7 @@
  */
 class ResponseFormater {
 public:
-  static std::string format_user_response(const std::string &type, const User &user) {
+static std::string format_user_response(const std::string &type, const User &user) {
     return "{"
            "\"type\":\"" +
            type +
@@ -34,7 +34,10 @@ public:
            json_escape(user.uuid) +
            "\","
            "\"token\":\"" +
-           json_escape(user.token) + "\"" +
+           json_escape(user.token) +
+           "\","
+           "\"status\":\"" +
+           json_escape(user.status) + "\"" +
            "}"
            "}";
   }

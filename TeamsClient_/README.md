@@ -74,13 +74,26 @@ cd build/
 
 1. Exécutez macdeployqt pour préparer l'application :
 ```bash
-~/Qt/6.9.3/macos/bin/macdeployqt TeamsClient_.app/
+~/Qt/6.9.3/macos/bin/macdeployqt TeamsClient_.app/ -qmldir=/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML
 ```
 
-2. Créez le fichier .dmg :
+2. Supprimer les plugins SQL non utilisés :
+```bash
+find TeamsClient_.app -name "libqsqlodbc.dylib" -delete
+find TeamsClient_.app -name "libqsqlpsql.dylib" -delete
+```
+
+3. Re-signature après toutes les modifications du bundle :
+```bash
+codesign --force --deep --sign - TeamsClient_.app
+```
+
+3. Créez le fichier .dmg :
 ```bash
 hdiutil create -volname "TeamsClient_" -srcfolder TeamsClient_.app -ov -format UDZO TeamsClient_.dmg
 ```
+
+
 
 ### Exécution des tests
 

@@ -21,10 +21,10 @@ std::optional<std::string> ContactService::addContact(const std::string &payload
 std::optional<std::string> ContactService::resolveUserByUuid(const std::string &payload) {
   auto userUuid = PacketHelper::extractValue(payload, "contactUuid");
   std::optional<User> user = userRepo_->find_by_uuid(userUuid);
-
   if (!user.has_value()) {
     return std::nullopt;
   }
+  user.value().status = contactSessionRegistry_->hasContactSession(user.value().uuid) ? "Online" : "Offline";
 
   std::string response = ResponseFormater::format_user_response("resolve_user_response", user.value());
 

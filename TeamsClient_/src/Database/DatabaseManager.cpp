@@ -1,12 +1,16 @@
 #include "DatabaseManager.h"
 
 #include <QSqlQuery>
+#include <QStandardPaths>
+#include <QDir>
 
 DatabaseManager::DatabaseManager() {
+  QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+  QDir().mkpath(dbPath);
   if (!QSqlDatabase::contains("AppConnection")) {
     qDebug() << "Création de la connexion AppConnection";
     db_ = QSqlDatabase::addDatabase("QSQLITE", "AppConnection");
-    db_.setDatabaseName("app_database.db");
+    db_.setDatabaseName(dbPath + "/app_database.db");
   } else {
     qDebug() << "Connexion AppConnection existe déjà";
     db_ = QSqlDatabase::database("AppConnection");
