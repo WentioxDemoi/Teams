@@ -21,7 +21,7 @@ PConnectionController::PConnectionController() {
       network_thread_.get(), worker_thread_.get(), signaling_thread_.get(), nullptr,
       webrtc::CreateBuiltinAudioEncoderFactory(), webrtc::CreateBuiltinAudioDecoderFactory(),
       webrtc::CreateBuiltinVideoEncoderFactory(), webrtc::CreateBuiltinVideoDecoderFactory(), nullptr, nullptr);
-  RTC_CHECK(factory_) << "Failed to create PeerConnectionFactory";
+  RTC_CHECK(factory_) << "[PConnectionController] Failed to create PeerConnectionFactory";
 
   webrtc::PeerConnectionInterface::RTCConfiguration config;
   webrtc::PeerConnectionInterface::IceServer stun;
@@ -32,7 +32,7 @@ PConnectionController::PConnectionController() {
   observer_ = webrtc::scoped_refptr<PConnectionObserver>(new PConnectionObserver(this));
   webrtc::PeerConnectionDependencies deps(observer_.get());
   peer_ = factory_->CreatePeerConnectionOrError(config, std::move(deps)).MoveValue();
-  RTC_CHECK(peer_) << "Failed to create PeerConnection";
+  RTC_CHECK(peer_) << "[PConnectionController] Failed to create PeerConnection";
 
   auto videoTrack = factory_->CreateVideoTrack(Sources::instance().localVideo(), "video0");
   peer_->AddTrack(videoTrack, {"stream0"});
@@ -42,7 +42,12 @@ PConnectionController::PConnectionController() {
   // CreatePeerConnectionFactory), pas besoin de pousser des frames nous-mêmes.
   webrtc::scoped_refptr<webrtc::AudioSourceInterface> audioSource = factory_->CreateAudioSource(webrtc::AudioOptions());
   audioTrack_ = factory_->CreateAudioTrack("audio0", audioSource.get());
-  peer_->AddTrack(audioTrack_, {"stream0"});
+  auto result = peer_->AddTrack(audioTrack_, {"stream0"});
+  if (result.ok()) {
+    audioSender_ = result.value();
+  } else {
+    RTC_LOG(LS_ERROR) << "[PConnectionController] Failed to add audio track";
+  }
 }
 
 void PConnectionController::createOffer() {
@@ -94,26 +99,21 @@ void PConnectionController::addIceCandidate(const std::string &candidate, const 
 }
 
 PConnectionController::~PConnectionController() {
-  // Ferme et libère tout ce qui dépend des threads WebRTC AVANT de les arrêter,
-  // pendant qu'ils tournent encore (peer_->Close() poste sur signaling_thread_).
   if (peer_) {
+    if (audioSender_) {
+      peer_->RemoveTrackOrError(audioSender_);
+      audioSender_ = nullptr;
+    }
     peer_->Close();
     peer_ = nullptr;
   }
+  audioTrack_ = nullptr;
   observer_ = nullptr;
   factory_ = nullptr;
 
-  // Les threads ne sont arrêtés qu'une fois qu'il n'existe plus aucun objet
-  // WebRTC vivant susceptible d'en avoir besoin. L'ordre de déclaration des
-  // membres (voir le .h) les détruira ensuite dans l'ordre network → worker
-  // → signaling, mais on les Stop() explicitement ici pour que l'arrêt de la
-  // boucle de message soit synchrone et déterministe avant la destruction.
-  if (signaling_thread_)
-    signaling_thread_->Stop();
-  if (worker_thread_)
-    worker_thread_->Stop();
-  if (network_thread_)
-    network_thread_->Stop();
+  if (signaling_thread_) signaling_thread_->Stop();
+  if (worker_thread_) worker_thread_->Stop();
+  if (network_thread_) network_thread_->Stop();
 }
 
 void PConnectionController::close() {

@@ -1,13 +1,13 @@
 #ifndef ICHATSERVICE_H
 #define ICHATSERVICE_H
 
+#include "Message.h"
+#include "SessionEnum.h"
+#include "User.h"
 #include <QJsonObject>
 #include <QList>
 #include <QObject>
 #include <QString>
-#include "Message.h"
-#include "SessionEnum.h"
-#include "User.h"
 
 /**
  * @class IChatService
@@ -18,48 +18,48 @@
  */
 class IChatService : public QObject {
   Q_OBJECT
- public:
-  explicit IChatService(QObject* parent = nullptr) : QObject(parent) {};
+public:
+  explicit IChatService(QObject *parent = nullptr) : QObject(parent) {};
   virtual ~IChatService() = default;
 
- public slots:
-  virtual void sendMessage(const Message& message) = 0;
+  virtual void disconnectFromServer() = 0;
+
+
+
+  // ---------- Message Service ----------
+public:
+  virtual void sendMessage(const Message &message) = 0;
   virtual void loadConversationsFromDatabaseAndServer() = 0;
+
+signals:
+
+  void messageError(const QString &error);
+  
+  void messageReceived(const Message &message);
+  void conversationsLoaded(const QList<Message> &messages);
+
+
+
+  // ---------- Call Service ----------
+public:
   virtual void startCall(const QString &contactUuid, const QString &contactUsername) = 0;
   virtual void hangup() = 0;
-  virtual void disconnectFromServer() = 0;
-  
   virtual void acceptIncomingCall(const QString &remoteUsername) = 0;
   virtual void rejectIncomingCall() = 0;
   virtual void cameraEnabledChanged(bool cameraEnabled) = 0;
 
+signals:
 
- signals:
-  // void messageSent(const QJsonObject& message); //Pas aencore utilisé
-  void messageReceived(const Message& message);
-  void messageError(const QString& error);
-  void conversationsLoaded(const QList<Message>& messages);
+  void callError(const QString &error);
 
   void incomingCallReceived(const QString &callerUuid);
   void incomingCallCancelled(const QString &callerUuid);
 
-
-  void callReceived(const QString &callUuid, const QString& callerUuid);
-  void callStarted(const QString &callUuid);
-  void callAccepted(const QString& callUuid, const QString& callerUuid);
-  void callEnded(const QString& callUuid, const QString& reason);
-  void callError(const QString& error);
+  void openCallWindow(const QString &remoteUsername);
+  void closeCallWindow();
 
   void isContactConnectedChanged(bool isConnected);
   void onCameraEnabledChanged(bool cameraEnabled);
-
-  void openCallWindow(const QString &remoteUsername);
-  void closeCallWindow();
-  
-  void connectionUpdate(ServerType server, bool status);
-
-
-  
 };
 
 #endif

@@ -3,6 +3,7 @@
 #include "PacketHelper.h"
 #include "Repositories/UserRepository.h"
 #include <optional>
+#include <unordered_set>
 
 std::optional<std::string> ContactService::addContact(const std::string &payload) {
 
@@ -74,8 +75,12 @@ std::optional<std::string> ContactService::searchUsers(const std::string &userUu
 
   auto result = userRepo_->search_by_name(userUuid, query);
 
-  if (!result.empty())
+  if (!result.empty()) {
+    for (User &user : result) {
+      user.status = contactSessionRegistry_->hasContactSession(user.uuid) ? "Online" : "Offline";
+    }
     return ResponseFormater::format_user_list_response("search_users_response", result);
+  }
   else
     return std::nullopt;
 }
@@ -103,17 +108,38 @@ std::optional<std::string> ContactService::updateStatus(
     const std::string status =
         PacketHelper::extractValue(payload, "status");
 
+    // Mes propres contacts (relation dans le sens userUuid -> contact).
     auto contacts = contactRepo_->find_contacts(userUuid);
+
+    // Les users qui m'ont ajouté sans que je les aie moi-même ajoutés
+    // (relation inverse) : eux aussi doivent être notifiés de mon changement de statut.
+    auto contactOwners = contactRepo_->find_contact_owners(userUuid);
+
+    // Fusion en évitant les doublons (un contact peut apparaître dans les deux listes
+    // si la relation est déjà réciproque).
+    std::unordered_set<std::string> notifiedUuids;
+    std::vector<User> recipients;
+
+    for (User &contact : contacts) {
+        if (notifiedUuids.insert(contact.uuid).second) {
+            recipients.push_back(contact);
+        }
+    }
+    for (User &owner : contactOwners) {
+        if (notifiedUuids.insert(owner.uuid).second) {
+            recipients.push_back(owner);
+        }
+    }
 
     const std::string notification =
         ResponseFormater::format_contact_status_update_response(
             userUuid,
             status);
 
-    for (User &contact : contacts) {
-        if (contactSessionRegistry_->hasContactSession(contact.uuid)) {
+    for (const User &recipient : recipients) {
+        if (contactSessionRegistry_->hasContactSession(recipient.uuid)) {
             contactSessionRegistry_->sendMessage(
-                contact.uuid,
+                recipient.uuid,
                 notification);
         }
     }

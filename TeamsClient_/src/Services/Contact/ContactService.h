@@ -4,7 +4,7 @@
 #include <QJsonObject>
 #include <QList>
 #include <QObject>
-#include <QtCore/qhashfunctions.h>
+#include <QHashFunctions>
 
 #include "../../Repositories/UserRepository.h"
 #include "../Interfaces/IContactService.h"
@@ -20,25 +20,25 @@
 class ContactService : public IContactService {
   Q_OBJECT
 public:
-  explicit ContactService(NetworkService *network = nullptr,
-                          UserRepository *userRepo = nullptr,
+  explicit ContactService(NetworkService *network = nullptr, UserRepository *userRepo = nullptr,
                           QObject *parent = nullptr);
 
   void searchUsers(const QString &query) override;
   void resolveUserByUuid(const QString &uuid) override;
+
   void saveContact(const User &user) override;
-  void removeContact(const QString &uuid) override;
   void deleteAll() override;
+
   void updateLastReadAt(const QString &uuid) override;
+
   void disconnectFromServer() override;
 
-
-
 private:
-
   void handleServerResponse(const QJsonObject &root);
+
   void loadContactsFromServer();
   void loadContactsFromDatabase();
+
   void persistContacts(const QList<User> &users);
   QList<User> parseUsersArray(const QJsonArray &array);
 

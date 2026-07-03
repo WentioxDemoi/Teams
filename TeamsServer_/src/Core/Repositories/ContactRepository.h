@@ -16,7 +16,9 @@ public:
 
   virtual bool remove(const std::string &userUuid, const std::string &contactUuid);
 
+  virtual std::vector<User> find_contact_owners(const std::string &userUuid);
   virtual std::vector<User> find_contacts(const std::string &userUuid);
+
   virtual bool update_last_read_at(const std::string &userUuid, const std::string &contactUuid,
                                    const std::string &lastReadAt);
   virtual ~ContactRepository() = default;

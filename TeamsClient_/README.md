@@ -113,4 +113,5 @@ ctest -V # Ou alors ./TeamsClient_Tests
 - Créer db et services associés 
 - Faire tests unitaires
 - Lorsqu'on se connecte au même compte avec deux instance en même temps, on casse la session, il faut redémarrer le software
+- problème lors de la fermeture du software après un appel. Le software reste actif et ne se shutdown pas
 

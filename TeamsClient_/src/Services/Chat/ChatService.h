@@ -1,13 +1,13 @@
 #ifndef CHATSERVICE_H
 #define CHATSERVICE_H
 
+#include "Interfaces/ICallService.h"
+#include "Interfaces/IChatService.h"
+#include "Interfaces/IContactService.h"
+#include "Interfaces/IMessageService.h"
+#include "Message.h"
 #include <QObject>
 #include <QtCore/qcoreapplication.h>
-#include "Interfaces/IChatService.h"
-#include "Interfaces/IMessageService.h"
-#include "Interfaces/IContactService.h"
-#include "Interfaces/ICallService.h"
-#include "Message.h"
 
 /**
  * @class ChatService
@@ -18,28 +18,28 @@
  */
 class ChatService : public IChatService {
   Q_OBJECT
- public:
-  explicit ChatService(IMessageService* messageService = nullptr,
-                       ICallService* callService = nullptr,
-                       QObject* parent = nullptr);
+public:
+  explicit ChatService(IMessageService *messageService = nullptr, ICallService *callService = nullptr,
+                       QObject *parent = nullptr);
 
-  void sendMessage(const Message& message) override;
+  // ---------- Message Service ----------
+  void sendMessage(const Message &message) override;
   void loadConversationsFromDatabaseAndServer() override;
 
+  // ---------- Call Service ----------
   void startCall(const QString &contactUuid, const QString &contactUsername) override;
   void hangup() override;
+
   void acceptIncomingCall(const QString &remoteUsername) override;
   void rejectIncomingCall() override;
-  void cameraEnabledChanged(bool cameraEnabled) override; 
+
+  void cameraEnabledChanged(bool cameraEnabled) override;
 
   void disconnectFromServer() override;
 
-  private:
-
-
- private:
-  IMessageService* messageService_;
-  ICallService* callService_;
+private:
+  IMessageService *messageService_;
+  ICallService *callService_;
 };
 
 #endif

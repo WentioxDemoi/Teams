@@ -1,16 +1,14 @@
 #include "ChatViewModel.h"
-
-#include <QtCore/Qlist.h>
-#include <QtCore/qdebug.h>
-
-#include <QUuid>
-
 #include "../Models/Message.h"
 #include "Interfaces/IChatService.h"
 #include "Interfaces/IContactService.h"
 #include "ModelLocator.h"
 #include "ServiceLocator.h"
 #include "StateLocator.h"
+
+#include <QList>
+#include <QDebug>
+#include <QUuid>
 
 ChatViewModel::ChatViewModel(ContactList *contactList, IChatService *chatService, IContactService *contactService,
                              SessionState *sessionState, SearchResults *searchResults, QObject *parent)
@@ -24,8 +22,8 @@ ChatViewModel::ChatViewModel(ContactList *contactList, IChatService *chatService
   connect(sessionState_, &SessionState::onApplicationQuit, this, &ChatViewModel::onApplicationQuit);
 
   connect(chatService_, &IChatService::conversationsLoaded, this, &ChatViewModel::onConversationsLoaded);
-  connect(chatService_, &IChatService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
   connect(chatService_, &IChatService::messageReceived, this, &ChatViewModel::onMessageReceived);
+  
   connect(chatService_, &IChatService::incomingCallReceived, this, &ChatViewModel::onIncomingCallReceived);
   connect(chatService_, &IChatService::incomingCallCancelled, this, &ChatViewModel::onIncomingCallCancelled);
   
@@ -33,8 +31,6 @@ ChatViewModel::ChatViewModel(ContactList *contactList, IChatService *chatService
   connect(contactService_, &IContactService::contactsLoaded, this, &ChatViewModel::onContactsLoaded);
   connect(contactService_, &IContactService::userResolved, this, &ChatViewModel::onUserResolved);
   connect(contactService_, &IContactService::contactStatusUpdated, this, &ChatViewModel::onContactStatusUpdated);
-  connect(contactService_, &IContactService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
-  connect(contactService_, &IContactService::connectionUpdate, sessionState_, &SessionState::onServerConnectionUpdate);
   connect(contactService_, &IContactService::usersSearchLoaded, searchResults_, &SearchResults::onUsersSearchLoaded);
 }
 
@@ -72,6 +68,7 @@ void ChatViewModel::selectUser(const QString &userUuid) {
       contactList_->addUser(user);
       contactService_->saveContact(user);
       selectedContact_ = contactList_->toVariantMap(user);
+      // Ici on ne récupère pas le status de l'utilisateur, il faudra faire un call vers le serveur pour récupérer le status de l'utilisateur
       // contactService_-> // Créer un méthode pour récupérer le status de l'utilisateur.
     }
   }
@@ -82,6 +79,9 @@ void ChatViewModel::selectUser(const QString &userUuid) {
   emit messageListChanged();
 }
 
+// Envoi d'un message dans la conversation actuellement sélectionnée.
+// L'affichage local (currentMessageList_/contactList_) est mis à jour avant
+// même la confirmation serveur, chatService_ se charge ensuite de l'envoi réseau.
 void ChatViewModel::sendMessage(const QString &content) {
   if (!currentMessageList_ || selectedContact_.isEmpty() || content.trimmed().isEmpty())
     return;
@@ -95,6 +95,7 @@ void ChatViewModel::sendMessage(const QString &content) {
   }
 }
 
+// Callback appelé une fois la liste des contacts reçue (DB locale ou serveur).
 void ChatViewModel::onContactsLoaded(const QList<User> &contacts) {
   for (const User &contact : contacts) {
     contactList_->addUser(contact);
@@ -118,6 +119,8 @@ void ChatViewModel::onConversationsLoaded(const QList<Message> &messages) {
 
   QHash<QString, int> unreadCounts;
 
+  // Répartit chaque message dans la conversation correspondante et compte
+  // au passage les messages non lus (timestamp plus récent que lastReadAt).
   for (const Message &message : sortedMessages) {
     const QString conversationUuid = message.fromMe() ? message.receiverUuid() : message.senderUuid();
 
@@ -153,6 +156,8 @@ void ChatViewModel::searchUsers(const QString &query) {
   contactService_->searchUsers(query);
 }
 
+// Bascule currentMessageList_ sur la conversation demandée, en la créant
+// si elle n'existe pas encore (premier accès à ce contact).
 void ChatViewModel::activateConversation(const QString &userUuid) {
   if (!messagesByUuid_.contains(userUuid))
     messagesByUuid_.insert(userUuid, new MessageList(this));
@@ -160,6 +165,9 @@ void ChatViewModel::activateConversation(const QString &userUuid) {
   currentMessageList_ = messagesByUuid_[userUuid];
 }
 
+// Réception d'un message en temps réel. Si l'expéditeur n'est pas encore un
+// contact connu, le message/compteur non-lu est mis en attente le temps que
+// onUserResolved() confirme l'identité du contact.
 void ChatViewModel::onMessageReceived(const Message &message) {
   qDebug() << "[ChatViewModel] Message Received";
 
@@ -184,6 +192,9 @@ void ChatViewModel::onMessageReceived(const Message &message) {
   }
 }
 
+// Callback appelé une fois qu'un uuid inconnu a été résolu en User complet.
+// Vide au passage les états en attente (message/unread/appel entrant) posés
+// par onMessageReceived() ou onIncomingCallReceived() pour ce même contact.
 void ChatViewModel::onUserResolved(const User &user) {
   contactList_->addUser(user);
 
@@ -207,6 +218,8 @@ void ChatViewModel::onUserResolved(const User &user) {
   emit messageListChanged();
 }
 
+// Mise à jour du statut (online/offline) d'un contact, avec rafraîchissement
+// de selectedContact_ si c'est justement le contact affiché à l'écran.
 void ChatViewModel::onContactStatusUpdated(const QString &uuid, const QString &status) {
   if (!contactList_)
     return;
@@ -229,6 +242,8 @@ void ChatViewModel::onApplicationQuit() {
     contactService_->disconnectFromServer();
 }
 
+// Initie un appel sortant, avec garde-fous côté UI: uuid valide et contact
+// effectivement en ligne avant de déléguer à chatService_.
 void ChatViewModel::startCall(const QString &contactUuid, const QString &contactUsername) {
 
 if (contactUuid.trimmed().isEmpty()) {
@@ -242,6 +257,8 @@ if (contactUuid.trimmed().isEmpty()) {
     chatService_->startCall(contactUuid, contactUsername);
   }
 
+// Appel entrant reçu: si le contact est déjà connu on affiche le popup direct,
+// sinon on le résout d'abord (voir onUserResolved qui finalise l'affichage).
 void ChatViewModel::onIncomingCallReceived(const QString &callerUuid)
 {
     if (!contactList_)
@@ -275,6 +292,7 @@ void ChatViewModel::onIncomingCallCancelled(const QString &callerUuid) {
   emit cancelIncomingCall(contact);
 }
 
+// Acceptation d'un appel entrant depuis le popup UI.
 void ChatViewModel::acceptIncomingCall(const QString &remoteUsername) {
   if (chatService_) {
     chatService_->acceptIncomingCall(remoteUsername);
@@ -282,6 +300,7 @@ void ChatViewModel::acceptIncomingCall(const QString &remoteUsername) {
   }
 }
 
+// Refus d'un appel entrant depuis le popup UI.
 void ChatViewModel::rejectIncomingCall() {
   if (chatService_) {
     chatService_->rejectIncomingCall();

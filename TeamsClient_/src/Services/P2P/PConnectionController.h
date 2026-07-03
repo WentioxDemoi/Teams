@@ -53,6 +53,7 @@ private:
   webrtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;
 
   webrtc::scoped_refptr<webrtc::AudioTrackInterface> audioTrack_;
+  webrtc::scoped_refptr<webrtc::RtpSenderInterface> audioSender_;
 
   // observer_ et peer_ déclarés EN DERNIER → détruits EN PREMIER, threads encore vivants.
   webrtc::scoped_refptr<PConnectionObserver> observer_;

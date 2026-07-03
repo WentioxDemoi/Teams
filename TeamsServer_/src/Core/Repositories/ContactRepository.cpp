@@ -152,3 +152,50 @@ bool ContactRepository::update_last_read_at(
     throw;
   }
 }
+
+// Inverse de find_contacts : on part de contact_uuid == userUuid
+// pour récupérer les users qui M'ONT en contact (user_uuid côté relation),
+// sans présumer que la relation est réciproque.
+std::vector<User> ContactRepository::find_contact_owners(
+    const std::string& userUuid) {
+
+  auto conn = databaseManager_.acquire_connection();
+
+  try {
+    std::vector<User> users;
+
+    std::string query = R"(
+      SELECT u.*
+      FROM contacts c
+      JOIN users u
+        ON u.uuid = c.user_uuid
+      WHERE c.contact_uuid = $1
+      ORDER BY u.first_name
+    )";
+
+    pqxx::work txn(*conn);
+
+    pqxx::result result = txn.exec_params(query, userUuid);
+
+    for (const auto& row : result) {
+      User user;
+
+      user.uuid = row["uuid"].as<std::string>();
+      user.firstName = row["first_name"].as<std::string>();
+      user.lastName = row["last_name"].as<std::string>();
+      user.email = row["email"].as<std::string>();
+
+      users.push_back(user);
+    }
+
+    txn.commit();
+
+    databaseManager_.release_connection(conn);
+
+    return users;
+
+  } catch (...) {
+    databaseManager_.release_connection(conn);
+    throw;
+  }
+}

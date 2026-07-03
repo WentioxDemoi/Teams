@@ -1,12 +1,12 @@
 #ifndef MESSAGESERVICE_H
 #define MESSAGESERVICE_H
 
+#include "Repositories/MessageRepository.h"
+#include "Interfaces/IMessageService.h"
+#include "Network/NetworkService.h"
+
 #include <QJsonObject>
 #include <QObject>
-#include "../Interfaces/IMessageService.h"
-#include "../Network/NetworkService.h"
-#include "../../Repositories/MessageRepository.h"
-#include "../../Core/State/UserState.h"
 
 /**
  * @class MessageService
@@ -16,26 +16,26 @@
  */
 class MessageService : public IMessageService {
   Q_OBJECT
- public:
-  explicit MessageService(NetworkService* network = nullptr,
-                          MessageRepository* messageRepo = nullptr,
-                          QObject* parent = nullptr);
+public:
+  explicit MessageService(NetworkService *network = nullptr, MessageRepository *messageRepo = nullptr,
+                          QObject *parent = nullptr);
 
   void loadConversationsFromServer() override;
-  void sendMessage(const Message& message) override;
-  bool saveMessage(const Message& message) override;
-  void deleteMessage(const QString& uuid) override;
-  void deleteAll() override;
-  void disconnectFromServer() override;
-  void handleServerResponse(const QJsonObject& root);
+  void sendMessage(const Message &message) override;
 
- private:
- void loadConversationsFromDatabase();
-  void persistMessages(const QList<Message>& messages);
+  void disconnectFromServer() override;
+  void deleteAll() override;
+
+private:
+  bool saveMessage(const Message &message);
+
+  void handleServerResponse(const QJsonObject &root);
+  void loadConversationsFromDatabase();
+  void persistMessages(const QList<Message> &messages);
   QList<Message> parseMessagesArray(const QJsonArray &array);
 
-  NetworkService* network_;
-  MessageRepository* messageRepo_;
+  NetworkService *network_;
+  MessageRepository *messageRepo_;
 };
 
 #endif

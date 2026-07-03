@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @enum MessageType
+ * @enum WebRTCMessageType
  * @brief Types de serveurs utilisés par l'application.
  *
  * Définit les rôles des services backend (authentification, WebRTC, messages)

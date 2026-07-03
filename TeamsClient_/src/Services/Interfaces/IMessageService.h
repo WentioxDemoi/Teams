@@ -22,21 +22,15 @@ class IMessageService : public QObject {
   explicit IMessageService(QObject* parent = nullptr) : QObject(parent) {};
   virtual ~IMessageService() = default;
 
- public slots:
   virtual void loadConversationsFromServer() = 0;
   virtual void sendMessage(const Message& message) = 0;
-  virtual bool saveMessage(const Message& message) = 0;
-  virtual void deleteMessage(const QString& uuid) = 0;
-  virtual void deleteAll() = 0;
+
   virtual void disconnectFromServer() = 0;
+  virtual void deleteAll() = 0;
 
  signals:
   void conversationsLoaded(const QList<Message>& messages);
-  // void messageSent(const Message& message); //Pas aencore utilisé
-  void messageSaved(const Message& message);
-  void messageDeleted(const QString& uuid);
   void messageError(const QString& error);
-  void connectionUpdate(ServerType server, bool status);
   void messageReceived(const Message& message);
 };
 

@@ -8,36 +8,27 @@
 #include <QDebug>
 #include <QtCore/qcoreapplication.h>
 
-ChatService::ChatService(IMessageService* messageService,
-                         ICallService* callService,
-                         QObject* parent)
+ChatService::ChatService(IMessageService *messageService, ICallService *callService, QObject *parent)
     : IChatService(parent),
       messageService_(messageService ? messageService : ServiceLocator::instance().getService<IMessageService>()),
       callService_(callService ? callService : ServiceLocator::instance().getService<ICallService>()) {
   Q_ASSERT(messageService_);
   Q_ASSERT(callService_);
 
-  // connect(messageService_, &IMessageService::messageSent, this, &IChatService::messageSent);
+  connect(messageService_, &IMessageService::messageError, this, &IChatService::messageError);
   connect(messageService_, &IMessageService::messageReceived, this, &IChatService::messageReceived);
   connect(messageService_, &IMessageService::conversationsLoaded, this, &IChatService::conversationsLoaded);
-  connect(messageService_, &IMessageService::messageError, this, &IChatService::messageError);
-  connect(messageService_, &IMessageService::connectionUpdate, this, &IChatService::connectionUpdate);
 
-  connect(callService_, &ICallService::callStarted, this, &IChatService::callStarted);
-  connect(callService_, &ICallService::callAccepted, this, &IChatService::callAccepted);
-  connect(callService_, &ICallService::callEnded, this, &IChatService::callEnded);
   connect(callService_, &ICallService::callError, this, &IChatService::callError);
-  connect(callService_, &ICallService::connectionUpdate, this, &IChatService::connectionUpdate);
   connect(callService_, &ICallService::incomingCallReceived, this, &IChatService::incomingCallReceived);
   connect(callService_, &ICallService::incomingCallCancelled, this, &IChatService::incomingCallCancelled);
   connect(callService_, &ICallService::openCallWindow, this, &IChatService::openCallWindow);
   connect(callService_, &ICallService::closeCallWindow, this, &IChatService::closeCallWindow);
   connect(callService_, &ICallService::isContactConnectedChanged, this, &IChatService::isContactConnectedChanged);
   connect(callService_, &ICallService::onCameraEnabledChanged, this, &IChatService::onCameraEnabledChanged);
-  
 }
 
-void ChatService::sendMessage(const Message& message) {
+void ChatService::sendMessage(const Message &message) {
   if (!messageService_) {
     emit messageError("Service de messagerie indisponible");
     return;
@@ -61,6 +52,14 @@ void ChatService::startCall(const QString &contactUuid, const QString &contactUs
   callService_->startCall(contactUuid, contactUsername);
 }
 
+void ChatService::hangup() {
+  if (!callService_) {
+    emit callError("Service d'appel indisponible");
+    return;
+  }
+  callService_->hangup();
+}
+
 void ChatService::acceptIncomingCall(const QString &remoteUsername) {
   if (!callService_) {
     emit callError("Service d'appel indisponible");
@@ -77,23 +76,19 @@ void ChatService::rejectIncomingCall() {
   callService_->rejectCall();
 }
 
-void ChatService::hangup() {
+void ChatService::cameraEnabledChanged(bool cameraEnabled) {
   if (!callService_) {
     emit callError("Service d'appel indisponible");
     return;
   }
-  callService_->hangup();
+  callService_->cameraEnabledChanged(cameraEnabled);
 }
 
 void ChatService::disconnectFromServer() {
-  if (messageService_) {
-    messageService_->disconnectFromServer();
+  if (!messageService_ || !callService_) {
+    emit messageError("Service de messagerie indisponible");
+    emit callError("Service d'appel indisponible");
   }
-  if (callService_) {
-    callService_->disconnectFromServer();
-  }
-}
-
-void ChatService::cameraEnabledChanged(bool cameraEnabled) {
-  callService_->cameraEnabledChanged(cameraEnabled);
+  messageService_->disconnectFromServer();
+  callService_->disconnectFromServer();
 }
