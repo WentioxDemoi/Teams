@@ -98,6 +98,8 @@ void PConnectionController::addIceCandidate(const std::string &candidate, const 
   }
 }
 
+// Ici c'est pas bon, on ne respecte pas la règle des 5. Lorsqu'on déclare un destructeur, on doit tout déclarer.
+// SOlution, suprimer le destructeur et ré-organiser dans le .h les variables pour que l'ordre de destrcution soit bon
 PConnectionController::~PConnectionController() {
   if (peer_) {
     if (audioSender_) {
