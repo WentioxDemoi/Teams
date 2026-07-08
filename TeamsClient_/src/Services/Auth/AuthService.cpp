@@ -1,70 +1,116 @@
 #include "AuthService.h"
-#include "../../Utils/TokenManager.h"
-#include "../../Core/ServiceLocator.h"
+#include "ServiceLocator.h"
 
+#include <cstdlib>
+#include "State/SessionState.h"
+#include "TokenManager.h"
 
-AuthService::AuthService(IAuthNetworkService* network,
-                         IUserService* userService,
-                         ITokenManager* token,
-                         QObject* parent)
+#include "Network/NetworkService.h"
+
+AuthService::AuthService(NetworkService* network, ILocalUserService* localUserService, IMessageService* messageService,
+                         ITokenManager* tokenManager, QObject* parent)
     : IAuthService(parent),
-      network_(network ? network : ServiceLocator::instance().getService<IAuthNetworkService>()),
-      userService_(userService ? userService : ServiceLocator::instance().getService<IUserService>()),
-      token_(token ? token : &TokenManager::instance())
+      network_(network ? network : new NetworkService(8080, parent)),
+      localUserService_(localUserService ? localUserService : ServiceLocator::instance().getService<ILocalUserService>()),
+      messageService_(messageService ? messageService : ServiceLocator::instance().getService<IMessageService>()),
+      tokenManager_(tokenManager ? tokenManager : &TokenManager::instance()) {
+  Q_ASSERT(network_);
+  Q_ASSERT(localUserService_);
+  Q_ASSERT(tokenManager_);
+
+  connect(network_, &NetworkService::networkError, this, &IAuthService::authError);
+  connect(network_, &NetworkService::connectionUpdate, &SessionState::instance(),  &SessionState::onServerConnectionUpdate);
+  connect(network_, &NetworkService::jsonReceived, this, &AuthService::handleServerResponse);
+
+  connect(this, &IAuthService::errorToken, this, &AuthService::handleTokenError);
+
+  connect(localUserService_, &ILocalUserService::localUserSaved, this, &AuthService::handleLocalUserSaved);
+}
+
+void AuthService::loginUser(const QString& email, const QString& password) {
+  network_->send({{"type", "login"}, {"email", email}, {"password", password}});
+}
+
+// Lors du register d'un user, lorsqu'il est auth (et n'a pas encore d'amis), son status de présence n'est envoyé à personne. Voir fonction selectUser dans ChatViewModel
+void AuthService::registerUser(const QString& firstName, const QString& lastName,
+                               const QString& email, const QString& password) {
+  network_->send({{"type", "register"},
+                  {"firstName", firstName},
+                  {"lastName", lastName},
+                  {"email", email},
+                  {"password", password}});
+}
+
+void AuthService::loginWithToken(void)
 {
-    Q_ASSERT(network_);
-    Q_ASSERT(userService_);
-    Q_ASSERT(token_);
-
-    connect(network_, &IAuthNetworkService::authSuccess, userService_,
-            &IUserService::saveUser);
-    connect(userService_, &IUserService::userSaved, this,
-            &IAuthService::onUserSaved);
-
-    connect(network_, &IAuthNetworkService::authError, this,
-            &IAuthService::authError);
-    connect(network_, &IAuthNetworkService::invalidToken, this,
-            &IAuthService::errorToken);
-    connect(userService_, &IUserService::error, this,
-            &IAuthService::errorUserService);
-    connect(network_, &IAuthNetworkService::registerWithServer4WebRTC, this, &IAuthService::registerWithServer4WebRTC);
-}
-
-void AuthService::start() {
-  if (!token_->token.isEmpty())
-    network_->validateToken(token_->token);
-  else
-    errorToken("No token found");
-}
-
-void AuthService::loginUser(const QString &email, const QString &password) {
-  network_->loginUser(email, password);
-}
-
-void AuthService::registerUser(const QString &email, const QString &username,
-                               const QString &password) {
-  network_->registerUser(email, username, password);
-}
-
-void AuthService::onUserSaved(const User &user) {
-  User localUser = user;
-
-  if (!user.token().isEmpty()) {
-    token_->writeToken(localUser.token());
-    localUser.clearToken();
-    emit authSuccess(localUser);
+  // Temporaire pour. éviter d'avoir à tapper le code du PC à chaque démarrage pour que l'app ait accès au token
+  if (/*!*/tokenManager_->token.isEmpty()) {
+    //network_->send({{"type", "validate_token"}, {"token", tokenManager_->token}});
+    network_->send({{"type", "validate_token"}, {"token", "00f3f79fdc6f30cf40a50b078102caef"}});
   } else {
-    qDebug() << "Pas de token dans le user (Ligne 46 AuthService)";
+      handleTokenError("No token found");
   }
 }
 
-void AuthService::errorToken(const QString &error) {
-  qDebug() << error;
-  if (error.contains("Token is not valid"))
-    token_->deleteToken();
+void AuthService::handleServerResponse(const QJsonObject& root) {
+  const QString type = root["type"].toString();
 
-  userService_->deleteAll();
+  if (root.contains("error") && root["error"].isString()) {
+    const QString error = root["error"].toString();
+
+    if (type == "validate_token_response" && error.contains("invalid token", Qt::CaseInsensitive)) {
+      emit errorToken("Token is not valid");
+      return;
+    }
+
+    emit authError(error);
+    return;
+  }
+
+  if (type != "login_response" && type != "register_response" &&
+      type != "validate_token_response") {
+    qDebug() << "[AuthService] Unknown type.\n";
+    return;
+  }
+
+  if (!root.contains("data") || !root["data"].isObject()) {
+    emit authError("Missing data field in server response");
+    return;
+  }
+
+  const User user = User::fromJson(root["data"].toObject());
+
+  if (!user.isValid()) {
+    emit authError("Invalid user data received from server");
+    return;
+  }
+
+  if (user.token().isEmpty()) {
+    emit authError("No token received from server");
+    return;
+  }
+
+  User me = user;
+  me.setIsMe(true);
+  tokenManager_->writeToken(me.token());
+  localUserService_->saveLocalUser(me);
+}
+
+void AuthService::handleLocalUserSaved(const User& user) {
+  qDebug() << "AuthService::handleLocalUserSaved called for" << user.uuid();
+  User localUser = user;
+  localUser.clearToken();
+  emit authSuccess(localUser);
+}
+
+void AuthService::handleTokenError(const QString& error) {
+  qDebug() << error;
+  if (error.contains("Token is not valid")) {
+    tokenManager_->deleteToken();
+  }
+  localUserService_->deleteAll(); // Pour l'instant on supprime tous les contacts via localUserService. A terme il faudrait que chaque service supprimer ce qu'il enregistre.
+  messageService_->deleteAll();
   emit noTokenFound();
 }
 
-void AuthService::errorUserService(const QString &error) { qDebug() << error; }
+void AuthService::disconnectFromServer() { network_->disconnectFromServer(); }

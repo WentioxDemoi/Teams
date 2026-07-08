@@ -1,12 +1,17 @@
 #include "AuthHandler.h"
+#include "../Utils/ResponseFormater.h"
+#include "../includes.h"
+#include "../Utils/PacketHelper.h"
+#include "../Core/Repositories/UserRepository.h"
+#include "../Core/Models/User.h"
+
 
 void AuthHandler::handle_login(std::string payload, ResponseCallback respond) {
-  auto email = HandlerTools::extractValue(payload, "email");
-  auto password = HandlerTools::extractValue(payload, "password");
+  User user = user_from_json(payload);
 
-  asio::post(worker_pool_, [this, email, password, respond]() {
+  asio::post(worker_pool_, [this, user, respond]() {
     try {
-      auto response = authService_->loginUser(email, password);
+      auto response = authService_->loginUser(user);
       std::string result;
       if (!response.has_value()) {
         result =
@@ -30,13 +35,11 @@ void AuthHandler::handle_login(std::string payload, ResponseCallback respond) {
 
 void AuthHandler::handle_register(std::string payload,
                                   ResponseCallback respond) {
-  auto email = HandlerTools::extractValue(payload, "email");
-  auto username = HandlerTools::extractValue(payload, "username");
-  auto password = HandlerTools::extractValue(payload, "password");
+  User user = user_from_json(payload);
 
-  asio::post(worker_pool_, [this, email, username, password, respond]() {
+  asio::post(worker_pool_, [this, user, respond]() {
     try {
-      auto response = authService_->registerUser(username, email, password);
+      auto response = authService_->registerUser(user);
       std::string result;
       if (!response.has_value()) {
         result =
@@ -58,7 +61,7 @@ void AuthHandler::handle_register(std::string payload,
 }
 
 void AuthHandler::handle_token(std::string payload, ResponseCallback respond) {
-  auto token = HandlerTools::extractValue(payload, "token");
+  auto token = PacketHelper::extractValue(payload, "token");
 
   asio::post(worker_pool_, [this, token, respond]() {
     try {
@@ -84,7 +87,7 @@ void AuthHandler::handle_token(std::string payload, ResponseCallback respond) {
 }
 
 void AuthHandler::handle_type(std::string payload, ResponseCallback respond) {
-  std::string type = HandlerTools::extractValue(payload, "type");
+  std::string type = PacketHelper::extractValue(payload, "type");
   std::string result;
   std::cout << "type : " << type << std::endl;
   if (type.empty())

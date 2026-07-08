@@ -6,30 +6,30 @@
 #include "../../includes.h"
 
 class WebRTCRegistry;
+class AuthService;
 
 class WebRTCSession : public std::enable_shared_from_this<WebRTCSession> {
 public:
-    WebRTCSession(tcp::socket socket, ssl::context &ctx,
-                  std::shared_ptr<WebRTCHandler> handler,
-                  std::shared_ptr<WebRTCRegistry> registry)
-        : stream_(std::move(socket), ctx), handler_(handler), registry_(registry) {}
+  WebRTCSession(tcp::socket socket, ssl::context &ctx, std::shared_ptr<WebRTCHandler> webRTCHandler,
+                std::shared_ptr<WebRTCRegistry> webRTCSessionRegistry, std::shared_ptr<AuthService> authService)
+      : stream_(std::move(socket), ctx), webRTCHandler_(webRTCHandler), webRTCSessionRegistry_(webRTCSessionRegistry),
+        authService_(authService) {}
 
-    void start();
-    void send(const std::string& payload); // Appelé par le registry pour router un message
+  void start();
+  void send(const std::string &payload); // Appelé par le registry pour router un message
 
-    const std::string& uuid() const { return uuid_; }
-    void set_uuid(std::string uuid) { uuid_ = uuid; } 
-    ssl::stream<tcp::socket> stream_;
+  ssl::stream<tcp::socket> stream_;
 
 private:
-    void do_read();
-    void handle_response(std::string payload);
-    std::string read_buffer_;
+  void do_read();
+  void handle_response(std::string payload);
+  std::string read_buffer_;
 
-    
-    std::array<char, 4096> buffer_;
-    std::shared_ptr<WebRTCHandler> handler_;
-    std::shared_ptr<WebRTCRegistry> registry_;
-    std::string uuid_; // Vide tant que non enregistré
+  boost::asio::streambuf buffer_;
+  std::shared_ptr<WebRTCHandler> webRTCHandler_;
+  std::shared_ptr<WebRTCRegistry> webRTCSessionRegistry_;
+  std::shared_ptr<AuthService> authService_;
+  bool isFirstMessage_ = true;
+  std::string user_uuid_;
 };
 #endif

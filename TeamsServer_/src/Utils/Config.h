@@ -25,6 +25,7 @@ public:
 
   // Table names
   std::string table_users() const { return table_users_; }
+  std::string table_contacts() const { return table_contacts_; }
   std::string table_channels() const { return table_channels_; }
   std::string table_channel_members() const { return table_channel_members_; }
   std::string table_messages() const { return table_messages_; }
@@ -72,6 +73,7 @@ private:
 
   // Tables
   std::string table_users_;
+  std::string table_contacts_;
   std::string table_channels_;
   std::string table_channel_members_;
   std::string table_messages_;

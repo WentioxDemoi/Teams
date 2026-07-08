@@ -1,12 +1,16 @@
 #include "DatabaseManager.h"
 
 #include <QSqlQuery>
+#include <QStandardPaths>
+#include <QDir>
 
 DatabaseManager::DatabaseManager() {
+  QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+  QDir().mkpath(dbPath);
   if (!QSqlDatabase::contains("AppConnection")) {
     qDebug() << "Création de la connexion AppConnection";
     db_ = QSqlDatabase::addDatabase("QSQLITE", "AppConnection");
-    db_.setDatabaseName("app_database.db");
+    db_.setDatabaseName(dbPath + "/app_database.db");
   } else {
     qDebug() << "Connexion AppConnection existe déjà";
     db_ = QSqlDatabase::database("AppConnection");
@@ -20,20 +24,37 @@ DatabaseManager::DatabaseManager() {
   QSqlQuery query(db_);
   QString createTable = R"(
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT NOT NULL,
-            username TEXT,
-            status TEXT,
-            is_me BOOLEAN DEFAULT 0,
-            token TEXT,
-            uuid TEXT UNIQUE
-        )
+    email      TEXT NOT NULL,
+    first_name TEXT NOT NULL,
+    last_name  TEXT NOT NULL,
+    status     TEXT,
+    uuid       TEXT PRIMARY KEY,
+    is_me      INTEGER DEFAULT 0,
+    token      TEXT,
+    avatar     TEXT,
+    last_read_at TEXT);
     )";
 
   if (!query.exec(createTable)) {
     qDebug() << "Création table users échouée";
   } else {
     qDebug() << "Table users créée/vérifiée avec succès";
+  }
+
+  QString createMessageTable = R"(
+        CREATE TABLE IF NOT EXISTS messages (
+    uuid         TEXT PRIMARY KEY,
+    sender_uuid  TEXT NOT NULL,
+    receiver_uuid TEXT NOT NULL,
+    chat_type         TEXT,
+    content      TEXT,
+    timestamp    TEXT);
+    )";
+
+  if (!query.exec(createMessageTable)) {
+    qDebug() << "Création table messages échouée";
+  } else {
+    qDebug() << "Table messages créée/vérifiée avec succès";
   }
 }
 

@@ -11,6 +11,9 @@
 #include <QObject>
 #include <QSslError>
 #include <QSslSocket>
+#include <QQueue>
+#include "SessionEnum.h"
+#include "User.h"
 
 /**
  * @class NetworkService
@@ -31,15 +34,19 @@ class NetworkService : public QObject {
  signals:
   void jsonReceived(const QJsonObject& json);
   void networkError(const QString& error);
+  void connectionUpdate(ServerType server, bool status);
 
  private:
   void handleIncomingData(const QByteArray& data);
   void ensureConnected();
+  void auth(const User &user);
 
  private:
   QSslSocket socket_;
   QByteArray buffer_;
   qint16 port_;
+  QQueue<QJsonObject> pendingQueue_;
+  ServerType server_;
 };
 
 #endif

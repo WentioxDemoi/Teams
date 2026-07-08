@@ -1,6 +1,29 @@
 #include "NetworkService.h"
 
+#include "../../Core/State/UserState.h"
+#include "SessionEnum.h"
+
 NetworkService::NetworkService(qint16 port, QObject* parent) : QObject(parent), port_(port) {
+  switch (port) {
+    case 8080:
+      server_ = ServerType::Auth;
+      break;
+    case 8081:
+      server_ = ServerType::WebRTC;
+      break;
+    case 8082:
+      server_ = ServerType::Message;
+      break;
+    case 8083:
+      server_ = ServerType::Call;
+      break;
+    case 8084:
+      server_ = ServerType::Contact;
+      break;
+    default:
+      qDebug() << "Unknown enum (NetworkService)";
+  }
+
   connect(&socket_, &QSslSocket::readyRead, this, [this]() {
     buffer_ += socket_.readAll();
     while (buffer_.contains('\n')) {
@@ -13,6 +36,7 @@ NetworkService::NetworkService(qint16 port, QObject* parent) : QObject(parent), 
 
   connect(&socket_, &QSslSocket::disconnected, this, [this]() {
     buffer_.clear();
+    emit connectionUpdate(server_, false);
     qDebug() << "Disconnected from server with port" << port_;
   });
 
@@ -21,6 +45,14 @@ NetworkService::NetworkService(qint16 port, QObject* parent) : QObject(parent), 
             for (const auto& err : errors) qWarning() << "SSL error:" << err.errorString();
             socket_.ignoreSslErrors(errors);
           });
+
+  connect(&socket_, &QSslSocket::encrypted, this, [this]() {
+    qDebug() << "SSL ready -> flushing queue";
+    emit connectionUpdate(server_, true);
+    while (!pendingQueue_.isEmpty()) send(pendingQueue_.dequeue());
+  });
+
+  connect(&UserState::instance(), &UserState::localUserSaved, this, &NetworkService::auth);
 
   ensureConnected();
 }
@@ -42,6 +74,7 @@ void NetworkService::send(const QJsonObject& payload) {
 
   if (!socket_.isEncrypted()) {
     qWarning() << "Socket not encrypted yet, send deferred";
+    pendingQueue_.enqueue(payload);
     return;
   }
 
@@ -51,17 +84,30 @@ void NetworkService::send(const QJsonObject& payload) {
 }
 
 void NetworkService::handleIncomingData(const QByteArray& data) {
-  if (data.trimmed().isEmpty()) return;
+  if (data.isEmpty()) return;
 
-  QJsonParseError error;
-  QJsonDocument doc = QJsonDocument::fromJson(data, &error);
+  QJsonParseError parseError;
+  const QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
 
-  if (error.error != QJsonParseError::NoError || !doc.isObject()) {
+  if (parseError.error != QJsonParseError::NoError || !doc.isObject()) {
     emit networkError("Malformed JSON received from server");
     return;
   }
-  qDebug() << "WIIIIII";
-  emit jsonReceived(doc.object());
+
+  const QJsonObject root = doc.object();
+
+  if (!root.contains("type") || !root["type"].isString()) {
+    emit networkError("Missing or invalid type field in server response");
+    return;
+  }
+
+  emit jsonReceived(root);
+}
+
+void NetworkService::auth(const User &user) {
+  QJsonObject payload;
+  payload["token"] = user.token();
+  send(payload);
 }
 
 void NetworkService::disconnectFromServer() {
@@ -69,6 +115,5 @@ void NetworkService::disconnectFromServer() {
     socket_.disconnectFromHost();
     socket_.waitForDisconnected(3000);
   }
-  qDebug() << "Disconnected from server with port" << port_;
   buffer_.clear();
 }

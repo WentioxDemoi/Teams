@@ -3,37 +3,43 @@
 
 #include "../../Models/User.h"
 #include "../../Utils/Interfaces/ITokenManager.h"
-#include "../Interfaces/IAuthNetworkService.h"
 #include "../Interfaces/IAuthService.h"
-#include "../Interfaces/IUserService.h"
+#include "../Interfaces/ILocalUserService.h"
+#include "Interfaces/IMessageService.h"
+#include "Network/NetworkService.h"
 
 /**
  * @class AuthService
- * @brief Gère l'authentification des utilisateurs via AuthNetworkService.
+ * @brief Gère l'authentification des utilisateurs via NetworkService.
  *
  * Implémente IAuthService. Émet authSuccess ou authError selon le résultat.
  */
 class AuthService : public IAuthService {
   Q_OBJECT
 
- public:
-  explicit AuthService(IAuthNetworkService* network = nullptr, IUserService* userService = nullptr,
-                       ITokenManager* token = nullptr, QObject* parent = nullptr);
-  void start() override;
-  void loginUser(const QString& username, const QString& password) override;
+public:
+  explicit AuthService(NetworkService *network = nullptr,
+                       ILocalUserService *userService = nullptr,
+                       IMessageService *messageService = nullptr,
+                       ITokenManager *tokenManager = nullptr,
+                       QObject *parent = nullptr);
+  void loginUser(const QString &username, const QString &password) override;
 
-  void registerUser(const QString& email, const QString& username,
-                    const QString& password) override;
+  void registerUser(const QString &firstName, const QString &lastName,
+                    const QString &email, const QString &password) override;
+  void loginWithToken(void) override;
+  void disconnectFromServer() override;
 
- public slots:
-  void onUserSaved(const User& user) override;
-  void errorToken(const QString& error) override;
-  void errorUserService(const QString& error) override;
+private:
+  void handleServerResponse(const QJsonObject &root);
+  void handleLocalUserSaved(const User &user);
+  void handleTokenError(const QString &error);
 
- private:
-  IAuthNetworkService* network_;
-  ITokenManager* token_;
-  IUserService* userService_;
+private:
+  NetworkService *network_;
+  ILocalUserService *localUserService_;
+  IMessageService *messageService_;
+  ITokenManager *tokenManager_;
 };
 
 #endif

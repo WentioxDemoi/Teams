@@ -1,11 +1,8 @@
 #ifndef AUTHHANDLER_H
 #define AUTHHANDLER_H
 
-#include "../Core/Repositories/UserRepository.h"
 #include "../Core/Services/AuthService.h"
-#include "../Utils/ResponseFormater.h"
-#include "../includes.h"
-#include "HandlerTools.h"
+
 
 using ResponseCallback = std::function<void(std::string)>;
 
@@ -18,23 +15,22 @@ using ResponseCallback = std::function<void(std::string)>;
  * via un callback.
  */
 class AuthHandler {
-public:
+ public:
   void handle_login(std::string payload, ResponseCallback respond);
   void handle_register(std::string payload, ResponseCallback respond);
   void handle_token(std::string payload, ResponseCallback respond);
   void handle_type(std::string payload, ResponseCallback respond);
 
-  AuthHandler(ResponseCallback respond) : worker_pool_(Config::instance().worker_pool_size()) {
-    authService_ =
-        std::make_unique<AuthService>(std::make_unique<UserRepository>());
-  };
+  AuthHandler(std::shared_ptr<AuthService> authService)
+      : worker_pool_(Config::instance().worker_pool_size()),
+        authService_(authService) {};
   ~AuthHandler() = default;
 
-private:
+ private:
   asio::thread_pool worker_pool_;
 
-protected:
-  std::unique_ptr<AuthService> authService_;
+ protected:
+  std::shared_ptr<AuthService> authService_;
 };
 
 #endif

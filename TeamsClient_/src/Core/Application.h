@@ -1,13 +1,9 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-// Views
-#include <QApplication>
-#include <QDebug>
-#include <QFile>
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
 #include <QObject>
-
-#include "../Views/mainwindow.h"
 
 /**
  * @class Application
@@ -17,24 +13,24 @@
  * puis lance la boucle principale de l'application.
  */
 class Application {
- public:
-  Application(int& argc, char** argv);
-  ~Application() = default;
-  int run();
+public:
+    Application(int& argc, char** argv);
+    ~Application() = default;
+    int run();
 
-  Application(const Application&) = delete;
-  Application& operator=(const Application&) = delete;
+    Application(const Application&) = delete;
+    Application& operator=(const Application&) = delete;
 
- private:
-  QApplication qtApp;
-  QObject* appRoot;
-  MainWindow* mainWindow;
-  void initializePerms();
-  void initializeServices();
-  void initializeViews();
-  void initializeViewModels();
-  void initializeUI();
-  void connectViewModels();
+private:
+    QGuiApplication qtApp;      // QApplication → QGuiApplication
+    QQmlApplicationEngine engine;
+    QObject* appRoot = nullptr;
+
+    void initializePerms();
+    void initializeServices();
+    void initializeViewModels();
+    void initializeModels();
+    // void connectViewModels();
 };
 
 #endif

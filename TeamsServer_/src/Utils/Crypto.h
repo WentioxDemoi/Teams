@@ -50,6 +50,7 @@ public:
            ARGON2_OK;
   }
 
+  // A refactor en JWT
   static std::string generate_token() {
     static std::random_device rd;
     static std::mt19937 gen(rd());
@@ -61,32 +62,63 @@ public:
     return ss.str();
   }
 
-  static std::string generate_uuid() {
-    std::random_device rd;
+static std::string generate_uuid_v4() {
+    static std::mt19937 rng(std::random_device{}()); // initialisé une seule fois
     std::uniform_int_distribution<int> dist(0, 15);
     std::uniform_int_distribution<int> dist2(8, 11);
 
     std::stringstream ss;
     ss << std::hex;
-    for (int i = 0; i < 8; i++)
-      ss << dist(rd);
+    for (int i = 0; i < 8; i++)  ss << dist(rng);
     ss << "-";
-    for (int i = 0; i < 4; i++)
-      ss << dist(rd);
-    ss << "-4"; // version 4 UUID
-    for (int i = 0; i < 3; i++)
-      ss << dist(rd);
+    for (int i = 0; i < 4; i++)  ss << dist(rng);
+    ss << "-4";
+    for (int i = 0; i < 3; i++)  ss << dist(rng);
     ss << "-";
-    ss << dist2(rd); // variant
-    for (int i = 0; i < 3; i++)
-      ss << dist(rd);
+    ss << dist2(rng);
+    for (int i = 0; i < 3; i++)  ss << dist(rng);
     ss << "-";
-    for (int i = 0; i < 12; i++)
-      ss << dist(rd);
+    for (int i = 0; i < 12; i++) ss << dist(rng);
     return ss.str();
-  }
+}
+
+
+static std::string generate_uuid_v7() {
+    static std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<uint64_t> dist(0, 0xFFF);
+    std::uniform_int_distribution<uint64_t> dist64(0, 0x3FFFFFFFFFFFFFFF);
+
+    // Timestamp en millisecondes (48 bits)
+    auto now = std::chrono::system_clock::now();
+    uint64_t ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+        now.time_since_epoch()).count();
+
+    uint64_t rand_a = dist(rng);    // 12 bits
+    uint64_t rand_b = dist64(rng);  // 62 bits
+
+    std::stringstream ss;
+    ss << std::hex << std::setfill('0');
+
+    // time_high (32 bits)
+    ss << std::setw(8) << ((ms >> 16) & 0xFFFFFFFF);
+    ss << "-";
+    // time_mid (16 bits)
+    ss << std::setw(4) << (ms & 0xFFFF);
+    ss << "-";
+    // version (4 bits) + rand_a (12 bits)
+    ss << std::setw(4) << (0x7000 | rand_a);
+    ss << "-";
+    // variant (2 bits) + rand_b partiel (14 bits)
+    ss << std::setw(4) << (0x8000 | (rand_b >> 48));
+    ss << "-";
+    // rand_b restant (48 bits)
+    ss << std::setw(12) << (rand_b & 0xFFFFFFFFFFFF);
+
+    return ss.str();
+}
 
   Crypto() = delete;
 };
+
 
 #endif

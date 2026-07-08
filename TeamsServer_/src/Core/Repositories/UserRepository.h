@@ -28,6 +28,7 @@ public:
   virtual std::optional<User> find_by_uuid(const std::string &uuid);
   virtual std::optional<User> find_by_email(const std::string &email);
   virtual std::optional<User> find_by_token(const std::string &token);
+  virtual std::vector<User> search_by_name(const std::string &callerUuid, const std::string &name);
 
   virtual bool create(const User &user);
   virtual bool update(const User &user);

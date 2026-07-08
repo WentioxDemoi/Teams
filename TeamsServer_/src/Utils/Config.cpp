@@ -27,6 +27,7 @@ void Config::load_from_env() {
 
   // Tables (with defaults)
   table_users_ = get_env("TABLE_USERS", "users");
+  table_contacts_ = get_env("TABLE_CONTACTS", "contacts");
   table_channels_ = get_env("TABLE_CHANNELS", "channels");
   table_channel_members_ = get_env("TABLE_CHANNEL_MEMBERS", "channel_members");
   table_messages_ = get_env("TABLE_MESSAGES", "messages");
@@ -62,12 +63,11 @@ int Config::get_env_int(const char *name, int default_value) {
   }
 }
 
-std::string
-Config::time_point_to_string(const std::chrono::system_clock::time_point &tp) {
+std::string Config::time_point_to_string(const std::chrono::system_clock::time_point &tp) {
   std::time_t t = std::chrono::system_clock::to_time_t(tp);
   std::tm tm = *std::gmtime(&t);
   std::ostringstream oss;
-  oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
+  oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S+00");
   return oss.str();
 }
 
@@ -81,6 +81,6 @@ Config::string_to_time_point(const std::string &str) {
     throw std::runtime_error("Invalid time format");
   }
 
-  std::time_t t = std::mktime(&tm);
+  std::time_t t = timegm(&tm);
   return std::chrono::system_clock::from_time_t(t);
 }

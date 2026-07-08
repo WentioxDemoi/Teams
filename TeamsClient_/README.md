@@ -17,7 +17,7 @@ src/
 
 1. Accédez au dossier de build :
 ```bash
-cd build/TeamsClient_
+cd build/
 ```
 
 2. Générez les fichiers de build avec CMake (en remplaçant le chemin Qt6 selon votre configuration) :
@@ -37,6 +37,30 @@ make
 
 Alternativement, vous pouvez double-cliquer sur l'app dans le dossier `build/`.
 
+## Preview
+
+1. Accédez au dossier de build :
+```bash
+cd build/
+```
+
+2. Lancer la commande sur le fichier QML cible : 
+```bash
+~/Qt/6.9.3/macos/bin/qml ../src/QML/Main.qml
+```
+
+## File cleaning
+
+1. Accédez au dossier de build :
+```bash
+cd build/
+```
+
+2. Lancer la commande sur le fichier QML cible : 
+```bash
+~/Qt/6.9.3/macos/bin/qmlformat ../src/QML/Main.qml
+```
+
 ### Accès à la caméra
 
 - Suppression des permissions sur MacOS : tccutil reset Camera
@@ -50,13 +74,26 @@ Alternativement, vous pouvez double-cliquer sur l'app dans le dossier `build/`.
 
 1. Exécutez macdeployqt pour préparer l'application :
 ```bash
-~/Qt/6.9.3/macos/bin/macdeployqt TeamsClient_.app/
+~/Qt/6.9.3/macos/bin/macdeployqt TeamsClient_.app/ -qmldir=/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML
 ```
 
-2. Créez le fichier .dmg :
+2. Supprimer les plugins SQL non utilisés :
+```bash
+find TeamsClient_.app -name "libqsqlodbc.dylib" -delete
+find TeamsClient_.app -name "libqsqlpsql.dylib" -delete
+```
+
+3. Re-signature après toutes les modifications du bundle :
+```bash
+codesign --force --deep --sign - TeamsClient_.app
+```
+
+3. Créez le fichier .dmg :
 ```bash
 hdiutil create -volname "TeamsClient_" -srcfolder TeamsClient_.app -ov -format UDZO TeamsClient_.dmg
 ```
+
+
 
 ### Exécution des tests
 
@@ -67,7 +104,7 @@ ctest -V # Ou alors ./TeamsClient_Tests
 
 ## Dépendances
 
-- Qt 6.x (Core, Widgets, Network, Test)
+- Qt 6.9.3 (Core, Widgets, Network, Test)
 - Qt keychain 0.15.0 (installé manuellement dans le repo QT)
     - https://github.com/frankosterfeld/qtkeychain/tree/0.15
     - mkdir build && cd build
@@ -88,3 +125,6 @@ ctest -V # Ou alors ./TeamsClient_Tests
 - Service de check du token enregistré localement en faisant une requete sur le serveur
 - Créer db et services associés 
 - Faire tests unitaires
+- Lorsqu'on se connecte au même compte avec deux instance en même temps, on casse la session, il faut redémarrer le software
+- problème lors de la fermeture du software après un appel. Le software reste actif et ne se shutdown pas
+

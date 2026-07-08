@@ -22,13 +22,13 @@ void PConnectionObserver::OnConnectionChange(
   switch (state) {
     case webrtc::PeerConnectionInterface::PeerConnectionState::kConnected:
       // Connexion P2P + DTLS établie → transport utilisable
-      owner_->onP2PChange(true);
+      owner_->isContactConnectedChanged(true);
       break;
 
     case webrtc::PeerConnectionInterface::PeerConnectionState::kDisconnected:
     case webrtc::PeerConnectionInterface::PeerConnectionState::kFailed:
     case webrtc::PeerConnectionInterface::PeerConnectionState::kClosed:
-      owner_->onP2PChange(false);
+      owner_->isContactConnectedChanged(false);
       break;
 
     default:

@@ -1,36 +1,42 @@
 #include "Application.h"
 
-// Interfaces
-#include "Interfaces/IAuthService.h"
-#include "Interfaces/ISessionService.h"
-
-// Services
-#include "Auth/AuthNetworkService.h"
-#include "Auth/AuthService.h"
-#include "P2P/WebRTCService.h"
-#include "SessionService.h"
-#include "UserService.h"
-
-// ViewModels
-#include "../ViewModels/AuthViewModel.h"
-#include "../ViewModels/WebRTCViewModel.h"
-
-// Locators
 #include <QtCore/qpermissions.h>
 
+#include <QDebug>
+#include <QFile>
+#include <QQmlContext>
+
+#include "../Utils/Interfaces/ITokenManager.h"
+#include "../Utils/TokenManager.h"
+#include "../ViewModels/AuthViewModel.h"
+#include "../ViewModels/ChatViewModel.h"
+#include "Auth/AuthService.h"
+#include "Chat/Call/CallService.h"
+#include "Chat/ChatService.h"
+#include "Contact/ContactService.h"
+#include "Interfaces/ICallService.h"
+#include "Interfaces/IChatService.h"
+#include "Interfaces/IAuthService.h"
+#include "Interfaces/IContactService.h"
+#include "Interfaces/IMessageService.h"
+#include "Chat/Message/MessageService.h"
+#include "MessageList.h"
+#include "ModelLocator.h"
 #include "ServiceLocator.h"
-#include "ViewLocator.h"
+#include "State/SessionState.h"
+#include "State/UserState.h"
+#include "StateLocator.h"
+#include "ContactList.h"
+#include "LocalUserService.h"
 #include "ViewModelsLocator.h"
+#include "WebRTCViewModel.h"
 
 Application::Application(int& argc, char** argv) : qtApp(argc, argv) {
+  qputenv("QT_QUICK_CONTROLS_STYLE", "Basic");
   QCoreApplication::setApplicationName("Teams");
-  QFile file(":/qss/styles.qss");
-  if (!file.open(QFile::ReadOnly | QFile::Text)) {
-    qWarning() << "Style QSS introuvable";
-    return;
-  }
-  qtApp.setStyleSheet(file.readAll());
-  // initializeUI();
+
+
+
   initializePerms();
 }
 
@@ -40,84 +46,101 @@ void Application::initializePerms() {
 
   if (status == Qt::PermissionStatus::Undetermined) {
     qApp->requestPermission(cameraPermission, [this](const QPermission& permission) {
-      if (permission.status() == Qt::PermissionStatus::Granted) {
+      if (permission.status() == Qt::PermissionStatus::Granted)
         qDebug() << "Camera permission granted";
-      } else {
+      else
         qDebug() << "Camera permission denied";
-      }
+      initializeServices();
     });
-  } else if (status == Qt::PermissionStatus::Granted) {
-    qDebug() << "Camera already granted";
   } else {
-    qDebug() << "Camera permission denied";
+    qDebug() << (status == Qt::PermissionStatus::Granted ? "Camera already granted"
+                                                         : "Camera permission denied");
+    initializeServices();
   }
-
-  // QMicrophonePermission microphonePermission;
-  // status = qApp->checkPermission(microphonePermission);
-
-  // if (status == Qt::PermissionStatus::Undetermined) {
-  //     qApp->requestPermission(microphonePermission, [this](const QPermission &permission) {
-  //         if (permission.status() == Qt::PermissionStatus::Granted) {
-  //             qDebug() << "Microphone permission granted";
-  //         } else {
-  //             qDebug() << "Microphone permission denied";
-  //         }
-  //     });
-  // } else if (status == Qt::PermissionStatus::Granted) {
-  //     qDebug() << "Microphone already granted";
-  // } else {
-  //     qDebug() << "Microphone permission denied";
-  // }
-
-  initializeUI();
-}
-
-void Application::initializeUI() {
-  mainWindow = new MainWindow();
-  QObject::connect(mainWindow, &QObject::destroyed, &qtApp, &QCoreApplication::quit);
-  initializeServices();
 }
 
 void Application::initializeServices() {
   appRoot = new QObject(&qtApp);
-  auto& locator = ServiceLocator::instance();
 
-  locator.registerService<IUserService>(new UserService(appRoot));
-  locator.registerService<IAuthNetworkService>(new AuthNetworkService(nullptr, appRoot));
-  locator.registerService<IAuthService>(new AuthService(nullptr, nullptr, nullptr, appRoot));
-  locator.registerService<ISessionService>(new SessionService(nullptr, appRoot));
-  locator.registerService<WebRTCService>(new WebRTCService(appRoot));
+  auto& serviceLocator = ServiceLocator::instance();
+  auto& stateLocator = StateLocator::instance();
+
+  stateLocator.registerState<UserState>(&UserState::instance());
+  stateLocator.registerState<SessionState>(&SessionState::instance());
+
+  QObject::connect(&qtApp, &QCoreApplication::aboutToQuit,
+      stateLocator.getState<SessionState>(), &SessionState::onApplicationQuit);
+
+  serviceLocator.registerService<ITokenManager>(&TokenManager::instance());
+
+  auto* localUserService = new LocalUserService(nullptr, nullptr, appRoot);
+  serviceLocator.registerService<ILocalUserService>(localUserService);
+
+  auto* messageService = new MessageService(nullptr, nullptr, appRoot);
+  serviceLocator.registerService<IMessageService>(messageService);
+
+  auto* contactService = new ContactService(nullptr, nullptr, appRoot);
+  serviceLocator.registerService<IContactService>(contactService);
+
+    auto* webRTCService =
+      new WebRTCService(appRoot);
+  serviceLocator.registerService<WebRTCService>(webRTCService);
+
+  auto* callService = new CallService(nullptr, nullptr, appRoot);
+  serviceLocator.registerService<ICallService>(callService);
+
+  auto* chatService = new ChatService(nullptr, nullptr, appRoot);
+  serviceLocator.registerService<IChatService>(chatService);
+
+  auto* authService =
+      new AuthService(nullptr, nullptr, nullptr, nullptr, appRoot);
+  serviceLocator.registerService<IAuthService>(authService);
+
+
+
+  initializeModels();
+}
+
+void Application::initializeModels() {
+  auto& locator = ModelLocator::instance();
+
+  auto* contactListModel = new ContactList(appRoot);
+
+  locator.registerModel<ContactList>(contactListModel);
+
+  auto* messageListModel = new MessageList(appRoot);
+
+  locator.registerModel<MessageList>(messageListModel);
 
   initializeViewModels();
 }
 
 void Application::initializeViewModels() {
   auto& locator = ViewModelsLocator::instance();
-  locator.registerViewModels<AuthViewModel>(new AuthViewModel(nullptr, appRoot));
-  locator.registerViewModels<WebRTCViewModel>(new WebRTCViewModel(nullptr, appRoot));
-  initializeViews();
+
+  auto* authVM = new AuthViewModel(nullptr, nullptr, nullptr, appRoot);
+
+  locator.registerViewModels<AuthViewModel>(authVM);
+
+  auto* chatVM = new ChatViewModel(nullptr, nullptr, nullptr, nullptr, nullptr, appRoot);
+
+  locator.registerViewModels<ChatViewModel>(chatVM);
+
+  auto* WebRTCVM = new WebRTCViewModel(&engine, nullptr, nullptr, appRoot);
+
+  locator.registerViewModels<WebRTCViewModel>(WebRTCVM);
+
+  engine.rootContext()->setContextProperty("authVM", authVM);
+  engine.rootContext()->setContextProperty("chatVM", chatVM);
+  engine.rootContext()->setContextProperty("webRTCVM", WebRTCVM);
+
+  QObject::connect(
+      &engine, &QQmlApplicationEngine::objectCreationFailed, &qtApp,
+      []() { QCoreApplication::exit(-1); }, Qt::QueuedConnection);
+
+  qRegisterMetaType<User*>("User*");
+
+  engine.loadFromModule("TeamsClient", "Main");
 }
 
-void Application::initializeViews() {
-  auto& locator = ViewLocator::instance();
-
-  locator.registerView<AuthView>(new AuthView(mainWindow));
-  locator.registerView<WorkspaceView>(new WorkspaceView(mainWindow));
-  locator.registerView<LoadingView>(new LoadingView("Loading your ecosystem", mainWindow));
-  connectViewModels();
-}
-
-void Application::connectViewModels() {
-  auto& vmLocator = ViewModelsLocator::instance();
-  auto authVM = vmLocator.getViewModels<AuthViewModel>();
-  auto webrtcVM = vmLocator.getViewModels<WebRTCViewModel>();
-  QObject::connect(authVM, &AuthViewModel::registerWithServer4WebRTC, webrtcVM,
-                   &WebRTCViewModel::registerWithServer4WebRTC);
-  run();
-}
-
-int Application::run() {
-  mainWindow->start();
-  mainWindow->show();
-  return qtApp.exec();
-}
+int Application::run() { return qtApp.exec(); }

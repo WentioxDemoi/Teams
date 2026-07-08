@@ -56,62 +56,57 @@ void DatabaseManager::initialize_schema() {
     txn.exec("CREATE TABLE IF NOT EXISTS " + config.table_users() +
              " ("
              "email TEXT UNIQUE NOT NULL, "
-             "username TEXT UNIQUE, "
+             "first_name TEXT, "
+             "last_name TEXT, "
              "password_hash TEXT NOT NULL, "
              "uuid TEXT UNIQUE, "
              "token TEXT, "
              "token_expires_at TIMESTAMP WITH TIME ZONE, "
-             "status TEXT DEFAULT 'offline', "
              "last_seen TIMESTAMP WITH TIME ZONE DEFAULT NOW(), "
              "created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()"
              ");");
 
-    // // Channels table
-    // txn.exec("CREATE TABLE IF NOT EXISTS " + config.table_channels() +
-    //          " ("
-    //          "id SERIAL PRIMARY KEY, "
-    //          "name TEXT NOT NULL, "
-    //          "is_private BOOLEAN DEFAULT TRUE, "
-    //          "created_at TIMESTAMP DEFAULT NOW()"
-    //          ");");
-
-    // // Channel members table
-    // txn.exec("CREATE TABLE IF NOT EXISTS " + config.table_channel_members() +
-    //          " ("
-    //          "channel_id INT REFERENCES " + config.table_channels() +
-    //          "(id) ON DELETE CASCADE, "
-    //          "user_id INT REFERENCES " + config.table_users() +
-    //          "(id) ON DELETE CASCADE, "
-    //          "joined_at TIMESTAMP DEFAULT NOW(), "
-    //          "PRIMARY KEY(channel_id, user_id)"
-    //          ");");
-
-    // Messages table
-    // txn.exec("CREATE TABLE IF NOT EXISTS " + config.table_messages() +
-    //          " ("
-    //          "id SERIAL PRIMARY KEY, "
-    //          "channel_id INT REFERENCES " + config.table_channels() +
-    //          "(id) ON DELETE CASCADE, "
-    //          "sender_id INT REFERENCES " + config.table_users() +
-    //          "(id) ON DELETE SET NULL, "
-    //          "content TEXT NOT NULL, "
-    //          "message_type TEXT DEFAULT 'text', "
-    //          "edited BOOLEAN DEFAULT FALSE, "
-    //          "created_at TIMESTAMP DEFAULT NOW(), "
-    //          "updated_at TIMESTAMP DEFAULT NOW()"
-    //          ");");
 
     // Create indexes
     txn.exec("CREATE INDEX IF NOT EXISTS idx_users_email ON " +
              config.table_users() + "(email);");
     txn.exec("CREATE INDEX IF NOT EXISTS idx_users_token ON " +
              config.table_users() + "(token);");
-    // txn.exec("CREATE INDEX IF NOT EXISTS idx_messages_channel ON " +
-    //          config.table_messages() + "(channel_id);");
-    // txn.exec("CREATE INDEX IF NOT EXISTS idx_messages_sender ON " +
-    //          config.table_messages() + "(sender_id);");
-    // txn.exec("CREATE INDEX IF NOT EXISTS idx_channel_members_user ON " +
-    //          config.table_channel_members() + "(user_id);");
+    txn.exec("CREATE INDEX IF NOT EXISTS idx_users_uuid ON " +
+             config.table_users() + "(uuid);");
+    
+
+    // Messages table
+    txn.exec("CREATE TABLE IF NOT EXISTS " + config.table_messages() +
+            " ("
+            "id TEXT PRIMARY KEY, "
+            "sender_id TEXT NOT NULL, "
+            "receiver_id TEXT, "
+            "chat_type TEXT DEFAULT 'message', "
+            "content TEXT NOT NULL, "
+            "timestamp TIMESTAMP WITH TIME ZONE NOT NULL, "
+            "is_read BOOLEAN DEFAULT FALSE"
+            ");");
+
+    // Create indexes
+    txn.exec("CREATE INDEX IF NOT EXISTS idx_messages_sender ON " +
+             config.table_messages() + "(sender_id);");
+    txn.exec("CREATE INDEX IF NOT EXISTS idx_messages_receiver ON " +
+             config.table_messages() + "(receiver_id);");
+
+             // Contacts table
+txn.exec("CREATE TABLE IF NOT EXISTS " + config.table_contacts() +
+         " ("
+         "user_uuid TEXT NOT NULL, "
+         "contact_uuid TEXT NOT NULL, "
+         "last_read_at TIMESTAMP WITH TIME ZONE, "
+         "PRIMARY KEY (user_uuid, contact_uuid), "
+         "FOREIGN KEY (user_uuid) REFERENCES " + config.table_users() + "(uuid), "
+         "FOREIGN KEY (contact_uuid) REFERENCES " + config.table_users() + "(uuid)"
+         ");");
+
+txn.exec("CREATE INDEX IF NOT EXISTS idx_contacts_user ON " +
+         config.table_contacts() + "(user_uuid);");
 
     txn.commit();
     release_connection(conn);

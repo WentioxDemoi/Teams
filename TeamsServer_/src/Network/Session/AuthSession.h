@@ -16,9 +16,8 @@
  */
 class AuthSession : public std::enable_shared_from_this<AuthSession> {
  public:
-  AuthSession(tcp::socket socket, ssl::context& ctx) : stream_(std::move(socket), ctx) {
-    authHandler_ =
-        std::make_unique<AuthHandler>([this](std::string response) { handle_response(std::move(response)); });
+  AuthSession(tcp::socket socket, ssl::context& ctx, std::shared_ptr<AuthHandler> authHandler)
+      : stream_(std::move(socket), ctx), authHandler_(authHandler) {
   }
 
   void start();
@@ -30,7 +29,7 @@ class AuthSession : public std::enable_shared_from_this<AuthSession> {
 
   ssl::stream<tcp::socket> stream_;
   std::array<char, 4096> buffer_;
-  std::unique_ptr<AuthHandler> authHandler_;
+  std::shared_ptr<AuthHandler> authHandler_;
 };
 
 #endif
