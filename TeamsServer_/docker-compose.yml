@@ -20,18 +20,6 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  # nats:
-  #   image: nats:2.10-alpine
-  #   container_name: nats_server
-  #   ports:
-  #     - "4222:4222"
-  #     - "8222:8222"
-  #   healthcheck:
-  #     test: ["CMD", "wget", "--spider", "-q", "http://localhost:8222/healthz"]
-  #     interval: 2s
-  #     timeout: 2s
-  #     retries: 10
-
   server:
     build:
       context: .
