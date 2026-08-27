@@ -14,7 +14,7 @@ AppCompositionRoot::AppCompositionRoot(int auth_threads, int message_threads,
                                        int contact_threads, int webrtc_threads)
     : auth_threads_(auth_threads), message_threads_(message_threads),
       contact_threads_(contact_threads), webrtc_threads_(webrtc_threads),
-      ssl_ctx_(ssl::context::tlsv12_server) {
+      ssl_ctx_(ssl::context::tls_server) {
   initSsl();
   initRepositories();
   initRegistries();
@@ -24,8 +24,32 @@ AppCompositionRoot::AppCompositionRoot(int auth_threads, int message_threads,
 }
 
 void AppCompositionRoot::initSsl() {
-  ssl_ctx_.use_certificate_chain_file("server.crt");
-  ssl_ctx_.use_private_key_file("server.key", ssl::context::pem);
+  boost::system::error_code ec;
+
+  ssl_ctx_.set_options(
+      ssl::context::default_workarounds
+      | ssl::context::no_sslv2
+      | ssl::context::no_sslv3
+      | ssl::context::no_tlsv1
+      | ssl::context::no_tlsv1_1,
+      ec);
+  if (ec) {
+    throw std::runtime_error("Échec configuration options SSL: " + ec.message());
+  }
+
+  ssl_ctx_.use_certificate_chain_file("../server.crt", ec);
+  if (ec) {
+    throw std::runtime_error("Échec chargement chaîne de certificats: " + ec.message());
+  }
+
+  ssl_ctx_.use_private_key_file("../server.key", ssl::context::pem, ec);
+  if (ec) {
+    throw std::runtime_error("Échec chargement clé privée: " + ec.message());
+  }
+
+  if (!SSL_CTX_check_private_key(ssl_ctx_.native_handle())) {
+    throw std::runtime_error("La clé privée ne correspond pas au certificat");
+  }
 }
 
 void AppCompositionRoot::initRepositories() {

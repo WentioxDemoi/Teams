@@ -9,11 +9,10 @@ RUN apt-get update && apt-get install -y \
     libpqxx-dev \
     libargon2-dev \
     libboost-system-dev \
+    clangd \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-RUN rm -rf build
 
 EXPOSE 8080
 EXPOSE 8081
