@@ -26,7 +26,6 @@ src/
 - Boost >= 1.89.0
 - SQLite >= 3.50.4
 - GoogleTest >= 1.17.0
-- Nats-server >= 2.12.2
 
 ## Déploiement avec Docker
 
@@ -34,7 +33,7 @@ Le serveur est compilé et exécuté via Docker, garantissant une cohérence d'e
 
 **Note :** L'installation manuelle de Boost 1.89.0 est complexe et ne fournit pas les fichiers `.cmake` requis par défaut. Docker simplifie ce processus.
 
-### Méthode 1 : Docker Compose (Recommandé)
+### Méthode 1 : Docker Compose
 
 1. Lancez le serveur et la base de données :
 ```bash
@@ -57,6 +56,12 @@ docker build -t teams-server .
 ```bash
 docker run -p 8080:8080 -p 8081:8081 teams-server
 ```
+
+### Méthode 3 : DevContainer (Recommandé)
+
+1. Lancez le dev container via VSCode (CMD + SHIFT + P) --> Reconstruire le container
+2. Une fois dedans, compilez et lancez manuellement
+
 
 ## Compilation locale (Développement)
 
@@ -102,15 +107,14 @@ Le serveur utilise un fichier `.env` pour la configuration. Les certificats SSL 
 ## Ports utilisés
 
 - **8080** : Serveur d'authentification
-- **8081** : Serveur de messagerie
-- **4222** : NATS (communication inter-services)
+- **8082** : Serveur de messagerie
+- **8083** : Serveur d'échange WebRTC
+- **8084** : Serveur des contacts
 
 ## Dépendances
 
 - **Boost.Asio** : Serveurs TCP asynchrones et gestion des threads pour le pool de workers
-- **Boost.Beast** : Support WebSocket (si utilisé dans le futur)
 - **libpqxx / PostgreSQL** : Accès à la base de données PostgreSQL
-- **NATS C Client** : Messagerie pub/sub
 - **OpenSSL** : Support TLS/SSL
 - **GoogleTest & GoogleMock** : Tests unitaires et mocks pour AuthService et UserRepository
 - **Argon2** : Hachage sécurisé des mots de passe
