@@ -28,6 +28,7 @@ void setCallBacks(std::function<void(const std::string &sdp)> onLocalOffer,
                    std::function<void(bool isConnected)> isContactConnectedChanged);
   void startCall();
   void acceptCall();
+  void prepareForNewCall();
   void hangup();
 
   void onRemoteOffer(QString sdp);

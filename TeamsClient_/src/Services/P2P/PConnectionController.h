@@ -23,6 +23,7 @@ public:
   void setRemoteOffer(const std::string &sdp);
   void setRemoteAnswer(const std::string &sdp);
   void addIceCandidate(const std::string &candidate, const std::string &mid, int index);
+  void ensurePeerConnection();
   void close();
 
   std::function<void(const std::string &sdp)> onLocalOffer;

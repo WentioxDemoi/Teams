@@ -121,6 +121,10 @@ void CallService::acceptCall(const QString &remoteUsername) {
 // Callee || Caller : l'utilisateur raccroche, on notifie l'autre participant et on ferme la fenêtre d'appel.
 void CallService::hangup() {
   qDebug() << "[CallService] HangUp, envoie du message à : " << remoteUuid_ << "\n";
+  if (webRTCService_) {
+    webRTCService_->hangup();
+  }
+
   if (inCall_) {
     if (!remoteUuid_.isEmpty()) {
       QJsonObject payload;
@@ -215,6 +219,9 @@ void CallService::handleServerResponse(const QJsonObject &root) {
     if (callTimeoutTimer_) {
       callTimeoutTimer_->stop();
     }
+    if (webRTCService_) {
+      webRTCService_->hangup();
+    }
     inCall_ = false;
     remoteUuid_.clear();
     emit closeCallWindow();
@@ -224,12 +231,18 @@ void CallService::handleServerResponse(const QJsonObject &root) {
     if (callTimeoutTimer_) {
       callTimeoutTimer_->stop();
     }
+    if (webRTCService_) {
+      webRTCService_->hangup();
+    }
     inCall_ = false;
     remoteUuid_.clear();
     emit closeCallWindow();
     // emit callError("Appel refusé");
 
   } else if (type == "call_cancel") {
+    if (webRTCService_) {
+      webRTCService_->hangup();
+    }
     inCall_ = false;
     remoteUuid_.clear();
     pendingOfferSdp_.clear();
@@ -238,6 +251,9 @@ void CallService::handleServerResponse(const QJsonObject &root) {
   } else if (type == "call_accept") {
     emit isContactConnectedChanged(true);
   } else if (type == "call_hangup") {
+    if (webRTCService_) {
+      webRTCService_->hangup();
+    }
     inCall_ = false;
     remoteUuid_.clear();
     emit closeCallWindow();
@@ -246,6 +262,9 @@ void CallService::handleServerResponse(const QJsonObject &root) {
   } else if (type == "busy") {
     if (callTimeoutTimer_) {
       callTimeoutTimer_->stop();
+    }
+    if (webRTCService_) {
+      webRTCService_->hangup();
     }
     inCall_ = false;
     remoteUuid_.clear();
