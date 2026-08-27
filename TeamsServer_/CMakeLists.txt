@@ -8,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # ------------------------------
 # Boost
 # ------------------------------
-find_package(Boost 1.89 REQUIRED COMPONENTS filesystem thread date_time)
+find_package(Boost REQUIRED)
 if(NOT Boost_FOUND)
     message(FATAL_ERROR "Boost not found. Please install Boost 1.89 or higher.")
 endif()
@@ -28,21 +28,6 @@ endif()
 find_package(OpenSSL REQUIRED)
 if(NOT OpenSSL_FOUND)
     message(FATAL_ERROR "OpenSSL not found.")
-endif()
-
-# ------------------------------
-# NATS C
-# ------------------------------
-if(APPLE)
-    find_path(NATS_INCLUDE_DIR nats/nats.h /opt/homebrew/include /usr/local/include)
-    find_library(NATS_LIBRARY nats /opt/homebrew/lib /usr/local/lib)
-else()
-    find_path(NATS_INCLUDE_DIR nats/nats.h /usr/include /usr/local/include)
-    find_library(NATS_LIBRARY nats /usr/lib /usr/lib/x86_64-linux-gnu /usr/local/lib)
-endif()
-
-if(NOT NATS_INCLUDE_DIR OR NOT NATS_LIBRARY)
-    message(FATAL_ERROR "NATS C library not found. Please install it.")
 endif()
 
 # ------------------------------
@@ -86,9 +71,6 @@ target_include_directories(server_lib PUBLIC
 target_link_libraries(server_lib PUBLIC
     pqxx
     pq
-    Boost::filesystem
-    Boost::thread
-    Boost::date_time
     pthread
     OpenSSL::SSL
     OpenSSL::Crypto
@@ -107,17 +89,6 @@ set(MAIN_SOURCES
 
 add_executable(server ${MAIN_SOURCES})
 target_link_libraries(server PRIVATE server_lib)
-
-# ------------------------------
-# RPATH Boost (Linux / macOS)
-# ------------------------------
-if(APPLE)
-    set(BOOST_LIB_PATH "/opt/homebrew/lib")
-elseif(UNIX)
-    set(BOOST_LIB_PATH "/usr/local/lib")
-endif()
-
-target_link_options(server PRIVATE -Wl,-rpath,${BOOST_LIB_PATH})
 
 # ------------------------------
 # Tests
