@@ -8,30 +8,29 @@ Serveur backend pour l'application Teams, gérant l'authentification, la message
 src/
 ├── Core/            # Logique métier principale et modèles
 │   ├── Models/      # Structures de données (ex: User)
+│   ├── Registeries/ # Pool de sessions utilisateurs
 │   ├── Repositories/# Accès aux données (UserRepository, etc.)
 │   └── Services/    # Logique métier (AuthService, etc.)
 ├── Handlers/        # Gestion des requêtes entrantes et routage
 ├── Infrastructure/  # Gestion technique (DB, ConnectionPool, QueryBuilder, etc.)
 ├── Network/         # Serveurs TCP/SSL et sessions réseau (TcpListener, AuthSession)
 ├── Utils/           # Utilitaires généraux (Crypto, Config, ResponseFormater, BoostErrorHandler)
-├── common/          # Code partagé / commun à plusieurs modules
-├── includes.h       # Fichier d'inclusions centralisées
 └── main.cpp         # Point d'entrée de l'application
+
+C'est une architecture en layer avec injection de dépendances
 ```
 
 ## Prérequis
 
 - Docker >= 28.4
 - CMake >= 3.16
-- Boost >= 1.89.0
+- Boost >= 1.74.0
 - SQLite >= 3.50.4
 - GoogleTest >= 1.17.0
 
 ## Déploiement avec Docker
 
 Le serveur est compilé et exécuté via Docker, garantissant une cohérence d'environnement avec le déploiement sur EC2.
-
-**Note :** L'installation manuelle de Boost 1.89.0 est complexe et ne fournit pas les fichiers `.cmake` requis par défaut. Docker simplifie ce processus.
 
 ### Méthode 1 : Docker Compose
 
@@ -45,46 +44,11 @@ docker-compose --env-file .env up --build
 docker-compose down -v
 ```
 
-### Méthode 2 : Docker standalone
-
-1. Construisez l'image Docker :
-```bash
-docker build -t teams-server .
-```
-
-2. Lancez le conteneur :
-```bash
-docker run -p 8080:8080 -p 8081:8081 teams-server
-```
-
-### Méthode 3 : DevContainer (Recommandé)
+### Méthode 2 : DevContainer (Recommandé)
 
 1. Lancez le dev container via VSCode (CMD + SHIFT + P) --> Reconstruire le container
+
 2. Une fois dedans, compilez et lancez manuellement
-
-
-## Compilation locale (Développement)
-
-1. Créez un répertoire de build :
-```bash
-mkdir -p build
-cd build
-```
-
-2. Configurez le projet avec CMake :
-```bash
-cmake ..
-```
-
-3. Compilez le serveur :
-```bash
-make
-```
-
-4. Lancez le serveur :
-```bash
-./bin/server
-```
 
 ## Tests unitaires
 

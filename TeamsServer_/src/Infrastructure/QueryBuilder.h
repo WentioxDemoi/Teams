@@ -1,8 +1,7 @@
-// infrastructure/database/QueryBuilder.h
 #ifndef QUERYBUILDER_H
 #define QUERYBUILDER_H
 
-#include "../../includes.h"
+#include "../includes.h"
 
 /**
  * @class QueryBuilder

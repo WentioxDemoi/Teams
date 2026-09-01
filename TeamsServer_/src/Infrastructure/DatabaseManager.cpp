@@ -1,4 +1,3 @@
-// infrastructure/database/DatabaseManager.cpp (simplifié)
 #include "DatabaseManager.h"
 
 DatabaseManager &DatabaseManager::instance() {

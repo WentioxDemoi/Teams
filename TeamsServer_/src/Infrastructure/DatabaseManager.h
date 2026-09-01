@@ -1,8 +1,7 @@
-// infrastructure/database/DatabaseManager.h (simplifié)
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
-#include "../../Utils/Config.h"
+#include "../Utils/Config.h"
 #include "ConnectionPool.h"
 
 /**

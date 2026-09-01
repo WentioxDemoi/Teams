@@ -10,7 +10,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # ------------------------------
 find_package(Boost REQUIRED)
 if(NOT Boost_FOUND)
-    message(FATAL_ERROR "Boost not found. Please install Boost 1.89 or higher.")
+    message(FATAL_ERROR "Boost not found. Please install Boost 1.74 or higher.")
 endif()
 
 # ------------------------------

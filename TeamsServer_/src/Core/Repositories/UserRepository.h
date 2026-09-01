@@ -1,8 +1,8 @@
 #ifndef USERREPOSITORY_H
 #define USERREPOSITORY_H
 
-#include "../../Infrastructure/Database/DatabaseManager.h"
-#include "../../Infrastructure/Database/QueryBuilder.h"
+#include "../../Infrastructure/DatabaseManager.h"
+#include "../../Infrastructure/QueryBuilder.h"
 #include "../../Utils/Config.h"
 #include "../../includes.h"
 #include "../Models/User.h"

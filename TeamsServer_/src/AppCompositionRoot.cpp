@@ -106,9 +106,9 @@ void AppCompositionRoot::initListeners() {
 }
 
 void AppCompositionRoot::run() {
-  std::cout << "[APP] Auth   listener started on port 8080\n";
+  std::cout << "[APP] Auth listener started on port 8080\n";
   std::cout << "[APP] Message listener started on port 8082\n";
-  std::cout << "[APP] WebRTC listener started on port 8082\n";
+  std::cout << "[APP] WebRTC listener started on port 8083\n";
   std::cout << "[APP] Contact listener started on port 8084\n";
 
   launchThreads();

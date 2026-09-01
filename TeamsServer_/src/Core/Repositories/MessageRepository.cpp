@@ -1,6 +1,6 @@
 #include "MessageRepository.h"
 #include <iostream>
-#include "../../Infrastructure/Database/QueryBuilder.h"
+#include "../../Infrastructure/QueryBuilder.h"
 #include "Models/Message.h"
 
 bool MessageRepository::save(const Message& message) {

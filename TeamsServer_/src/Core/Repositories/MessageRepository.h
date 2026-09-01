@@ -1,7 +1,7 @@
 #ifndef MESSAGEREPOSITORY_H
 #define MESSAGEREPOSITORY_H
 
-#include "../../Infrastructure/Database/DatabaseManager.h"
+#include "../../Infrastructure/DatabaseManager.h"
 
 #include "../../includes.h"
 #include "../Models/Message.h"

@@ -10,7 +10,7 @@
 #include "Core/Registeries/MessageSessionRegistry.h"
 #include "Core/Registeries/WebRTCRegistry.h"
 #include "Handlers/MessageHandler.h"
-#include "Infrastructure/Database/DatabaseManager.h"
+#include "Infrastructure/DatabaseManager.h"
 #include "Network/Server/TcpListenerAuth.h"
 #include "Network/Server/TcpListenerMessage.h"
 #include "Network/Server/TcpListenerWebRTC.h"
