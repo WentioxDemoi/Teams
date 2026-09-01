@@ -6,6 +6,22 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ------------------------------
+# Code coverage
+# ------------------------------
+
+option(ENABLE_COVERAGE "Enable code coverage" ON)
+
+if(ENABLE_COVERAGE)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        add_compile_options(--coverage -O0 -g)
+        add_link_options(--coverage)
+    else()
+        message(FATAL_ERROR "Coverage is only supported with GCC or Clang.")
+    endif()
+
+endif()
+
+# ------------------------------
 # Boost
 # ------------------------------
 find_package(Boost REQUIRED)
@@ -65,7 +81,6 @@ target_include_directories(server_lib PUBLIC
     ${Boost_INCLUDE_DIRS}
     ${ARGON2_INCLUDE_DIRS}
     ${OPENSSL_INCLUDE_DIR}
-    ${NATS_INCLUDE_DIR}
 )
 
 target_link_libraries(server_lib PUBLIC
@@ -74,7 +89,6 @@ target_link_libraries(server_lib PUBLIC
     pthread
     OpenSSL::SSL
     OpenSSL::Crypto
-    ${NATS_LIBRARY}
     ${ARGON2_LIBRARIES}
 )
 
@@ -116,3 +130,5 @@ target_link_libraries(server_tests PRIVATE
 
 include(GoogleTest)
 gtest_discover_tests(server_tests)
+
+

@@ -5,7 +5,7 @@
 TcpListenerWebRTC::TcpListenerWebRTC(asio::io_context &io_context,
                                      ssl::context &ssl_ctx,
                                      tcp::endpoint endpoint,
-                                     std::shared_ptr<WebRTCRegistry> webRTCRegistry,
+                                     std::shared_ptr<IWebRTCRegistry> webRTCRegistry,
                                     std::shared_ptr<WebRTCHandler> webRTCHandler,
                                     std::shared_ptr<AuthService> authService)
     : acceptor_(io_context, endpoint), ssl_ctx_(ssl_ctx), webRTCRegistry_(webRTCRegistry), webRTCHandler_(webRTCHandler), authService_(authService) {

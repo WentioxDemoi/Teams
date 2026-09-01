@@ -1,10 +1,14 @@
 #include "Core/Services/AuthService.h"
 #include "Utils/Crypto.h"
-#include "../Mocks/UserRepository.h"
+#include "../Mocks/UserRepositoryMock.h"
 #include <optional>
 
 using ::testing::_;
 using ::testing::Return;
+
+// ---------------------------------------------------------------------------
+// loginUser
+// ---------------------------------------------------------------------------
 
 TEST(AuthServiceTest, LoginSuccess) {
   auto mockRepo = std::make_shared<MockUserRepository>();
@@ -105,6 +109,10 @@ TEST(AuthServiceTest, LoginSuccessUpdateFailsStillReturnsUser) {
   EXPECT_EQ(res->email, "me@example.com");
 }
 
+// ---------------------------------------------------------------------------
+// registerUser
+// ---------------------------------------------------------------------------
+
 TEST(AuthServiceTest, RegisterSuccess) {
   auto mockRepo = std::make_shared<MockUserRepository>();
 
@@ -158,6 +166,10 @@ TEST(AuthServiceTest, RegisterFailureCreateFails) {
   auto res = svc.registerUser(attempt);
   EXPECT_FALSE(res.has_value());
 }
+
+// ---------------------------------------------------------------------------
+// validateToken
+// ---------------------------------------------------------------------------
 
 TEST(AuthServiceTest, ValidateTokenSuccess) {
   auto mockRepo = std::make_shared<MockUserRepository>();

@@ -3,7 +3,6 @@
 
 #include "IContactService.h"
 #include "../Repositories/ContactRepository.h"
-// #include "../../Core/Registeries/ContactSessionRegistry.h"
 #include "../Models/Contact.h"
 #include "Registeries/ContactSessionRegistry.h"
 #include "Repositories/UserRepository.h"
@@ -12,9 +11,9 @@
 
 class ContactService : public IContactService {
  public:
-  ContactService(std::unique_ptr<ContactRepository> contactRepo,
+  ContactService(std::unique_ptr<IContactRepository> contactRepo,
                  std::shared_ptr<IUserRepository> userRepo,
-                 std::shared_ptr<ContactSessionRegistry> contactSessionRegistry)
+                 std::shared_ptr<IContactSessionRegistry> contactSessionRegistry)
       : contactRepo_(std::move(contactRepo)),
         userRepo_(userRepo),
         contactSessionRegistry_(contactSessionRegistry),
@@ -31,8 +30,8 @@ class ContactService : public IContactService {
   std::optional<std::string> updateStatus(const std::string &userUuid, const std::string &payload) override;
 
  private:
-  std::unique_ptr<ContactRepository> contactRepo_;
-  std::shared_ptr<ContactSessionRegistry> contactSessionRegistry_;
+  std::unique_ptr<IContactRepository> contactRepo_;
+  std::shared_ptr<IContactSessionRegistry> contactSessionRegistry_;
   std::shared_ptr<IUserRepository> userRepo_;
   Config &config_;
 };

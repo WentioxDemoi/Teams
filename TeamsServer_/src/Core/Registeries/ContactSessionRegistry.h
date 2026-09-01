@@ -1,25 +1,24 @@
 #ifndef CONTACT_SESSION_REGISTRY_H
 #define CONTACT_SESSION_REGISTRY_H
 
+#include "IContactSessionRegistry.h"
 #include "../Models/Message.h"
 
-#include <memory>
 #include <mutex>
-#include <string>
 #include <unordered_map>
 
 class ContactSession;
 
-class ContactSessionRegistry {
+class ContactSessionRegistry : public IContactSessionRegistry {
 public:
     void registerContactSession(const std::string& user_uuid,
-                                std::shared_ptr<ContactSession> session);
+                                std::shared_ptr<ContactSession> session) override;
 
-    void unregisterContactSession(const std::string& user_uuid);
+    void unregisterContactSession(const std::string& user_uuid) override;
 
-    bool sendMessage(const std::string& user_uuid, const std::string& payload);
+    bool sendMessage(const std::string& user_uuid, const std::string& payload) override;
 
-    bool hasContactSession(const std::string& user_uuid) const;
+    bool hasContactSession(const std::string& user_uuid) const override;
 
 private:
     mutable std::mutex mutex_;

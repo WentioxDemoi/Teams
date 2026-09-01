@@ -13,14 +13,14 @@ class TcpListenerMessage {
  public:
   TcpListenerMessage(asio::io_context& io_context, ssl::context& ssl_ctx, tcp::endpoint endpoint,
                      std::shared_ptr<MessageHandler> messageHandler,
-                     std::shared_ptr<MessageSessionRegistry> messageSessionRegistry,
+                     std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry,
                      std::shared_ptr<AuthService> authService);
 
  private:
   void do_accept();
 
   std::shared_ptr<MessageHandler> messageHandler_;
-  std::shared_ptr<MessageSessionRegistry> messageSessionRegistry_;
+  std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry_;
   std::shared_ptr<AuthService> authService_;
   tcp::acceptor acceptor_;
   ssl::context& ssl_ctx_;

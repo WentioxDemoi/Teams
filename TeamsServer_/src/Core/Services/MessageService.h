@@ -17,8 +17,8 @@
  */
 class MessageService : public IMessageService {
  public:
-  MessageService(std::unique_ptr<MessageRepository> messageRepo,
-                 std::shared_ptr<MessageSessionRegistry> messageSessionRegistry)
+  MessageService(std::unique_ptr<IMessageRepository> messageRepo,
+                 std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry)
       : messageRepo_(std::move(messageRepo)), messageSessionRegistry_(messageSessionRegistry),
         config_(Config::instance()) {};
   ~MessageService() override = default;
@@ -27,8 +27,8 @@ class MessageService : public IMessageService {
   std::optional<std::string> loadConversations(const std::string &userUuid) override;
 
  private:
-  std::unique_ptr<MessageRepository> messageRepo_;
-  std::shared_ptr<MessageSessionRegistry> messageSessionRegistry_;
+  std::unique_ptr<IMessageRepository> messageRepo_;
+  std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry_;
   Config &config_;
 };
 

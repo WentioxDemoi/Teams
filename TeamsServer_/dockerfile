@@ -1,5 +1,8 @@
 FROM ubuntu:22.04
 
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Paris # Pour éviter que le container soit bloqué lorsquon lance devcontainer
+
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
@@ -10,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     libargon2-dev \
     libboost-system-dev \
     clangd \
+    gcovr \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

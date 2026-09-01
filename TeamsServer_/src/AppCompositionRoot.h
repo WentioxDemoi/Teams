@@ -15,6 +15,7 @@
 #include "Network/Server/TcpListenerMessage.h"
 #include "Network/Server/TcpListenerWebRTC.h"
 #include "Repositories/ContactRepository.h"
+#include "Repositories/IMessageRepository.h"
 #include "Server/TcpListenerContact.h"
 #include "Services/ContactService.h"
 
@@ -59,9 +60,9 @@ class AppCompositionRoot {
   std::unique_ptr<WebRTCService> webRTCService_;
 
 
-  std::shared_ptr<MessageSessionRegistry> messageSessionRegistry_;
-  std::shared_ptr<ContactSessionRegistry> contactSessionRegistry_;
-  std::shared_ptr<WebRTCRegistry> webRTCRegistry_;
+  std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry_;
+  std::shared_ptr<IContactSessionRegistry> contactSessionRegistry_;
+  std::shared_ptr<IWebRTCRegistry> webRTCRegistry_;
 
   std::unique_ptr<TcpListenerAuth> auth_listener_;
   std::unique_ptr<TcpListenerMessage> message_listener_;
@@ -74,7 +75,8 @@ class AppCompositionRoot {
   std::shared_ptr<WebRTCHandler> webrtcHandler_;
 
   std::shared_ptr<IUserRepository> userRepository_;
-  std::unique_ptr<ContactRepository> contactRepository_;
+  std::unique_ptr<IContactRepository> contactRepository_;
+  std::unique_ptr<IMessageRepository> messageRepository_;
 
   std::vector<std::thread> threads_;
 };

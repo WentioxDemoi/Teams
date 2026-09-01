@@ -17,7 +17,7 @@
  */
 class WebRTCService : public IWebRTCService {
  public:
-  WebRTCService(std::shared_ptr<WebRTCRegistry> webRTCRegistry)
+  WebRTCService(std::shared_ptr<IWebRTCRegistry> webRTCRegistry)
       : config_(Config::instance()), webRTCRegistry_(webRTCRegistry) {};
   ~WebRTCService() override = default;
 
@@ -39,7 +39,7 @@ class WebRTCService : public IWebRTCService {
   bool relayToTarget(const std::string &senderUuid, const std::string &targetUuid, std::string payload);
 
   Config &config_;
-  std::shared_ptr<WebRTCRegistry> webRTCRegistry_;
+  std::shared_ptr<IWebRTCRegistry> webRTCRegistry_;
 };
 
 #endif

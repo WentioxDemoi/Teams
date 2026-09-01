@@ -55,6 +55,7 @@ void AppCompositionRoot::initSsl() {
 void AppCompositionRoot::initRepositories() {
   userRepository_ = std::make_shared<UserRepository>();
   contactRepository_ = std::make_unique<ContactRepository>();
+  messageRepository_ = std::make_unique<MessageRepository>();
 }
 
 void AppCompositionRoot::initRegistries() {
@@ -66,7 +67,7 @@ void AppCompositionRoot::initRegistries() {
 void AppCompositionRoot::initServices() {
   authService_ = std::make_shared<AuthService>(userRepository_);
   messageService_ = std::make_unique<MessageService>(
-      std::make_unique<MessageRepository>(), messageSessionRegistry_);
+      std::move(messageRepository_), messageSessionRegistry_);
   contactService_ = std::make_unique<ContactService>(
       std::move(contactRepository_), userRepository_, contactSessionRegistry_);
   webRTCService_ = std::make_unique<WebRTCService>(webRTCRegistry_);
