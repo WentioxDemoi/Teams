@@ -1,40 +1,33 @@
 #ifndef USERREPOSITORY_H
 #define USERREPOSITORY_H
 
+#include "IUserRepository.h"
 #include "../../Infrastructure/DatabaseManager.h"
-#include "../../Infrastructure/QueryBuilder.h"
 #include "../../Utils/Config.h"
+#include "../../Infrastructure/QueryBuilder.h"
 #include "../../includes.h"
-#include "../Models/User.h"
 
 /**
  * @class UserRepository
- * @brief Gestionnaire d'accès aux données des utilisateurs dans la base de
- * données.
- *
- * Fournit des méthodes pour rechercher, créer, mettre à jour et supprimer des
- * utilisateurs. Utilise DatabaseManager pour interagir avec la base de données
- * et Config pour les paramètres de configuration liés à la persistence.
- *
- * Assure l'encapsulation de l'accès à la base de données pour le module
- * utilisateur.
+ * @brief Implémentation PostgreSQL du repository utilisateur.
  */
-class UserRepository {
+class UserRepository : public IUserRepository {
 public:
   UserRepository()
       : databaseManager_(DatabaseManager::instance()),
-        config_(Config::instance()) {};
+        config_(Config::instance()) {}
 
-  virtual std::optional<User> find_by_uuid(const std::string &uuid);
-  virtual std::optional<User> find_by_email(const std::string &email);
-  virtual std::optional<User> find_by_token(const std::string &token);
-  virtual std::vector<User> search_by_name(const std::string &callerUuid, const std::string &name);
+  std::optional<User> find_by_uuid(const std::string &uuid) override;
+  std::optional<User> find_by_email(const std::string &email) override;
+  std::optional<User> find_by_token(const std::string &token) override;
 
-  virtual bool create(const User &user);
-  virtual bool update(const User &user);
-  virtual bool delete_user(const std::string &uuid);
+  std::vector<User> search_by_name(
+      const std::string &callerUuid,
+      const std::string &name) override;
 
-  virtual ~UserRepository() = default;
+  bool create(const User &user) override;
+  bool update(const User &user) override;
+  bool delete_user(const std::string &uuid) override;
 
 private:
   User row_to_user(const pqxx::row &row);

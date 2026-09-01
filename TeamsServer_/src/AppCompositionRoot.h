@@ -73,7 +73,7 @@ class AppCompositionRoot {
   std::shared_ptr<ContactHandler> contactHandler_;
   std::shared_ptr<WebRTCHandler> webrtcHandler_;
 
-  std::shared_ptr<UserRepository> userRepository_;
+  std::shared_ptr<IUserRepository> userRepository_;
   std::unique_ptr<ContactRepository> contactRepository_;
 
   std::vector<std::thread> threads_;

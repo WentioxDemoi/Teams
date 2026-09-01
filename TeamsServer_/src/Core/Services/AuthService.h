@@ -17,7 +17,7 @@
  */
 class AuthService : public IAuthService {
  public:
-  AuthService(std::shared_ptr<UserRepository> userRepo)
+  AuthService(std::shared_ptr<IUserRepository> userRepo)
       : userRepo_(std::move(userRepo)), config_(Config::instance()) {};
   ~AuthService() override = default;
 
@@ -26,7 +26,7 @@ class AuthService : public IAuthService {
   std::optional<User> validateToken(const std::string &token) override;
 
  private:
-  std::shared_ptr<UserRepository> userRepo_;
+  std::shared_ptr<IUserRepository> userRepo_;
   Config &config_;
 };
 

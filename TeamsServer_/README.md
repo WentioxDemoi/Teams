@@ -57,6 +57,7 @@ Les tests unitaires utilisent **GoogleTest**, intégré automatiquement par CMak
 ### Compilation des tests
 
 1. Dans le CMake, décommentez la partie pour les tests. Dans le dockerfile commentez la ligne qui lance le serveur et décommentez celle qui lance le terminal. Une fois connecté au terminal, faites :
+
 ```bash
 cd build/ && ./server_tests
 ```

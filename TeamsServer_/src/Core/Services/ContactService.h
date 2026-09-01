@@ -13,7 +13,7 @@
 class ContactService : public IContactService {
  public:
   ContactService(std::unique_ptr<ContactRepository> contactRepo,
-                 std::shared_ptr<UserRepository> userRepo,
+                 std::shared_ptr<IUserRepository> userRepo,
                  std::shared_ptr<ContactSessionRegistry> contactSessionRegistry)
       : contactRepo_(std::move(contactRepo)),
         userRepo_(userRepo),
@@ -33,7 +33,7 @@ class ContactService : public IContactService {
  private:
   std::unique_ptr<ContactRepository> contactRepo_;
   std::shared_ptr<ContactSessionRegistry> contactSessionRegistry_;
-  std::shared_ptr<UserRepository> userRepo_;
+  std::shared_ptr<IUserRepository> userRepo_;
   Config &config_;
 };
 
