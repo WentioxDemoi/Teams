@@ -49,5 +49,7 @@ std::optional<User> AuthService::validateToken(const std::string &token) {
   std::optional<User> user_ = userRepo_->find_by_token(token);
   if (!user_)
     return std::nullopt;
+  user_->password_hash.clear();
+  user_->plain_password.clear();
   return user_;
 }

@@ -18,7 +18,7 @@
 class TcpListenerWebRTC {
 public:
   TcpListenerWebRTC(asio::io_context &io_context, ssl::context &ssl_ctx,
-              tcp::endpoint endpoint, std::shared_ptr<WebRTCRegistry> webRTCRegistry, std::shared_ptr<WebRTCHandler> webrtcHandler, std::shared_ptr<AuthService> authService);
+              tcp::endpoint endpoint, std::shared_ptr<IWebRTCRegistry> webRTCRegistry, std::shared_ptr<WebRTCHandler> webrtcHandler, std::shared_ptr<AuthService> authService);
 
 private:
   void do_accept();
@@ -27,7 +27,7 @@ private:
   ssl::context &ssl_ctx_;
   std::shared_ptr<AuthService> authService_;
   std::shared_ptr<WebRTCHandler> webRTCHandler_;
-  std::shared_ptr<WebRTCRegistry> webRTCRegistry_;
+  std::shared_ptr<IWebRTCRegistry> webRTCRegistry_;
 };
 
 #endif

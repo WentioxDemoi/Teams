@@ -2,6 +2,7 @@
 #define MESSAGESERVICE_H
 
 #include "../../Core/Registeries/MessageSessionRegistry.h"
+#include "IMessageService.h"
 #include "../Models/Message.h"
 #include "../Repositories/MessageRepository.h"
 #include <memory>
@@ -14,20 +15,20 @@
  * MessageRepository pour accéder aux données de message et Config pour les paramètres
  * de configuration liés aux messages.
  */
-class MessageService {
-public:
-  MessageService(std::unique_ptr<MessageRepository> messageRepo,
-                 std::shared_ptr<MessageSessionRegistry> messageSessionRegistry)
+class MessageService : public IMessageService {
+ public:
+  MessageService(std::unique_ptr<IMessageRepository> messageRepo,
+                 std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry)
       : messageRepo_(std::move(messageRepo)), messageSessionRegistry_(messageSessionRegistry),
         config_(Config::instance()) {};
-  virtual ~MessageService() = default;
+  ~MessageService() override = default;
 
-  virtual std::optional<std::string> sendMessage(const std::string &payload);
-  virtual std::optional<std::string> loadConversations(const std::string &userUuid);
+  std::optional<std::string> sendMessage(const std::string &payload) override;
+  std::optional<std::string> loadConversations(const std::string &userUuid) override;
 
-private:
-  std::unique_ptr<MessageRepository> messageRepo_;
-  std::shared_ptr<MessageSessionRegistry> messageSessionRegistry_;
+ private:
+  std::unique_ptr<IMessageRepository> messageRepo_;
+  std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry_;
   Config &config_;
 };
 

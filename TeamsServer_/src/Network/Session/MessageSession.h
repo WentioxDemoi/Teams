@@ -22,7 +22,7 @@ class MessageSession : public std::enable_shared_from_this<MessageSession> {
  public:
   MessageSession(tcp::socket socket, ssl::context& ctx,
                  std::shared_ptr<MessageHandler> messageHandler,
-                 std::shared_ptr<MessageSessionRegistry> messageSessionRegistry,
+                 std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry,
                  std::shared_ptr<AuthService> authService)
       : stream_(std::move(socket), ctx),
         messageHandler_(messageHandler),
@@ -38,7 +38,7 @@ class MessageSession : public std::enable_shared_from_this<MessageSession> {
   ssl::stream<tcp::socket> stream_;
   std::array<char, 4096> buffer_;
   std::shared_ptr<MessageHandler> messageHandler_;
-  std::shared_ptr<MessageSessionRegistry> messageSessionRegistry_;
+  std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry_;
   std::shared_ptr<AuthService> authService_;
   std::string user_uuid_;
   bool isFirstMessage_ = true;

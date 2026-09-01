@@ -1,41 +1,25 @@
 FROM ubuntu:22.04
 
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Paris # Pour éviter que le container soit bloqué lorsquon lance devcontainer
+
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     pkg-config \
     libssl-dev \
-    python3 \
-    git \
-    wget \
-    tar \
-    bzip2 \
     libpq-dev \
     libpqxx-dev \
-    libnats-dev \
     libargon2-dev \
+    libboost-system-dev \
+    clangd \
+    gcovr \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-RUN wget https://archives.boost.io/release/1.89.0/source/boost_1_89_0.tar.bz2 -O boost_1_89_0.tar.bz2 && \
-    tar --bzip2 -xf boost_1_89_0.tar.bz2 && \
-    cd boost_1_89_0 && \
-    ./bootstrap.sh --prefix=/usr/local/boost_1_89_0 && \
-    ./b2 install threading=multi link=shared runtime-link=shared && \
-    cd .. && rm -rf boost_1_89_0 boost_1_89_0.tar.bz2
-
-COPY . .
-
-RUN rm -rf build
-
-RUN mkdir build && cd build && \
-    cmake .. && \
-    cmake --build . 
 
 EXPOSE 8080
 EXPOSE 8081
 EXPOSE 8082
 
-CMD ["./build/server"]
-# CMD ["/bin/bash"]
+CMD ["sleep", "infinity"]

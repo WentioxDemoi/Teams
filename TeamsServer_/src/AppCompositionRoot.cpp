@@ -14,7 +14,7 @@ AppCompositionRoot::AppCompositionRoot(int auth_threads, int message_threads,
                                        int contact_threads, int webrtc_threads)
     : auth_threads_(auth_threads), message_threads_(message_threads),
       contact_threads_(contact_threads), webrtc_threads_(webrtc_threads),
-      ssl_ctx_(ssl::context::tlsv12_server) {
+      ssl_ctx_(ssl::context::tls_server) {
   initSsl();
   initRepositories();
   initRegistries();
@@ -24,13 +24,38 @@ AppCompositionRoot::AppCompositionRoot(int auth_threads, int message_threads,
 }
 
 void AppCompositionRoot::initSsl() {
-  ssl_ctx_.use_certificate_chain_file("server.crt");
-  ssl_ctx_.use_private_key_file("server.key", ssl::context::pem);
+  boost::system::error_code ec;
+
+  ssl_ctx_.set_options(
+      ssl::context::default_workarounds
+      | ssl::context::no_sslv2
+      | ssl::context::no_sslv3
+      | ssl::context::no_tlsv1
+      | ssl::context::no_tlsv1_1,
+      ec);
+  if (ec) {
+    throw std::runtime_error("Échec configuration options SSL: " + ec.message());
+  }
+
+  ssl_ctx_.use_certificate_chain_file("../server.crt", ec);
+  if (ec) {
+    throw std::runtime_error("Échec chargement chaîne de certificats: " + ec.message());
+  }
+
+  ssl_ctx_.use_private_key_file("../server.key", ssl::context::pem, ec);
+  if (ec) {
+    throw std::runtime_error("Échec chargement clé privée: " + ec.message());
+  }
+
+  if (!SSL_CTX_check_private_key(ssl_ctx_.native_handle())) {
+    throw std::runtime_error("La clé privée ne correspond pas au certificat");
+  }
 }
 
 void AppCompositionRoot::initRepositories() {
   userRepository_ = std::make_shared<UserRepository>();
   contactRepository_ = std::make_unique<ContactRepository>();
+  messageRepository_ = std::make_unique<MessageRepository>();
 }
 
 void AppCompositionRoot::initRegistries() {
@@ -42,7 +67,7 @@ void AppCompositionRoot::initRegistries() {
 void AppCompositionRoot::initServices() {
   authService_ = std::make_shared<AuthService>(userRepository_);
   messageService_ = std::make_unique<MessageService>(
-      std::make_unique<MessageRepository>(), messageSessionRegistry_);
+      std::move(messageRepository_), messageSessionRegistry_);
   contactService_ = std::make_unique<ContactService>(
       std::move(contactRepository_), userRepository_, contactSessionRegistry_);
   webRTCService_ = std::make_unique<WebRTCService>(webRTCRegistry_);
@@ -82,9 +107,9 @@ void AppCompositionRoot::initListeners() {
 }
 
 void AppCompositionRoot::run() {
-  std::cout << "[APP] Auth   listener started on port 8080\n";
+  std::cout << "[APP] Auth listener started on port 8080\n";
   std::cout << "[APP] Message listener started on port 8082\n";
-  std::cout << "[APP] WebRTC listener started on port 8082\n";
+  std::cout << "[APP] WebRTC listener started on port 8083\n";
   std::cout << "[APP] Contact listener started on port 8084\n";
 
   launchThreads();

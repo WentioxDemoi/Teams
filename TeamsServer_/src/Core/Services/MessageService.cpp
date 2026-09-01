@@ -25,7 +25,6 @@ std::optional<std::string> MessageService::sendMessage(const std::string& payloa
 
 
   std::string payload_sender = ResponseFormater::format_message_response("message_sent", message);
-  // Renvoie au client
   return payload_sender;
 }
 

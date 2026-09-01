@@ -6,11 +6,27 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ------------------------------
+# Code coverage
+# ------------------------------
+
+option(ENABLE_COVERAGE "Enable code coverage" ON)
+
+if(ENABLE_COVERAGE)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        add_compile_options(--coverage -O0 -g)
+        add_link_options(--coverage)
+    else()
+        message(FATAL_ERROR "Coverage is only supported with GCC or Clang.")
+    endif()
+
+endif()
+
+# ------------------------------
 # Boost
 # ------------------------------
-find_package(Boost 1.89 REQUIRED COMPONENTS filesystem thread date_time)
+find_package(Boost REQUIRED)
 if(NOT Boost_FOUND)
-    message(FATAL_ERROR "Boost not found. Please install Boost 1.89 or higher.")
+    message(FATAL_ERROR "Boost not found. Please install Boost 1.74 or higher.")
 endif()
 
 # ------------------------------
@@ -28,21 +44,6 @@ endif()
 find_package(OpenSSL REQUIRED)
 if(NOT OpenSSL_FOUND)
     message(FATAL_ERROR "OpenSSL not found.")
-endif()
-
-# ------------------------------
-# NATS C
-# ------------------------------
-if(APPLE)
-    find_path(NATS_INCLUDE_DIR nats/nats.h /opt/homebrew/include /usr/local/include)
-    find_library(NATS_LIBRARY nats /opt/homebrew/lib /usr/local/lib)
-else()
-    find_path(NATS_INCLUDE_DIR nats/nats.h /usr/include /usr/local/include)
-    find_library(NATS_LIBRARY nats /usr/lib /usr/lib/x86_64-linux-gnu /usr/local/lib)
-endif()
-
-if(NOT NATS_INCLUDE_DIR OR NOT NATS_LIBRARY)
-    message(FATAL_ERROR "NATS C library not found. Please install it.")
 endif()
 
 # ------------------------------
@@ -80,19 +81,14 @@ target_include_directories(server_lib PUBLIC
     ${Boost_INCLUDE_DIRS}
     ${ARGON2_INCLUDE_DIRS}
     ${OPENSSL_INCLUDE_DIR}
-    ${NATS_INCLUDE_DIR}
 )
 
 target_link_libraries(server_lib PUBLIC
     pqxx
     pq
-    Boost::filesystem
-    Boost::thread
-    Boost::date_time
     pthread
     OpenSSL::SSL
     OpenSSL::Crypto
-    ${NATS_LIBRARY}
     ${ARGON2_LIBRARIES}
 )
 
@@ -109,39 +105,30 @@ add_executable(server ${MAIN_SOURCES})
 target_link_libraries(server PRIVATE server_lib)
 
 # ------------------------------
-# RPATH Boost (Linux / macOS)
-# ------------------------------
-if(APPLE)
-    set(BOOST_LIB_PATH "/opt/homebrew/lib")
-elseif(UNIX)
-    set(BOOST_LIB_PATH "/usr/local/lib")
-endif()
-
-target_link_options(server PRIVATE -Wl,-rpath,${BOOST_LIB_PATH})
-
-# ------------------------------
 # Tests
 # ------------------------------
 
-# include(FetchContent)
+include(FetchContent)
 
-# FetchContent_Declare(
-#   googletest
-#   URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
-# )
-# FetchContent_MakeAvailable(googletest)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+)
+FetchContent_MakeAvailable(googletest)
 
-# enable_testing()
+enable_testing()
 
-# file(GLOB_RECURSE TEST_SOURCES "Tests/*.cpp")
-# add_executable(server_tests ${TEST_SOURCES})
+file(GLOB_RECURSE TEST_SOURCES "Tests/*.cpp")
+add_executable(server_tests ${TEST_SOURCES})
 
-# target_link_libraries(server_tests PRIVATE
-#     server_lib
-#     gtest
-#     gtest_main
-#     gmock
-# )
+target_link_libraries(server_tests PRIVATE
+    server_lib
+    gtest
+    gtest_main
+    gmock
+)
 
-# include(GoogleTest)
-# gtest_discover_tests(server_tests)
+include(GoogleTest)
+gtest_discover_tests(server_tests)
+
+

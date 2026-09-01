@@ -1,1 +1,0 @@
-// A Implémenter afin d'optimiser la charge DB 

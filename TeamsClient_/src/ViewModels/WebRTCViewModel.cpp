@@ -112,6 +112,9 @@ void WebRTCViewModel::onCloseCallWindow() {
 }
 
 void WebRTCViewModel::hangup() {
+  if (webRTCService_) {
+    webRTCService_->hangup();
+  }
   if (chatService_) {
     chatService_->hangup();
   }

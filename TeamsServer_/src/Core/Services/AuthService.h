@@ -2,6 +2,7 @@
 #define AUTHSERVICE_H
 
 #include "../../Utils/Crypto.h"
+#include "IAuthService.h"
 #include "../Repositories/UserRepository.h"
 
 /**
@@ -14,18 +15,18 @@
  * l'authentification. Gère la sécurité des mots de passe via Crypto et
  * encapsule la logique métier liée à l'authentification.
  */
-class AuthService {
-public:
-  AuthService(std::shared_ptr<UserRepository> userRepo)
+class AuthService : public IAuthService {
+ public:
+  AuthService(std::shared_ptr<IUserRepository> userRepo)
       : userRepo_(std::move(userRepo)), config_(Config::instance()) {};
-  virtual ~AuthService() = default;
+  ~AuthService() override = default;
 
-  virtual std::optional<User> loginUser(const User &user);
-  virtual std::optional<User> registerUser(const User &user);
-  virtual std::optional<User> validateToken(const std::string &token);
+  std::optional<User> loginUser(const User &user) override;
+  std::optional<User> registerUser(const User &user) override;
+  std::optional<User> validateToken(const std::string &token) override;
 
-private:
-  std::shared_ptr<UserRepository> userRepo_;
+ private:
+  std::shared_ptr<IUserRepository> userRepo_;
   Config &config_;
 };
 

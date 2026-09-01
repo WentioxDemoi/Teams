@@ -51,6 +51,7 @@ std::optional<std::string> ContactService::removeContact(const std::string &payl
   //     "type":"contact_removed",
   //     "success":true
   //   })";
+  return std::nullopt;
 }
 
 std::optional<std::string> ContactService::loadContacts(const std::string &payload) {

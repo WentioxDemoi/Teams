@@ -66,6 +66,7 @@ bool ContactRepository::remove(
 //     databaseManager_.release_connection(conn);
 //     throw;
 //   }
+return false;
 }
 
 std::vector<User> ContactRepository::find_contacts(

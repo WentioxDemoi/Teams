@@ -23,34 +23,46 @@ PConnectionController::PConnectionController() {
       webrtc::CreateBuiltinVideoEncoderFactory(), webrtc::CreateBuiltinVideoDecoderFactory(), nullptr, nullptr);
   RTC_CHECK(factory_) << "[PConnectionController] Failed to create PeerConnectionFactory";
 
+  observer_ = webrtc::scoped_refptr<PConnectionObserver>(new PConnectionObserver(this));
+  ensurePeerConnection();
+}
+
+void PConnectionController::ensurePeerConnection() {
+  if (peer_) {
+    return;
+  }
+
   webrtc::PeerConnectionInterface::RTCConfiguration config;
   webrtc::PeerConnectionInterface::IceServer stun;
   stun.urls.push_back("stun:stun.l.google.com:19302");
   config.servers.push_back(stun);
 
-  // scoped_refptr obligatoire : WebRTC garde une référence interne sur l'observer
-  observer_ = webrtc::scoped_refptr<PConnectionObserver>(new PConnectionObserver(this));
   webrtc::PeerConnectionDependencies deps(observer_.get());
   peer_ = factory_->CreatePeerConnectionOrError(config, std::move(deps)).MoveValue();
   RTC_CHECK(peer_) << "[PConnectionController] Failed to create PeerConnection";
 
   auto videoTrack = factory_->CreateVideoTrack(Sources::instance().localVideo(), "video0");
-  peer_->AddTrack(videoTrack, {"stream0"});
+  if (videoTrack) {
+    peer_->AddTrack(videoTrack, {"stream0"});
+  }
 
   // Audio : la capture micro est gérée en interne par l'AudioDeviceModule
   // (créé implicitement puisqu'on a passé nullptr en 4e argument de
   // CreatePeerConnectionFactory), pas besoin de pousser des frames nous-mêmes.
-  webrtc::scoped_refptr<webrtc::AudioSourceInterface> audioSource = factory_->CreateAudioSource(webrtc::AudioOptions());
+  webrtc::scoped_refptr<webrtc::AudioSourceInterface> audioSource =
+      factory_->CreateAudioSource(webrtc::AudioOptions());
   audioTrack_ = factory_->CreateAudioTrack("audio0", audioSource.get());
   auto result = peer_->AddTrack(audioTrack_, {"stream0"});
   if (result.ok()) {
     audioSender_ = result.value();
+    audioTrack_->set_enabled(false);
   } else {
     RTC_LOG(LS_ERROR) << "[PConnectionController] Failed to add audio track";
   }
 }
 
 void PConnectionController::createOffer() {
+  ensurePeerConnection();
   qDebug() << "[createOffer] called";
   auto obs = webrtc::scoped_refptr<CreateSdpObserver>(new CreateSdpObserver([this](const std::string &sdp) {
     qDebug() << "[createOffer] OnSuccess, sdp size=" << sdp.size();
@@ -68,6 +80,7 @@ void PConnectionController::createOffer() {
 }
 
 void PConnectionController::createAnswer() {
+  ensurePeerConnection();
   auto obs = webrtc::scoped_refptr<CreateSdpObserver>(new CreateSdpObserver([this](const std::string &sdp) {
     peer_->SetLocalDescription(webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp),
                                webrtc::scoped_refptr<SetLocalSdpObserver>(new SetLocalSdpObserver()));
@@ -78,16 +91,19 @@ void PConnectionController::createAnswer() {
 }
 
 void PConnectionController::setRemoteOffer(const std::string &sdp) {
+  ensurePeerConnection();
   peer_->SetRemoteDescription(webrtc::CreateSessionDescription(webrtc::SdpType::kOffer, sdp),
                               webrtc::scoped_refptr<SetRemoteSdpObserver>(new SetRemoteSdpObserver()));
 }
 
 void PConnectionController::setRemoteAnswer(const std::string &sdp) {
+  ensurePeerConnection();
   peer_->SetRemoteDescription(webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp),
                               webrtc::scoped_refptr<SetRemoteSdpObserver>(new SetRemoteSdpObserver()));
 }
 
 void PConnectionController::addIceCandidate(const std::string &candidate, const std::string &mid, int index) {
+  ensurePeerConnection();
   webrtc::SdpParseError error;
   auto ice = webrtc::CreateIceCandidate(mid, index, candidate, &error);
   if (ice) {
@@ -119,6 +135,19 @@ PConnectionController::~PConnectionController() {
 }
 
 void PConnectionController::close() {
-  if (peer_)
+  if (audioTrack_) {
+    audioTrack_->set_enabled(false);
+  }
+
+  if (peer_ && audioSender_) {
+    peer_->RemoveTrackOrError(audioSender_);
+    audioSender_ = nullptr;
+  }
+
+  if (peer_) {
     peer_->Close();
+    peer_ = nullptr;
+  }
+
+  audioTrack_ = nullptr;
 }
