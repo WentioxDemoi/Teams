@@ -3,7 +3,6 @@
 
 #include "../Core/Services/IAuthService.h"
 
-
 using ResponseCallback = std::function<void(std::string)>;
 
 /**
@@ -22,8 +21,7 @@ class AuthHandler {
   void handle_type(std::string payload, ResponseCallback respond);
 
   AuthHandler(std::shared_ptr<IAuthService> authService)
-      : worker_pool_(Config::instance().worker_pool_size()),
-        authService_(authService) {};
+      : worker_pool_(Config::instance().worker_pool_size()), authService_(authService) {};
   ~AuthHandler() = default;
 
  private:

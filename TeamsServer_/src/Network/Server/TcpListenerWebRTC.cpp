@@ -1,29 +1,30 @@
 #include "TcpListenerWebRTC.h"
 // #include "../../Core/Registeries/WebRTCRegistry.h"
 
-
-TcpListenerWebRTC::TcpListenerWebRTC(asio::io_context &io_context,
-                                     ssl::context &ssl_ctx,
+TcpListenerWebRTC::TcpListenerWebRTC(asio::io_context& io_context, ssl::context& ssl_ctx,
                                      tcp::endpoint endpoint,
                                      std::shared_ptr<IWebRTCRegistry> webRTCRegistry,
-                                    std::shared_ptr<WebRTCHandler> webRTCHandler,
-                                    std::shared_ptr<IAuthService> authService)
-    : acceptor_(io_context, endpoint), ssl_ctx_(ssl_ctx), webRTCRegistry_(webRTCRegistry), webRTCHandler_(webRTCHandler), authService_(authService) {
-    do_accept();
+                                     std::shared_ptr<WebRTCHandler> webRTCHandler,
+                                     std::shared_ptr<IAuthService> authService)
+    : acceptor_(io_context, endpoint),
+      ssl_ctx_(ssl_ctx),
+      webRTCRegistry_(webRTCRegistry),
+      webRTCHandler_(webRTCHandler),
+      authService_(authService) {
+  do_accept();
 }
 
 void TcpListenerWebRTC::do_accept() {
-    acceptor_.async_accept([this](boost::system::error_code ec, tcp::socket socket) {
-        if (!ec) {
-            std::cout << "[CallServer] New connection\n";
+  acceptor_.async_accept([this](boost::system::error_code ec, tcp::socket socket) {
+    if (!ec) {
+      std::cout << "[CallServer] New connection\n";
 
-            auto session = std::make_shared<WebRTCSession>(
-                std::move(socket), ssl_ctx_, webRTCHandler_, webRTCRegistry_, authService_
-            );
-            session->start();
-        } else {
-            BoostErrorHandler::log("TCPListenerWebRTC", "Accept", ec);
-        }
-        do_accept();
-    });
+      auto session = std::make_shared<WebRTCSession>(std::move(socket), ssl_ctx_, webRTCHandler_,
+                                                     webRTCRegistry_, authService_);
+      session->start();
+    } else {
+      BoostErrorHandler::log("TCPListenerWebRTC", "Accept", ec);
+    }
+    do_accept();
+  });
 }

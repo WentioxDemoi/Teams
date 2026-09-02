@@ -17,9 +17,9 @@ class IAuthService {
  public:
   virtual ~IAuthService() = default;
 
-  virtual std::optional<User> loginUser(const User &user) = 0;
-  virtual std::optional<User> registerUser(const User &user) = 0;
-  virtual std::optional<User> validateToken(const std::string &token) = 0;
+  virtual std::optional<User> loginUser(const User& user) = 0;
+  virtual std::optional<User> registerUser(const User& user) = 0;
+  virtual std::optional<User> validateToken(const std::string& token) = 0;
 };
 
 #endif

@@ -1,10 +1,12 @@
+#include <gtest/gtest.h>
+
+#include <chrono>
+
 #include "Core/Repositories/ContactRepository.h"
 #include "Core/Repositories/MessageRepository.h"
 #include "Core/Repositories/UserRepository.h"
 #include "Infrastructure/DatabaseManager.h"
 #include "Utils/Config.h"
-#include <gtest/gtest.h>
-#include <chrono>
 
 namespace {
 
@@ -18,7 +20,7 @@ class PostgreSQLIntegrationTest : public ::testing::Test {
     try {
       databaseManager_ = &DatabaseManager::instance();
       cleanDatabase();
-    } catch (const std::exception &error) {
+    } catch (const std::exception& error) {
       GTEST_SKIP() << "PostgreSQL indisponible: " << error.what();
     }
   }
@@ -35,7 +37,7 @@ class PostgreSQLIntegrationTest : public ::testing::Test {
   void cleanDatabase() {
     auto connection = databaseManager_->acquire_connection();
     pqxx::work transaction(*connection);
-    const auto &config = Config::instance();
+    const auto& config = Config::instance();
     transaction.exec("DELETE FROM " + config.table_contacts());
     transaction.exec("DELETE FROM " + config.table_messages());
     transaction.exec("DELETE FROM " + config.table_users());
@@ -43,8 +45,8 @@ class PostgreSQLIntegrationTest : public ::testing::Test {
     databaseManager_->release_connection(connection);
   }
 
-  User makeUser(const std::string &uuid, const std::string &email,
-               const std::string &firstName) const {
+  User makeUser(const std::string& uuid, const std::string& email,
+                const std::string& firstName) const {
     User user;
     user.uuid = uuid;
     user.email = email;
@@ -57,10 +59,10 @@ class PostgreSQLIntegrationTest : public ::testing::Test {
     return user;
   }
 
-  DatabaseManager *databaseManager_ = nullptr;
+  DatabaseManager* databaseManager_ = nullptr;
 };
 
-}
+}  // namespace
 
 TEST_F(PostgreSQLIntegrationTest, UserRepositoryCreatesReadsUpdatesSearchesAndDeletes) {
   UserRepository repository;
@@ -135,8 +137,7 @@ TEST_F(PostgreSQLIntegrationTest, ContactRepositoryCreatesFindsOwnersAndUpdatesR
   ASSERT_EQ(owners.size(), 1);
   EXPECT_EQ(owners.front().uuid, owner.uuid);
 
-  ASSERT_TRUE(contacts.update_last_read_at(owner.uuid, contact.uuid,
-                                            "2026-09-02 12:00:00+00"));
+  ASSERT_TRUE(contacts.update_last_read_at(owner.uuid, contact.uuid, "2026-09-02 12:00:00+00"));
   const auto updatedContacts = contacts.find_contacts(owner.uuid);
   ASSERT_EQ(updatedContacts.size(), 1);
   EXPECT_NE(updatedContacts.front().lastReadAt, "");

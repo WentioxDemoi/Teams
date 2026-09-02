@@ -1,8 +1,9 @@
 #include "Infrastructure/ConnectionPool.h"
+
 #include <gtest/gtest.h>
 
 TEST(ConnectionPoolTest, CanAcquireAndReturnConnectionWhenDatabaseIsConfigured) {
-  const char *connectionString = std::getenv("TEST_DATABASE_URL");
+  const char* connectionString = std::getenv("TEST_DATABASE_URL");
   if (connectionString == nullptr || std::string(connectionString).empty()) {
     GTEST_SKIP() << "TEST_DATABASE_URL n'est pas configure";
   }

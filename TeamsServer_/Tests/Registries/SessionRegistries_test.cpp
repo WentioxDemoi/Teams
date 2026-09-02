@@ -1,7 +1,8 @@
+#include <gtest/gtest.h>
+
 #include "Core/Registeries/ContactSessionRegistry.h"
 #include "Core/Registeries/MessageSessionRegistry.h"
 #include "Core/Registeries/WebRTCRegistry.h"
-#include <gtest/gtest.h>
 
 TEST(ContactSessionRegistryTest, MissingSessionReturnsFalseAndCanBeRegisteredThenRemoved) {
   ContactSessionRegistry registry;

@@ -5,11 +5,10 @@
 #include <memory>
 
 #include "../../Core/Registeries/MessageSessionRegistry.h"
+#include "../../Core/Services/AuthService.h"
 #include "../../Handlers/MessageHandler.h"
 #include "../../Utils/BoostErrorHandler.h"
 #include "../../includes.h"
-#include "../../Core/Services/AuthService.h"
-
 
 /**
  * @class MessageSession

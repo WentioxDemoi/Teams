@@ -1,4 +1,5 @@
 #include "TcpListenerMessage.h"
+
 #include "../../Utils/BoostErrorHandler.h"
 
 TcpListenerMessage::TcpListenerMessage(
@@ -19,8 +20,8 @@ void TcpListenerMessage::do_accept() {
     if (!ec) {
       std::cout << "[MessageServer] New connection\n";
 
-      auto session = std::make_shared<MessageSession>(
-          std::move(socket), ssl_ctx_, messageHandler_, messageSessionRegistry_, authService_);
+      auto session = std::make_shared<MessageSession>(std::move(socket), ssl_ctx_, messageHandler_,
+                                                      messageSessionRegistry_, authService_);
       session->start();
     } else {
       BoostErrorHandler::log("TcpListenerMessage", "Accept", ec);

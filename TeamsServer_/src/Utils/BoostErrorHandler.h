@@ -12,11 +12,11 @@
  * produite.
  */
 class BoostErrorHandler {
-public:
+ public:
   static void log(std::string_view component, std::string_view where,
-                  const boost::system::error_code &ec) {
-    std::cerr << "[" << component << "][" << where
-              << "] Error: " << ec.message() << " (" << ec.value() << ")\n";
+                  const boost::system::error_code& ec) {
+    std::cerr << "[" << component << "][" << where << "] Error: " << ec.message() << " ("
+              << ec.value() << ")\n";
 
     if (ec == asio::error::eof) {
       std::cerr << "Client disconnected cleanly\n";

@@ -5,20 +5,17 @@
 #include <unordered_map>
 
 #include "../../Core/Registeries/ContactSessionRegistry.h"
+#include "../../Core/Services/AuthService.h"
 #include "../../Handlers/ContactHandler.h"
 #include "../../includes.h"
 #include "../Session/ContactSession.h"
-#include "../../Core/Services/AuthService.h"
 
 class TcpListenerContact {
  public:
-  TcpListenerContact(
-      asio::io_context& io_context,
-      ssl::context& ssl_ctx,
-      tcp::endpoint endpoint,
-      std::shared_ptr<ContactHandler> contactHandler,
-      std::shared_ptr<IContactSessionRegistry> contactSessionRegistry,
-      std::shared_ptr<IAuthService> authService);
+  TcpListenerContact(asio::io_context& io_context, ssl::context& ssl_ctx, tcp::endpoint endpoint,
+                     std::shared_ptr<ContactHandler> contactHandler,
+                     std::shared_ptr<IContactSessionRegistry> contactSessionRegistry,
+                     std::shared_ptr<IAuthService> authService);
 
  private:
   void do_accept();

@@ -1,11 +1,12 @@
 #include "ContactHandler.h"
-#include "../Utils/PacketHelper.h"
-#include "../Utils/ResponseFormater.h"
 
 #include <optional>
 
-void ContactHandler::handle_add_contact(std::string uuid, std::string payload, ResponseCallback respond) {
+#include "../Utils/PacketHelper.h"
+#include "../Utils/ResponseFormater.h"
 
+void ContactHandler::handle_add_contact(std::string uuid, std::string payload,
+                                        ResponseCallback respond) {
   std::cout << "[ContactHandler] Adding contact with payload: " << payload << std::endl;
 
   asio::post(worker_pool_, [this, payload, respond]() {
@@ -20,7 +21,7 @@ void ContactHandler::handle_add_contact(std::string uuid, std::string payload, R
 
       respond(response.value());
 
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
       std::cerr << "[ContactHandler] Add error: " << e.what() << "\n";
 
       respond(R"({"type":"contact_added","error":"Add failed: server
@@ -29,8 +30,8 @@ void ContactHandler::handle_add_contact(std::string uuid, std::string payload, R
   });
 }
 
-void ContactHandler::handle_remove_contact(std::string uuid, std::string payload, ResponseCallback respond) {
-
+void ContactHandler::handle_remove_contact(std::string uuid, std::string payload,
+                                           ResponseCallback respond) {
   std::cout << "[ContactHandler] Removing contact with payload: " << payload << std::endl;
 
   //   asio::post(worker_pool_, [this, payload, respond]() {
@@ -56,8 +57,8 @@ void ContactHandler::handle_remove_contact(std::string uuid, std::string payload
   //   });
 }
 
-void ContactHandler::handle_load_contacts(std::string uuid, std::string payload, ResponseCallback respond) {
-
+void ContactHandler::handle_load_contacts(std::string uuid, std::string payload,
+                                          ResponseCallback respond) {
   std::cout << "[ContactHandler] Loading contacts with payload: " << payload << std::endl;
 
   asio::post(worker_pool_, [this, payload, respond]() {
@@ -70,7 +71,7 @@ void ContactHandler::handle_load_contacts(std::string uuid, std::string payload,
 
       respond(response.value());
 
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
       std::cerr << "[ContactHandler] Load error: " << e.what() << "\n";
 
       respond(
@@ -80,8 +81,8 @@ void ContactHandler::handle_load_contacts(std::string uuid, std::string payload,
   });
 }
 
-void ContactHandler::handle_search_users(const std::string &uuid, std::string payload, ResponseCallback respond) {
-
+void ContactHandler::handle_search_users(const std::string& uuid, std::string payload,
+                                         ResponseCallback respond) {
   std::cout << "[ContactHandler] Searching contacts with payload: " << payload << std::endl;
 
   asio::post(worker_pool_, [this, uuid, payload, respond]() {
@@ -92,7 +93,7 @@ void ContactHandler::handle_search_users(const std::string &uuid, std::string pa
         response = R"({"type":"contacts_loaded","error":"Load failed."})";
       }
       respond(response.value());
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
       std::cerr << "[ContactHandler] Search error: " << e.what() << "\n";
 
       respond(R"({"type":"users_searched,"error":"Search failed: server error"})");
@@ -100,9 +101,8 @@ void ContactHandler::handle_search_users(const std::string &uuid, std::string pa
   });
 }
 
-void ContactHandler::handle_resolve_user_by_uuid(const std::string &uuid, std::string payload,
+void ContactHandler::handle_resolve_user_by_uuid(const std::string& uuid, std::string payload,
                                                  ResponseCallback respond) {
-
   std::cout << "[ContactHandler] Searching user with payload: " << payload << std::endl;
 
   asio::post(worker_pool_, [this, payload, respond]() {
@@ -113,7 +113,7 @@ void ContactHandler::handle_resolve_user_by_uuid(const std::string &uuid, std::s
         response = R"({"type":"resolve_user_response","error":"Load failed."})";
       }
       respond(response.value());
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
       std::cerr << "[ContactHandler] Resolve error: " << e.what() << "\n";
 
       respond(R"({"type":"user_resolved,"error":"Search failed: server error"})");
@@ -121,8 +121,8 @@ void ContactHandler::handle_resolve_user_by_uuid(const std::string &uuid, std::s
   });
 }
 
-void ContactHandler::handle_update_last_read_at(std::string uuid, std::string payload, ResponseCallback respond) {
-
+void ContactHandler::handle_update_last_read_at(std::string uuid, std::string payload,
+                                                ResponseCallback respond) {
   asio::post(worker_pool_, [this, uuid, payload, respond]() {
     try {
       auto response = contactService_->lastReadAt(uuid, payload);
@@ -132,7 +132,7 @@ void ContactHandler::handle_update_last_read_at(std::string uuid, std::string pa
 
       respond(response.value());
 
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
       std::cerr << "[ContactHandler] LastReadAt error: " << e.what() << "\n";
       respond(R"({"type":"last_read_at_updated","error":"Update failed: server error"})");
     }
@@ -140,24 +140,21 @@ void ContactHandler::handle_update_last_read_at(std::string uuid, std::string pa
 }
 
 void ContactHandler::handle_update_status(std::string uuid, std::string payload) {
-    asio::post(worker_pool_, [this, uuid, payload]() {
-    try { 
+  asio::post(worker_pool_, [this, uuid, payload]() {
+    try {
       contactService_->updateStatus(uuid, payload);
-    }
-    catch (const std::exception &e) {
+    } catch (const std::exception& e) {
       std::cerr << "[ContactHandler] UpdateStatus error: " << e.what() << "\n";
     }
-});
+  });
 }
 
 void ContactHandler::handle_type(std::string uuid, std::string payload, ResponseCallback respond) {
-
   std::string type = PacketHelper::extractValue(payload, "type");
   PacketHelper::insertValue(payload, "userUuid", uuid);
   std::cout << "type : " << type << std::endl;
 
-  if (type.empty())
-    return;
+  if (type.empty()) return;
 
   if (type == "add_contact") {
     handle_add_contact(uuid, payload, respond);
@@ -173,8 +170,7 @@ void ContactHandler::handle_type(std::string uuid, std::string payload, Response
     handle_update_last_read_at(uuid, payload, respond);
   } else if (type == "update_status") {
     handle_update_status(uuid, payload);
-  }
-  else {
+  } else {
     std::cerr << "[ContactHandler] Unknown contact type: " << type << "\n";
   }
 }

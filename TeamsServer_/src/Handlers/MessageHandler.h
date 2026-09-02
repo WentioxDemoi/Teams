@@ -1,9 +1,10 @@
 #ifndef MESSAGEHANDLER_H
 #define MESSAGEHANDLER_H
 
+#include <memory>
+
 #include "../Core/Services/IMessageService.h"
 #include "Repositories/UserRepository.h"
-#include <memory>
 
 using ResponseCallback = std::function<void(std::string)>;
 
@@ -23,13 +24,11 @@ class MessageHandler {
   ~MessageHandler() = default;
 
   void handle_type(std::string uuid, std::string payload, ResponseCallback respond);
-  void update_last_seen(const std::string &uuid);
-
+  void update_last_seen(const std::string& uuid);
 
  private:
   void handle_send_message(std::string uuid, std::string payload, ResponseCallback respond);
   void handle_load_conversations(std::string uuid, std::string payload, ResponseCallback respond);
-
 
   asio::thread_pool worker_pool_;
   std::unique_ptr<IMessageService> messageService_;

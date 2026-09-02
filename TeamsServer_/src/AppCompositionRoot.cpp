@@ -1,4 +1,8 @@
 #include "AppCompositionRoot.h"
+
+#include <iostream>
+#include <memory>
+
 #include "ContactHandler.h"
 #include "Registeries/ContactSessionRegistry.h"
 #include "Repositories/ContactRepository.h"
@@ -8,13 +12,12 @@
 #include "Services/WebRTCService.h"
 #include "WebRTCHandler.h"
 
-#include <iostream>
-#include <memory>
-
-AppCompositionRoot::AppCompositionRoot(int auth_threads, int message_threads,
-                                       int contact_threads, int webrtc_threads)
-    : auth_threads_(auth_threads), message_threads_(message_threads),
-      contact_threads_(contact_threads), webrtc_threads_(webrtc_threads),
+AppCompositionRoot::AppCompositionRoot(int auth_threads, int message_threads, int contact_threads,
+                                       int webrtc_threads)
+    : auth_threads_(auth_threads),
+      message_threads_(message_threads),
+      contact_threads_(contact_threads),
+      webrtc_threads_(webrtc_threads),
       ssl_ctx_(ssl::context::tls_server) {
   initSsl();
   initRepositories();
@@ -27,13 +30,10 @@ AppCompositionRoot::AppCompositionRoot(int auth_threads, int message_threads,
 void AppCompositionRoot::initSsl() {
   boost::system::error_code ec;
 
-  ssl_ctx_.set_options(
-      ssl::context::default_workarounds
-      | ssl::context::no_sslv2
-      | ssl::context::no_sslv3
-      | ssl::context::no_tlsv1
-      | ssl::context::no_tlsv1_1,
-      ec);
+  ssl_ctx_.set_options(ssl::context::default_workarounds | ssl::context::no_sslv2 |
+                           ssl::context::no_sslv3 | ssl::context::no_tlsv1 |
+                           ssl::context::no_tlsv1_1,
+                       ec);
   if (ec) {
     throw std::runtime_error("Échec configuration options SSL: " + ec.message());
   }
@@ -67,44 +67,35 @@ void AppCompositionRoot::initRegistries() {
 
 void AppCompositionRoot::initServices() {
   authService_ = std::make_shared<AuthService>(userRepository_);
-  messageService_ = std::make_unique<MessageService>(
-      std::move(messageRepository_), messageSessionRegistry_);
-  contactService_ = std::make_unique<ContactService>(
-      std::move(contactRepository_), userRepository_, contactSessionRegistry_);
+  messageService_ =
+      std::make_unique<MessageService>(std::move(messageRepository_), messageSessionRegistry_);
+  contactService_ = std::make_unique<ContactService>(std::move(contactRepository_), userRepository_,
+                                                     contactSessionRegistry_);
   webRTCService_ = std::make_unique<WebRTCService>(webRTCRegistry_);
 }
 
 void AppCompositionRoot::initHandlers() {
   authHandler_ = std::make_shared<AuthHandler>(authService_);
-      messageHandler_ =
-        std::make_shared<MessageHandler>(std::move(messageService_));
-      contactHandler_ =
-        std::make_shared<ContactHandler>(std::move(contactService_));
-      webrtcHandler_ =
-        std::make_shared<WebRTCHandler>(std::move(webRTCService_));
+  messageHandler_ = std::make_shared<MessageHandler>(std::move(messageService_));
+  contactHandler_ = std::make_shared<ContactHandler>(std::move(contactService_));
+  webrtcHandler_ = std::make_shared<WebRTCHandler>(std::move(webRTCService_));
 }
 
 void AppCompositionRoot::initListeners() {
   auth_listener_ = std::make_unique<TcpListenerAuth>(
-      auth_io_, ssl_ctx_, tcp::endpoint(tcp::v4(), 8080),
-      std::move(authHandler_));
+      auth_io_, ssl_ctx_, tcp::endpoint(tcp::v4(), 8080), std::move(authHandler_));
 
   message_listener_ = std::make_unique<TcpListenerMessage>(
-      message_io_, ssl_ctx_, tcp::endpoint(tcp::v4(), 8082),
-      std::move(messageHandler_), messageSessionRegistry_, authService_);
+      message_io_, ssl_ctx_, tcp::endpoint(tcp::v4(), 8082), std::move(messageHandler_),
+      messageSessionRegistry_, authService_);
 
   contact_listener_ = std::make_unique<TcpListenerContact>(
-      contact_io_, ssl_ctx_, tcp::endpoint(tcp::v4(), 8084),
-      std::move(contactHandler_), contactSessionRegistry_, authService_);
+      contact_io_, ssl_ctx_, tcp::endpoint(tcp::v4(), 8084), std::move(contactHandler_),
+      contactSessionRegistry_, authService_);
 
-  webrtc_listener_ = std::make_unique<TcpListenerWebRTC>(
-      webrtc_io_,
-      ssl_ctx_,
-      tcp::endpoint(tcp::v4(), 8083),
-      webRTCRegistry_,
-      webrtcHandler_,
-      authService_
-  );
+  webrtc_listener_ =
+      std::make_unique<TcpListenerWebRTC>(webrtc_io_, ssl_ctx_, tcp::endpoint(tcp::v4(), 8083),
+                                          webRTCRegistry_, webrtcHandler_, authService_);
 }
 
 void AppCompositionRoot::run() {
@@ -115,8 +106,7 @@ void AppCompositionRoot::run() {
 
   launchThreads();
 
-  for (auto &t : threads_)
-    t.join();
+  for (auto& t : threads_) t.join();
 
   std::cout << "[APP] All threads stopped cleanly\n";
 }

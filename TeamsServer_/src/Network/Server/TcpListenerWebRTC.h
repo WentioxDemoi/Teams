@@ -1,10 +1,10 @@
 #ifndef TCPLISTENERWEBRTC_H
 #define TCPLISTENERWEBRTC_H
 
+#include "../../Core/Registeries/WebRTCRegistry.h"
 #include "../../Utils/BoostErrorHandler.h"
 #include "../../includes.h"
 #include "../Session/WebRTCSession.h"
-#include "../../Core/Registeries/WebRTCRegistry.h"
 
 // class WebRTCRegistry;
 /**
@@ -16,15 +16,17 @@
  * spécifique.
  */
 class TcpListenerWebRTC {
-public:
-  TcpListenerWebRTC(asio::io_context &io_context, ssl::context &ssl_ctx,
-              tcp::endpoint endpoint, std::shared_ptr<IWebRTCRegistry> webRTCRegistry, std::shared_ptr<WebRTCHandler> webrtcHandler, std::shared_ptr<IAuthService> authService);
+ public:
+  TcpListenerWebRTC(asio::io_context& io_context, ssl::context& ssl_ctx, tcp::endpoint endpoint,
+                    std::shared_ptr<IWebRTCRegistry> webRTCRegistry,
+                    std::shared_ptr<WebRTCHandler> webrtcHandler,
+                    std::shared_ptr<IAuthService> authService);
 
-private:
+ private:
   void do_accept();
 
   tcp::acceptor acceptor_;
-  ssl::context &ssl_ctx_;
+  ssl::context& ssl_ctx_;
   std::shared_ptr<IAuthService> authService_;
   std::shared_ptr<WebRTCHandler> webRTCHandler_;
   std::shared_ptr<IWebRTCRegistry> webRTCRegistry_;

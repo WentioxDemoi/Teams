@@ -11,46 +11,43 @@
  * des appels de méthode, facilitant la lecture et la maintenance du code.
  */
 class QueryBuilder {
-public:
+ public:
   QueryBuilder() = default;
 
   // SELECT
-  QueryBuilder &select(const std::vector<std::string> &columns = {"*"});
-  QueryBuilder &from(const std::string &table);
+  QueryBuilder& select(const std::vector<std::string>& columns = {"*"});
+  QueryBuilder& from(const std::string& table);
 
   // WHERE
-  QueryBuilder &where(const std::string &column, const std::string &op,
-                      const std::string &placeholder);
-  QueryBuilder &and_where(const std::string &column, const std::string &op,
-                          const std::string &placeholder);
-  QueryBuilder &or_where(const std::string &column, const std::string &op,
-                         const std::string &placeholder);
+  QueryBuilder& where(const std::string& column, const std::string& op,
+                      const std::string& placeholder);
+  QueryBuilder& and_where(const std::string& column, const std::string& op,
+                          const std::string& placeholder);
+  QueryBuilder& or_where(const std::string& column, const std::string& op,
+                         const std::string& placeholder);
 
   // JOIN
-  QueryBuilder &join(const std::string &table, const std::string &condition);
-  QueryBuilder &left_join(const std::string &table,
-                          const std::string &condition);
+  QueryBuilder& join(const std::string& table, const std::string& condition);
+  QueryBuilder& left_join(const std::string& table, const std::string& condition);
 
   // ORDER BY
-  QueryBuilder &order_by(const std::string &column,
-                         const std::string &direction = "ASC");
+  QueryBuilder& order_by(const std::string& column, const std::string& direction = "ASC");
 
   // LIMIT / OFFSET
-  QueryBuilder &limit(int count);
-  QueryBuilder &offset(int count);
+  QueryBuilder& limit(int count);
+  QueryBuilder& offset(int count);
 
   // INSERT
-  QueryBuilder &insert_into(const std::string &table,
-                            const std::vector<std::string> &columns = {});
-  QueryBuilder &values(const std::vector<std::string> &placeholders);
-  QueryBuilder &returning(const std::vector<std::string> &columns);
+  QueryBuilder& insert_into(const std::string& table, const std::vector<std::string>& columns = {});
+  QueryBuilder& values(const std::vector<std::string>& placeholders);
+  QueryBuilder& returning(const std::vector<std::string>& columns);
 
   // UPDATE
-  QueryBuilder &update(const std::string &table);
-  QueryBuilder &set(const std::string &column, const std::string &placeholder);
+  QueryBuilder& update(const std::string& table);
+  QueryBuilder& set(const std::string& column, const std::string& placeholder);
 
   // DELETE
-  QueryBuilder &delete_from(const std::string &table);
+  QueryBuilder& delete_from(const std::string& table);
 
   // BUILD
   std::string build() const;
@@ -58,7 +55,7 @@ public:
   // RESET
   void reset();
 
-private:
+ private:
   enum class QueryType { SELECT, INSERT, UPDATE, DELETE };
 
   QueryType type_;
@@ -74,7 +71,7 @@ private:
   std::optional<int> limit_;
   std::optional<int> offset_;
 
-  void append_where(const std::string &clause, const std::string &conjunction);
+  void append_where(const std::string& clause, const std::string& conjunction);
 };
 
 #endif

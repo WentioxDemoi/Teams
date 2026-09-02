@@ -5,11 +5,10 @@
 #include <memory>
 
 #include "../../Core/Registeries/ContactSessionRegistry.h"
+#include "../../Core/Services/AuthService.h"
 #include "../../Handlers/ContactHandler.h"
 #include "../../Utils/BoostErrorHandler.h"
 #include "../../includes.h"
-#include "../../Core/Services/AuthService.h"
-
 
 /**
  * @class ContactSession

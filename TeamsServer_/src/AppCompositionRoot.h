@@ -6,10 +6,10 @@
 #include <thread>
 #include <vector>
 
-#include "Core/Services/AuthService.h"
-#include "Core/Registeries/MessageSessionRegistry.h"
 #include "Core/Registeries/IMessageSessionRegistry.h"
+#include "Core/Registeries/MessageSessionRegistry.h"
 #include "Core/Registeries/WebRTCRegistry.h"
+#include "Core/Services/AuthService.h"
 #include "Handlers/MessageHandler.h"
 #include "Infrastructure/DatabaseManager.h"
 #include "Network/Server/TcpListenerAuth.h"
@@ -32,7 +32,8 @@
  */
 class AppCompositionRoot {
  public:
-  AppCompositionRoot(int auth_threads, int message_threads, int contact_threads, int webrtc_threads);
+  AppCompositionRoot(int auth_threads, int message_threads, int contact_threads,
+                     int webrtc_threads);
 
   void run();
 
@@ -60,7 +61,6 @@ class AppCompositionRoot {
   std::unique_ptr<IMessageService> messageService_;
   std::unique_ptr<IContactService> contactService_;
   std::unique_ptr<IWebRTCService> webRTCService_;
-
 
   std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry_;
   std::shared_ptr<IContactSessionRegistry> contactSessionRegistry_;

@@ -1,5 +1,7 @@
 #include "MessageRepository.h"
+
 #include <iostream>
+
 #include "../../Infrastructure/QueryBuilder.h"
 #include "Models/Message.h"
 
@@ -10,11 +12,10 @@ bool MessageRepository::save(const Message& message) {
 
     QueryBuilder qb;
 
-    auto query =
-        qb.insert_into(config_.table_messages(), {"id", "sender_id", "receiver_id", "chat_type",
-                                                  "content", "timestamp"})
-            .values({"$1", "$2", "$3", "$4", "$5", "$6"})
-            .build();
+    auto query = qb.insert_into(config_.table_messages(), {"id", "sender_id", "receiver_id",
+                                                           "chat_type", "content", "timestamp"})
+                     .values({"$1", "$2", "$3", "$4", "$5", "$6"})
+                     .build();
 
     txn.exec_params(query, message.id, message.sender_id, message.receiver_id, message.chatType,
                     message.content, message.timestamp);
@@ -48,18 +49,19 @@ bool MessageRepository::remove(const std::string& uuid) {
   }
 }
 
-
-
-std::optional<std::vector<Message>> MessageRepository::findConversationsByUserUuid(const std::string& userUuid) {
+std::optional<std::vector<Message>> MessageRepository::findConversationsByUserUuid(
+    const std::string& userUuid) {
   try {
     auto conn = databaseManager_.acquire_connection();
     pqxx::work txn(*conn);
 
     auto result = txn.exec_params(
         "SELECT id, sender_id, receiver_id, chat_type, content, timestamp, is_read "
-        "FROM " + config_.table_messages() + " "
-        "WHERE sender_id = $1 OR receiver_id = $1 "
-        "ORDER BY timestamp ASC",
+        "FROM " +
+            config_.table_messages() +
+            " "
+            "WHERE sender_id = $1 OR receiver_id = $1 "
+            "ORDER BY timestamp ASC",
         userUuid);
 
     txn.commit();

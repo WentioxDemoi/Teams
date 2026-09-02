@@ -1,7 +1,10 @@
 #include "Handlers/AuthHandler.h"
-#include "../Mocks/AuthServiceMock.h"
+
 #include <gtest/gtest.h>
+
 #include <future>
+
+#include "../Mocks/AuthServiceMock.h"
 
 using ::testing::_;
 using ::testing::HasSubstr;
@@ -15,7 +18,7 @@ std::string responseFrom(std::function<void(ResponseCallback)> invoke) {
   EXPECT_EQ(future.wait_for(std::chrono::seconds(2)), std::future_status::ready);
   return future.get();
 }
-}
+}  // namespace
 
 TEST(AuthHandlerTest, Login_RoutesPayloadAndReturnsFormattedUser) {
   auto service = std::make_shared<MockAuthService>();
@@ -27,7 +30,8 @@ TEST(AuthHandlerTest, Login_RoutesPayloadAndReturnsFormattedUser) {
   AuthHandler handler(service);
 
   auto response = responseFrom([&](ResponseCallback callback) {
-    handler.handle_type(R"({"type":"login","email":"me@example.com","password":"secret"})", callback);
+    handler.handle_type(R"({"type":"login","email":"me@example.com","password":"secret"})",
+                        callback);
   });
   EXPECT_THAT(response, HasSubstr(R"("type":"login_response")"));
 }
@@ -38,7 +42,8 @@ TEST(AuthHandlerTest, RegisterFailureReturnsError) {
   AuthHandler handler(service);
 
   auto response = responseFrom([&](ResponseCallback callback) {
-    handler.handle_type(R"({"type":"register","email":"new@example.com","password":"secret"})", callback);
+    handler.handle_type(R"({"type":"register","email":"new@example.com","password":"secret"})",
+                        callback);
   });
   EXPECT_THAT(response, HasSubstr("Registration failed"));
 }
@@ -69,8 +74,7 @@ TEST(AuthHandlerTest, LoginServiceExceptionReturnsServerError) {
 
 TEST(AuthHandlerTest, RegisterServiceExceptionReturnsServerError) {
   auto service = std::make_shared<MockAuthService>();
-  EXPECT_CALL(*service, registerUser(_))
-      .WillOnce(::testing::Throw(std::runtime_error("database")));
+  EXPECT_CALL(*service, registerUser(_)).WillOnce(::testing::Throw(std::runtime_error("database")));
   AuthHandler handler(service);
 
   auto response = responseFrom([&](ResponseCallback callback) {

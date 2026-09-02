@@ -1,4 +1,5 @@
 #include "TcpListenerContact.h"
+
 #include "../../Utils/BoostErrorHandler.h"
 
 TcpListenerContact::TcpListenerContact(
@@ -19,8 +20,8 @@ void TcpListenerContact::do_accept() {
     if (!ec) {
       std::cout << "[ContactServer] New connection\n";
 
-      auto session = std::make_shared<ContactSession>(
-          std::move(socket), ssl_ctx_, contactHandler_, contactSessionRegistry_, authService_);
+      auto session = std::make_shared<ContactSession>(std::move(socket), ssl_ctx_, contactHandler_,
+                                                      contactSessionRegistry_, authService_);
       session->start();
     } else {
       BoostErrorHandler::log("TcpListenerContact", "Accept", ec);

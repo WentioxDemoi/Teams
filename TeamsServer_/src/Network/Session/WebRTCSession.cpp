@@ -1,4 +1,5 @@
 #include "WebRTCSession.h"
+
 #include "../../Core/Registeries/WebRTCRegistry.h"
 #include "../../Core/Services/IAuthService.h"
 #include "../../Utils/PacketHelper.h"
@@ -18,11 +19,11 @@ void WebRTCSession::do_read() {
   auto self = shared_from_this();
 
   asio::async_read_until(
-      stream_, buffer_, '\n', [self](boost::system::error_code ec, std::size_t /*bytesTransferred*/) {
+      stream_, buffer_, '\n',
+      [self](boost::system::error_code ec, std::size_t /*bytesTransferred*/) {
         if (ec) {
           if (ec == asio::error::eof || ec == boost::asio::ssl::error::stream_truncated ||
               ec == asio::error::connection_reset) {
-
             std::cout << "[WebRTCSession] Client disconnected" << std::endl;
 
             if (!self->user_uuid_.empty())
@@ -41,8 +42,7 @@ void WebRTCSession::do_read() {
         std::getline(is, payload);
 
         // En cas de fin de ligne Windows (\r\n)
-        if (!payload.empty() && payload.back() == '\r')
-          payload.pop_back();
+        if (!payload.empty() && payload.back() == '\r') payload.pop_back();
 
         std::cout << "WebRTC: " << payload << std::endl;
 
@@ -64,7 +64,8 @@ void WebRTCSession::do_read() {
 
           self->webRTCSessionRegistry_->register_session(self->user_uuid_, self);
 
-          std::cout << "[WebRTCSession] User authenticated with UUID: " << self->user_uuid_ << std::endl;
+          std::cout << "[WebRTCSession] User authenticated with UUID: " << self->user_uuid_
+                    << std::endl;
 
           self->do_read();
           return;
@@ -80,13 +81,15 @@ void WebRTCSession::do_read() {
       });
 }
 
-void WebRTCSession::send(const std::string &payload) {
+void WebRTCSession::send(const std::string& payload) {
   auto self = shared_from_this();
 
-  std::cout << "[WebRTCSession] Sending message to " << self->user_uuid_ << ": " << payload << std::endl;
-  asio::async_write(stream_, asio::buffer(payload + "\n"), [self](boost::system::error_code ec, std::size_t) {
-    if (ec) {
-      BoostErrorHandler::log("WebRTCSession", "Write", ec);
-    }
-  });
+  std::cout << "[WebRTCSession] Sending message to " << self->user_uuid_ << ": " << payload
+            << std::endl;
+  asio::async_write(stream_, asio::buffer(payload + "\n"),
+                    [self](boost::system::error_code ec, std::size_t) {
+                      if (ec) {
+                        BoostErrorHandler::log("WebRTCSession", "Write", ec);
+                      }
+                    });
 }
