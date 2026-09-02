@@ -8,6 +8,7 @@
 
 #include "Core/Services/AuthService.h"
 #include "Core/Registeries/MessageSessionRegistry.h"
+#include "Core/Registeries/IMessageSessionRegistry.h"
 #include "Core/Registeries/WebRTCRegistry.h"
 #include "Handlers/MessageHandler.h"
 #include "Infrastructure/DatabaseManager.h"
@@ -16,6 +17,7 @@
 #include "Network/Server/TcpListenerWebRTC.h"
 #include "Repositories/ContactRepository.h"
 #include "Repositories/IMessageRepository.h"
+#include "Repositories/MessageRepository.h"
 #include "Server/TcpListenerContact.h"
 #include "Services/ContactService.h"
 
@@ -54,10 +56,10 @@ class AppCompositionRoot {
   asio::io_context webrtc_io_;
   ssl::context ssl_ctx_;
 
-  std::shared_ptr<AuthService> authService_;
-  std::unique_ptr<MessageService> messageService_;
-  std::unique_ptr<ContactService> contactService_;
-  std::unique_ptr<WebRTCService> webRTCService_;
+  std::shared_ptr<IAuthService> authService_;
+  std::unique_ptr<IMessageService> messageService_;
+  std::unique_ptr<IContactService> contactService_;
+  std::unique_ptr<IWebRTCService> webRTCService_;
 
 
   std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry_;

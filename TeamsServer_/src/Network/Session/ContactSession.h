@@ -23,7 +23,7 @@ class ContactSession : public std::enable_shared_from_this<ContactSession> {
   ContactSession(tcp::socket socket, ssl::context& ctx,
                  std::shared_ptr<ContactHandler> contactHandler,
                  std::shared_ptr<IContactSessionRegistry> contactSessionRegistry,
-                 std::shared_ptr<AuthService> authService)
+                 std::shared_ptr<IAuthService> authService)
       : stream_(std::move(socket), ctx),
         contactHandler_(contactHandler),
         contactSessionRegistry_(contactSessionRegistry),
@@ -39,7 +39,7 @@ class ContactSession : public std::enable_shared_from_this<ContactSession> {
   std::array<char, 4096> buffer_;
   std::shared_ptr<ContactHandler> contactHandler_;
   std::shared_ptr<IContactSessionRegistry> contactSessionRegistry_;
-  std::shared_ptr<AuthService> authService_;
+  std::shared_ptr<IAuthService> authService_;
   std::string user_uuid_;
   bool isFirstMessage_ = true;
 };

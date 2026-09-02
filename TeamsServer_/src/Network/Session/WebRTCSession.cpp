@@ -1,6 +1,6 @@
 #include "WebRTCSession.h"
 #include "../../Core/Registeries/WebRTCRegistry.h"
-#include "../../Core/Services/AuthService.h"
+#include "../../Core/Services/IAuthService.h"
 #include "../../Utils/PacketHelper.h"
 
 void WebRTCSession::start() {

@@ -18,14 +18,14 @@ class TcpListenerContact {
       tcp::endpoint endpoint,
       std::shared_ptr<ContactHandler> contactHandler,
       std::shared_ptr<IContactSessionRegistry> contactSessionRegistry,
-      std::shared_ptr<AuthService> authService);
+      std::shared_ptr<IAuthService> authService);
 
  private:
   void do_accept();
 
   std::shared_ptr<ContactHandler> contactHandler_;
   std::shared_ptr<IContactSessionRegistry> contactSessionRegistry_;
-  std::shared_ptr<AuthService> authService_;
+  std::shared_ptr<IAuthService> authService_;
 
   tcp::acceptor acceptor_;
   ssl::context& ssl_ctx_;

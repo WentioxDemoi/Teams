@@ -1,7 +1,7 @@
 #ifndef AUTHHANDLER_H
 #define AUTHHANDLER_H
 
-#include "../Core/Services/AuthService.h"
+#include "../Core/Services/IAuthService.h"
 
 
 using ResponseCallback = std::function<void(std::string)>;
@@ -21,7 +21,7 @@ class AuthHandler {
   void handle_token(std::string payload, ResponseCallback respond);
   void handle_type(std::string payload, ResponseCallback respond);
 
-  AuthHandler(std::shared_ptr<AuthService> authService)
+  AuthHandler(std::shared_ptr<IAuthService> authService)
       : worker_pool_(Config::instance().worker_pool_size()),
         authService_(authService) {};
   ~AuthHandler() = default;
@@ -30,7 +30,7 @@ class AuthHandler {
   asio::thread_pool worker_pool_;
 
  protected:
-  std::shared_ptr<AuthService> authService_;
+  std::shared_ptr<IAuthService> authService_;
 };
 
 #endif

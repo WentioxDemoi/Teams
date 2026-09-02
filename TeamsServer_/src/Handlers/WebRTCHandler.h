@@ -2,7 +2,7 @@
 #define WEBRTCHANDLER_H
 
 #include "../Core/Repositories/UserRepository.h"
-#include "../Core/Services/WebRTCService.h"
+#include "../Core/Services/IWebRTCService.h"
 #include "../Utils/ResponseFormater.h"
 #include "../includes.h"
 #include "../Utils/PacketHelper.h"
@@ -21,7 +21,7 @@ public:
     // shared_ptr<WebRTCSession> en forward declaration pour éviter la dépendance circulaire
     void handle_type(std::string uuid, std::string payload, ResponseCallback respond);
 
-    WebRTCHandler(std::unique_ptr<WebRTCService> webRTCService)
+    WebRTCHandler(std::unique_ptr<IWebRTCService> webRTCService)
         : worker_pool_(Config::instance().worker_pool_size()), webRTCService_(std::move(webRTCService)) {}
 
 private:
@@ -40,7 +40,7 @@ private:
     asio::thread_pool worker_pool_;
 
 protected:
-    std::unique_ptr<WebRTCService> webRTCService_;
+    std::unique_ptr<IWebRTCService> webRTCService_;
 };
 
 #endif

@@ -1,7 +1,8 @@
 #ifndef CONTACTHANDLER_H
 #define CONTACTHANDLER_H
 
-#include "../Core/Services/ContactService.h"
+#include "../Core/Services/IContactService.h"
+#include "../Utils/Config.h"
 
 using ResponseCallback = std::function<void(std::string)>;
 
@@ -15,7 +16,7 @@ using ResponseCallback = std::function<void(std::string)>;
  */
 class ContactHandler {
 public:
-  ContactHandler(std::unique_ptr<ContactService> contactService)
+    ContactHandler(std::unique_ptr<IContactService> contactService)
       : worker_pool_(Config::instance().worker_pool_size()), contactService_(std::move(contactService)) {}
 
   ~ContactHandler() = default;
@@ -39,7 +40,7 @@ private:
 
 private:
   asio::thread_pool worker_pool_;
-  std::unique_ptr<ContactService> contactService_;
+  std::unique_ptr<IContactService> contactService_;
 };
 
 #endif

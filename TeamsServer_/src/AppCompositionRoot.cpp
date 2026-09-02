@@ -4,6 +4,7 @@
 #include "Repositories/ContactRepository.h"
 #include "Server/TcpListenerContact.h"
 #include "Services/ContactService.h"
+#include "Services/MessageService.h"
 #include "Services/WebRTCService.h"
 #include "WebRTCHandler.h"
 
@@ -75,12 +76,12 @@ void AppCompositionRoot::initServices() {
 
 void AppCompositionRoot::initHandlers() {
   authHandler_ = std::make_shared<AuthHandler>(authService_);
-  messageHandler_ =
-      std::make_shared<MessageHandler>(std::move(messageService_));
-  contactHandler_ =
-      std::make_shared<ContactHandler>(std::move(contactService_));
-  webrtcHandler_ =
-  std::make_shared<WebRTCHandler>(std::move(webRTCService_));
+      messageHandler_ =
+        std::make_shared<MessageHandler>(std::move(messageService_));
+      contactHandler_ =
+        std::make_shared<ContactHandler>(std::move(contactService_));
+      webrtcHandler_ =
+        std::make_shared<WebRTCHandler>(std::move(webRTCService_));
 }
 
 void AppCompositionRoot::initListeners() {

@@ -1,7 +1,7 @@
 #ifndef MESSAGEHANDLER_H
 #define MESSAGEHANDLER_H
 
-#include "../Core/Services/MessageService.h"
+#include "../Core/Services/IMessageService.h"
 #include "Repositories/UserRepository.h"
 #include <memory>
 
@@ -17,7 +17,7 @@ using ResponseCallback = std::function<void(std::string)>;
  */
 class MessageHandler {
  public:
-  MessageHandler(std::unique_ptr<MessageService> messageService)
+  MessageHandler(std::unique_ptr<IMessageService> messageService)
       : worker_pool_(Config::instance().worker_pool_size()),
         messageService_(std::move(messageService)) {};
   ~MessageHandler() = default;
@@ -32,7 +32,7 @@ class MessageHandler {
 
 
   asio::thread_pool worker_pool_;
-  std::unique_ptr<MessageService> messageService_;
+  std::unique_ptr<IMessageService> messageService_;
 };
 
 #endif

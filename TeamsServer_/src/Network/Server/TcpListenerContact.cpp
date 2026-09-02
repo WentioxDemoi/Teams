@@ -5,7 +5,7 @@ TcpListenerContact::TcpListenerContact(
     asio::io_context& io_context, ssl::context& ssl_ctx, tcp::endpoint endpoint,
     std::shared_ptr<ContactHandler> contactHandler,
     std::shared_ptr<IContactSessionRegistry> contactSessionRegistry,
-    std::shared_ptr<AuthService> authService)
+    std::shared_ptr<IAuthService> authService)
     : acceptor_(io_context, endpoint),
       ssl_ctx_(ssl_ctx),
       contactHandler_(contactHandler),
