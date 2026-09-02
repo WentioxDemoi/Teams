@@ -102,6 +102,16 @@ hdiutil create -volname "TeamsClient_" -srcfolder TeamsClient_.app -ov -format U
 ctest -V # Ou alors ./TeamsClient_Tests
 ```
 
+2. Exécutez la commmande pour voir le coverage :
+```bash
+gcovr \
+    --root .. \
+    --filter '../src/' \
+    --html-details coverage.html
+```
+
+3. Ouvrez coverage.html dans un navigateur
+
 ## Dépendances
 
 - Qt 6.9.3 (Core, Widgets, Network, Test)
