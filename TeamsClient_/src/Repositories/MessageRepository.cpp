@@ -5,7 +5,7 @@
 
 #include "../Database/DatabaseManager.h"
 
-MessageRepository::MessageRepository(QObject *parent) : QObject(parent), db_(DatabaseManager::instance().database()) {}
+MessageRepository::MessageRepository(QObject *parent) : IMessageRepository(parent), db_(DatabaseManager::instance().database()) {}
 
 std::optional<Message> MessageRepository::findByUUID(const QString &uuid) {
   QSqlQuery query(db_);

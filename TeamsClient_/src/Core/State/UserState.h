@@ -30,7 +30,6 @@ class UserState : public QObject {
 
  public slots:
   void saveLocalUser(const User& user);
-  void updateLocalUser(const User &user) {};
   void deleteLocalUser() { user_ = User(); };
 
  signals:

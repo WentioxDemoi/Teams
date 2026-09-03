@@ -2,6 +2,7 @@
 
 #include "Models/User.h"
 
+#include <QDateTime>
 #include <QJsonObject>
 #include <QTest>
 
@@ -78,4 +79,24 @@ void UserTest::avatarColorIsDeterministic() {
   QCOMPARE(first.avatarColor(), second.avatarColor());
   QVERIFY(first.avatarColor().startsWith('#'));
   QCOMPARE(first.avatarColor().size(), 7);
+}
+
+void UserTest::setLastReadAtStoresUtc() {
+  User user;
+  const QDateTime localTime = QDateTime::fromString("2026-09-03T14:34:56+02:00", Qt::ISODate);
+
+  user.setLastReadAt(localTime);
+
+  QCOMPARE(user.lastReadAt(), localTime.toUTC());
+  QCOMPARE(user.lastReadAt().timeSpec(), Qt::UTC);
+}
+
+void UserTest::clearTokenRemovesToken() {
+  User user("alice@example.com", "Alice", "Martin", "Online", false, "secret-token", "user-1");
+
+  user.clearToken();
+
+  QVERIFY(user.token().isEmpty());
+  QCOMPARE(user.uuid(), QStringLiteral("user-1"));
+  QCOMPARE(user.email(), QStringLiteral("alice@example.com"));
 }

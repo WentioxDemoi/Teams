@@ -13,6 +13,8 @@ class UserTest : public QObject {
   void jsonRoundTripPreservesSerializedFields();
   void fromJsonIgnoresWrongTypes();
   void avatarColorIsDeterministic();
+  void setLastReadAtStoresUtc();
+  void clearTokenRemovesToken();
 };
 
 #endif

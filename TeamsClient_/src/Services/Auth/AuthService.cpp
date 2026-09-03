@@ -7,7 +7,7 @@
 
 #include "Network/NetworkService.h"
 
-AuthService::AuthService(NetworkService* network, ILocalUserService* localUserService, IMessageService* messageService,
+AuthService::AuthService(INetworkService* network, ILocalUserService* localUserService, IMessageService* messageService,
                          ITokenManager* tokenManager, QObject* parent)
     : IAuthService(parent),
       network_(network ? network : new NetworkService(8080, parent)),
@@ -18,9 +18,9 @@ AuthService::AuthService(NetworkService* network, ILocalUserService* localUserSe
   Q_ASSERT(localUserService_);
   Q_ASSERT(tokenManager_);
 
-  connect(network_, &NetworkService::networkError, this, &IAuthService::authError);
-  connect(network_, &NetworkService::connectionUpdate, &SessionState::instance(),  &SessionState::onServerConnectionUpdate);
-  connect(network_, &NetworkService::jsonReceived, this, &AuthService::handleServerResponse);
+  connect(network_, &INetworkService::networkError, this, &IAuthService::authError);
+  connect(network_, &INetworkService::connectionUpdate, &SessionState::instance(),  &SessionState::onServerConnectionUpdate);
+  connect(network_, &INetworkService::jsonReceived, this, &AuthService::handleServerResponse);
 
   connect(this, &IAuthService::errorToken, this, &AuthService::handleTokenError);
 

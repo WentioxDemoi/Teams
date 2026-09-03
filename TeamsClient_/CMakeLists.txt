@@ -123,7 +123,11 @@ qt_add_resources(app_resources resources/resources.qrc)
 # =========================================================
 # TeamsClient_Core : lib statique "backing library" du module QML
 # Contient tout sauf main.cpp -> une seule source de vérité pour les
-# includes / defines / link, utilisée par l'appli ET les tests.
+# includes / defines / link, utilisée par l'application.
+# Cette lib N'EST JAMAIS instrumentée pour la couverture : seule la
+# lib TeamsClient_Core_Coverage (ci-dessous) l'est, et uniquement
+# pour les tests. Cela évite toute collision de fichiers .gcda entre
+# l'exécutable applicatif et l'exécutable de tests.
 # =========================================================
 qt_add_library(TeamsClient_Core STATIC
     ${CORE_LIB_SOURCES}
@@ -169,14 +173,6 @@ target_compile_definitions(TeamsClient_Core PUBLIC
 
 target_compile_features(TeamsClient_Core PUBLIC cxx_std_20)
 
-if(ENABLE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    target_compile_options(TeamsClient_Core PRIVATE
-        --coverage
-        -O0
-        -g
-    )
-endif()
-
 target_link_libraries(TeamsClient_Core PUBLIC
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Qml
@@ -210,6 +206,73 @@ if(APPLE)
     )
 endif()
 
+
+if(BUILD_TESTS AND ENABLE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_library(TeamsClient_Core_Coverage STATIC
+        ${CORE_LIB_SOURCES}
+        ${CORE_LIB_HEADERS}
+        ${app_resources}
+    )
+    set_target_properties(TeamsClient_Core_Coverage PROPERTIES AUTOMOC ON)
+
+    target_include_directories(TeamsClient_Core_Coverage PUBLIC
+        ${PROJECT_INCLUDE_DIRS}
+        ${LIBYUV_ROOT}/include
+    )
+
+    target_include_directories(TeamsClient_Core_Coverage SYSTEM PUBLIC
+        ${WEBRTC_INCLUDE_DIRS}
+    )
+
+    target_compile_definitions(TeamsClient_Core_Coverage PUBLIC
+        WEBRTC_MAC
+        WEBRTC_POSIX
+        WEBRTC_ARCH_LITTLE_ENDIAN
+        NDEBUG
+    )
+
+    target_compile_features(TeamsClient_Core_Coverage PUBLIC cxx_std_20)
+
+    target_compile_options(TeamsClient_Core_Coverage PRIVATE
+        --coverage
+        -O0
+        -g
+    )
+
+    target_link_libraries(TeamsClient_Core_Coverage PUBLIC
+        Qt${QT_VERSION_MAJOR}::Core
+        Qt${QT_VERSION_MAJOR}::Qml
+        Qt${QT_VERSION_MAJOR}::Network
+        Qt${QT_VERSION_MAJOR}::Sql
+        Qt${QT_VERSION_MAJOR}::Multimedia
+        Qt${QT_VERSION_MAJOR}::MultimediaWidgets
+        Qt${QT_VERSION_MAJOR}::Quick
+        Qt${QT_VERSION_MAJOR}::QuickControls2
+        Qt6Keychain::Qt6Keychain
+        OpenSSL::SSL
+        OpenSSL::Crypto
+        ${LIBYUV_ROOT}/lib/libyuv.a
+    )
+
+    if(APPLE)
+        target_link_options(TeamsClient_Core_Coverage PUBLIC "-Wl,-force_load,${WEBRTC_LIB}")
+        target_link_libraries(TeamsClient_Core_Coverage PUBLIC
+            ${WEBRTC_LIB}
+            "-framework Foundation"
+            "-framework AVFoundation"
+            "-framework CoreAudio"
+            "-framework AudioToolbox"
+            "-framework VideoToolbox"
+            "-framework CoreMedia"
+            "-framework CoreVideo"
+            "-framework IOKit"
+            "-framework IOSurface"
+            "-framework ApplicationServices"
+            "-framework ScreenCaptureKit"
+        )
+    endif()
+endif()
+
 # =========================================================
 # Exécutable principal
 # =========================================================
@@ -226,12 +289,6 @@ target_link_libraries(TeamsClient_ PRIVATE
     TeamsClient_Core
     TeamsClient_Coreplugin
 )
-
-if(ENABLE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    target_link_options(TeamsClient_ PRIVATE
-        --coverage
-    )
-endif()
 
 set_target_properties(TeamsClient_ PROPERTIES
     MACOSX_BUNDLE_INFO_PLIST     ${CMAKE_SOURCE_DIR}/Info.plist
@@ -266,14 +323,14 @@ if(BUILD_TESTS)
 
     set_target_properties(TeamsClient_Tests PROPERTIES AUTOMOC ON)
 
-    target_link_libraries(TeamsClient_Tests
-        PRIVATE
-        TeamsClient_Core
-        TeamsClient_Coreplugin
-        Qt${QT_VERSION_MAJOR}::Test
-    )
-
     if(ENABLE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_link_libraries(TeamsClient_Tests
+            PRIVATE
+            TeamsClient_Core_Coverage
+            TeamsClient_Coreplugin
+            Qt${QT_VERSION_MAJOR}::Test
+        )
+
         target_compile_options(TeamsClient_Tests PRIVATE
             --coverage
             -O0
@@ -283,7 +340,24 @@ if(BUILD_TESTS)
         target_link_options(TeamsClient_Tests PRIVATE
             --coverage
         )
+    else()
+        target_link_libraries(TeamsClient_Tests
+            PRIVATE
+            TeamsClient_Core
+            TeamsClient_Coreplugin
+            Qt${QT_VERSION_MAJOR}::Test
+        )
     endif()
 
     add_test(NAME TeamsClient_Tests COMMAND TeamsClient_Tests)
+endif()
+
+#Pour purger les .gcda entre les compilations
+if(BUILD_TESTS AND ENABLE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_custom_target(clean_coverage_data ALL
+        COMMAND ${CMAKE_COMMAND} -E echo "Coverage: purge des .gcda avant build"
+        COMMAND find ${CMAKE_BINARY_DIR} -name "*.gcda" -delete
+        COMMENT "Coverage: purge des .gcda avant build"
+    )
+    add_dependencies(TeamsClient_Tests clean_coverage_data)
 endif()

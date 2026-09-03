@@ -1,8 +1,6 @@
 #include "ChatService.h"
 
-#include "Call/CallService.h"
 #include "Interfaces/IChatService.h"
-#include "Interfaces/IContactService.h"
 #include "ServiceLocator.h"
 
 #include <QDebug>
@@ -86,8 +84,11 @@ void ChatService::cameraEnabledChanged(bool cameraEnabled) {
 
 void ChatService::disconnectFromServer() {
   if (!messageService_ || !callService_) {
-    emit messageError("Service de messagerie indisponible");
-    emit callError("Service d'appel indisponible");
+    if (!messageService_)
+      emit messageError("Service de messagerie indisponible");
+    if (!callService_)
+      emit callError("Service d'appel indisponible");
+    return;
   }
   messageService_->disconnectFromServer();
   callService_->disconnectFromServer();

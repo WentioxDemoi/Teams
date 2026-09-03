@@ -2,6 +2,7 @@
 #include "Core/State/SessionState.h"
 #include "Core/State/UserState.h"
 #include "Models/Message.h"
+#include "Network/NetworkService.h"
 #include "Repositories/MessageRepository.h"
 
 #include <QDateTime>
@@ -10,13 +11,13 @@
 #include <QUuid>
 #include <QtLogging>
 
-MessageService::MessageService(NetworkService *network, MessageRepository *messageRepo, QObject *parent)
+MessageService::MessageService(INetworkService *network, IMessageRepository *messageRepo, QObject *parent)
     : IMessageService(parent), network_(network ? network : new NetworkService(8082, parent)),
       messageRepo_(messageRepo ? messageRepo : new MessageRepository(parent)) {
   Q_ASSERT(network_);
-  connect(network_, &NetworkService::jsonReceived, this, &MessageService::handleServerResponse);
-  connect(network_, &NetworkService::networkError, this, &MessageService::messageError);
-  connect(network_, &NetworkService::connectionUpdate, &SessionState::instance(), &SessionState::onServerConnectionUpdate);
+  connect(network_, &INetworkService::jsonReceived, this, &MessageService::handleServerResponse);
+  connect(network_, &INetworkService::networkError, this, &MessageService::messageError);
+  connect(network_, &INetworkService::connectionUpdate, &SessionState::instance(), &SessionState::onServerConnectionUpdate);
 
   connect(this, &MessageService::messageReceived, this, &MessageService::saveMessage);
 }
