@@ -1,6 +1,10 @@
 #include <QtTest>
 #include <QCoreApplication>
 
+#include "Database/DatabaseManager_test.h"
+#include "Repositories/MessageRepository_test.h"
+#include "Repositories/UserRepository_test.h"
+#include "Core/Locator_test.h"
 #include "Models/ContactList_test.h"
 #include "Models/Message_test.h"
 #include "Models/MessageList_test.h"
@@ -14,6 +18,10 @@
 #include "Services/MessageService_test.h"
 #include "Services/LocalUserService_test.h"
 #include "Services/NetworkService_test.h"
+#include "Services/P2PTest.h"
+#include "ViewModels/AuthViewModel_test.h"
+#include "ViewModels/ChatViewModel_test.h"
+#include "ViewModels/WebRTCViewModel_test.h"
 
 
 
@@ -35,6 +43,14 @@ int main(int argc, char *argv[])
     ContactServiceTest contactServiceTest;
     LocalUserServiceTest localUserServiceTest;
     NetworkServiceTest networkServiceTest;
+    LocatorTest locatorTest;
+    DatabaseManagerTest databaseManagerTest;
+    P2PTest p2pTest;
+    MessageRepositoryTest messageRepositoryTest;
+    UserRepositoryTest userRepositoryTest;
+    AuthViewModelTest authViewModelTest;
+    ChatViewModelTest chatViewModelTest;
+    WebRTCViewModelTest webRTCViewModelTest;
 
     int status = QTest::qExec(&contactListTest, argc, argv);
     status |= QTest::qExec(&userTest, argc, argv);
@@ -49,5 +65,13 @@ int main(int argc, char *argv[])
     status |= QTest::qExec(&contactServiceTest, argc, argv);
     status |= QTest::qExec(&localUserServiceTest, argc, argv);
     status |= QTest::qExec(&networkServiceTest, argc, argv);
+    status |= QTest::qExec(&p2pTest, argc, argv);
+    status |= QTest::qExec(&locatorTest, argc, argv);
+    status |= QTest::qExec(&databaseManagerTest, argc, argv);
+    status |= QTest::qExec(&messageRepositoryTest, argc, argv);
+    status |= QTest::qExec(&userRepositoryTest, argc, argv);
+    status |= QTest::qExec(&authViewModelTest, argc, argv);
+    status |= QTest::qExec(&chatViewModelTest, argc, argv);
+    status |= QTest::qExec(&webRTCViewModelTest, argc, argv);
     return status;
 }

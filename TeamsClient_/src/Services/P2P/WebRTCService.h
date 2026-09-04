@@ -31,15 +31,14 @@ public:
   void acceptCall() override;
   void prepareForNewCall();
   void hangup() override;
+  void setMicEnabled(bool enabled) override {
+    if (pConnectionController_)
+      pConnectionController_->setMicEnabled(enabled);
+  }
 
   void onRemoteOffer(QString sdp) override;
   void onRemoteAnswer(QString sdp) override;
   void onRemoteIce(QString candidate, QString mid, int index) override;
-
-  void setMicEnabled(bool enabled) {
-    if (pConnectionController_)
-      pConnectionController_->setMicEnabled(enabled);
-  }
 
 signals:
   void connected();

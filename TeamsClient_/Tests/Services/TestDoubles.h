@@ -2,8 +2,11 @@
 #define SERVICE_TEST_DOUBLES_H
 
 #include "Interfaces/ICallService.h"
+#include "Interfaces/IAuthService.h"
+#include "Interfaces/IChatService.h"
 #include "Interfaces/ILocalUserService.h"
 #include "Interfaces/IMessageService.h"
+#include "Interfaces/IContactService.h"
 #include "Network/INetworkService.h"
 #include "P2P/IWebRTCService.h"
 #include "Repositories/IMessageRepository.h"
@@ -28,6 +31,32 @@ class FakeTokenManager : public ITokenManager {
   bool deleteToken() override { token.clear(); deleted = true; return true; }
   bool readToken() override { return !token.isEmpty(); }
   bool deleted = false;
+};
+
+class FakeAuthService : public IAuthService {
+  Q_OBJECT
+ public:
+  explicit FakeAuthService(QObject* parent = nullptr) : IAuthService(parent) {}
+  void loginUser(const QString& email, const QString& password) override {
+    ++loginCalls; loginEmail = email; loginPassword = password;
+  }
+  void registerUser(const QString& firstName, const QString& lastName, const QString& email,
+                   const QString& password) override {
+    ++registerCalls; registerFirstName = firstName; registerLastName = lastName;
+    registerEmail = email; registerPassword = password;
+  }
+  void loginWithToken() override { ++tokenLoginCalls; }
+  void disconnectFromServer() override { ++disconnectCalls; }
+  int loginCalls = 0;
+  int registerCalls = 0;
+  int tokenLoginCalls = 0;
+  int disconnectCalls = 0;
+  QString loginEmail;
+  QString loginPassword;
+  QString registerFirstName;
+  QString registerLastName;
+  QString registerEmail;
+  QString registerPassword;
 };
 
 class MockMessageRepository : public IMessageRepository {
@@ -104,6 +133,28 @@ class FakeMessageService : public IMessageService {
   int deleteCalls = 0;
 };
 
+class FakeContactService : public IContactService {
+  Q_OBJECT
+ public:
+  explicit FakeContactService(QObject* parent = nullptr) : IContactService(parent) {}
+  void searchUsers(const QString& query) override { ++searchCalls; lastQuery = query; }
+  void resolveUserByUuid(const QString& uuid) override { ++resolveCalls; resolvedUuid = uuid; }
+  void saveContact(const User& user) override { ++saveCalls; savedUser = user; }
+  void deleteAll() override { ++deleteCalls; }
+  void updateLastReadAt(const QString& uuid) override { ++lastReadCalls; lastReadUuid = uuid; }
+  void disconnectFromServer() override { ++disconnectCalls; }
+  int searchCalls = 0;
+  int resolveCalls = 0;
+  int saveCalls = 0;
+  int deleteCalls = 0;
+  int lastReadCalls = 0;
+  int disconnectCalls = 0;
+  QString lastQuery;
+  QString resolvedUuid;
+  QString lastReadUuid;
+  User savedUser;
+};
+
 class FakeCallService : public ICallService {
   Q_OBJECT
  public:
@@ -132,6 +183,31 @@ class FakeCallService : public ICallService {
   int disconnectCalls = 0;
 };
 
+class FakeChatService : public IChatService {
+  Q_OBJECT
+ public:
+  explicit FakeChatService(QObject* parent = nullptr) : IChatService(parent) {}
+  void disconnectFromServer() override { ++disconnectCalls; }
+  void sendMessage(const Message& message) override { sentMessage = message; ++sendCalls; }
+  void loadConversationsFromDatabaseAndServer() override { ++loadCalls; }
+  void startCall(const QString&, const QString&) override { ++startCalls; }
+  void hangup() override { ++hangupCalls; }
+  void acceptIncomingCall(const QString&) override { ++acceptCalls; }
+  void rejectIncomingCall() override { ++rejectCalls; }
+  void cameraEnabledChanged(bool enabled) override { cameraEnabled = enabled; ++cameraCalls; }
+  int disconnectCalls = 0;
+  int sendCalls = 0;
+  int loadCalls = 0;
+  int startCalls = 0;
+  int hangupCalls = 0;
+  int acceptCalls = 0;
+  int rejectCalls = 0;
+  int cameraCalls = 0;
+  bool cameraEnabled = false;
+  Message sentMessage;
+};
+
+
 class FakeWebRTCService : public IWebRTCService {
   Q_OBJECT
  public:
@@ -145,6 +221,7 @@ class FakeWebRTCService : public IWebRTCService {
   void startCall() override { startCalled = true; }
   void acceptCall() override { acceptCalled = true; }
   void hangup() override { hangupCalled = true; }
+  void setMicEnabled(bool enabled) override { micEnabled = enabled; ++micCalls; }
   void onRemoteOffer(QString value) override { remoteOffer = value; }
   void onRemoteAnswer(QString value) override { remoteAnswer = value; }
   void onRemoteIce(QString candidate, QString mid, int index) override {
@@ -162,6 +239,8 @@ class FakeWebRTCService : public IWebRTCService {
   bool startCalled = false;
   bool acceptCalled = false;
   bool hangupCalled = false;
+  bool micEnabled = false;
+  int micCalls = 0;
 };
 
 #endif

@@ -20,6 +20,7 @@ class IWebRTCService : public QObject {
   virtual void startCall() = 0;
   virtual void acceptCall() = 0;
   virtual void hangup() = 0;
+  virtual void setMicEnabled(bool enabled) = 0;
   virtual void onRemoteOffer(QString sdp) = 0;
   virtual void onRemoteAnswer(QString sdp) = 0;
   virtual void onRemoteIce(QString candidate, QString mid, int index) = 0;

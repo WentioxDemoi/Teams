@@ -5,8 +5,8 @@
 #include <QtQml/qqmlengine.h>
 #include "../Services/P2P/Sources.h"
 
-WebRTCViewModel::WebRTCViewModel(QQmlEngine *engine, WebRTCService *webRTCService, IChatService *chatService, QObject *parent)
-    : webRTCService_(webRTCService ? webRTCService : ServiceLocator::instance().getService<WebRTCService>()),
+WebRTCViewModel::WebRTCViewModel(QQmlEngine *engine, IWebRTCService *webRTCService, IChatService *chatService, QObject *parent)
+    : webRTCService_(webRTCService ? webRTCService : ServiceLocator::instance().getService<IWebRTCService>()),
       chatService_(chatService ? chatService : ServiceLocator::instance().getService<IChatService>()),
       engine_(engine), QObject(parent) {
     connect(chatService_, &IChatService::openCallWindow, this, &WebRTCViewModel::onOpenCallWindow);
