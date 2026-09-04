@@ -12,8 +12,8 @@ class IMessageService {
  public:
   virtual ~IMessageService() = default;
 
-  virtual std::optional<std::string> sendMessage(const std::string &payload) = 0;
-  virtual std::optional<std::string> loadConversations(const std::string &userUuid) = 0;
+  virtual std::optional<std::string> sendMessage(const std::string& payload) = 0;
+  virtual std::optional<std::string> loadConversations(const std::string& userUuid) = 0;
 };
 
 #endif

@@ -3,8 +3,8 @@
 #include "State/UserState.h"
 #include "StateLocator.h"
 
-LocalUserService::LocalUserService(UserState *userState, UserRepository *userRepo, QObject *parent)
-    : ILocalUserService(parent), userRepo_ (userRepo ? userRepo : new UserRepository()),
+LocalUserService::LocalUserService(UserState *userState, IUserRepository *userRepo, QObject *parent)
+  : ILocalUserService(parent), userRepo_(userRepo ? userRepo : new UserRepository(parent)),
       userState_(userState ? userState : StateLocator::instance().getState<UserState>()) {
   connect(userState_, &UserState::localUserSaved, this, &ILocalUserService::localUserSaved);
   qDebug() << "LocalUserService" << this << "connected to UserState" << userState_;
@@ -17,7 +17,7 @@ void LocalUserService::saveLocalUser(const User &user) {
 }
 
 void LocalUserService::deleteAll() {
-  if (userRepo_.removeAll()) {
+  if (userRepo_->removeAll()) {
     qDebug() << "Tous les utilisateurs supprimés.";
   } else {
     qDebug() << "Erreur lors de la suppression de tous les users.";

@@ -1,7 +1,8 @@
 #include "ContactSession.h"
 
-#include "../../Utils/PacketHelper.h"
 #include <cstddef>
+
+#include "../../Utils/PacketHelper.h"
 
 void ContactSession::start() {
   auto self = shared_from_this();
@@ -16,7 +17,8 @@ void ContactSession::start() {
 
 void ContactSession::do_read() {
   auto self = shared_from_this();
-  stream_.async_read_some(asio::buffer(buffer_), [self](boost::system::error_code ec, std::size_t bytes) {
+  stream_.async_read_some(asio::buffer(buffer_), [self](boost::system::error_code ec,
+                                                        std::size_t bytes) {
     if (!ec) {
       std::string payload(self->buffer_.data(), bytes);
       std::cout << "Message: " << payload << std::endl;
@@ -35,24 +37,26 @@ void ContactSession::do_read() {
         self->contactSessionRegistry_->registerContactSession(self->user_uuid_, self);
 
         std::cout << "[ContactSession] User authenticated with UUID: " << self->user_uuid_ << "\n";
-        self->contactHandler_->handle_type(self->user_uuid_, R"({"type":"update_status","status":"Online"})", NULL);
+        self->contactHandler_->handle_type(self->user_uuid_,
+                                           R"({"type":"update_status","status":"Online"})", NULL);
         self->send(R"({"type":"auth_success"})");
         self->do_read();
         return;
       }
 
-      auto callback = [self](const std::string &response) {
+      auto callback = [self](const std::string& response) {
         asio::post(self->stream_.get_executor(), [self, response]() { self->send(response); });
       };
       self->contactHandler_->handle_type(self->user_uuid_, payload, callback);
       self->do_read();
     } else {
-      // Ici il faudra faire en sorte lors de la déconnexion d'instancier la procédure pour actualiser le status de
-      // présence (envoie d'un update aux contacts connectés).
+      // Ici il faudra faire en sorte lors de la déconnexion d'instancier la procédure pour
+      // actualiser le status de présence (envoie d'un update aux contacts connectés).
       if (ec == asio::error::eof || ec == boost::asio::ssl::error::stream_truncated ||
           ec == asio::error::connection_reset) {
         std::cout << "[ContactSession] Client disconnected" << std::endl;
-        self->contactHandler_->handle_type(self->user_uuid_, R"({"type":"update_status","status":"Offline"})", NULL);
+        self->contactHandler_->handle_type(self->user_uuid_,
+                                           R"({"type":"update_status","status":"Offline"})", NULL);
         self->contactSessionRegistry_->unregisterContactSession(self->user_uuid_);
 
         return;
@@ -65,12 +69,13 @@ void ContactSession::do_read() {
 
 // Plus tard il faudra utiliser une COROUTINE avec timeout pour gérer les envois
 // de messages
-void ContactSession::send(const std::string &payload) {
+void ContactSession::send(const std::string& payload) {
   auto self = shared_from_this();
 
-  asio::async_write(stream_, asio::buffer(payload + "\n"), [self](boost::system::error_code ec, std::size_t) {
-    if (ec) {
-      BoostErrorHandler::log("ContactSession", "Write", ec);
-    }
-  });
+  asio::async_write(stream_, asio::buffer(payload + "\n"),
+                    [self](boost::system::error_code ec, std::size_t) {
+                      if (ec) {
+                        BoostErrorHandler::log("ContactSession", "Write", ec);
+                      }
+                    });
 }

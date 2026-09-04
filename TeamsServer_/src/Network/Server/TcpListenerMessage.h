@@ -5,23 +5,23 @@
 #include <unordered_map>
 
 #include "../../Core/Registeries/MessageSessionRegistry.h"
+#include "../../Core/Services/AuthService.h"
 #include "../../Handlers/MessageHandler.h"
 #include "../../includes.h"
 #include "../Session/MessageSession.h"
-#include "../../Core/Services/AuthService.h"
 class TcpListenerMessage {
  public:
   TcpListenerMessage(asio::io_context& io_context, ssl::context& ssl_ctx, tcp::endpoint endpoint,
                      std::shared_ptr<MessageHandler> messageHandler,
                      std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry,
-                     std::shared_ptr<AuthService> authService);
+                     std::shared_ptr<IAuthService> authService);
 
  private:
   void do_accept();
 
   std::shared_ptr<MessageHandler> messageHandler_;
   std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry_;
-  std::shared_ptr<AuthService> authService_;
+  std::shared_ptr<IAuthService> authService_;
   tcp::acceptor acceptor_;
   ssl::context& ssl_ctx_;
   std::unordered_map<std::string, std::shared_ptr<MessageSession>> sessions_;

@@ -1,9 +1,10 @@
 #ifndef MESSAGEHANDLER_H
 #define MESSAGEHANDLER_H
 
-#include "../Core/Services/MessageService.h"
-#include "Repositories/UserRepository.h"
 #include <memory>
+
+#include "../Core/Services/IMessageService.h"
+#include "Repositories/UserRepository.h"
 
 using ResponseCallback = std::function<void(std::string)>;
 
@@ -17,22 +18,20 @@ using ResponseCallback = std::function<void(std::string)>;
  */
 class MessageHandler {
  public:
-  MessageHandler(std::unique_ptr<MessageService> messageService)
+  MessageHandler(std::unique_ptr<IMessageService> messageService)
       : worker_pool_(Config::instance().worker_pool_size()),
         messageService_(std::move(messageService)) {};
   ~MessageHandler() = default;
 
   void handle_type(std::string uuid, std::string payload, ResponseCallback respond);
-  void update_last_seen(const std::string &uuid);
-
+  void update_last_seen(const std::string& uuid);
 
  private:
   void handle_send_message(std::string uuid, std::string payload, ResponseCallback respond);
   void handle_load_conversations(std::string uuid, std::string payload, ResponseCallback respond);
 
-
   asio::thread_pool worker_pool_;
-  std::unique_ptr<MessageService> messageService_;
+  std::unique_ptr<IMessageService> messageService_;
 };
 
 #endif

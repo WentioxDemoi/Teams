@@ -4,6 +4,7 @@
 // ======================================================
 // Standard Library
 // ======================================================
+#include <algorithm>
 #include <chrono>
 #include <condition_variable>
 #include <cstdlib>
@@ -15,10 +16,9 @@
 #include <queue>
 #include <random>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <stdexcept>
 
 // ======================================================
 // External Libraries
@@ -26,6 +26,7 @@
 #include <argon2.h>
 // #include <nats/nats.h>
 #include <openssl/sha.h>
+
 #include <pqxx/pqxx>
 
 // ======================================================
@@ -42,13 +43,5 @@ namespace asio = boost::asio;
 using tcp = asio::ip::tcp;
 using udp = asio::ip::udp;
 namespace ssl = asio::ssl;
-
-
-
-
-
-
-
-
 
 #endif

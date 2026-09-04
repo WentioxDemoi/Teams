@@ -6,7 +6,7 @@
 #include "../Interfaces/IAuthService.h"
 #include "../Interfaces/ILocalUserService.h"
 #include "Interfaces/IMessageService.h"
-#include "Network/NetworkService.h"
+#include "Network/INetworkService.h"
 
 /**
  * @class AuthService
@@ -18,7 +18,7 @@ class AuthService : public IAuthService {
   Q_OBJECT
 
 public:
-  explicit AuthService(NetworkService *network = nullptr,
+  explicit AuthService(INetworkService *network = nullptr,
                        ILocalUserService *userService = nullptr,
                        IMessageService *messageService = nullptr,
                        ITokenManager *tokenManager = nullptr,
@@ -36,7 +36,7 @@ private:
   void handleTokenError(const QString &error);
 
 private:
-  NetworkService *network_;
+  INetworkService *network_;
   ILocalUserService *localUserService_;
   IMessageService *messageService_;
   ITokenManager *tokenManager_;

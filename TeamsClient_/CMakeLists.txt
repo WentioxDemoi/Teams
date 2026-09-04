@@ -11,7 +11,9 @@ set(CMAKE_OSX_ARCHITECTURES "arm64")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -stdlib=libc++")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-option(BUILD_TESTS "Build the tests" OFF)
+
+option(BUILD_TESTS "Build the tests" ON)
+option(ENABLE_COVERAGE "Enable code coverage" ON)
 
 # === OpenSSL ===
 set(OPENSSL_ROOT_DIR "/opt/homebrew/opt/openssl@3")
@@ -30,9 +32,21 @@ find_package(Qt6 REQUIRED COMPONENTS
 set(Qt6Keychain_DIR "$ENV{HOME}/Qt/6.9.3/macos/lib/cmake/Qt6Keychain")
 find_package(Qt6Keychain REQUIRED)
 
+qt_policy(SET QTP0001 NEW)
+qt_policy(SET QTP0004 NEW)
+
 # === WebRTC ===
 set(WEBRTC_DIR "${CMAKE_SOURCE_DIR}/third_party/webrtc")
 set(WEBRTC_LIB "${WEBRTC_DIR}/lib/libwebrtc.a")
+
+set(WEBRTC_INCLUDE_DIRS
+    ${WEBRTC_DIR}/src
+    ${WEBRTC_DIR}/src/api
+    ${WEBRTC_DIR}/src/api/rtc_base
+    ${WEBRTC_DIR}/src/third_party/abseil-cpp
+    ${WEBRTC_DIR}/src/api/video
+    ${WEBRTC_DIR}/src/api/media_stream
+)
 
 # === Libyuv ===
 set(LIBYUV_ROOT "${CMAKE_SOURCE_DIR}/third_party/libyuv")
@@ -43,7 +57,6 @@ set(MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/Info.plist)
 # =========================================================
 # Sources
 # =========================================================
-file(GLOB MAIN_SOURCES      "src/*.cpp")
 file(GLOB MAIN_HEADERS      "src/*.h")
 
 file(GLOB_RECURSE MODELS_SOURCES        "src/Models/*.cpp")
@@ -70,8 +83,7 @@ file(GLOB_RECURSE UTILS_HEADERS         "src/Utils/*.h")
 file(GLOB_RECURSE CORE_SOURCES          "src/Core/*.cpp")
 file(GLOB_RECURSE CORE_HEADERS          "src/Core/*.h")
 
-set(ALL_SOURCES
-    ${MAIN_SOURCES}
+set(CORE_LIB_SOURCES
     ${MODELS_SOURCES}
     ${REPOSITORIES_SOURCES}
     ${DATABASE_SOURCES}
@@ -82,7 +94,7 @@ set(ALL_SOURCES
     ${CORE_SOURCES}
 )
 
-set(ALL_HEADERS
+set(CORE_LIB_HEADERS
     ${MAIN_HEADERS}
     ${MODELS_HEADERS}
     ${REPOSITORIES_HEADERS}
@@ -94,31 +106,40 @@ set(ALL_HEADERS
     ${CORE_HEADERS}
 )
 
-set(PROJECT_SOURCES
-    ${ALL_SOURCES}
-    ${ALL_HEADERS}
+set(PROJECT_INCLUDE_DIRS
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewModels
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Services
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Services/Enums
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Components
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
 )
 
-# === Resources ===
+# === Resources (partagées) ===
 qt_add_resources(app_resources resources/resources.qrc)
 
-# === Exécutable principal ===
-qt_add_executable(TeamsClient_
-    MANUAL_FINALIZATION
-    ${PROJECT_SOURCES}
+# =========================================================
+# TeamsClient_Core : lib statique "backing library" du module QML
+# Contient tout sauf main.cpp -> une seule source de vérité pour les
+# includes / defines / link, utilisée par l'application.
+# Cette lib N'EST JAMAIS instrumentée pour la couverture : seule la
+# lib TeamsClient_Core_Coverage (ci-dessous) l'est, et uniquement
+# pour les tests. Cela évite toute collision de fichiers .gcda entre
+# l'exécutable applicatif et l'exécutable de tests.
+# =========================================================
+qt_add_library(TeamsClient_Core STATIC
+    ${CORE_LIB_SOURCES}
+    ${CORE_LIB_HEADERS}
     ${app_resources}
 )
 
-# === Module QML ===
-
-#Pour éviter les warnings
-qt_policy(SET QTP0001 NEW)
-qt_policy(SET QTP0004 NEW)
-
-qt_add_qml_module(TeamsClient_
+qt_add_qml_module(TeamsClient_Core
     URI TeamsClient
     VERSION 1.0
     RESOURCE_PREFIX /qt/qml
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TeamsClient
     QML_FILES
         src/QML/Main.qml
         src/QML/AuthView.qml
@@ -130,47 +151,29 @@ qt_add_qml_module(TeamsClient_
         src/QML/CallWindow.qml
 )
 
-# === WebRTC include dirs ===
-set(WEBRTC_INCLUDE_DIRS
-    ${WEBRTC_DIR}/src
-    ${WEBRTC_DIR}/src/api
-    ${WEBRTC_DIR}/src/api/rtc_base
-    ${WEBRTC_DIR}/src/third_party/abseil-cpp
-    ${WEBRTC_DIR}/src/api/video
-    ${WEBRTC_DIR}/src/api/media_stream
-)
-
-target_include_directories(TeamsClient_ PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Models
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewModels
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Services
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Services/Enums
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Components
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
+target_include_directories(TeamsClient_Core PUBLIC
+    ${PROJECT_INCLUDE_DIRS}
     ${LIBYUV_ROOT}/include
 )
 
-target_include_directories(TeamsClient_ SYSTEM PRIVATE
+target_include_directories(TeamsClient_Core SYSTEM PUBLIC
     ${WEBRTC_INCLUDE_DIRS}
 )
 
-target_compile_definitions(TeamsClient_ PRIVATE
+target_compile_definitions(TeamsClient_Core PUBLIC
     WEBRTC_MAC
     WEBRTC_POSIX
     WEBRTC_ARCH_LITTLE_ENDIAN
+    # NDEBUG doit matcher le mode de build de libwebrtc.a (prébuilt en release).
+    # RTC_DCHECK_IS_ON() dépend de cette macro : un mismatch entre le code
+    # appelant et la lib prébuiltée casse l'ABI (symboles DCHECK absents du .a).
+    # PUBLIC pour propager à TeamsClient_ ET TeamsClient_Tests de façon cohérente.
     NDEBUG
 )
 
-target_compile_features(TeamsClient_ PRIVATE cxx_std_20)
+target_compile_features(TeamsClient_Core PUBLIC cxx_std_20)
 
-if(APPLE)
-    target_link_options(TeamsClient_ PRIVATE "-Wl,-force_load,${WEBRTC_LIB}")
-endif()
-
-target_link_libraries(TeamsClient_
-    PRIVATE
+target_link_libraries(TeamsClient_Core PUBLIC
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Qml
     Qt${QT_VERSION_MAJOR}::Network
@@ -180,21 +183,111 @@ target_link_libraries(TeamsClient_
     Qt${QT_VERSION_MAJOR}::Quick
     Qt${QT_VERSION_MAJOR}::QuickControls2
     Qt6Keychain::Qt6Keychain
-    ${WEBRTC_DIR}/lib/libwebrtc.a
-    "-framework Foundation"
-    "-framework AVFoundation"
-    "-framework CoreAudio"
-    "-framework AudioToolbox"
-    "-framework VideoToolbox"
-    "-framework CoreMedia"
-    "-framework CoreVideo"
-    "-framework IOKit"
-    "-framework IOSurface"
-    "-framework ApplicationServices"
-    "-framework ScreenCaptureKit"
     OpenSSL::SSL
     OpenSSL::Crypto
     ${LIBYUV_ROOT}/lib/libyuv.a
+)
+
+if(APPLE)
+    target_link_options(TeamsClient_Core PUBLIC "-Wl,-force_load,${WEBRTC_LIB}")
+    target_link_libraries(TeamsClient_Core PUBLIC
+        ${WEBRTC_LIB}
+        "-framework Foundation"
+        "-framework AVFoundation"
+        "-framework CoreAudio"
+        "-framework AudioToolbox"
+        "-framework VideoToolbox"
+        "-framework CoreMedia"
+        "-framework CoreVideo"
+        "-framework IOKit"
+        "-framework IOSurface"
+        "-framework ApplicationServices"
+        "-framework ScreenCaptureKit"
+    )
+endif()
+
+
+if(BUILD_TESTS AND ENABLE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_library(TeamsClient_Core_Coverage STATIC
+        ${CORE_LIB_SOURCES}
+        ${CORE_LIB_HEADERS}
+        ${app_resources}
+    )
+    set_target_properties(TeamsClient_Core_Coverage PROPERTIES AUTOMOC ON)
+
+    target_include_directories(TeamsClient_Core_Coverage PUBLIC
+        ${PROJECT_INCLUDE_DIRS}
+        ${LIBYUV_ROOT}/include
+    )
+
+    target_include_directories(TeamsClient_Core_Coverage SYSTEM PUBLIC
+        ${WEBRTC_INCLUDE_DIRS}
+    )
+
+    target_compile_definitions(TeamsClient_Core_Coverage PUBLIC
+        WEBRTC_MAC
+        WEBRTC_POSIX
+        WEBRTC_ARCH_LITTLE_ENDIAN
+        NDEBUG
+    )
+
+    target_compile_features(TeamsClient_Core_Coverage PUBLIC cxx_std_20)
+
+    target_compile_options(TeamsClient_Core_Coverage PRIVATE
+        --coverage
+        -O0
+        -g
+    )
+
+    target_link_libraries(TeamsClient_Core_Coverage PUBLIC
+        Qt${QT_VERSION_MAJOR}::Core
+        Qt${QT_VERSION_MAJOR}::Qml
+        Qt${QT_VERSION_MAJOR}::Network
+        Qt${QT_VERSION_MAJOR}::Sql
+        Qt${QT_VERSION_MAJOR}::Multimedia
+        Qt${QT_VERSION_MAJOR}::MultimediaWidgets
+        Qt${QT_VERSION_MAJOR}::Quick
+        Qt${QT_VERSION_MAJOR}::QuickControls2
+        Qt6Keychain::Qt6Keychain
+        OpenSSL::SSL
+        OpenSSL::Crypto
+        ${LIBYUV_ROOT}/lib/libyuv.a
+    )
+
+    if(APPLE)
+        target_link_options(TeamsClient_Core_Coverage PUBLIC "-Wl,-force_load,${WEBRTC_LIB}")
+        target_link_libraries(TeamsClient_Core_Coverage PUBLIC
+            ${WEBRTC_LIB}
+            "-framework Foundation"
+            "-framework AVFoundation"
+            "-framework CoreAudio"
+            "-framework AudioToolbox"
+            "-framework VideoToolbox"
+            "-framework CoreMedia"
+            "-framework CoreVideo"
+            "-framework IOKit"
+            "-framework IOSurface"
+            "-framework ApplicationServices"
+            "-framework ScreenCaptureKit"
+        )
+    endif()
+endif()
+
+# =========================================================
+# Exécutable principal
+# =========================================================
+file(GLOB MAIN_SOURCES "src/*.cpp")
+list(FILTER MAIN_SOURCES EXCLUDE REGEX ".*main\\.cpp$")
+set(APP_MAIN_SOURCE "src/main.cpp")
+
+qt_add_executable(TeamsClient_
+    MANUAL_FINALIZATION
+    ${APP_MAIN_SOURCE}
+)
+
+target_link_libraries(TeamsClient_ PRIVATE
+    TeamsClient_Core
+    TeamsClient_Coreplugin
 )
 
 set_target_properties(TeamsClient_ PROPERTIES
@@ -223,47 +316,48 @@ if(BUILD_TESTS)
     file(GLOB_RECURSE TEST_SOURCES "Tests/*.cpp")
     file(GLOB_RECURSE TEST_HEADERS "Tests/*.h")
 
-    # Copie de ALL_SOURCES sans main.cpp pour les tests
-    set(TEST_APP_SOURCES ${ALL_SOURCES})
-    list(FILTER TEST_APP_SOURCES EXCLUDE REGEX ".*main\\.cpp$")
-
     add_executable(TeamsClient_Tests
         ${TEST_SOURCES}
         ${TEST_HEADERS}
-        ${TEST_APP_SOURCES}
-        ${ALL_HEADERS}
     )
 
     set_target_properties(TeamsClient_Tests PROPERTIES AUTOMOC ON)
 
-    target_compile_definitions(TeamsClient_Tests PRIVATE
-        WEBRTC_MAC
-        WEBRTC_POSIX
-        WEBRTC_ARCH_LITTLE_ENDIAN
-    )
+    if(ENABLE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_link_libraries(TeamsClient_Tests
+            PRIVATE
+            TeamsClient_Core_Coverage
+            TeamsClient_Coreplugin
+            Qt${QT_VERSION_MAJOR}::Test
+        )
 
-    target_include_directories(TeamsClient_Tests PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/Models
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewModels
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/Services
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/Components
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/Core
-    )
+        target_compile_options(TeamsClient_Tests PRIVATE
+            --coverage
+            -O0
+            -g
+        )
 
-    target_link_libraries(TeamsClient_Tests
-        PRIVATE
-        Qt${QT_VERSION_MAJOR}::Core
-        Qt${QT_VERSION_MAJOR}::Network
-        Qt${QT_VERSION_MAJOR}::Test
-        Qt${QT_VERSION_MAJOR}::Sql
-        Qt${QT_VERSION_MAJOR}::Multimedia
-        Qt${QT_VERSION_MAJOR}::MultimediaWidgets
-        Qt6Keychain::Qt6Keychain
-        OpenSSL::SSL
-        OpenSSL::Crypto
-    )
+        target_link_options(TeamsClient_Tests PRIVATE
+            --coverage
+        )
+    else()
+        target_link_libraries(TeamsClient_Tests
+            PRIVATE
+            TeamsClient_Core
+            TeamsClient_Coreplugin
+            Qt${QT_VERSION_MAJOR}::Test
+        )
+    endif()
 
     add_test(NAME TeamsClient_Tests COMMAND TeamsClient_Tests)
+endif()
+
+#Pour purger les .gcda entre les compilations
+if(BUILD_TESTS AND ENABLE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_custom_target(clean_coverage_data ALL
+        COMMAND ${CMAKE_COMMAND} -E echo "Coverage: purge des .gcda avant build"
+        COMMAND find ${CMAKE_BINARY_DIR} -name "*.gcda" -delete
+        COMMENT "Coverage: purge des .gcda avant build"
+    )
+    add_dependencies(TeamsClient_Tests clean_coverage_data)
 endif()

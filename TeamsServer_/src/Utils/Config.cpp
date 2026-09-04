@@ -1,7 +1,7 @@
 // utils/Config.cpp
 #include "Config.h"
 
-Config &Config::instance() {
+Config& Config::instance() {
   static Config instance;
   return instance;
 }
@@ -9,16 +9,14 @@ Config &Config::instance() {
 Config::Config() { load_from_env(); }
 
 void Config::load_from_env() {
-  std::cout << "[Config] Loading configuration from environment..."
-            << std::endl;
+  std::cout << "[Config] Loading configuration from environment..." << std::endl;
 
   // Database (required)
   db_url_ = get_env("DB_URL");
   db_name_ = get_env("DB_NAME");
 
   if (db_url_.empty() || db_name_.empty()) {
-    throw std::runtime_error(
-        "DB_URL and DB_NAME are required environment variables");
+    throw std::runtime_error("DB_URL and DB_NAME are required environment variables");
   }
 
   db_pool_size_ = get_env_int("DB_POOL_SIZE", 4);
@@ -43,16 +41,14 @@ void Config::load_from_env() {
   std::cout << "[Config] Configuration loaded successfully" << std::endl;
 }
 
-std::string Config::get_env(const char *name,
-                            const std::string &default_value) {
-  const char *value = std::getenv(name);
+std::string Config::get_env(const char* name, const std::string& default_value) {
+  const char* value = std::getenv(name);
   return value ? std::string(value) : default_value;
 }
 
-int Config::get_env_int(const char *name, int default_value) {
-  const char *value = std::getenv(name);
-  if (!value)
-    return default_value;
+int Config::get_env_int(const char* name, int default_value) {
+  const char* value = std::getenv(name);
+  if (!value) return default_value;
 
   try {
     return std::stoi(value);
@@ -63,7 +59,7 @@ int Config::get_env_int(const char *name, int default_value) {
   }
 }
 
-std::string Config::time_point_to_string(const std::chrono::system_clock::time_point &tp) {
+std::string Config::time_point_to_string(const std::chrono::system_clock::time_point& tp) {
   std::time_t t = std::chrono::system_clock::to_time_t(tp);
   std::tm tm = *std::gmtime(&t);
   std::ostringstream oss;
@@ -71,8 +67,7 @@ std::string Config::time_point_to_string(const std::chrono::system_clock::time_p
   return oss.str();
 }
 
-std::chrono::system_clock::time_point
-Config::string_to_time_point(const std::string &str) {
+std::chrono::system_clock::time_point Config::string_to_time_point(const std::string& str) {
   std::tm tm{};
   std::istringstream iss(str);
   iss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");

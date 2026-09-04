@@ -3,7 +3,7 @@
 
 #include <QSqlDatabase>
 
-#include "../Models/User.h"
+#include "IUserRepository.h"
 
 /**
  * @class UserRepository
@@ -13,22 +13,22 @@
  * dans la base de données, ainsi que pour vérifier la présence d'un utilisateur ou déterminer
  * si aucun utilisateur n'existe encore.
  */
-class UserRepository : public QObject {
+class UserRepository : public IUserRepository {
     Q_OBJECT
 
 public:
     explicit UserRepository(QObject* parent = nullptr);
 
-    bool save(const User& user);
+    bool save(const User& user) override;
 
     std::optional<User> findByUUID(const QString& uuid);
-    QList<User> findAll();
+    QList<User> findAll() override;
 
     bool remove(const QString& uuid);
 
-    bool removeAll();
+    bool removeAll() override;
     bool removeAllContacts();
-    bool updateLastReadAt(const QString &uuid, const QString &lastReadAt);
+    bool updateLastReadAt(const QString &uuid, const QString &lastReadAt) override;
 
 signals:
     void error(const QString& message);

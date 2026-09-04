@@ -1,7 +1,9 @@
 #include "Core/Services/AuthService.h"
-#include "Utils/Crypto.h"
-#include "../Mocks/UserRepositoryMock.h"
+
 #include <optional>
+
+#include "../Mocks/UserRepositoryMock.h"
+#include "Utils/Crypto.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -13,12 +15,11 @@ using ::testing::Return;
 TEST(AuthServiceTest, LoginSuccess) {
   auto mockRepo = std::make_shared<MockUserRepository>();
 
-  User stored("uuid", "First", "Last", "me@example.com",
-              Crypto::hash_password("secret"), /*token*/"", /*expires*/{}, /*created*/{}, /*updated*/{});
+  User stored("uuid", "First", "Last", "me@example.com", Crypto::hash_password("secret"),
+              /*token*/ "", /*expires*/ {}, /*created*/ {}, /*updated*/ {});
   std::optional<User> optStored = stored;
 
-  EXPECT_CALL(*mockRepo, find_by_email("me@example.com"))
-      .WillOnce(Return(optStored));
+  EXPECT_CALL(*mockRepo, find_by_email("me@example.com")).WillOnce(Return(optStored));
   EXPECT_CALL(*mockRepo, update(_)).WillOnce(Return(true));
 
   AuthService svc(mockRepo);
@@ -34,12 +35,11 @@ TEST(AuthServiceTest, LoginSuccess) {
 TEST(AuthServiceTest, LoginSuccessSanitizesUserAndRotatesToken) {
   auto mockRepo = std::make_shared<MockUserRepository>();
 
-  User stored("uuid", "First", "Last", "me@example.com",
-              Crypto::hash_password("secret"), "oldtoken", /*expires*/{}, /*created*/{}, /*updated*/{});
+  User stored("uuid", "First", "Last", "me@example.com", Crypto::hash_password("secret"),
+              "oldtoken", /*expires*/ {}, /*created*/ {}, /*updated*/ {});
   std::optional<User> optStored = stored;
 
-  EXPECT_CALL(*mockRepo, find_by_email("me@example.com"))
-      .WillOnce(Return(optStored));
+  EXPECT_CALL(*mockRepo, find_by_email("me@example.com")).WillOnce(Return(optStored));
   EXPECT_CALL(*mockRepo, update(_)).WillOnce(Return(true));
 
   AuthService svc(mockRepo);
@@ -57,12 +57,11 @@ TEST(AuthServiceTest, LoginSuccessSanitizesUserAndRotatesToken) {
 TEST(AuthServiceTest, LoginFailureWrongPassword) {
   auto mockRepo = std::make_shared<MockUserRepository>();
 
-  User stored("uuid", "First", "Last", "me@example.com",
-              Crypto::hash_password("secret"), "", /*expires*/{}, /*created*/{}, /*updated*/{});
+  User stored("uuid", "First", "Last", "me@example.com", Crypto::hash_password("secret"), "",
+              /*expires*/ {}, /*created*/ {}, /*updated*/ {});
   std::optional<User> optStored = stored;
 
-  EXPECT_CALL(*mockRepo, find_by_email("me@example.com"))
-      .WillOnce(Return(optStored));
+  EXPECT_CALL(*mockRepo, find_by_email("me@example.com")).WillOnce(Return(optStored));
 
   AuthService svc(mockRepo);
   User attempt;
@@ -76,8 +75,7 @@ TEST(AuthServiceTest, LoginFailureWrongPassword) {
 TEST(AuthServiceTest, LoginFailureWrongEmail) {
   auto mockRepo = std::make_shared<MockUserRepository>();
 
-  EXPECT_CALL(*mockRepo, find_by_email("me@example.com"))
-      .WillOnce(Return(std::nullopt));
+  EXPECT_CALL(*mockRepo, find_by_email("me@example.com")).WillOnce(Return(std::nullopt));
 
   AuthService svc(mockRepo);
   User attempt;
@@ -91,12 +89,11 @@ TEST(AuthServiceTest, LoginFailureWrongEmail) {
 TEST(AuthServiceTest, LoginSuccessUpdateFailsStillReturnsUser) {
   auto mockRepo = std::make_shared<MockUserRepository>();
 
-  User stored("uuid", "First", "Last", "me@example.com",
-              Crypto::hash_password("secret"), "", /*expires*/{}, /*created*/{}, /*updated*/{});
+  User stored("uuid", "First", "Last", "me@example.com", Crypto::hash_password("secret"), "",
+              /*expires*/ {}, /*created*/ {}, /*updated*/ {});
   std::optional<User> optStored = stored;
 
-  EXPECT_CALL(*mockRepo, find_by_email("me@example.com"))
-      .WillOnce(Return(optStored));
+  EXPECT_CALL(*mockRepo, find_by_email("me@example.com")).WillOnce(Return(optStored));
   EXPECT_CALL(*mockRepo, update(_)).WillOnce(Return(false));
 
   AuthService svc(mockRepo);
@@ -116,8 +113,7 @@ TEST(AuthServiceTest, LoginSuccessUpdateFailsStillReturnsUser) {
 TEST(AuthServiceTest, RegisterSuccess) {
   auto mockRepo = std::make_shared<MockUserRepository>();
 
-  EXPECT_CALL(*mockRepo, find_by_email("new@example.com"))
-      .WillOnce(Return(std::optional<User>{}));
+  EXPECT_CALL(*mockRepo, find_by_email("new@example.com")).WillOnce(Return(std::optional<User>{}));
 
   EXPECT_CALL(*mockRepo, create(_)).WillOnce(Return(true));
 
@@ -134,12 +130,11 @@ TEST(AuthServiceTest, RegisterSuccess) {
 TEST(AuthServiceTest, RegisterFailureEmailAlreadyExists) {
   auto mockRepo = std::make_shared<MockUserRepository>();
 
-  User stored("uuid", "First", "Last", "me@example.com",
-              Crypto::hash_password("secret"), "", /*expires*/{}, /*created*/{}, /*updated*/{});
+  User stored("uuid", "First", "Last", "me@example.com", Crypto::hash_password("secret"), "",
+              /*expires*/ {}, /*created*/ {}, /*updated*/ {});
   std::optional<User> optStored = stored;
 
-  EXPECT_CALL(*mockRepo, find_by_email("me@example.com"))
-      .WillOnce(Return(optStored));
+  EXPECT_CALL(*mockRepo, find_by_email("me@example.com")).WillOnce(Return(optStored));
   EXPECT_CALL(*mockRepo, create(_)).Times(0);
 
   AuthService svc(mockRepo);
@@ -154,8 +149,7 @@ TEST(AuthServiceTest, RegisterFailureEmailAlreadyExists) {
 TEST(AuthServiceTest, RegisterFailureCreateFails) {
   auto mockRepo = std::make_shared<MockUserRepository>();
 
-  EXPECT_CALL(*mockRepo, find_by_email("new@example.com"))
-      .WillOnce(Return(std::optional<User>{}));
+  EXPECT_CALL(*mockRepo, find_by_email("new@example.com")).WillOnce(Return(std::optional<User>{}));
   EXPECT_CALL(*mockRepo, create(_)).WillOnce(Return(false));
 
   AuthService svc(mockRepo);
@@ -174,12 +168,11 @@ TEST(AuthServiceTest, RegisterFailureCreateFails) {
 TEST(AuthServiceTest, ValidateTokenSuccess) {
   auto mockRepo = std::make_shared<MockUserRepository>();
 
-  User stored("uuid", "First", "Last", "me@example.com",
-              Crypto::hash_password("secret"), "sometoken", /*expires*/{}, /*created*/{}, /*updated*/{});
+  User stored("uuid", "First", "Last", "me@example.com", Crypto::hash_password("secret"),
+              "sometoken", /*expires*/ {}, /*created*/ {}, /*updated*/ {});
   std::optional<User> optStored = stored;
 
-  EXPECT_CALL(*mockRepo, find_by_token("sometoken"))
-      .WillOnce(Return(optStored));
+  EXPECT_CALL(*mockRepo, find_by_token("sometoken")).WillOnce(Return(optStored));
 
   AuthService svc(mockRepo);
   auto res = svc.validateToken("sometoken");
@@ -190,12 +183,11 @@ TEST(AuthServiceTest, ValidateTokenSuccess) {
 TEST(AuthServiceTest, ValidateTokenFailure) {
   auto mockRepo = std::make_shared<MockUserRepository>();
 
-  User stored("uuid", "First", "Last", "me@example.com",
-              Crypto::hash_password("secret"), "sometoken", /*expires*/{}, /*created*/{}, /*updated*/{});
+  User stored("uuid", "First", "Last", "me@example.com", Crypto::hash_password("secret"),
+              "sometoken", /*expires*/ {}, /*created*/ {}, /*updated*/ {});
   std::optional<User> optStored = stored;
 
-  EXPECT_CALL(*mockRepo, find_by_token("wrongtoken"))
-      .WillOnce(Return(std::nullopt));
+  EXPECT_CALL(*mockRepo, find_by_token("wrongtoken")).WillOnce(Return(std::nullopt));
 
   AuthService svc(mockRepo);
   auto res = svc.validateToken("wrongtoken");
@@ -205,12 +197,11 @@ TEST(AuthServiceTest, ValidateTokenFailure) {
 TEST(AuthServiceTest, ValidateTokenDoesNotSanitizePasswordHash) {
   auto mockRepo = std::make_shared<MockUserRepository>();
 
-  User stored("uuid", "First", "Last", "me@example.com",
-              Crypto::hash_password("secret"), "sometoken", /*expires*/{}, /*created*/{}, /*updated*/{});
+  User stored("uuid", "First", "Last", "me@example.com", Crypto::hash_password("secret"),
+              "sometoken", /*expires*/ {}, /*created*/ {}, /*updated*/ {});
   std::optional<User> optStored = stored;
 
-  EXPECT_CALL(*mockRepo, find_by_token("sometoken"))
-      .WillOnce(Return(optStored));
+  EXPECT_CALL(*mockRepo, find_by_token("sometoken")).WillOnce(Return(optStored));
 
   AuthService svc(mockRepo);
   auto res = svc.validateToken("sometoken");

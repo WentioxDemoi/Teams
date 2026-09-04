@@ -1,9 +1,9 @@
 #ifndef MESSAGESERVICE_H
 #define MESSAGESERVICE_H
 
-#include "Repositories/MessageRepository.h"
+#include "Repositories/IMessageRepository.h"
 #include "Interfaces/IMessageService.h"
-#include "Network/NetworkService.h"
+#include "Network/INetworkService.h"
 
 #include <QJsonObject>
 #include <QObject>
@@ -17,7 +17,7 @@
 class MessageService : public IMessageService {
   Q_OBJECT
 public:
-  explicit MessageService(NetworkService *network = nullptr, MessageRepository *messageRepo = nullptr,
+  explicit MessageService(INetworkService *network = nullptr, IMessageRepository *messageRepo = nullptr,
                           QObject *parent = nullptr);
 
   void loadConversationsFromServer() override;
@@ -34,8 +34,8 @@ private:
   void persistMessages(const QList<Message> &messages);
   QList<Message> parseMessagesArray(const QJsonArray &array);
 
-  NetworkService *network_;
-  MessageRepository *messageRepo_;
+  INetworkService *network_;
+  IMessageRepository *messageRepo_;
 };
 
 #endif

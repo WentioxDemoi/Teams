@@ -2,7 +2,7 @@
 #define USERSERVICE_H
 
 #include "../Models/User.h"
-#include "../Repositories/UserRepository.h"
+#include "../Repositories/IUserRepository.h"
 #include "Core/State/UserState.h"
 #include "Interfaces/ILocalUserService.h"
 
@@ -17,7 +17,7 @@
 class LocalUserService : public ILocalUserService {
   Q_OBJECT
 public:
-  explicit LocalUserService(UserState *userState = nullptr, UserRepository *userRepo = nullptr, QObject *parent = nullptr);
+  explicit LocalUserService(UserState *userState = nullptr, IUserRepository *userRepo = nullptr, QObject *parent = nullptr);
 
   void saveLocalUser(const User &user) override;
   void deleteAll() override;
@@ -27,7 +27,7 @@ signals:
 
 private:
   UserState *userState_;
-  UserRepository userRepo_;
+  IUserRepository *userRepo_;
 };
 
 #endif

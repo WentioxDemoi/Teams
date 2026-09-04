@@ -1,4 +1,5 @@
 #include "WebRTCHandler.h"
+
 #include "../Network/Session/WebRTCSession.h"
 #include "../Utils/PacketHelper.h"
 
@@ -30,7 +31,8 @@ void WebRTCHandler::handle_type(std::string uuid, std::string payload, ResponseC
   }
 }
 
-void WebRTCHandler::handle_call_request(const std::string &uuid, std::string payload, ResponseCallback respond) {
+void WebRTCHandler::handle_call_request(const std::string& uuid, std::string payload,
+                                        ResponseCallback respond) {
   std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
 
   asio::post(worker_pool_, [this, uuid, targetUuid, respond]() {
@@ -39,14 +41,15 @@ void WebRTCHandler::handle_call_request(const std::string &uuid, std::string pay
       if (response.has_value()) {
         respond(response.value());
       }
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
       std::cerr << "[WebRTCHandler] call_request error: " << e.what() << "\n";
       respond(R"({"type":"error","error":"call_request failed"})");
     }
   });
 }
 
-void WebRTCHandler::handle_call_accept(const std::string &uuid, std::string payload, ResponseCallback respond) {
+void WebRTCHandler::handle_call_accept(const std::string& uuid, std::string payload,
+                                       ResponseCallback respond) {
   std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
 
   asio::post(worker_pool_, [this, uuid, targetUuid]() {
@@ -56,7 +59,8 @@ void WebRTCHandler::handle_call_accept(const std::string &uuid, std::string payl
   });
 }
 
-void WebRTCHandler::handle_call_reject(const std::string &uuid, std::string payload, ResponseCallback respond) {
+void WebRTCHandler::handle_call_reject(const std::string& uuid, std::string payload,
+                                       ResponseCallback respond) {
   std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
 
   asio::post(worker_pool_, [this, uuid, targetUuid]() {
@@ -66,7 +70,8 @@ void WebRTCHandler::handle_call_reject(const std::string &uuid, std::string payl
   });
 }
 
-void WebRTCHandler::handle_call_cancel(const std::string &uuid, std::string payload, ResponseCallback respond) {
+void WebRTCHandler::handle_call_cancel(const std::string& uuid, std::string payload,
+                                       ResponseCallback respond) {
   std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
 
   asio::post(worker_pool_, [this, uuid, targetUuid]() {
@@ -76,7 +81,8 @@ void WebRTCHandler::handle_call_cancel(const std::string &uuid, std::string payl
   });
 }
 
-void WebRTCHandler::handle_call_hangup(const std::string &uuid, std::string payload, ResponseCallback respond) {
+void WebRTCHandler::handle_call_hangup(const std::string& uuid, std::string payload,
+                                       ResponseCallback respond) {
   std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
 
   asio::post(worker_pool_, [this, uuid, targetUuid]() {
@@ -86,7 +92,8 @@ void WebRTCHandler::handle_call_hangup(const std::string &uuid, std::string payl
   });
 }
 
-void WebRTCHandler::handle_signaling_relay(const std::string &uuid, std::string payload, ResponseCallback respond) {
+void WebRTCHandler::handle_signaling_relay(const std::string& uuid, std::string payload,
+                                           ResponseCallback respond) {
   std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
 
   asio::post(worker_pool_, [this, uuid, targetUuid, payload]() {
@@ -96,12 +103,14 @@ void WebRTCHandler::handle_signaling_relay(const std::string &uuid, std::string 
   });
 }
 
-void WebRTCHandler::handle_camera_enabled_change(const std::string &uuid, std::string payload, ResponseCallback respond) {
+void WebRTCHandler::handle_camera_enabled_change(const std::string& uuid, std::string payload,
+                                                 ResponseCallback respond) {
   std::string targetUuid = PacketHelper::extractValue(payload, "targetUuid");
 
   asio::post(worker_pool_, [this, uuid, targetUuid, payload]() {
     if (!webRTCService_->cameraEnabledChange(uuid, targetUuid, payload)) {
-      std::cerr << "[WebRTCHandler] camera_enabled_change: target " << targetUuid << " déconnecté\n";
+      std::cerr << "[WebRTCHandler] camera_enabled_change: target " << targetUuid
+                << " déconnecté\n";
     }
   });
 }
