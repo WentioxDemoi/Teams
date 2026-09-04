@@ -2,25 +2,27 @@
 #include "Core/State/SessionState.h"
 #include "P2P/WebRTCService.h"
 #include "ServiceLocator.h"
+#include "Network/INetworkService.h"
+#include "Network/NetworkService.h"
 
 #include <QQmlEngine>
 
-CallService::CallService(NetworkService *network, WebRTCService *webRTCService, QObject *parent)
+CallService::CallService(INetworkService *network, IWebRTCService *webRTCService, QObject *parent)
     : ICallService(parent), network_(network ? network : new NetworkService(8083, parent)),
       webRTCService_(webRTCService ? webRTCService : ServiceLocator::instance().getService<WebRTCService>()) {
   Q_ASSERT(network_);
   Q_ASSERT(webRTCService_);
 
-  connect(network_, &NetworkService::jsonReceived, this, &CallService::handleServerResponse);
-  connect(network_, &NetworkService::networkError, this, &CallService::callError);
-  connect(network_, &NetworkService::connectionUpdate, &SessionState::instance(),
+    connect(network_, &INetworkService::jsonReceived, this, &CallService::handleServerResponse);
+    connect(network_, &INetworkService::networkError, this, &CallService::callError);
+    connect(network_, &INetworkService::connectionUpdate, &SessionState::instance(),
           &SessionState::onServerConnectionUpdate);
 
-  connect(this, &ICallService::offerReceived, webRTCService_, &WebRTCService::onRemoteOffer);
-  connect(this, &ICallService::answerReceived, webRTCService_, &WebRTCService::onRemoteAnswer);
-  connect(this, &ICallService::iceReceived, webRTCService_, &WebRTCService::onRemoteIce);
+    connect(this, &ICallService::offerReceived, webRTCService_, &IWebRTCService::onRemoteOffer);
+    connect(this, &ICallService::answerReceived, webRTCService_, &IWebRTCService::onRemoteAnswer);
+    connect(this, &ICallService::iceReceived, webRTCService_, &IWebRTCService::onRemoteIce);
 
-  connect(this, &ICallService::triggerCreateOffer, webRTCService_, &WebRTCService::startCall);
+    connect(this, &ICallService::triggerCreateOffer, webRTCService_, &IWebRTCService::startCall);
 
   std::function<void(const std::string &sdp)> onLocalOffer = [this](const std::string &sdp) {
     QJsonObject data;

@@ -1,6 +1,13 @@
-# Ce fichier est fait pour l'autocompletion ! Pour que clangd puisse trouver les 
-# librairies sur le PC qui sont spécifiés par compile_commands.json dans le build alors 
-# que le serveur est normalement compilé dans un container docker.
+# Ce fichier concerne l'edition depuis macOS lorsque Docker Compose est lance
+# separement, sans ouvrir VS Code dans le Dev Container.
+#
+# Dans ce mode, clangd s'execute sur le Mac et doit pouvoir trouver les dependances
+# installees par Homebrew. Le serveur, lui, continue d'etre compile dans Docker.
+# Le compile_commands.json genere dans le container contient des chemins /app/* et
+# n'est donc pas directement exploitable par clangd sur macOS.
+#
+# Si VS Code est ouvert dans le Dev Container, ce fichier racine n'est pas monte
+# dans /app et clangd utilise les bibliotheques Ubuntu installees par le Dockerfile.
 
 CompileFlags:
   Add:

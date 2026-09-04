@@ -4,7 +4,7 @@
 #include <QPointer>
 
 WebRTCService::WebRTCService(QObject *parent)
-    : QObject(parent), pConnectionController_(std::make_unique<PConnectionController>()) {
+  : IWebRTCService(parent), pConnectionController_(std::make_unique<PConnectionController>()) {
   QPointer<WebRTCService> self(this);
 }
 

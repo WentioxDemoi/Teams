@@ -12,7 +12,7 @@
 #include <QSslError>
 #include <QSslSocket>
 #include <QQueue>
-#include "SessionEnum.h"
+#include "INetworkService.h"
 #include "User.h"
 
 /**
@@ -22,22 +22,19 @@
  * Gère l'envoi et la réception de données JSON via SSL, assure la connexion
  * au serveur et signale les erreurs réseau ou les messages reçus à l'application.
  */
-class NetworkService : public QObject {
+class NetworkService : public INetworkService {
   Q_OBJECT
 
  public:
   explicit NetworkService(qint16 port, QObject* parent = nullptr);
 
-  void send(const QJsonObject& payload);
-  void disconnectFromServer();
+  Q_INVOKABLE void handleIncomingData(const QByteArray& data);
+  int pendingMessageCount() const { return pendingQueue_.size(); }
 
- signals:
-  void jsonReceived(const QJsonObject& json);
-  void networkError(const QString& error);
-  void connectionUpdate(ServerType server, bool status);
+  void send(const QJsonObject& payload) override;
+  void disconnectFromServer() override;
 
  private:
-  void handleIncomingData(const QByteArray& data);
   void ensureConnected();
   void auth(const User &user);
 

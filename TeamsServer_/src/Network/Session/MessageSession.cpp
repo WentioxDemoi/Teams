@@ -15,7 +15,8 @@ void MessageSession::start() {
 
 void MessageSession::do_read() {
   auto self = shared_from_this();
-  // Attention async read some à une limite, côté client on peut envoyer le message en plusieurs paquets alors qu'ici on les prends 1 par 1
+  // Attention async read some à une limite, côté client on peut envoyer le message en plusieurs
+  // paquets alors qu'ici on les prends 1 par 1
   stream_.async_read_some(asio::buffer(buffer_), [self](boost::system::error_code ec,
                                                         std::size_t bytes) {
     if (!ec) {
@@ -61,7 +62,8 @@ void MessageSession::do_read() {
 void MessageSession::send(const std::string& payload) {
   auto self = shared_from_this();
 
-  std::cout << "[MessageSession] Sending message to " << self->user_uuid_ << ": " << payload << std::endl;
+  std::cout << "[MessageSession] Sending message to " << self->user_uuid_ << ": " << payload
+            << std::endl;
   asio::async_write(stream_, asio::buffer(payload + "\n"),
                     [self](boost::system::error_code ec, std::size_t) {
                       if (ec) {

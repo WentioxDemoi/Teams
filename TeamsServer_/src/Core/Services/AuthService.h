@@ -2,8 +2,8 @@
 #define AUTHSERVICE_H
 
 #include "../../Utils/Crypto.h"
-#include "IAuthService.h"
 #include "../Repositories/UserRepository.h"
+#include "IAuthService.h"
 
 /**
  * @class AuthService
@@ -21,13 +21,13 @@ class AuthService : public IAuthService {
       : userRepo_(std::move(userRepo)), config_(Config::instance()) {};
   ~AuthService() override = default;
 
-  std::optional<User> loginUser(const User &user) override;
-  std::optional<User> registerUser(const User &user) override;
-  std::optional<User> validateToken(const std::string &token) override;
+  std::optional<User> loginUser(const User& user) override;
+  std::optional<User> registerUser(const User& user) override;
+  std::optional<User> validateToken(const std::string& token) override;
 
  private:
   std::shared_ptr<IUserRepository> userRepo_;
-  Config &config_;
+  Config& config_;
 };
 
 #endif

@@ -17,11 +17,9 @@
 class AuthSession : public std::enable_shared_from_this<AuthSession> {
  public:
   AuthSession(tcp::socket socket, ssl::context& ctx, std::shared_ptr<AuthHandler> authHandler)
-      : stream_(std::move(socket), ctx), authHandler_(authHandler) {
-  }
+      : stream_(std::move(socket), ctx), authHandler_(authHandler) {}
 
   void start();
-  
 
  private:
   void do_read();

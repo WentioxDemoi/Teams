@@ -1,13 +1,14 @@
 #ifndef CONTACTSERVICE_H
 #define CONTACTSERVICE_H
 
-#include "IContactService.h"
-#include "../Repositories/ContactRepository.h"
-#include "../Models/Contact.h"
-#include "Registeries/ContactSessionRegistry.h"
-#include "Repositories/UserRepository.h"
 #include <memory>
 #include <vector>
+
+#include "../Models/Contact.h"
+#include "../Repositories/ContactRepository.h"
+#include "IContactService.h"
+#include "Registeries/ContactSessionRegistry.h"
+#include "Repositories/UserRepository.h"
 
 class ContactService : public IContactService {
  public:
@@ -21,19 +22,22 @@ class ContactService : public IContactService {
 
   ~ContactService() override = default;
 
-  std::optional<std::string> addContact(const std::string &payload) override;
-  std::optional<std::string> removeContact(const std::string &payload) override;
-  std::optional<std::string> loadContacts(const std::string &payload) override;
-  std::optional<std::string> searchUsers(const std::string &userUuid, const std::string &payload) override;
-  std::optional<std::string> resolveUserByUuid(const std::string &uuid) override;
-  std::optional<std::string> lastReadAt(const std::string &uuid, const std::string &timestamp) override;
-  std::optional<std::string> updateStatus(const std::string &userUuid, const std::string &payload) override;
+  std::optional<std::string> addContact(const std::string& payload) override;
+  std::optional<std::string> removeContact(const std::string& payload) override;
+  std::optional<std::string> loadContacts(const std::string& payload) override;
+  std::optional<std::string> searchUsers(const std::string& userUuid,
+                                         const std::string& payload) override;
+  std::optional<std::string> resolveUserByUuid(const std::string& uuid) override;
+  std::optional<std::string> lastReadAt(const std::string& uuid,
+                                        const std::string& timestamp) override;
+  std::optional<std::string> updateStatus(const std::string& userUuid,
+                                          const std::string& payload) override;
 
  private:
   std::unique_ptr<IContactRepository> contactRepo_;
   std::shared_ptr<IContactSessionRegistry> contactSessionRegistry_;
   std::shared_ptr<IUserRepository> userRepo_;
-  Config &config_;
+  Config& config_;
 };
 
 #endif

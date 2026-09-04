@@ -2,8 +2,8 @@
 #define CALLSERVICE_H
 
 #include "Interfaces/ICallService.h"
-#include "Network/NetworkService.h"
-#include "P2P/WebRTCService.h"
+#include "Network/INetworkService.h"
+#include "P2P/IWebRTCService.h"
 #include "WebRTCEnum.h"
 
 #include <QJsonObject>
@@ -25,8 +25,8 @@ class CallService : public ICallService {
   Q_OBJECT
 
  public:
-  explicit CallService(NetworkService *network = nullptr,
-                        WebRTCService *webRTCService = nullptr,
+  explicit CallService(INetworkService *network = nullptr,
+                        IWebRTCService *webRTCService = nullptr,
                         QObject *parent = nullptr);
 
   // API d'appel (ICallService)
@@ -44,8 +44,8 @@ class CallService : public ICallService {
   void startCallTimeoutTimer();
 
   // Dépendances
-  NetworkService *network_;
-  WebRTCService *webRTCService_;
+  INetworkService *network_;
+  IWebRTCService *webRTCService_;
 
   // État de l'appel en cours
   bool inCall_ = false;

@@ -7,7 +7,7 @@
 #include <QString>
 #include <optional>
 
-#include "../Models/Message.h"
+#include "IMessageRepository.h"
 
 /**
  * @class MessageRepository
@@ -16,19 +16,19 @@
  * Stocke les messages localement avec toutes les métadonnées nécessaires
  * (senderUuid, receiverUuid, type, content, timestamp, isRead).
  */
-class MessageRepository : public QObject {
+class MessageRepository : public IMessageRepository {
   Q_OBJECT
  public:
   explicit MessageRepository(QObject* parent = nullptr);
 
   std::optional<Message> findByUUID(const QString& uuid);
-  QList<Message> findAll();
+  QList<Message> findAll() override;
   QList<Message> findForConversation(const QString& userUuid1, const QString& userUuid2);
   QList<Message> findForParticipant(const QString& participantUuid);
 
-  bool save(const Message& message);
+  bool save(const Message& message) override;
   bool remove(const QString& uuid);
-  bool removeAll();
+  bool removeAll() override;
 
  signals:
   void error(const QString& message);

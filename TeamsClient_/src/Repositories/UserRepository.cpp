@@ -5,7 +5,7 @@
 
 #include "../Database/DatabaseManager.h"
 
-UserRepository::UserRepository(QObject *parent) : QObject(parent), db_(DatabaseManager::instance().database()) {}
+UserRepository::UserRepository(QObject *parent) : IUserRepository(parent), db_(DatabaseManager::instance().database()) {}
 
 bool UserRepository::save(const User &user) {
   QSqlQuery query(db_);

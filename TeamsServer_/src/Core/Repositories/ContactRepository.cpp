@@ -7,19 +7,13 @@ bool ContactRepository::create(const Contact& contact) {
     QueryBuilder qb;
 
     std::string query =
-        qb.insert_into(
-              config_.table_contacts(),
-              {"user_uuid", "contact_uuid", "last_read_at"})
+        qb.insert_into(config_.table_contacts(), {"user_uuid", "contact_uuid", "last_read_at"})
             .values({"$1", "$2", "NOW()"})
             .build();
 
     pqxx::work txn(*conn);
 
-    pqxx::result result =
-        txn.exec_params(
-            query,
-            contact.user_id,
-            contact.contact_id);
+    pqxx::result result = txn.exec_params(query, contact.user_id, contact.contact_id);
 
     txn.commit();
 
@@ -33,45 +27,40 @@ bool ContactRepository::create(const Contact& contact) {
   }
 }
 
-bool ContactRepository::remove(
-    const std::string& userUuid,
-    const std::string& contactUuid) {
+bool ContactRepository::remove(const std::string& userUuid, const std::string& contactUuid) {
+  //   auto conn = databaseManager_.acquire_connection();
 
-//   auto conn = databaseManager_.acquire_connection();
+  //   try {
+  //     QueryBuilder qb;
 
-//   try {
-//     QueryBuilder qb;
+  //     std::string query =
+  //         qb.delete_from(config_.table_contacts())
+  //             .where("user_uuid", "=", "$1")
+  //             .and_where("contact_uuid", "=", "$2")
+  //             .build();
 
-//     std::string query =
-//         qb.delete_from(config_.table_contacts())
-//             .where("user_uuid", "=", "$1")
-//             .and_where("contact_uuid", "=", "$2")
-//             .build();
+  //     pqxx::work txn(*conn);
 
-//     pqxx::work txn(*conn);
+  //     pqxx::result result =
+  //         txn.exec_params(
+  //             query,
+  //             userUuid,
+  //             contactUuid);
 
-//     pqxx::result result =
-//         txn.exec_params(
-//             query,
-//             userUuid,
-//             contactUuid);
+  //     txn.commit();
 
-//     txn.commit();
+  //     databaseManager_.release_connection(conn);
 
-//     databaseManager_.release_connection(conn);
+  //     return result.affected_rows() == 1;
 
-//     return result.affected_rows() == 1;
-
-//   } catch (...) {
-//     databaseManager_.release_connection(conn);
-//     throw;
-//   }
-return false;
+  //   } catch (...) {
+  //     databaseManager_.release_connection(conn);
+  //     throw;
+  //   }
+  return false;
 }
 
-std::vector<User> ContactRepository::find_contacts(
-    const std::string& userUuid) {
-
+std::vector<User> ContactRepository::find_contacts(const std::string& userUuid) {
   auto conn = databaseManager_.acquire_connection();
 
   try {
@@ -99,7 +88,6 @@ std::vector<User> ContactRepository::find_contacts(
       user.email = row["email"].as<std::string>();
       user.lastReadAt = row["last_read_at"].is_null() ? "" : row["last_read_at"].as<std::string>();
 
-
       users.push_back(user);
     }
 
@@ -115,37 +103,29 @@ std::vector<User> ContactRepository::find_contacts(
   }
 }
 
-bool ContactRepository::update_last_read_at(
-    const std::string& userUuid,
-    const std::string& contactUuid,
-    const std::string& lastReadAt) {
-
+bool ContactRepository::update_last_read_at(const std::string& userUuid,
+                                            const std::string& contactUuid,
+                                            const std::string& lastReadAt) {
   auto conn = databaseManager_.acquire_connection();
 
   try {
     QueryBuilder qb;
 
-    std::string query =
-        qb.update(config_.table_contacts())
-            .set("last_read_at", "$1")
-            .where("user_uuid", "=", "$2")
-            .and_where("contact_uuid", "=", "$3")
-            .build();
+    std::string query = qb.update(config_.table_contacts())
+                            .set("last_read_at", "$1")
+                            .where("user_uuid", "=", "$2")
+                            .and_where("contact_uuid", "=", "$3")
+                            .build();
 
     pqxx::work txn(*conn);
 
-    pqxx::result result =
-        txn.exec_params(
-            query,
-            lastReadAt,
-            userUuid,
-            contactUuid);
+    pqxx::result result = txn.exec_params(query, lastReadAt, userUuid, contactUuid);
 
     txn.commit();
 
     databaseManager_.release_connection(conn);
 
-    std::cout <<" allerrr";
+    std::cout << " allerrr";
     return result.affected_rows() == 1;
 
   } catch (...) {
@@ -157,9 +137,7 @@ bool ContactRepository::update_last_read_at(
 // Inverse de find_contacts : on part de contact_uuid == userUuid
 // pour récupérer les users qui M'ONT en contact (user_uuid côté relation),
 // sans présumer que la relation est réciproque.
-std::vector<User> ContactRepository::find_contact_owners(
-    const std::string& userUuid) {
-
+std::vector<User> ContactRepository::find_contact_owners(const std::string& userUuid) {
   auto conn = databaseManager_.acquire_connection();
 
   try {

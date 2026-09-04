@@ -6,9 +6,9 @@
 #include <QObject>
 #include <QHashFunctions>
 
-#include "../../Repositories/UserRepository.h"
+#include "../../Repositories/IUserRepository.h"
 #include "../Interfaces/IContactService.h"
-#include "../Network/NetworkService.h"
+#include "../Network/INetworkService.h"
 
 /**
  * @class ContactService
@@ -20,7 +20,7 @@
 class ContactService : public IContactService {
   Q_OBJECT
 public:
-  explicit ContactService(NetworkService *network = nullptr, UserRepository *userRepo = nullptr,
+  explicit ContactService(INetworkService *network = nullptr, IUserRepository *userRepo = nullptr,
                           QObject *parent = nullptr);
 
   void searchUsers(const QString &query) override;
@@ -42,8 +42,8 @@ private:
   void persistContacts(const QList<User> &users);
   QList<User> parseUsersArray(const QJsonArray &array);
 
-  NetworkService *network_;
-  UserRepository *userRepo_;
+  INetworkService *network_;
+  IUserRepository *userRepo_;
 };
 
 #endif

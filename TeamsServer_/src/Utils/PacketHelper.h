@@ -11,25 +11,20 @@
  * ou remplacer des valeurs dans des payloads JSON simplifiés.
  */
 class PacketHelper {
-public:
-  static std::string extractValue(const std::string& payload,
-                                  const std::string& key) {
+ public:
+  static std::string extractValue(const std::string& payload, const std::string& key) {
     std::string searchKey = R"(")" + key + R"(":")";
     auto pos = payload.find(searchKey);
-    if (pos == std::string::npos)
-      return {};
+    if (pos == std::string::npos) return {};
 
     pos += searchKey.length();
     auto end = payload.find('"', pos);
-    if (end == std::string::npos)
-      return {};
+    if (end == std::string::npos) return {};
 
     return payload.substr(pos, end - pos);
   }
 
-  static void insertValue(std::string& payload,
-                          const std::string& key,
-                          const std::string& value) {
+  static void insertValue(std::string& payload, const std::string& key, const std::string& value) {
     std::string searchKey = R"(")" + key + R"(":")";
 
     auto pos = payload.find(searchKey);
@@ -50,8 +45,7 @@ public:
         bool hasEntries = payload.find(':') != std::string::npos;
 
         std::string entry =
-            (hasEntries ? "," : "") +
-            std::string("\"") + key + "\":\"" + value + "\"";
+            (hasEntries ? "," : "") + std::string("\"") + key + "\":\"" + value + "\"";
 
         payload.insert(insertPos, entry);
       }

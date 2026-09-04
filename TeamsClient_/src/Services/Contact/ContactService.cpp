@@ -2,6 +2,7 @@
 #include "Core/State/UserState.h"
 #include "Models/User.h"
 #include "Network/NetworkService.h"
+#include "Repositories/UserRepository.h"
 #include "Core/State/SessionState.h"
 
 #include <QJsonArray>
@@ -13,15 +14,15 @@
 #include <Qt>
 #include <cstddef>
 
-ContactService::ContactService(NetworkService *network, UserRepository *userRepo, QObject *parent)
+ContactService::ContactService(INetworkService *network, IUserRepository *userRepo, QObject *parent)
     : IContactService(parent), network_(network ? network : new NetworkService(8084, parent)),
       userRepo_(userRepo ? userRepo : new UserRepository(parent)) {
   Q_ASSERT(network_);
   Q_ASSERT(userRepo_);
 
-  connect(network_, &NetworkService::jsonReceived, this, &ContactService::handleServerResponse);
-  connect(network_, &NetworkService::networkError, this, &ContactService::contactError);
-  connect(network_, &NetworkService::connectionUpdate, &SessionState::instance(), &SessionState::onServerConnectionUpdate);
+  connect(network_, &INetworkService::jsonReceived, this, &ContactService::handleServerResponse);
+  connect(network_, &INetworkService::networkError, this, &ContactService::contactError);
+  connect(network_, &INetworkService::connectionUpdate, &SessionState::instance(), &SessionState::onServerConnectionUpdate);
 }
 
 // Client -> Serveur : demande la liste complète des contacts de l'utilisateur.

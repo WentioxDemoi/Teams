@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Paris # Pour éviter que le container soit bloqué lorsquon lance devcontainer
+ENV TZ=Europe/Paris
 
 RUN apt-get update && apt-get install -y \
     build-essential \

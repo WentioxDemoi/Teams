@@ -1,18 +1,19 @@
 #include "Core/Services/ContactService.h"
-#include "../Mocks/ContactRepositoryMock.h"
-#include "../Mocks/UserRepositoryMock.h"
-#include "../Mocks/ContactSessionRegistryMock.h"
+
 #include <gtest/gtest.h>
+
+#include "../Mocks/ContactRepositoryMock.h"
+#include "../Mocks/ContactSessionRegistryMock.h"
+#include "../Mocks/UserRepositoryMock.h"
 
 using ::testing::_;
 using ::testing::Return;
 
 namespace {
 
-std::unique_ptr<ContactService> makeService(
-    MockContactRepository *&rawContactRepo,
-    std::shared_ptr<MockUserRepository> &userRepo,
-    std::shared_ptr<MockContactSessionRegistry> &registry) {
+std::unique_ptr<ContactService> makeService(MockContactRepository*& rawContactRepo,
+                                            std::shared_ptr<MockUserRepository>& userRepo,
+                                            std::shared_ptr<MockContactSessionRegistry>& registry) {
   auto contactRepo = std::make_unique<MockContactRepository>();
   rawContactRepo = contactRepo.get();
   userRepo = std::make_shared<MockUserRepository>();
@@ -20,14 +21,14 @@ std::unique_ptr<ContactService> makeService(
   return std::make_unique<ContactService>(std::move(contactRepo), userRepo, registry);
 }
 
-}
+}  // namespace
 
 // ---------------------------------------------------------------------------
 // addContact
 // ---------------------------------------------------------------------------
 
 TEST(ContactServiceTest, AddContact_CreateFails_ReturnsNullopt) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
@@ -39,7 +40,7 @@ TEST(ContactServiceTest, AddContact_CreateFails_ReturnsNullopt) {
 }
 
 TEST(ContactServiceTest, AddContact_CreateSucceeds_ReturnsResponse) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
@@ -55,7 +56,7 @@ TEST(ContactServiceTest, AddContact_CreateSucceeds_ReturnsResponse) {
 // ---------------------------------------------------------------------------
 
 TEST(ContactServiceTest, ResolveUserByUuid_NotFound_ReturnsNullopt) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
@@ -67,7 +68,7 @@ TEST(ContactServiceTest, ResolveUserByUuid_NotFound_ReturnsNullopt) {
 }
 
 TEST(ContactServiceTest, ResolveUserByUuid_Found_SetsOnlineStatus) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
@@ -85,7 +86,7 @@ TEST(ContactServiceTest, ResolveUserByUuid_Found_SetsOnlineStatus) {
 // ---------------------------------------------------------------------------
 
 TEST(ContactServiceTest, RemoveContact_AlwaysReturnsNullopt_CurrentlyDisabled) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
@@ -101,7 +102,7 @@ TEST(ContactServiceTest, RemoveContact_AlwaysReturnsNullopt_CurrentlyDisabled) {
 // ---------------------------------------------------------------------------
 
 TEST(ContactServiceTest, LoadContacts_EmptyUserUuid_ReturnsNulloptAndSkipsRepo) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
@@ -113,7 +114,7 @@ TEST(ContactServiceTest, LoadContacts_EmptyUserUuid_ReturnsNulloptAndSkipsRepo) 
 }
 
 TEST(ContactServiceTest, LoadContacts_Success_SetsStatusPerContact) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
@@ -121,8 +122,7 @@ TEST(ContactServiceTest, LoadContacts_Success_SetsStatusPerContact) {
   User c1("c1", "A", "A", "a@example.com", "", "", {}, {}, {});
   User c2("c2", "B", "B", "b@example.com", "", "", {}, {}, {});
 
-  EXPECT_CALL(*contactRepo, find_contacts("u1"))
-      .WillOnce(Return(std::vector<User>{c1, c2}));
+  EXPECT_CALL(*contactRepo, find_contacts("u1")).WillOnce(Return(std::vector<User>{c1, c2}));
   EXPECT_CALL(*registry, hasContactSession("c1")).WillOnce(Return(true));
   EXPECT_CALL(*registry, hasContactSession("c2")).WillOnce(Return(false));
 
@@ -135,13 +135,12 @@ TEST(ContactServiceTest, LoadContacts_Success_SetsStatusPerContact) {
 // ---------------------------------------------------------------------------
 
 TEST(ContactServiceTest, SearchUsers_EmptyResult_ReturnsNullopt) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
 
-  EXPECT_CALL(*userRepo, search_by_name("u1", "john"))
-      .WillOnce(Return(std::vector<User>{}));
+  EXPECT_CALL(*userRepo, search_by_name("u1", "john")).WillOnce(Return(std::vector<User>{}));
   EXPECT_CALL(*registry, hasContactSession(_)).Times(0);
 
   auto res = svc->searchUsers("u1", R"({"query":"john"})");
@@ -149,14 +148,13 @@ TEST(ContactServiceTest, SearchUsers_EmptyResult_ReturnsNullopt) {
 }
 
 TEST(ContactServiceTest, SearchUsers_Success_SetsStatus) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
 
   User u("c1", "John", "Doe", "john@example.com", "", "", {}, {}, {});
-  EXPECT_CALL(*userRepo, search_by_name("u1", "john"))
-      .WillOnce(Return(std::vector<User>{u}));
+  EXPECT_CALL(*userRepo, search_by_name("u1", "john")).WillOnce(Return(std::vector<User>{u}));
   EXPECT_CALL(*registry, hasContactSession("c1")).WillOnce(Return(true));
 
   auto res = svc->searchUsers("u1", R"({"query":"john"})");
@@ -168,7 +166,7 @@ TEST(ContactServiceTest, SearchUsers_Success_SetsStatus) {
 // ---------------------------------------------------------------------------
 
 TEST(ContactServiceTest, LastReadAt_EmptyContactUuid_ReturnsNullopt) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
@@ -180,26 +178,24 @@ TEST(ContactServiceTest, LastReadAt_EmptyContactUuid_ReturnsNullopt) {
 }
 
 TEST(ContactServiceTest, LastReadAt_UpdateFails_ReturnsNullopt) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
 
-  EXPECT_CALL(*contactRepo, update_last_read_at("u1", "c1", "2024-01-01"))
-      .WillOnce(Return(false));
+  EXPECT_CALL(*contactRepo, update_last_read_at("u1", "c1", "2024-01-01")).WillOnce(Return(false));
 
   auto res = svc->lastReadAt("u1", R"({"contactUuid":"c1","lastReadAt":"2024-01-01"})");
   EXPECT_FALSE(res.has_value());
 }
 
 TEST(ContactServiceTest, LastReadAt_Success_ReturnsResponse) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
 
-  EXPECT_CALL(*contactRepo, update_last_read_at("u1", "c1", "2024-01-01"))
-      .WillOnce(Return(true));
+  EXPECT_CALL(*contactRepo, update_last_read_at("u1", "c1", "2024-01-01")).WillOnce(Return(true));
 
   auto res = svc->lastReadAt("u1", R"({"contactUuid":"c1","lastReadAt":"2024-01-01"})");
   ASSERT_TRUE(res.has_value());
@@ -211,17 +207,16 @@ TEST(ContactServiceTest, LastReadAt_Success_ReturnsResponse) {
 // ---------------------------------------------------------------------------
 
 TEST(ContactServiceTest, UpdateStatus_NotifiesOnlyOnlineRecipientsWithoutDuplicates) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
 
   User contact("c1", "A", "A", "a@example.com", "", "", {}, {}, {});
-  User owner("c1", "A", "A", "a@example.com", "", "", {}, {}, {}); // même uuid → doublon
+  User owner("c1", "A", "A", "a@example.com", "", "", {}, {}, {});  // même uuid → doublon
   User owner2("c2", "B", "B", "b@example.com", "", "", {}, {}, {});
 
-  EXPECT_CALL(*contactRepo, find_contacts("u1"))
-      .WillOnce(Return(std::vector<User>{contact}));
+  EXPECT_CALL(*contactRepo, find_contacts("u1")).WillOnce(Return(std::vector<User>{contact}));
   EXPECT_CALL(*contactRepo, find_contact_owners("u1"))
       .WillOnce(Return(std::vector<User>{owner, owner2}));
 
@@ -236,15 +231,13 @@ TEST(ContactServiceTest, UpdateStatus_NotifiesOnlyOnlineRecipientsWithoutDuplica
 }
 
 TEST(ContactServiceTest, UpdateStatus_NoRecipients_SendsNothing) {
-  MockContactRepository *contactRepo;
+  MockContactRepository* contactRepo;
   std::shared_ptr<MockUserRepository> userRepo;
   std::shared_ptr<MockContactSessionRegistry> registry;
   auto svc = makeService(contactRepo, userRepo, registry);
 
-  EXPECT_CALL(*contactRepo, find_contacts("u1"))
-      .WillOnce(Return(std::vector<User>{}));
-  EXPECT_CALL(*contactRepo, find_contact_owners("u1"))
-      .WillOnce(Return(std::vector<User>{}));
+  EXPECT_CALL(*contactRepo, find_contacts("u1")).WillOnce(Return(std::vector<User>{}));
+  EXPECT_CALL(*contactRepo, find_contact_owners("u1")).WillOnce(Return(std::vector<User>{}));
   EXPECT_CALL(*registry, sendMessage(_, _)).Times(0);
 
   auto res = svc->updateStatus("u1", R"({"status":"Offline"})");

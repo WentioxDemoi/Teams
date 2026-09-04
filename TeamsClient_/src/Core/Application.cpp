@@ -30,6 +30,7 @@
 #include "LocalUserService.h"
 #include "ViewModelsLocator.h"
 #include "WebRTCViewModel.h"
+#include "../Services/P2P/WebRTCService.h"
 
 Application::Application(int& argc, char** argv) : qtApp(argc, argv) {
   qputenv("QT_QUICK_CONTROLS_STYLE", "Basic");
@@ -85,6 +86,7 @@ void Application::initializeServices() {
     auto* webRTCService =
       new WebRTCService(appRoot);
   serviceLocator.registerService<WebRTCService>(webRTCService);
+    serviceLocator.registerService<IWebRTCService>(webRTCService);
 
   auto* callService = new CallService(nullptr, nullptr, appRoot);
   serviceLocator.registerService<ICallService>(callService);

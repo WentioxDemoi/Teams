@@ -3,7 +3,7 @@
 #include "../../Core/State/UserState.h"
 #include "SessionEnum.h"
 
-NetworkService::NetworkService(qint16 port, QObject* parent) : QObject(parent), port_(port) {
+NetworkService::NetworkService(qint16 port, QObject* parent) : INetworkService(parent), port_(port) {
   switch (port) {
     case 8080:
       server_ = ServerType::Auth;

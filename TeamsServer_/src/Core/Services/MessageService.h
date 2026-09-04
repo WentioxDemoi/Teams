@@ -1,11 +1,12 @@
 #ifndef MESSAGESERVICE_H
 #define MESSAGESERVICE_H
 
+#include <memory>
+
 #include "../../Core/Registeries/MessageSessionRegistry.h"
-#include "IMessageService.h"
 #include "../Models/Message.h"
 #include "../Repositories/MessageRepository.h"
-#include <memory>
+#include "IMessageService.h"
 
 /**
  * @class MessageService
@@ -19,17 +20,18 @@ class MessageService : public IMessageService {
  public:
   MessageService(std::unique_ptr<IMessageRepository> messageRepo,
                  std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry)
-      : messageRepo_(std::move(messageRepo)), messageSessionRegistry_(messageSessionRegistry),
+      : messageRepo_(std::move(messageRepo)),
+        messageSessionRegistry_(messageSessionRegistry),
         config_(Config::instance()) {};
   ~MessageService() override = default;
 
-  std::optional<std::string> sendMessage(const std::string &payload) override;
-  std::optional<std::string> loadConversations(const std::string &userUuid) override;
+  std::optional<std::string> sendMessage(const std::string& payload) override;
+  std::optional<std::string> loadConversations(const std::string& userUuid) override;
 
  private:
   std::unique_ptr<IMessageRepository> messageRepo_;
   std::shared_ptr<IMessageSessionRegistry> messageSessionRegistry_;
-  Config &config_;
+  Config& config_;
 };
 
 #endif

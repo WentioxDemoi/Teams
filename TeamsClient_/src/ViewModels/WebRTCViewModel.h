@@ -1,9 +1,8 @@
 #ifndef WEBRTCVIEWMODEL_H
 #define WEBRTCVIEWMODEL_H
 
-#include "../Services/P2P/WebRTCService.h"
-#include "Chat/ChatService.h"
-#include "ViewModelsTools.h"
+#include "../Services/P2P/IWebRTCService.h"
+#include "Interfaces/IChatService.h"
 #include <QCamera>
 #include <QMediaCaptureSession>
 #include <QObject>
@@ -38,7 +37,7 @@ class WebRTCViewModel : public QObject {
   Q_PROPERTY(bool isRemoteCameraEnabled READ isRemoteCameraEnabled NOTIFY isRemoteCameraEnabledChanged)
 
 public:
-  explicit WebRTCViewModel(QQmlEngine *engine, WebRTCService *webRTCService = nullptr,
+  explicit WebRTCViewModel(QQmlEngine *engine, IWebRTCService *webRTCService = nullptr,
                            IChatService *chatService = nullptr, QObject *parent = nullptr);
 
   Q_INVOKABLE bool cameraEnabled() const { return cameraEnabled_; }
@@ -104,7 +103,7 @@ signals:
 
 private:
   QQmlEngine *engine_;
-  WebRTCService *webRTCService_;
+  IWebRTCService *webRTCService_;
   IChatService *chatService_;
   QCamera *camera_ = nullptr;
   QVideoSink *captureSink_ = nullptr;

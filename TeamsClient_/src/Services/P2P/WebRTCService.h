@@ -4,6 +4,7 @@
 #include <QObject>
 #include <functional>
 
+#include "IWebRTCService.h"
 #include "PConnectionController.h"
 
 
@@ -15,30 +16,29 @@
   * en gérant les appels entrants et sortants, les flux vidéo distants, et les événements d'état
   * ou d'erreur liés à la communication.
   */
-class WebRTCService : public QObject {
+class WebRTCService : public IWebRTCService {
   Q_OBJECT
 public:
   explicit WebRTCService(QObject *parent);
 
   void disconnectFromSignalingServer();
 
-void setCallBacks(std::function<void(const std::string &sdp)> onLocalOffer,
+  void setCallBacks(std::function<void(const std::string &sdp)> onLocalOffer,
                    std::function<void(const std::string &sdp)> onLocalAnswer,
                    std::function<void(const std::string &candidate, const std::string &mid, int index)> onLocalIce,
-                   std::function<void(bool isConnected)> isContactConnectedChanged);
-  void startCall();
-  void acceptCall();
+                   std::function<void(bool isConnected)> isContactConnectedChanged) override;
+  void startCall() override;
+  void acceptCall() override;
   void prepareForNewCall();
-  void hangup();
-
-  void onRemoteOffer(QString sdp);
-  void onRemoteAnswer(QString sdp);
-  void onRemoteIce(QString candidate, QString mid, int index);
-
-  void setMicEnabled(bool enabled) {
+  void hangup() override;
+  void setMicEnabled(bool enabled) override {
     if (pConnectionController_)
       pConnectionController_->setMicEnabled(enabled);
   }
+
+  void onRemoteOffer(QString sdp) override;
+  void onRemoteAnswer(QString sdp) override;
+  void onRemoteIce(QString candidate, QString mid, int index) override;
 
 signals:
   void connected();
