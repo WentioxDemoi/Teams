@@ -1,0 +1,2 @@
+/usr/bin/ar qc TeamsClient/libTeamsClient_Coreplugin.a CMakeFiles/TeamsClient_Coreplugin.dir/TeamsClient_Coreplugin_autogen/mocs_compilation.cpp.o CMakeFiles/TeamsClient_Coreplugin.dir/TeamsClient_Coreplugin_TeamsClientPlugin.cpp.o
+/usr/bin/ranlib TeamsClient/libTeamsClient_Coreplugin.a

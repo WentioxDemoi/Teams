@@ -1,0 +1,567 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "CMakeFiles/TeamsClient_Coreplugin_init.dir/TeamsClient_Coreplugin_init_autogen/mocs_compilation.cpp.o"
+		},
+		{
+			"path" : "CMakeFiles/TeamsClient_Coreplugin_init.dir/TeamsClient_Coreplugin_init.cpp.o"
+		}
+	],
+	"backtrace" : 6,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"_qt_internal_add_library",
+			"qt6_add_library",
+			"__qt_internal_add_static_plugin_init_object_library",
+			"qt6_add_qml_module",
+			"qt_add_qml_module",
+			"set_property",
+			"_qt_internal_copy_dependency_properties",
+			"__qt_internal_propagate_object_library",
+			"include_directories",
+			"target_sources",
+			"qt6_extract_metatypes",
+			"qt6_finalize_target"
+		],
+		"files" : 
+		[
+			"/Users/remidesbordes/Qt/6.9.3/macos/lib/cmake/Qt6Core/Qt6CoreMacros.cmake",
+			"/Users/remidesbordes/Qt/6.9.3/macos/lib/cmake/Qt6/QtPublicPluginHelpers.cmake",
+			"/Users/remidesbordes/Qt/6.9.3/macos/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake",
+			"CMakeLists.txt",
+			"/Users/remidesbordes/Qt/6.9.3/macos/lib/cmake/Qt6Core/Qt6CoreMacros.cmake:846:EVAL"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 3
+			},
+			{
+				"command" : 5,
+				"file" : 3,
+				"line" : 138,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 1296,
+				"parent" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 968,
+				"parent" : 2
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 255,
+				"parent" : 3
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 2758,
+				"parent" : 4
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 2845,
+				"parent" : 5
+			},
+			{
+				"command" : 8,
+				"file" : 2,
+				"line" : 972,
+				"parent" : 2
+			},
+			{
+				"command" : 7,
+				"file" : 0,
+				"line" : 2026,
+				"parent" : 7
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 2955,
+				"parent" : 8
+			},
+			{
+				"command" : 9,
+				"file" : 3,
+				"line" : 23,
+				"parent" : 0
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 2955,
+				"parent" : 8
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 2955,
+				"parent" : 8
+			},
+			{
+				"file" : 3,
+				"line" : -1,
+				"parent" : 0
+			},
+			{
+				"command" : 12,
+				"file" : 4,
+				"line" : 1,
+				"parent" : 13
+			},
+			{
+				"command" : 11,
+				"file" : 0,
+				"line" : 907,
+				"parent" : 14
+			},
+			{
+				"command" : 10,
+				"file" : 0,
+				"line" : 1551,
+				"parent" : 15
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : " -stdlib=libc++ -std=gnu++20 -arch arm64"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 9,
+					"define" : "NDEBUG"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_CORE_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_DEPRECATED_WARNINGS"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_GUI_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_MULTIMEDIAWIDGETS_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_MULTIMEDIA_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_NETWORK_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_NO_DEBUG"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_OPENGL_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_PLUGIN"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_QMLINTEGRATION_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_QMLMETA_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_QMLMODELS_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_QMLWORKERSCRIPT_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_QML_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_QUICKCONTROLS2_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_QUICK_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_SQL_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_STATICPLUGIN"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "QT_WIDGETS_LIB"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "WEBRTC_ARCH_LITTLE_ENDIAN"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "WEBRTC_MAC"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "WEBRTC_POSIX"
+				}
+			],
+			"frameworks" : 
+			[
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQml.framework"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtNetwork.framework"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtSql.framework"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtMultimedia.framework"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtGui.framework"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtMultimediaWidgets.framework"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtWidgets.framework"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQuick.framework"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQmlMeta.framework"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQmlModels.framework"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQmlWorkerScript.framework"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtOpenGL.framework"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQuickControls2.framework"
+				},
+				{
+					"backtrace" : 11,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtCore.framework"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 0,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/build/TeamsClient_Coreplugin_init_autogen/include"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "/opt/homebrew/opt/openssl@3/include"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/build/TeamsClient_Coreplugin_autogen/include"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQml.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/include/QtQmlIntegration"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtNetwork.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/Utils"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/Models"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/ViewModels"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/Services"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/Services/Enums"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/Components"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/Core"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/libyuv/include"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src/api"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src/api/rtc_base"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src/third_party/abseil-cpp"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src/api/video"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src/api/media_stream"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtSql.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtMultimedia.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtGui.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtMultimediaWidgets.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtWidgets.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQuick.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQmlMeta.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQmlModels.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQmlWorkerScript.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtOpenGL.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQuickControls2.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtCore.framework/Headers"
+				},
+				{
+					"backtrace" : 11,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/mkspecs/macx-clang"
+				},
+				{
+					"backtrace" : 11,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/include"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					12,
+					12,
+					12
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"id" : "TeamsClient_Coreplugin_init_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "TeamsClient_Coreplugin_init_autogen::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "TeamsClient_Coreplugin_init::@6890427a1f51a3e7e1df",
+	"name" : "TeamsClient_Coreplugin_init",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "Source Files\\Generated",
+			"sourceIndexes" : 
+			[
+				1
+			]
+		},
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				2,
+				3
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				4,
+				5,
+				6
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/TeamsClient_Coreplugin_init_autogen/mocs_compilation.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 6,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/TeamsClient_Coreplugin_init.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 16,
+			"isGenerated" : true,
+			"path" : "build/meta_types/qt6teamsclient_coreplugin_init_metatypes.json.gen",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/TeamsClient_Coreplugin_init_autogen/timestamp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/meta_types/qt6teamsclient_coreplugin_init_metatypes.json.gen.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/TeamsClient_Coreplugin_init_autogen/timestamp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/meta_types/TeamsClient_Coreplugin_init_json_file_list.txt.rule",
+			"sourceGroupIndex" : 3
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

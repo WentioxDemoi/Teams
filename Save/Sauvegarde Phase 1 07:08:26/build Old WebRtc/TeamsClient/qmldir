@@ -1,0 +1,16 @@
+module TeamsClient
+linktarget TeamsClient_Coreplugin
+optional plugin TeamsClient_Coreplugin
+classname TeamsClientPlugin
+typeinfo TeamsClient_Core.qmltypes
+prefer :/qt/qml/TeamsClient/
+Main 1.0 src/QML/Main.qml
+AuthView 1.0 src/QML/AuthView.qml
+WorkspaceView 1.0 src/QML/WorkspaceView.qml
+LoadingView 1.0 src/QML/LoadingView.qml
+HomeView 1.0 src/QML/HomeView.qml
+MessageView 1.0 src/QML/MessageView.qml
+ContactItem 1.0 src/QML/ContactItem.qml
+CallWindow 1.0 src/QML/CallWindow.qml
+depends QtQuick
+
