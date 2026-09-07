@@ -1,14 +1,14 @@
-## Sauvegarde des versions fonctionnelles
+## Working Version Backups
 
-Des versions fonctionnelles du projet sont conservées sous forme de binaires afin d'éviter d'avoir à tout recompiler ultérieurement et de devoir résoudre à nouveau les problèmes liés aux dépendances, notamment celles de WebRTC.
+Known working versions of the project are preserved as binaries to avoid having to rebuild everything later and to prevent having to resolve dependency-related issues again, especially those involving WebRTC.
 
-Deux versions sont actuellement sauvegardées :
-- **Ancienne version de WebRTC**
-- **Nouvelle version de WebRTC**
+Two versions are currently archived:
+- **Previous WebRTC version**
+- **New WebRTC version**
 
-Chaque version contient les artefacts nécessaires à son utilisation :
+Each version contains the artifacts required for its use:
 
-- **Linux** : binaire à exécuter dans un container Docker
-- **macOS** : fichier `.dmg` à installer
+- **Linux**: binary to run inside a Docker container
+- **macOS**: `.dmg` file to install
 
-L'objectif est de conserver une version directement utilisable, indépendamment de l'état futur des dépendances et de l'environnement de compilation.
+The goal is to keep a directly usable version available, regardless of the future state of the dependencies and build environment.

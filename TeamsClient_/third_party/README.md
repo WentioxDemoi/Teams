@@ -1,16 +1,16 @@
 # WebRTC & libyuv (C++ Static Build)
 
-Ce dossier contient des **versions compilées localement et statiquement de WebRTC et libyuv**, destinées à être utilisées dans un projet C++ avec **CMake**.
+This directory contains **locally built, statically linked versions of WebRTC and libyuv**, intended for use in a C++ project with **CMake**.
 
-Les sources complètes de WebRTC et libyuv ne sont pas incluses dans ce repository. Elles sont téléchargées et compilées via des scripts afin de conserver un environnement de build maîtrisé.
+The full WebRTC and libyuv source trees are not included in this repository. They are downloaded and built through scripts in order to maintain a controlled build environment.
 
-> ⚠️ Les versions de WebRTC et libyuv sont susceptibles d'évoluer. Les commits utilisés pour les builds fonctionnels sont documentés ci-dessous afin de pouvoir retrouver les versions correspondantes si nécessaire.
+> ⚠️ WebRTC and libyuv versions may evolve over time. The commits used for known working builds are documented below so that the corresponding versions can be restored if necessary.
 
 ---
 
-## Prérequis (macOS)
+## Prerequisites (macOS)
 
-Assurez-vous d'avoir installé les outils suivants :
+Make sure the following tools are installed:
 
 ```bash
 brew install git python ninja cmake
@@ -18,74 +18,74 @@ brew install git python ninja cmake
 
 ---
 
-## Dépendance : WebRTC
+## Dependency: WebRTC
 
-WebRTC est une bibliothèque de communication temps réel fournissant notamment :
+WebRTC is a real-time communication library providing, among other things:
 
-- audio / vidéo temps réel
-- transport réseau sécurisé
+- real-time audio / video
+- secure network transport
 - NAT traversal (STUN / TURN)
-- primitives bas niveau pour le P2P
+- low-level P2P primitives
 
-Ce repository ne fournit **pas** de serveur de signalisation.
+This repository does **not** provide a signaling server.
 
-### Version WebRTC utilisée
+### WebRTC Version Used
 
-Le build fonctionnel actuel a été réalisé avec le commit suivant :
+The current known working build was created using the following commit:
 
 ```text
 WebRTC commit:
 c4f5b6ef7e5711428a6e433eb7c8d9d3593e7e1a
 ```
 
-> ⚠️ WebRTC est récupéré via `fetch` / `gclient sync`. En cas de problème de compilation ou de changement de comportement, il peut donc être nécessaire de revenir manuellement au commit fonctionnel indiqué ci-dessus.
+> ⚠️ WebRTC is retrieved using `fetch` / `gclient sync`. If compilation issues or behavioral changes occur, it may therefore be necessary to revert to the known working commit listed above.
 
-Si une nouvelle version de WebRTC est utilisée, il faudra potentiellement adapter le script de build, notamment en cas de modification de l'API, des fichiers `BUILD.gn`, des dépendances ou des options GN.
+If a new WebRTC version is used, the build script may need to be adapted, especially if there are changes to the API, `BUILD.gn` files, dependencies, or GN options.
 
 ---
 
-## Dépendance : depot_tools
+## Dependency: depot_tools
 
-`depot_tools` est l'ensemble d'outils utilisé par Chromium/WebRTC pour récupérer et gérer les sources et dépendances du projet, notamment via `fetch` et `gclient`.
+`depot_tools` is the set of tools used by Chromium/WebRTC to retrieve and manage project sources and dependencies, notably through `fetch` and `gclient`.
 
-Le script de build utilise une **version explicitement figée de `depot_tools`** afin d'éviter qu'une mise à jour ultérieure des outils ne modifie le comportement du build.
+The build script uses an **explicitly pinned version of `depot_tools`** to prevent future tool updates from changing the build behavior.
 
-### Version utilisée
+### Version Used
 
 ```text
 depot_tools commit:
 6fbb6012d6138844379a2df23eea5e86a2ea6696
 ```
 
-Le script clone automatiquement `depot_tools` s'il n'est pas déjà présent, puis effectue un checkout sur le commit indiqué.
+The script automatically clones `depot_tools` if it is not already present, then checks out the specified commit.
 
-Il n'est donc normalement **pas nécessaire de sélectionner manuellement la version de `depot_tools`**.
+It is therefore normally **not necessary to manually select a `depot_tools` version**.
 
 ---
 
-## Build de WebRTC
+## Building WebRTC
 
-Depuis le dossier `third_party` :
+From the `third_party` directory:
 
 ```bash
 ./build_webrtc.sh
 ```
 
-Le script effectue les étapes suivantes :
+The script performs the following steps:
 
-1. Crée le répertoire de travail WebRTC.
-2. Télécharge `depot_tools` s'il n'est pas déjà présent.
-3. Checkout automatiquement la version figée de `depot_tools`.
-4. Configure `gclient`.
-5. Télécharge et synchronise les sources et dépendances WebRTC.
-6. Applique le patch nécessaire à `BUILD.gn`.
-7. Génère la configuration GN.
-8. Compile WebRTC en bibliothèque statique (`libwebrtc.a`).
-9. Copie la librairie dans `lib/`.
+1. Creates the WebRTC working directory.
+2. Downloads `depot_tools` if it is not already present.
+3. Automatically checks out the pinned `depot_tools` version.
+4. Configures `gclient`.
+5. Downloads and synchronizes the WebRTC sources and dependencies.
+6. Applies the required `BUILD.gn` patch.
+7. Generates the GN build configuration.
+8. Builds WebRTC as a static library (`libwebrtc.a`).
+9. Copies the library into `lib/`.
 
-### Compatibilité WebRTC
+### WebRTC Compatibility
 
-Le build actuel a été testé avec :
+The current build has been tested with:
 
 ```text
 WebRTC:
@@ -95,81 +95,81 @@ depot_tools:
 6fbb6012d6138844379a2df23eea5e86a2ea6696
 ```
 
-Si le build ne fonctionne plus après un nouveau `gclient sync`, vérifier en priorité la révision WebRTC utilisée.
+If the build stops working after a new `gclient sync`, first check which WebRTC revision is currently being used.
 
-Pour revenir à la version fonctionnelle, il peut être nécessaire de checkout manuellement le commit WebRTC indiqué ci-dessus avant de relancer la synchronisation/build.
+To restore the known working version, it may be necessary to manually check out the WebRTC commit listed above before running the synchronization/build again.
 
-> ⚠️ Le script est actuellement configuré pour **macOS arm64**.
+> ⚠️ The script is currently configured for **macOS arm64**.
 >
-> ⚠️ Les options GN et le patch `BUILD.gn` dépendent de la version de WebRTC. Une nouvelle version de WebRTC peut donc nécessiter des adaptations du script.
+> ⚠️ The GN options and the `BUILD.gn` patch depend on the WebRTC version. A newer WebRTC version may therefore require changes to the build script.
 
 ---
 
-## Dépendance : libyuv
+## Dependency: libyuv
 
-libyuv est une bibliothèque bas niveau utilisée par WebRTC pour :
+libyuv is a low-level library used by WebRTC for:
 
-- conversions de formats YUV / RGB
-- scaling et rotation d'images
-- optimisations SIMD (ARM / x86)
+- YUV / RGB format conversions
+- image scaling and rotation
+- SIMD optimizations (ARM / x86)
 
-Elle est construite **localement et indépendamment**, afin d'éviter toute dépendance système implicite.
+It is built **locally and independently** in order to avoid implicit system dependencies.
 
-### Version libyuv utilisée
+### libyuv Version Used
 
-Le build fonctionnel actuel a été réalisé avec le commit suivant :
+The current known working build was created using the following commit:
 
 ```text
 libyuv commit:
 f489037bfc93bd5338974b00b5765efb7b3afa4c
 ```
 
-Le script de build checkout cette version afin de conserver une version connue comme fonctionnelle.
+The build script checks out this version in order to maintain a known working version.
 
-Selon le projet, libyuv peut être :
+Depending on the project, libyuv may be:
 
-- liée directement par l'application ;
-- ou utilisée indirectement via WebRTC.
+- linked directly by the application;
+- or used indirectly through WebRTC.
 
 ---
 
-## Build de libyuv
+## Building libyuv
 
-Depuis le dossier `third_party` :
+From the `third_party` directory:
 
 ```bash
 ./build_libyuv.sh
 ```
 
-Le script effectue les étapes suivantes :
+The script performs the following steps:
 
-1. Clone libyuv depuis le dépôt Chromium officiel.
-2. Checkout la version figée de libyuv.
-3. Configure une build Release pour macOS arm64.
-4. Compile la librairie.
-5. Installe les headers et la librairie statique localement.
+1. Clones libyuv from the official Chromium repository.
+2. Checks out the pinned libyuv version.
+3. Configures a Release build for macOS arm64.
+4. Builds the library.
+5. Installs the headers and static library locally.
 
-> ⚠️ Le script est actuellement configuré pour **macOS arm64**.
+> ⚠️ The script is currently configured for **macOS arm64**.
 >
-> Pour `x86_64` ou d'autres plateformes, adapter `CMAKE_OSX_ARCHITECTURES`.
+> For `x86_64` or other platforms, update `CMAKE_OSX_ARCHITECTURES` accordingly.
 
-> ⚠️ Si libyuv est déjà intégrée statiquement dans WebRTC, il n'est pas nécessaire de la lier séparément.
+> ⚠️ If libyuv is already statically integrated into WebRTC, it does not need to be linked separately.
 
 ---
 
-## Utilisation dans CMake
+## Using WebRTC and libyuv with CMake
 
 ### WebRTC
 
-Voir le `CMakeLists.txt` actuel du projet pour l'intégration de WebRTC.
+See the project's current `CMakeLists.txt` for the WebRTC integration.
 
 ### libyuv
 
-Voir le `CMakeLists.txt` actuel du projet pour l'intégration de libyuv.
+See the project's current `CMakeLists.txt` for the libyuv integration.
 
 ---
 
-## Structure du dossier
+## Directory Structure
 
 ```text
 third_party/
@@ -179,51 +179,51 @@ third_party/
 ├── webrtc/
 │   ├── include/
 │   ├── lib/
-│   ├── src/           # ne pas pusher
-│   └── depot_tools/   # ne pas pusher
+│   ├── src/           # do not commit
+│   └── depot_tools/   # do not commit
 │
 ├── libyuv/
 │   ├── libyuv/
 │   │   ├── include/
 │   │   └── lib/
-│   └── libyuv_src/    # ne pas pusher
+│   └── libyuv_src/    # do not commit
 ```
 
 ---
 
-## Notes importantes
+## Important Notes
 
-Ne jamais pusher dans Git les sources et outils téléchargés localement :
+Never commit the locally downloaded sources and tools to Git:
 
 - `webrtc/src/`
 - `webrtc/depot_tools/`
 - `libyuv/libyuv_src/`
 
-Les librairies et headers générés localement ne sont également pas destinés à être versionnés dans ce repository, sauf indication contraire.
+Locally generated libraries and headers are also not intended to be committed to this repository unless explicitly stated otherwise.
 
-Les builds sont actuellement **spécifiques à macOS arm64**.
+The builds are currently **specific to macOS arm64**.
 
-Pour Linux ou Windows, les scripts GN / CMake devront être adaptés.
+For Linux or Windows, the GN / CMake build scripts will need to be adapted.
 
-Aucune infrastructure réseau (signalisation, TURN) n'est fournie ici.
+No network infrastructure (signaling server, TURN server) is provided here.
 
 ---
 
-## Plateformes supportées
+## Supported Platforms
 
 - macOS
   - arm64 ✅
-  - x86_64 ⚠️ (script à adapter)
+  - x86_64 ⚠️ (script requires adaptation)
 - Linux ❌
 - Windows ❌
 
 ---
 
-## Reproductibilité et versions fonctionnelles
+## Reproducibility and Known Working Versions
 
-Les versions fonctionnelles de WebRTC et libyuv sont conservées comme référence afin d'éviter de devoir retrouver ultérieurement une combinaison de versions compatible.
+Known working versions of WebRTC and libyuv are kept as a reference in order to avoid having to rediscover a compatible combination of versions later.
 
-Les versions utilisées pour le build fonctionnel actuel sont :
+The versions used for the current known working build are:
 
 ```text
 WebRTC:
@@ -236,20 +236,20 @@ libyuv:
 f489037bfc93bd5338974b00b5765efb7b3afa4c
 ```
 
-Les commits `depot_tools` et libyuv sont **figés directement dans les scripts de build**.
+The `depot_tools` and libyuv commits are **pinned directly in the build scripts**.
 
-Le commit WebRTC fonctionnel est également utilisé par le script pour sélectionner la version correspondante.
+The known working WebRTC commit is also used by the build script to select the corresponding version.
 
-Cette configuration permet de conserver une combinaison de dépendances connue comme fonctionnelle.
+This configuration preserves a known working combination of dependencies.
 
-Une mise à jour de WebRTC ou de ses dépendances peut nécessiter une adaptation du patch `BUILD.gn`, des options GN ou du code C++ utilisant WebRTC.
+Updating WebRTC or its dependencies may require changes to the `BUILD.gn` patch, GN options, or the C++ code using WebRTC.
 
-En cas de problème avec une nouvelle version, revenir aux commits indiqués ci-dessus permet de retrouver l'environnement de compilation utilisé précédemment.
+If a newer version causes issues, reverting to the commits listed above should restore the previously used build environment.
 
 ---
 
-## Licence
+## License
 
-- WebRTC est distribué sous licence BSD 3-clause.
-- libyuv est distribué sous licence BSD 3-clause.
-- Les licences tierces sont incluses dans les dépôts officiels respectifs.
+- WebRTC is distributed under the BSD 3-Clause License.
+- libyuv is distributed under the BSD 3-Clause License.
+- Third-party licenses are included in the respective official repositories.

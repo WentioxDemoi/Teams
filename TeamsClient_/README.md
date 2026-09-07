@@ -1,108 +1,111 @@
 # Qt Chat Client - MVVM Architecture
 
-## Structure du projet
+## Project Structure
 
-```
+```text
 src/
-├── Models/          # Modèles de données
-├── ViewModels/      # Logique de présentation
-├── Views/           # Interfaces utilisateur
-├── Services/        # Services réseau et métier
-├── Components/      # Composants réutilisables
-├── Utils/           # Utilitaires
-└── Core/            # Classes de base
+├── Models/          # Data models
+├── ViewModels/      # Presentation logic
+├── Views/           # User interfaces
+├── Services/        # Network and business services
+├── Components/      # Reusable components
+├── Utils/           # Utilities
+└── Core/            # Base classes
 ```
 
 ## Build
 
-1. Accédez au dossier de build :
+1. Navigate to the build directory:
 ```bash
 cd build/
 ```
 
-2. Générez les fichiers de build avec CMake (en remplaçant le chemin Qt6 selon votre configuration) :
+2. Generate the build files with CMake (adjust the Qt6 path according to your configuration):
 ```bash
-cmake ../ #Ou pour inclure les tests: cmake ../ -DBUILD_TESTS=ON
+cmake ../ # Or to include tests: cmake ../ -DBUILD_TESTS=ON
 ```
 
-3. Compilez le projet :
+3. Build the project:
 ```bash
 make
 ```
 
-4. Lancez l'application :
+4. Launch the application:
 ```bash
 ./TeamsClient_.app/Contents/MacOS/TeamsClient_
 ```
 
-Alternativement, vous pouvez double-cliquer sur l'app dans le dossier `build/`.
+Alternatively, you can double-click the application in the `build/` directory.
 
 ## Preview
 
-1. Accédez au dossier de build :
+1. Navigate to the build directory:
 ```bash
 cd build/
 ```
 
-2. Lancer la commande sur le fichier QML cible : 
+2. Run the following command on the target QML file:
 ```bash
 ~/Qt/6.9.3/macos/bin/qml ../src/QML/Main.qml
 ```
 
-## File cleaning
+## File Formatting
 
-1. Accédez au dossier de build :
+1. Navigate to the build directory:
 ```bash
 cd build/
 ```
 
-2. Lancer la commande sur le fichier QML cible : 
+2. Run the following command on the target QML file:
 ```bash
 ~/Qt/6.9.3/macos/bin/qmlformat ../src/QML/Main.qml
 ```
 
-### Accès à la caméra
+### Camera Access
 
-- Suppression des permissions sur MacOS : tccutil reset Camera
+- Reset camera permissions on macOS:
+```bash
+tccutil reset Camera
+```
 
-### Accès au Micro
+### Microphone Access
 
-- Suppression des permissions sur MacOS : tccutil reset Microphone
+- Reset microphone permissions on macOS:
+```bash
+tccutil reset Microphone
+```
 
+### Creating a `.dmg` File
 
-### Création d'un fichier .dmg
-
-1. Exécutez macdeployqt pour préparer l'application :
+1. Run `macdeployqt` to prepare the application:
 ```bash
 ~/Qt/6.9.3/macos/bin/macdeployqt TeamsClient_.app/ -qmldir=/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML
 ```
 
-2. Supprimer les plugins SQL non utilisés :
+2. Remove unused SQL plugins:
 ```bash
 find TeamsClient_.app -name "libqsqlodbc.dylib" -delete
 find TeamsClient_.app -name "libqsqlpsql.dylib" -delete
 ```
 
-3. Re-signature après toutes les modifications du bundle :
+3. Re-sign the application after any modifications to the bundle:
 ```bash
 codesign --force --deep --sign - TeamsClient_.app
 ```
 
-3. Créez le fichier .dmg :
+4. Create the `.dmg` file:
 ```bash
 hdiutil create -volname "TeamsClient_" -srcfolder TeamsClient_.app -ov -format UDZO TeamsClient_.dmg
 ```
 
+## Running Tests
 
-
-### Exécution des tests
-
-1. Exécutez le binaire de test :
+1. Run the test binary:
 ```bash
-ctest -V # Ou alors ./TeamsClient_Tests
+ctest -V # Or ./TeamsClient_Tests
 ```
 
-2. Exécutez la commmande pour voir le coverage :
+2. Run the command to generate the coverage report:
 ```bash
 gcovr \
     --root .. \
@@ -110,31 +113,31 @@ gcovr \
     --html-details coverage.html
 ```
 
-3. Ouvrez coverage.html dans un navigateur
+3. Open `coverage.html` in a browser.
 
-## Dépendances
+## Dependencies
 
 - Qt 6.9.3 (Core, Widgets, Network, Test)
-- Qt keychain 0.15.0 (installé manuellement dans le repo QT)
-    - https://github.com/frankosterfeld/qtkeychain/tree/0.15
-    - mkdir build && cd build
-    - cmake .. -DCMAKE_PREFIX_PATH=$HOME/Qt/6.9.3/macos -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/Qt/6.9.3/macos -DBUILD_WITH_QT6=ON
-    - make -j$(sysctl -n hw.ncpu)
-    - make install
+- Qt Keychain 0.15.0 (manually installed in the Qt repository)
+  - https://github.com/frankosterfeld/qtkeychain/tree/0.15
+  - `mkdir build && cd build`
+  - `cmake .. -DCMAKE_PREFIX_PATH=$HOME/Qt/6.9.3/macos -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/Qt/6.9.3/macos -DBUILD_WITH_QT6=ON`
+  - `make -j$(sysctl -n hw.ncpu)`
+  - `make install`
 - CMake 3.16+
-- Compilateur C++17
+- C++17 compiler
 
-## Architecture MVVM
+## MVVM Architecture
 
-- **Model**: Données pures sans logique métier
-- **View**: Interface utilisateur (Qt Widgets/QML)
-- **ViewModel**: Logique de présentation et binding
-- **Services**: Logique métier et communication réseau
+- **Model**: Pure data without business logic
+- **View**: User interface (Qt Widgets/QML)
+- **ViewModel**: Presentation logic and data binding
+- **Services**: Business logic and network communication
 
 ## TODO
-- Service de check du token enregistré localement en faisant une requete sur le serveur
-- Créer db et services associés 
-- Faire tests unitaires
-- Lorsqu'on se connecte au même compte avec deux instance en même temps, on casse la session, il faut redémarrer le software
-- problème lors de la fermeture du software après un appel. Le software reste actif et ne se shutdown pas
 
+- Add a service to check the locally stored token by sending a request to the server
+- Create the database and associated services
+- Add unit tests
+- When logging into the same account from two instances at the same time, the session is broken and the software needs to be restarted
+- Issue when closing the software after a call: the application remains active and does not shut down
