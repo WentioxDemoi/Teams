@@ -1,0 +1,9 @@
+-rootPath
+/Users/remidesbordes/Documents/Teams/TeamsClient_
+-cmake-output
+-output-file
+/Users/remidesbordes/Documents/Teams/TeamsClient_/build/.qt/qml_imports/TeamsClient__conf.cmake
+-importPath
+/Users/remidesbordes/Documents/Teams/TeamsClient_/build
+-importPath
+/Users/remidesbordes/Qt/6.9.3/macos/qml

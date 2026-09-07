@@ -1,0 +1,1819 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "libTeamsClient_Core.a"
+		}
+	],
+	"backtrace" : 4,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"_qt_internal_add_library",
+			"qt6_add_library",
+			"qt_add_library",
+			"add_dependencies",
+			"_qt_internal_qml_copy_files_to_build_dir",
+			"qt6_target_qml_sources",
+			"qt6_add_qml_module",
+			"qt_add_qml_module",
+			"target_compile_definitions",
+			"target_link_libraries",
+			"target_include_directories",
+			"_qt_internal_qml_type_registration",
+			"include_directories",
+			"target_compile_features",
+			"target_sources",
+			"qt6_extract_metatypes",
+			"__qt_propagate_generated_resource",
+			"_qt_internal_process_resource",
+			"qt6_add_resources",
+			"_qt_internal_target_enable_qmlcachegen",
+			"_qt_internal_expose_deferred_files_to_ide",
+			"qt6_finalize_target"
+		],
+		"files" : 
+		[
+			"/Users/remidesbordes/Qt/6.9.3/macos/lib/cmake/Qt6Core/Qt6CoreMacros.cmake",
+			"CMakeLists.txt",
+			"/Users/remidesbordes/Qt/6.9.3/macos/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake",
+			"/Users/remidesbordes/Qt/6.9.3/macos/lib/cmake/Qt6Core/Qt6CoreMacros.cmake:846:EVAL"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 132,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 2872,
+				"parent" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 2758,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 2845,
+				"parent" : 3
+			},
+			{
+				"command" : 8,
+				"file" : 1,
+				"line" : 138,
+				"parent" : 0
+			},
+			{
+				"command" : 7,
+				"file" : 2,
+				"line" : 1296,
+				"parent" : 5
+			},
+			{
+				"command" : 6,
+				"file" : 2,
+				"line" : 951,
+				"parent" : 6
+			},
+			{
+				"command" : 5,
+				"file" : 2,
+				"line" : 3607,
+				"parent" : 7
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 2976,
+				"parent" : 8
+			},
+			{
+				"command" : 5,
+				"file" : 2,
+				"line" : 3613,
+				"parent" : 7
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 2976,
+				"parent" : 10
+			},
+			{
+				"command" : 9,
+				"file" : 1,
+				"line" : 163,
+				"parent" : 0
+			},
+			{
+				"command" : 10,
+				"file" : 2,
+				"line" : 617,
+				"parent" : 6
+			},
+			{
+				"command" : 10,
+				"file" : 1,
+				"line" : 176,
+				"parent" : 0
+			},
+			{
+				"command" : 12,
+				"file" : 2,
+				"line" : 833,
+				"parent" : 6
+			},
+			{
+				"command" : 11,
+				"file" : 2,
+				"line" : 3989,
+				"parent" : 15
+			},
+			{
+				"command" : 11,
+				"file" : 1,
+				"line" : 154,
+				"parent" : 0
+			},
+			{
+				"command" : 13,
+				"file" : 1,
+				"line" : 23,
+				"parent" : 0
+			},
+			{
+				"command" : 11,
+				"file" : 2,
+				"line" : 4019,
+				"parent" : 15
+			},
+			{
+				"command" : 11,
+				"file" : 1,
+				"line" : 159,
+				"parent" : 0
+			},
+			{
+				"command" : 14,
+				"file" : 1,
+				"line" : 174,
+				"parent" : 0
+			},
+			{
+				"command" : 16,
+				"file" : 2,
+				"line" : 3814,
+				"parent" : 15
+			},
+			{
+				"command" : 15,
+				"file" : 0,
+				"line" : 1551,
+				"parent" : 22
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3980,
+				"parent" : 15
+			},
+			{
+				"command" : 19,
+				"file" : 2,
+				"line" : 885,
+				"parent" : 6
+			},
+			{
+				"command" : 18,
+				"file" : 0,
+				"line" : 405,
+				"parent" : 25
+			},
+			{
+				"command" : 17,
+				"file" : 0,
+				"line" : 2594,
+				"parent" : 26
+			},
+			{
+				"command" : 15,
+				"file" : 0,
+				"line" : 2137,
+				"parent" : 27
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3321,
+				"parent" : 7
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3458,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 1740,
+				"parent" : 30
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3514,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3321,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3514,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3321,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3514,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3321,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3514,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3321,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3514,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3321,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3514,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3321,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3514,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3321,
+				"parent" : 7
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 3514,
+				"parent" : 7
+			},
+			{
+				"command" : 19,
+				"file" : 2,
+				"line" : 3629,
+				"parent" : 7
+			},
+			{
+				"command" : 18,
+				"file" : 0,
+				"line" : 405,
+				"parent" : 47
+			},
+			{
+				"command" : 17,
+				"file" : 0,
+				"line" : 2594,
+				"parent" : 48
+			},
+			{
+				"command" : 15,
+				"file" : 0,
+				"line" : 2137,
+				"parent" : 49
+			},
+			{
+				"command" : 19,
+				"file" : 2,
+				"line" : 3665,
+				"parent" : 7
+			},
+			{
+				"command" : 18,
+				"file" : 0,
+				"line" : 405,
+				"parent" : 51
+			},
+			{
+				"command" : 17,
+				"file" : 0,
+				"line" : 2594,
+				"parent" : 52
+			},
+			{
+				"command" : 15,
+				"file" : 0,
+				"line" : 2137,
+				"parent" : 53
+			},
+			{
+				"file" : 1,
+				"line" : -1,
+				"parent" : 0
+			},
+			{
+				"command" : 22,
+				"file" : 3,
+				"line" : 1,
+				"parent" : 55
+			},
+			{
+				"command" : 21,
+				"file" : 0,
+				"line" : 871,
+				"parent" : 56
+			},
+			{
+				"command" : 15,
+				"file" : 0,
+				"line" : 2262,
+				"parent" : 57
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : " -stdlib=libc++ -std=gnu++20 -arch arm64"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 12,
+					"define" : "NDEBUG"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "QT_CORE_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_GUI_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_MULTIMEDIAWIDGETS_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_MULTIMEDIA_LIB"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "QT_NETWORK_LIB"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "QT_NO_DEBUG"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_OPENGL_LIB"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "QT_QMLINTEGRATION_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_QMLMETA_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_QMLMODELS_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_QMLWORKERSCRIPT_LIB"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "QT_QML_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_QUICKCONTROLS2_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_QUICK_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_SQL_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_WIDGETS_LIB"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "WEBRTC_ARCH_LITTLE_ENDIAN"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "WEBRTC_MAC"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "WEBRTC_POSIX"
+				}
+			],
+			"frameworks" : 
+			[
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtCore.framework"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQml.framework"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtNetwork.framework"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtSql.framework"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtMultimedia.framework"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtGui.framework"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtMultimediaWidgets.framework"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtWidgets.framework"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQuick.framework"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQmlMeta.framework"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQmlModels.framework"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQmlWorkerScript.framework"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtOpenGL.framework"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQuickControls2.framework"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 0,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/build/TeamsClient_Core_autogen/include"
+				},
+				{
+					"backtrace" : 16,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_"
+				},
+				{
+					"backtrace" : 17,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src"
+				},
+				{
+					"backtrace" : 17,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/Utils"
+				},
+				{
+					"backtrace" : 17,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/Models"
+				},
+				{
+					"backtrace" : 17,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/ViewModels"
+				},
+				{
+					"backtrace" : 17,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/Services"
+				},
+				{
+					"backtrace" : 17,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/Services/Enums"
+				},
+				{
+					"backtrace" : 17,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/Components"
+				},
+				{
+					"backtrace" : 17,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/Core"
+				},
+				{
+					"backtrace" : 17,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/libyuv/include"
+				},
+				{
+					"backtrace" : 18,
+					"isSystem" : true,
+					"path" : "/opt/homebrew/opt/openssl@3/include"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQml.framework/Versions/A/Headers/6.9.3"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQml.framework/Versions/A/Headers/6.9.3/QtQml"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtCore.framework/Versions/A/Headers/6.9.3"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtCore.framework/Versions/A/Headers/6.9.3/QtCore"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtCore.framework/Headers"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/mkspecs/macx-clang"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/include"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQml.framework/Headers"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/include/QtQmlIntegration"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtNetwork.framework/Headers"
+				},
+				{
+					"backtrace" : 20,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src"
+				},
+				{
+					"backtrace" : 20,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src/api"
+				},
+				{
+					"backtrace" : 20,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src/api/rtc_base"
+				},
+				{
+					"backtrace" : 20,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src/third_party/abseil-cpp"
+				},
+				{
+					"backtrace" : 20,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src/api/video"
+				},
+				{
+					"backtrace" : 20,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/webrtc/src/api/media_stream"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtSql.framework/Headers"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtMultimedia.framework/Headers"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtGui.framework/Headers"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtMultimediaWidgets.framework/Headers"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtWidgets.framework/Headers"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQuick.framework/Headers"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQmlMeta.framework/Headers"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQmlModels.framework/Headers"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQmlWorkerScript.framework/Headers"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtOpenGL.framework/Headers"
+				},
+				{
+					"backtrace" : 14,
+					"isSystem" : true,
+					"path" : "/Users/remidesbordes/Qt/6.9.3/macos/lib/QtQuickControls2.framework/Headers"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					21,
+					13,
+					13
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				82,
+				84,
+				85,
+				87,
+				88,
+				90,
+				92,
+				94,
+				96,
+				98,
+				100,
+				102,
+				103,
+				104
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"id" : "TeamsClient_Core_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 9,
+			"id" : "TeamsClient_Core_copy_qml::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 11,
+			"id" : "TeamsClient_Core_copy_res::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "TeamsClient_Core_autogen::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "TeamsClient_Core::@6890427a1f51a3e7e1df",
+	"name" : "TeamsClient_Core",
+	"nameOnDisk" : "libTeamsClient_Core.a",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				86,
+				89,
+				91,
+				93,
+				95,
+				97,
+				99,
+				101
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				32,
+				33,
+				34,
+				35,
+				36,
+				37,
+				38,
+				39,
+				40,
+				41,
+				42,
+				43,
+				44,
+				45,
+				46,
+				47,
+				48,
+				49,
+				50,
+				51,
+				52,
+				53,
+				54,
+				55,
+				56,
+				57,
+				58,
+				59,
+				60,
+				61,
+				62,
+				63,
+				64,
+				65,
+				66,
+				67,
+				68,
+				69,
+				70,
+				71,
+				72,
+				73,
+				74,
+				75,
+				76,
+				77,
+				78,
+				79,
+				80,
+				81
+			]
+		},
+		{
+			"name" : "Source Files\\Generated",
+			"sourceIndexes" : 
+			[
+				82,
+				83,
+				84,
+				85,
+				87,
+				88,
+				90,
+				92,
+				94,
+				96,
+				98,
+				100,
+				102,
+				103,
+				104,
+				105,
+				106,
+				107,
+				108,
+				109
+			]
+		},
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				110,
+				111,
+				129,
+				130,
+				131,
+				132,
+				133,
+				134,
+				135,
+				136,
+				137,
+				138,
+				139,
+				140,
+				141,
+				142
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				112,
+				113,
+				114,
+				115,
+				116,
+				117,
+				118,
+				119,
+				120,
+				121,
+				122,
+				123,
+				124,
+				125,
+				126,
+				127,
+				128
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/TeamsClient_Core_autogen/mocs_compilation.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Models/ContactList.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Models/Message.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Models/MessageList.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Models/SearchResults.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Models/User.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Repositories/MessageRepository.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Repositories/UserRepository.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Database/DatabaseManager.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/ViewModels/AuthViewModel.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/ViewModels/ChatViewModel.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/ViewModels/WebRTCViewModel.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Services/Auth/AuthService.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Services/Chat/Call/CallService.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Services/Chat/ChatService.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Services/Chat/Message/MessageService.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Services/Contact/ContactService.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Services/LocalUserService.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Services/Network/NetworkService.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Services/P2P/PConnectionController.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Services/P2P/PConnectionObserver.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Services/P2P/Sources.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Services/P2P/WebRTCService.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Utils/FrameConverter.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Utils/TokenManager.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Core/Application.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Core/ModelLocator.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Core/ServiceLocator.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Core/State/SessionState.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Core/State/UserState.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Core/StateLocator.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "src/Core/ViewModelsLocator.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/includes.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/webrtc_includes.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Models/ContactList.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Models/Message.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Models/MessageList.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Models/SearchResults.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Models/User.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Repositories/IMessageRepository.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Repositories/IUserRepository.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Repositories/MessageRepository.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Repositories/UserRepository.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Database/DatabaseManager.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/ViewModels/AuthViewModel.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/ViewModels/ChatViewModel.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/ViewModels/ViewModelsTools.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/ViewModels/WebRTCViewModel.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Auth/AuthService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Chat/Call/CallService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Chat/ChatService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Chat/Message/MessageService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Contact/ContactService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Enums/SessionEnum.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Enums/WebRTCEnum.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Interfaces/IAuthService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Interfaces/ICallService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Interfaces/IChatService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Interfaces/IContactService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Interfaces/ILocalUserService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Interfaces/IMessageService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/LocalUserService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Network/INetworkService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/Network/NetworkService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/P2P/IWebRTCService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/P2P/LocalVideoSource.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/P2P/PConnectionController.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/P2P/PConnectionObserver.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/P2P/RemoteVideoSource.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/P2P/Sources.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/P2P/WebRTCObservers.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Services/P2P/WebRTCService.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Utils/FrameConverter.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Utils/Interfaces/ITokenManager.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Utils/TokenManager.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Core/Application.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Core/ModelLocator.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Core/ServiceLocator.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Core/State/SessionState.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Core/State/UserState.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Core/StateLocator.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Core/ViewModelsLocator.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/qrc_resources.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 23,
+			"isGenerated" : true,
+			"path" : "build/meta_types/qt6teamsclient_core_metatypes.json.gen",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 24,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/teamsclient_core_qmltyperegistrations.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 28,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/.qt/rcc/qrc_qmake_TeamsClient.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 29,
+			"path" : "src/QML/Main.qml",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 31,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_qmlcache_loader.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 32,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/Main_qml.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 33,
+			"path" : "src/QML/AuthView.qml",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 34,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/AuthView_qml.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 35,
+			"path" : "src/QML/WorkspaceView.qml",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 36,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/WorkspaceView_qml.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 37,
+			"path" : "src/QML/LoadingView.qml",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 38,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/LoadingView_qml.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 39,
+			"path" : "src/QML/HomeView.qml",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 40,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/HomeView_qml.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 41,
+			"path" : "src/QML/MessageView.qml",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 42,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/MessageView_qml.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 43,
+			"path" : "src/QML/ContactItem.qml",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 44,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/ContactItem_qml.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 45,
+			"path" : "src/QML/CallWindow.qml",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 46,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/CallWindow_qml.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 50,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/.qt/rcc/qrc_TeamsClient_Core_raw_qml_0.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 54,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/.qt/rcc/qrc_TeamsClient_Core_raw_qml_0_extra_qmldirs.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 58,
+			"isGenerated" : true,
+			"path" : "build/.qt/rcc/qmake_TeamsClient.qrc",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 58,
+			"isGenerated" : true,
+			"path" : "build/TeamsClient/qmldir",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 58,
+			"isGenerated" : true,
+			"path" : "build/.qt/rcc/TeamsClient_Core_raw_qml_0.qrc",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 58,
+			"isGenerated" : true,
+			"path" : "build/.qt/rcc/TeamsClient_Core_raw_qml_0_extra_qmldirs.qrc",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 58,
+			"isGenerated" : true,
+			"path" : "build/TeamsClient/src/QML/qmldir",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/TeamsClient_Core_autogen/timestamp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"path" : "resources/resources.qrc",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/meta_types/qt6teamsclient_core_metatypes.json.gen.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/teamsclient_core_qmltyperegistrations.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.qt/rcc/qrc_qmake_TeamsClient.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_qmlcache_loader.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/Main_qml.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/AuthView_qml.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/WorkspaceView_qml.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/LoadingView_qml.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/HomeView_qml.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/MessageView_qml.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/ContactItem_qml.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/TeamsClient_Core_src/QML/CallWindow_qml.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.qt/rcc/qrc_TeamsClient_Core_raw_qml_0.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.qt/rcc/qrc_TeamsClient_Core_raw_qml_0_extra_qmldirs.cpp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/TeamsClient_Core_autogen/timestamp.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/meta_types/TeamsClient_Core_json_file_list.txt.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/meta_types/qt6teamsclient_core_metatypes.json.rule",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 13,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6qml_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 13,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6core_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 13,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6network_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6sql_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6multimedia_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6gui_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6multimediawidgets_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6widgets_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6quick_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6qmlmeta_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6qmlmodels_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6qmlworkerscript_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6opengl_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/Users/remidesbordes/Qt/6.9.3/macos/metatypes/qt6quickcontrols2_relwithdebinfo_metatypes.json",
+			"sourceGroupIndex" : 3
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

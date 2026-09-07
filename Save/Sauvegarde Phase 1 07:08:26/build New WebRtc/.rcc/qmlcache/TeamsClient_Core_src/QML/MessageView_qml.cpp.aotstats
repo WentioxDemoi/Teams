@@ -1,0 +1,828 @@
+[
+    {
+        "moduleFiles": [
+            {
+                "entries": [
+                    {
+                        "codegenSuccessful": true,
+                        "column": 12,
+                        "durationMicroseconds": 160,
+                        "errorMessage": "",
+                        "functionName": "width",
+                        "line": 7
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 13,
+                        "durationMicroseconds": 78,
+                        "errorMessage": "",
+                        "functionName": "height",
+                        "line": 8
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 17,
+                        "durationMicroseconds": 31,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "target",
+                        "line": 11
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 17,
+                        "durationMicroseconds": 20,
+                        "errorMessage": "Cannot access value for name webRTCVM",
+                        "functionName": "target",
+                        "line": 14
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 23,
+                        "durationMicroseconds": 34,
+                        "errorMessage": "",
+                        "functionName": "fill",
+                        "line": 18
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 24,
+                        "durationMicroseconds": 123,
+                        "errorMessage": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant",
+                        "functionName": "color",
+                        "line": 32
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 40,
+                        "durationMicroseconds": 227,
+                        "errorMessage": "",
+                        "functionName": "preferredWidth",
+                        "line": 29
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 39,
+                        "durationMicroseconds": 25,
+                        "errorMessage": "",
+                        "functionName": "centerIn",
+                        "line": 35
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 34,
+                        "durationMicroseconds": 39,
+                        "errorMessage": "",
+                        "functionName": "weight",
+                        "line": 38
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 24,
+                        "durationMicroseconds": 101,
+                        "errorMessage": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant",
+                        "functionName": "color",
+                        "line": 49
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 35,
+                        "durationMicroseconds": 23,
+                        "errorMessage": "",
+                        "functionName": "fill",
+                        "line": 52
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 32,
+                        "durationMicroseconds": 232,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "color",
+                        "line": 62
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 35,
+                        "durationMicroseconds": 340,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "text",
+                        "line": 66
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 47,
+                        "durationMicroseconds": 24,
+                        "errorMessage": "",
+                        "functionName": "centerIn",
+                        "line": 65
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 42,
+                        "durationMicroseconds": 36,
+                        "errorMessage": "",
+                        "functionName": "weight",
+                        "line": 68
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 36,
+                        "durationMicroseconds": 156,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "color",
+                        "line": 77
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 43,
+                        "durationMicroseconds": 97,
+                        "errorMessage": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant",
+                        "functionName": "color",
+                        "line": 78
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 44,
+                        "durationMicroseconds": 44,
+                        "errorMessage": "",
+                        "functionName": "right",
+                        "line": 80
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 45,
+                        "durationMicroseconds": 42,
+                        "errorMessage": "",
+                        "functionName": "bottom",
+                        "line": 81
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 35,
+                        "durationMicroseconds": 305,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "text",
+                        "line": 91
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 42,
+                        "durationMicroseconds": 37,
+                        "errorMessage": "",
+                        "functionName": "weight",
+                        "line": 93
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 35,
+                        "durationMicroseconds": 198,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "text",
+                        "line": 99
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 36,
+                        "durationMicroseconds": 205,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "color",
+                        "line": 102
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 32,
+                        "durationMicroseconds": 236,
+                        "errorMessage": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: conversion to QVariant -> QColor stored as QVariant",
+                        "functionName": "color",
+                        "line": 111
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 34,
+                        "durationMicroseconds": 141,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "enabled",
+                        "line": 117
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 34,
+                        "durationMicroseconds": 56,
+                        "errorMessage": "",
+                        "functionName": "opacity",
+                        "line": 118
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 47,
+                        "durationMicroseconds": 23,
+                        "errorMessage": "",
+                        "functionName": "centerIn",
+                        "line": 121
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 42,
+                        "durationMicroseconds": 40,
+                        "errorMessage": "",
+                        "functionName": "cursorShape",
+                        "line": 130
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 40,
+                        "durationMicroseconds": 420,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "onClicked",
+                        "line": 131
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 43,
+                        "durationMicroseconds": 22,
+                        "errorMessage": "",
+                        "functionName": "fill",
+                        "line": 128
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 24,
+                        "durationMicroseconds": 96,
+                        "errorMessage": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant",
+                        "functionName": "color",
+                        "line": 153
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 40,
+                        "durationMicroseconds": 193,
+                        "errorMessage": "",
+                        "functionName": "preferredWidth",
+                        "line": 150
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 35,
+                        "durationMicroseconds": 0,
+                        "errorMessage": "Could not find property \"fill\".",
+                        "functionName": "fill",
+                        "line": 157
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 50,
+                        "durationMicroseconds": 0,
+                        "errorMessage": "Could not find property \"policy\".",
+                        "functionName": "policy",
+                        "line": 160
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 48,
+                        "durationMicroseconds": 0,
+                        "errorMessage": "Could not find property \"policy\".",
+                        "functionName": "policy",
+                        "line": 161
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 32,
+                        "durationMicroseconds": 227,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "model",
+                        "line": 165
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 41,
+                        "durationMicroseconds": 39,
+                        "errorMessage": "",
+                        "functionName": "boundsBehavior",
+                        "line": 167
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 36,
+                        "durationMicroseconds": 17,
+                        "errorMessage": "Cannot access value for name contactList",
+                        "functionName": "width",
+                        "line": 170
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 36,
+                        "durationMicroseconds": 309,
+                        "errorMessage": "Cannot access value for name model",
+                        "functionName": "color",
+                        "line": 173
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 47,
+                        "durationMicroseconds": 24,
+                        "errorMessage": "",
+                        "functionName": "fill",
+                        "line": 181
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 44,
+                        "durationMicroseconds": 19,
+                        "errorMessage": "Cannot access value for name model",
+                        "functionName": "color",
+                        "line": 190
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 47,
+                        "durationMicroseconds": 19,
+                        "errorMessage": "Cannot access value for name model",
+                        "functionName": "text",
+                        "line": 194
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 59,
+                        "durationMicroseconds": 26,
+                        "errorMessage": "",
+                        "functionName": "centerIn",
+                        "line": 193
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 54,
+                        "durationMicroseconds": 33,
+                        "errorMessage": "",
+                        "functionName": "weight",
+                        "line": 196
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 48,
+                        "durationMicroseconds": 34,
+                        "errorMessage": "Cannot access value for name model",
+                        "functionName": "color",
+                        "line": 205
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 55,
+                        "durationMicroseconds": 51,
+                        "errorMessage": "Cannot access value for name model",
+                        "functionName": "color",
+                        "line": 206
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 56,
+                        "durationMicroseconds": 44,
+                        "errorMessage": "",
+                        "functionName": "right",
+                        "line": 208
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 57,
+                        "durationMicroseconds": 38,
+                        "errorMessage": "",
+                        "functionName": "bottom",
+                        "line": 209
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 48,
+                        "durationMicroseconds": 33,
+                        "errorMessage": "",
+                        "functionName": "width",
+                        "line": 218
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 51,
+                        "durationMicroseconds": 21,
+                        "errorMessage": "Cannot access value for name model",
+                        "functionName": "text",
+                        "line": 223
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 52,
+                        "durationMicroseconds": 32,
+                        "errorMessage": "",
+                        "functionName": "elide",
+                        "line": 228
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 58,
+                        "durationMicroseconds": 33,
+                        "errorMessage": "",
+                        "functionName": "weight",
+                        "line": 225
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 48,
+                        "durationMicroseconds": 33,
+                        "errorMessage": "",
+                        "functionName": "width",
+                        "line": 233
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 51,
+                        "durationMicroseconds": 21,
+                        "errorMessage": "Cannot access value for name model",
+                        "functionName": "text",
+                        "line": 239
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 52,
+                        "durationMicroseconds": 32,
+                        "errorMessage": "",
+                        "functionName": "elide",
+                        "line": 242
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 63,
+                        "durationMicroseconds": 38,
+                        "errorMessage": "",
+                        "functionName": "alignment",
+                        "line": 238
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 54,
+                        "durationMicroseconds": 25,
+                        "errorMessage": "Cannot access value for name model",
+                        "functionName": "visible",
+                        "line": 246
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 55,
+                        "durationMicroseconds": 51,
+                        "errorMessage": "Cannot access value for name model",
+                        "functionName": "text",
+                        "line": 254
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 67,
+                        "durationMicroseconds": 22,
+                        "errorMessage": "",
+                        "functionName": "centerIn",
+                        "line": 253
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 44,
+                        "durationMicroseconds": 109,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "onClicked",
+                        "line": 268
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 47,
+                        "durationMicroseconds": 21,
+                        "errorMessage": "",
+                        "functionName": "fill",
+                        "line": 266
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 24,
+                        "durationMicroseconds": 98,
+                        "errorMessage": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant",
+                        "functionName": "color",
+                        "line": 280
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 35,
+                        "durationMicroseconds": 22,
+                        "errorMessage": "",
+                        "functionName": "fill",
+                        "line": 284
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 54,
+                        "durationMicroseconds": 0,
+                        "errorMessage": "Could not find property \"policy\".",
+                        "functionName": "policy",
+                        "line": 291
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 36,
+                        "durationMicroseconds": 213,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "model",
+                        "line": 295
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 45,
+                        "durationMicroseconds": 37,
+                        "errorMessage": "",
+                        "functionName": "boundsBehavior",
+                        "line": 299
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 45,
+                        "durationMicroseconds": 60,
+                        "errorMessage": "Cannot generate efficient code for LoadClosure",
+                        "functionName": "onCountChanged",
+                        "line": 301
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 52,
+                        "durationMicroseconds": 30,
+                        "errorMessage": "",
+                        "functionName": "onCompleted",
+                        "line": 302
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 40,
+                        "durationMicroseconds": 18,
+                        "errorMessage": "Cannot access value for name messageList",
+                        "functionName": "width",
+                        "line": 305
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 41,
+                        "durationMicroseconds": 63,
+                        "errorMessage": "",
+                        "functionName": "height",
+                        "line": 306
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 53,
+                        "durationMicroseconds": 10,
+                        "errorMessage": "Cannot access value for name model",
+                        "functionName": "isMe",
+                        "line": 308
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 40,
+                        "durationMicroseconds": 40,
+                        "errorMessage": "Cannot access value for name isMe",
+                        "functionName": "x",
+                        "line": 312
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 44,
+                        "durationMicroseconds": 34,
+                        "errorMessage": "Cannot access value for name messageList",
+                        "functionName": "width",
+                        "line": 313
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 45,
+                        "durationMicroseconds": 59,
+                        "errorMessage": "",
+                        "functionName": "height",
+                        "line": 314
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 44,
+                        "durationMicroseconds": 46,
+                        "errorMessage": "Cannot access value for name isMe",
+                        "functionName": "color",
+                        "line": 316
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 48,
+                        "durationMicroseconds": 59,
+                        "errorMessage": "",
+                        "functionName": "width",
+                        "line": 321
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 47,
+                        "durationMicroseconds": 20,
+                        "errorMessage": "Cannot access value for name model",
+                        "functionName": "text",
+                        "line": 322
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 51,
+                        "durationMicroseconds": 32,
+                        "errorMessage": "",
+                        "functionName": "wrapMode",
+                        "line": 326
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 59,
+                        "durationMicroseconds": 23,
+                        "errorMessage": "",
+                        "functionName": "centerIn",
+                        "line": 320
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 40,
+                        "durationMicroseconds": 35,
+                        "errorMessage": "",
+                        "functionName": "x",
+                        "line": 333
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 43,
+                        "durationMicroseconds": 73,
+                        "errorMessage": "Cannot access value for name model",
+                        "functionName": "text",
+                        "line": 334
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 50,
+                        "durationMicroseconds": 43,
+                        "errorMessage": "",
+                        "functionName": "top",
+                        "line": 331
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 32,
+                        "durationMicroseconds": 106,
+                        "errorMessage": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant",
+                        "functionName": "color",
+                        "line": 346
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 43,
+                        "durationMicroseconds": 22,
+                        "errorMessage": "",
+                        "functionName": "fill",
+                        "line": 355
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 40,
+                        "durationMicroseconds": 104,
+                        "errorMessage": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant",
+                        "functionName": "color",
+                        "line": 365
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 56,
+                        "durationMicroseconds": 0,
+                        "errorMessage": "Could not find property \"verticalAlignment\".",
+                        "functionName": "verticalAlignment",
+                        "line": 377
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 51,
+                        "durationMicroseconds": 0,
+                        "errorMessage": "Could not find property \"fill\".",
+                        "functionName": "fill",
+                        "line": 369
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 53,
+                        "durationMicroseconds": 107,
+                        "errorMessage": "Cannot retrieve a non-object type by ID: messageInput",
+                        "functionName": "onPressed",
+                        "line": 379
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 53,
+                        "durationMicroseconds": 23,
+                        "errorMessage": "",
+                        "functionName": "onPressed",
+                        "line": 379
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 55,
+                        "durationMicroseconds": 22,
+                        "errorMessage": "",
+                        "functionName": "centerIn",
+                        "line": 399
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 50,
+                        "durationMicroseconds": 34,
+                        "errorMessage": "",
+                        "functionName": "weight",
+                        "line": 402
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 50,
+                        "durationMicroseconds": 37,
+                        "errorMessage": "",
+                        "functionName": "cursorShape",
+                        "line": 408
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 48,
+                        "durationMicroseconds": 148,
+                        "errorMessage": "Cannot retrieve a non-object type by ID: messageInput",
+                        "functionName": "onClicked",
+                        "line": 409
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 51,
+                        "durationMicroseconds": 23,
+                        "errorMessage": "",
+                        "functionName": "fill",
+                        "line": 407
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 30,
+                        "durationMicroseconds": 149,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "visible",
+                        "line": 426
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 39,
+                        "durationMicroseconds": 22,
+                        "errorMessage": "",
+                        "functionName": "centerIn",
+                        "line": 423
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 43,
+                        "durationMicroseconds": 38,
+                        "errorMessage": "",
+                        "functionName": "alignment",
+                        "line": 429
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 31,
+                        "durationMicroseconds": 343,
+                        "errorMessage": "Cannot access value for name chatVM",
+                        "functionName": "text",
+                        "line": 436
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 43,
+                        "durationMicroseconds": 37,
+                        "errorMessage": "",
+                        "functionName": "alignment",
+                        "line": 435
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 38,
+                        "durationMicroseconds": 35,
+                        "errorMessage": "",
+                        "functionName": "weight",
+                        "line": 438
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 46,
+                        "durationMicroseconds": 30,
+                        "errorMessage": "",
+                        "functionName": "horizontalAlignment",
+                        "line": 449
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 43,
+                        "durationMicroseconds": 35,
+                        "errorMessage": "",
+                        "functionName": "alignment",
+                        "line": 444
+                    }
+                ],
+                "filePath": "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML/MessageView.qml"
+            }
+        ],
+        "moduleId": "TeamsClient(TeamsClient_Core)"
+    }
+]

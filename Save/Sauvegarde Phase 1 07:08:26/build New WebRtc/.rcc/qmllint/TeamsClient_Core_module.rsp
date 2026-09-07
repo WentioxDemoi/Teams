@@ -1,0 +1,12 @@
+-I
+/Users/remidesbordes/Documents/Teams/TeamsClient_/build
+-I
+/Users/remidesbordes/Qt/6.9.3/macos/qml
+--resource
+/Users/remidesbordes/Documents/Teams/TeamsClient_/build/.qt/rcc/qmake_TeamsClient.qrc
+--resource
+/Users/remidesbordes/Documents/Teams/TeamsClient_/build/.qt/rcc/TeamsClient_Core_raw_qml_0.qrc
+--resource
+/Users/remidesbordes/Documents/Teams/TeamsClient_/build/.qt/rcc/TeamsClient_Core_raw_qml_0_extra_qmldirs.qrc
+--module
+TeamsClient

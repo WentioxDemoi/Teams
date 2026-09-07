@@ -1,23 +1,23 @@
 # Teams
 
 <p align="center">
-  <strong>Application de communication temps réel</strong>
+  <strong>Real-Time Communication Application</strong>
 </p>
 
-Teams est une application de communication développée en **C++**, permettant à plusieurs utilisateurs de communiquer à travers une architecture client/serveur.
+Teams is a communication application developed in **C++**, allowing multiple users to communicate through a client/server architecture.
 
-Le projet est composé de deux applications indépendantes :
+The project consists of two independent applications:
 
-- 🖥️ **Teams Client** — application desktop avec interface graphique
-- ⚙️ **Teams Server** — backend chargé de gérer les utilisateurs, les communications et les données
+- 🖥️ **Teams Client** — desktop application with a graphical user interface
+- ⚙️ **Teams Server** — backend responsible for managing users, communications, and data
 
-L'objectif du projet est de concevoir une application complète en mettant en pratique des concepts d'architecture logicielle, de programmation réseau, de communication asynchrone, de sécurité et de tests automatisés.
+The goal of the project is to design a complete application while applying concepts related to software architecture, network programming, asynchronous communication, security, and automated testing.
 
 ---
 
 ## 📐 Architecture
 
-Le projet suit une architecture **client/serveur**.
+The project follows a **client/server architecture**.
 
 ```text
                     Teams Client
@@ -32,27 +32,27 @@ Le projet suit une architecture **client/serveur**.
                     PostgreSQL
 ```
 
-Le client fournit l'interface utilisateur et communique avec le serveur.
+The client provides the user interface and communicates with the server.
 
-Le serveur centralise la logique métier, l'authentification, la gestion des sessions, les communications entre utilisateurs ainsi que l'accès aux données.
+The server centralizes business logic, authentication, session management, communication between users, and data access.
 
-Cette séparation permet notamment de maintenir une distinction claire entre :
+This separation makes it possible to maintain a clear distinction between:
 
-- l'interface utilisateur ;
-- la logique de présentation ;
-- la logique métier ;
-- les communications réseau ;
-- la persistance des données.
+- the user interface;
+- presentation logic;
+- business logic;
+- network communication;
+- data persistence.
 
 ---
 
 ## 🖥️ Teams Client
 
-Le client est une application desktop développée en **C++ avec Qt 6**.
+The client is a desktop application developed in **C++ with Qt 6**.
 
-Il utilise une architecture **MVVM (Model-View-ViewModel)** afin de séparer l'interface graphique de la logique de présentation et des services applicatifs.
+It uses an **MVVM (Model-View-ViewModel)** architecture to separate the graphical interface from presentation logic and application services.
 
-Technologies principales :
+Main technologies:
 
 - C++17
 - Qt 6.9.3
@@ -64,28 +64,28 @@ Technologies principales :
 
 ### Documentation
 
-Pour l'installation, la compilation, les tests, la création du `.dmg` et les détails de l'architecture du client :
+For installation, compilation, testing, `.dmg` creation, and details about the client architecture:
 
-➡️ **[Consulter le README du Teams Client](TeamsClient_/README.md)**
+➡️ **[See the Teams Client README](TeamsClient_/README.md)**
 
 ---
 
 ## ⚙️ Teams Server
 
-Le serveur est développé en **C++20** et utilise une architecture en couches avec injection de dépendances.
+The server is developed in **C++20** and uses a layered architecture with dependency injection.
 
-Il est notamment responsable de :
+It is responsible for:
 
-- l'authentification ;
-- la gestion des utilisateurs ;
-- la gestion des sessions ;
-- la messagerie ;
-- la gestion des contacts ;
-- les communications temps réel ;
-- les communications sécurisées SSL/TLS ;
-- l'accès à PostgreSQL.
+- authentication;
+- user management;
+- session management;
+- messaging;
+- contact management;
+- real-time communication;
+- secure SSL/TLS communication;
+- PostgreSQL access.
 
-Technologies principales :
+Main technologies:
 
 - C++20
 - Boost.Asio
@@ -98,48 +98,48 @@ Technologies principales :
 
 ### Documentation
 
-Pour l'installation, Docker, le DevContainer, la compilation, les tests et la génération du coverage :
+For installation, Docker, DevContainer, compilation, testing, and coverage generation:
 
-➡️ **[Consulter le README du Teams Server](TeamsServer_/README.md)**
+➡️ **[See the Teams Server README](TeamsServer_/README.md)**
 
 ---
 
-## 📁 Organisation du projet
+## 📁 Project Structure
 
-Le repository est organisé en deux applications distinctes : le client desktop et le serveur backend.
+The repository is organized into two separate applications: the desktop client and the backend server.
 
 ```text
 Teams/
 │
 ├── TeamsClient_/
 │   ├── src/
-│   │   ├── Core/             # Classes et logique de base
-│   │   ├── Database/         # Gestion de la base de données locale
-│   │   ├── Models/           # Modèles de données
-│   │   ├── QML/              # Interfaces et composants QML
-│   │   ├── Repositories/     # Accès et gestion des données
-│   │   ├── Services/         # Services applicatifs et réseau
-│   │   ├── Utils/            # Utilitaires
-│   │   ├── ViewModels/       # Logique de présentation (MVVM)
+│   │   ├── Core/             # Core classes and logic
+│   │   ├── Database/         # Local database management
+│   │   ├── Models/           # Data models
+│   │   ├── QML/              # QML interfaces and components
+│   │   ├── Repositories/     # Data access and management
+│   │   ├── Services/         # Application and network services
+│   │   ├── Utils/            # Utilities
+│   │   ├── ViewModels/       # Presentation logic (MVVM)
 │   │   ├── includes.h
 │   │   ├── main.cpp
 │   │   └── mainwindow.ui
 │   │
 │   ├── Tests/
-│   │   ├── ModelTests/       # Tests des modèles
-│   │   ├── ServiceTests/     # Tests des services
-│   │   ├── ViewModelTests/   # Tests des ViewModels
+│   │   ├── ModelTests/       # Model tests
+│   │   ├── ServiceTests/     # Service tests
+│   │   ├── ViewModelTests/   # ViewModel tests
 │   │   └── test_main.cpp
 │   │
 │   ├── resources/
-│   │   ├── icons/            # Icônes
+│   │   ├── icons/            # Icons
 │   │   ├── images/           # Images
-│   │   ├── qss/              # Feuilles de style Qt
+│   │   ├── qss/              # Qt style sheets
 │   │   └── resources.qrc
 │   │
 │   ├── third_party/
-│   │   ├── libyuv/           # Dépendance libyuv
-│   │   ├── webrtc/           # Dépendance WebRTC
+│   │   ├── libyuv/           # libyuv dependency
+│   │   ├── webrtc/           # WebRTC dependency
 │   │   ├── build_webrtc.sh
 │   │   └── build_libyuv.sh
 │   │
@@ -168,49 +168,49 @@ Teams/
 
 ### Teams Client
 
-Le client contient notamment :
+The client contains:
 
-- `src/` : code source de l'application ;
-- `Tests/` : tests unitaires organisés par type de composant ;
-- `resources/` : ressources graphiques et fichiers QML/Qt ;
-- `third_party/` : dépendances externes nécessaires notamment à la communication WebRTC ;
-- `CMakeLists.txt` : configuration de compilation ;
-- `Info.plist` : configuration du bundle macOS.
+- `src/`: application source code;
+- `Tests/`: unit tests organized by component type;
+- `resources/`: graphical resources and QML/Qt files;
+- `third_party/`: external dependencies required, in particular, for WebRTC communication;
+- `CMakeLists.txt`: build configuration;
+- `Info.plist`: macOS bundle configuration.
 
 ### Teams Server
 
-Le serveur est organisé selon une architecture en couches :
+The server is organized according to a layered architecture:
 
-- `Core/` : logique métier ;
-- `Handlers/` : traitement des requêtes ;
-- `Infrastructure/` : infrastructure et accès aux données ;
-- `Network/` : communication réseau ;
-- `Utils/` : fonctionnalités utilitaires ;
-- `Tests/` : tests unitaires.
+- `Core/`: business logic;
+- `Handlers/`: request processing;
+- `Infrastructure/`: infrastructure and data access;
+- `Network/`: network communication;
+- `Utils/`: utility functionality;
+- `Tests/`: unit tests.
 
-Les détails de l'architecture et de la compilation sont disponibles dans les README propres à chaque application.
+Detailed architecture and build instructions are available in the README files for each application.
 
 ---
 
-## 🚀 Démarrage rapide
+## 🚀 Quick Start
 
-### Serveur
+### Server
 
-Le serveur peut être lancé avec Docker Compose :
+The server can be started using Docker Compose:
 
 ```bash
 docker-compose --env-file .env up --build
 ```
 
-Le serveur et sa base de données PostgreSQL sont alors démarrés dans leur environnement Docker respectif.
+The server and its PostgreSQL database are then started in their respective Docker environments.
 
-Pour le développement, l'utilisation du **DevContainer** est recommandée.
+For development, using the **DevContainer** is recommended.
 
-👉 Les instructions détaillées sont disponibles dans le [README du serveur](TeamsServer_/README.md).
+👉 Detailed instructions are available in the [server README](TeamsServer_/README.md).
 
 ### Client
 
-Le client est compilé avec CMake :
+The client is built using CMake:
 
 ```bash
 cd TeamsClient_/build
@@ -218,51 +218,51 @@ cmake ..
 make
 ```
 
-Puis l'application peut être lancée depuis le bundle `.app`.
+The application can then be launched from the `.app` bundle.
 
-👉 Les instructions détaillées sont disponibles dans le [README du client](TeamsClient_/README.md).
+👉 Detailed instructions are available in the [client README](TeamsClient_/README.md).
 
 ---
 
 ## 🧪 Tests
 
-Les deux applications disposent de tests automatisés basés sur **GoogleTest**.
+Both applications include automated tests based on **GoogleTest**.
 
-Les procédures de compilation et d'exécution des tests sont documentées dans les README respectifs.
+Test compilation and execution procedures are documented in their respective README files.
 
-Le serveur dispose également d'un système de **code coverage** permettant de générer un rapport HTML avec `gcovr`.
+The server also includes a **code coverage** system that can generate an HTML report using `gcovr`.
 
 ---
 
-## 🔐 Sécurité
+## 🔐 Security
 
-La communication entre le client et le serveur est sécurisée grâce à **SSL/TLS**.
+Communication between the client and server is secured using **SSL/TLS**.
 
-Les mots de passe utilisateurs sont protégés à l'aide de **Argon2**, tandis que l'authentification et la gestion des sessions reposent sur un système de tokens.
+User passwords are protected using **Argon2**, while authentication and session management rely on a token-based system.
 
-> Le projet étant réalisé dans un contexte pédagogique, certains fichiers de configuration et certificats sont présents dans le repository.
+> Since the project is developed for educational purposes, some configuration files and certificates are included in the repository.
 
 ---
 
 ## 🛠️ Technologies
 
-| Domaine | Technologies |
+| Area | Technologies |
 |---|---|
-| Langage | C++17 / C++20 |
+| Language | C++17 / C++20 |
 | Client | Qt 6, QML, MVVM |
-| Serveur | Boost.Asio, architecture en couches |
-| Base de données | PostgreSQL |
-| Sécurité | OpenSSL, Argon2 |
-| Tests | GoogleTest, GoogleMock |
+| Server | Boost.Asio, layered architecture |
+| Database | PostgreSQL |
+| Security | OpenSSL, Argon2 |
+| Testing | GoogleTest, GoogleMock |
 | Build | CMake |
-| Environnement | Docker, Docker Compose, DevContainer |
+| Environment | Docker, Docker Compose, DevContainer |
 | Coverage | gcovr |
 
 ---
 
-## 📊 Diagrammes
+## 📊 Diagrams
 
-Les diagrammes UML et documents d'architecture du projet sont disponibles dans la branche :
+The project's UML diagrams and architecture documents are available in the following branch:
 
 ```text
 diagram
@@ -274,31 +274,31 @@ diagram
 
 | Documentation | Description |
 |---|---|
-| [Teams Client](TeamsClient_/README.md) | Installation, compilation, Qt, tests et packaging |
-| [Teams Server](TeamsServer_/README.md) | Docker, architecture serveur, tests et coverage |
-| [Diagrammes](../../tree/diagram) | UML et documentation d'architecture |
+| [Teams Client](TeamsClient_/README.md) | Installation, compilation, Qt, testing, and packaging |
+| [Teams Server](TeamsServer_/README.md) | Docker, server architecture, testing, and coverage |
+| [Diagrams](../../tree/diagram) | UML and architecture documentation |
 
 ---
 
-## 🎯 Objectif du projet
+## 🎯 Project Goal
 
-Ce projet a pour objectif de mettre en pratique la conception et le développement d'une application distribuée complète, en combinant :
+The goal of this project is to put into practice the design and development of a complete distributed application by combining:
 
-- développement C++ ;
-- architecture logicielle ;
-- programmation réseau ;
-- communications asynchrones ;
-- développement d'une interface graphique ;
-- gestion de bases de données ;
-- sécurité des communications ;
-- injection de dépendances ;
-- tests unitaires et mocks ;
-- conteneurisation avec Docker.
+- C++ development;
+- software architecture;
+- network programming;
+- asynchronous communication;
+- graphical user interface development;
+- database management;
+- communication security;
+- dependency injection;
+- unit testing and mocking;
+- containerization with Docker.
 
-Le projet est développé progressivement et de nouvelles fonctionnalités sont ajoutées au fur et à mesure de son avancement.
+The project is developed incrementally, with new features being added as development progresses.
 
 ---
 
-## 👥 Projet
+## 👥 Project
 
-**Teams** est un projet réalisé dans un cadre pédagogique.
+**Teams** is a project developed in an educational context.

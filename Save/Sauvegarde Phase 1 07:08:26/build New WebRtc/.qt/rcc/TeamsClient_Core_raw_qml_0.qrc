@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="/qt/qml/TeamsClient/">
+    <file alias="src/QML/Main.qml">/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML/Main.qml</file>
+    <file alias="src/QML/AuthView.qml">/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML/AuthView.qml</file>
+    <file alias="src/QML/WorkspaceView.qml">/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML/WorkspaceView.qml</file>
+    <file alias="src/QML/LoadingView.qml">/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML/LoadingView.qml</file>
+    <file alias="src/QML/HomeView.qml">/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML/HomeView.qml</file>
+    <file alias="src/QML/MessageView.qml">/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML/MessageView.qml</file>
+    <file alias="src/QML/ContactItem.qml">/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML/ContactItem.qml</file>
+    <file alias="src/QML/CallWindow.qml">/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML/CallWindow.qml</file>
+  </qresource>
+</RCC>
+

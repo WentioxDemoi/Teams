@@ -1,2 +1,0 @@
-set(__QT_DEPLOY_TARGET_TeamsClient__FILE /Users/remidesbordes/Documents/Teams/TeamsClient_/third_party/TeamsClient_.app/Contents/MacOS/TeamsClient_)
-set(__QT_DEPLOY_TARGET_TeamsClient__TYPE EXECUTABLE)

@@ -1,0 +1,14 @@
+--resource
+/Users/remidesbordes/Documents/Teams/TeamsClient_/build/.qt/rcc/qmake_TeamsClient.qrc
+--resource
+/Users/remidesbordes/Documents/Teams/TeamsClient_/build/.qt/rcc/TeamsClient__raw_qml_0.qrc
+--resource
+/Users/remidesbordes/Documents/Teams/TeamsClient_/build/.qt/rcc/TeamsClient__raw_qml_0_extra_qmldirs.qrc
+/qt/qml/TeamsClient/src/QML/Main.qml
+/qt/qml/TeamsClient/src/QML/AuthView.qml
+/qt/qml/TeamsClient/src/QML/WorkspaceView.qml
+/qt/qml/TeamsClient/src/QML/LoadingView.qml
+/qt/qml/TeamsClient/src/QML/HomeView.qml
+/qt/qml/TeamsClient/src/QML/MessageView.qml
+/qt/qml/TeamsClient/src/QML/ContactItem.qml
+/qt/qml/TeamsClient/src/QML/CallWindow.qml

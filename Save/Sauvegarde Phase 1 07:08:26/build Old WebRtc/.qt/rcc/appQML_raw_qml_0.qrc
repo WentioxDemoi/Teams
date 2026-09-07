@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/QML/">
+    <file alias="Main.qml">/Users/remidesbordes/Documents/Teams/TeamsClient_/Main.qml</file>
+  </qresource>
+</RCC>
+

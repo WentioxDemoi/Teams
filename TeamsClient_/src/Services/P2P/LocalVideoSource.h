@@ -3,7 +3,7 @@
 
 #include "../../webrtc_includes.h"
 #include "absl/types/optional.h"
-#include "media/base/adapted_video_track_source.h"
+#include "api/video/adapted_video_track_source.h"
 #include "rtc_base/time_utils.h"
 #include <QtMultimedia/qvideoframe.h>
 #include "FrameConverter.h"

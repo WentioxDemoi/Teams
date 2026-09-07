@@ -1,0 +1,252 @@
+[
+    {
+        "moduleFiles": [
+            {
+                "entries": [
+                    {
+                        "codegenSuccessful": false,
+                        "column": 16,
+                        "durationMicroseconds": 140,
+                        "errorMessage": "Cannot access value for name isSelected",
+                        "functionName": "color",
+                        "line": 28
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 23,
+                        "durationMicroseconds": 59,
+                        "errorMessage": "",
+                        "functionName": "fill",
+                        "line": 26
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 23,
+                        "durationMicroseconds": 27,
+                        "errorMessage": "",
+                        "functionName": "fill",
+                        "line": 36
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 31,
+                        "durationMicroseconds": 49,
+                        "errorMessage": "",
+                        "functionName": "alignment",
+                        "line": 47
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 24,
+                        "durationMicroseconds": 13,
+                        "errorMessage": "Cannot access value for name avatarBg",
+                        "functionName": "color",
+                        "line": 54
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 31,
+                        "durationMicroseconds": 22,
+                        "errorMessage": "",
+                        "functionName": "fill",
+                        "line": 52
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 27,
+                        "durationMicroseconds": 26,
+                        "errorMessage": "Cannot access value for name contactInitials",
+                        "functionName": "text",
+                        "line": 58
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 39,
+                        "durationMicroseconds": 24,
+                        "errorMessage": "",
+                        "functionName": "centerIn",
+                        "line": 57
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 34,
+                        "durationMicroseconds": 26,
+                        "errorMessage": "Cannot load property SemiBold from const QMetaObject.",
+                        "functionName": "weight",
+                        "line": 60
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 24,
+                        "durationMicroseconds": 29,
+                        "errorMessage": "Cannot access value for name isOnline",
+                        "functionName": "color",
+                        "line": 71
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 32,
+                        "durationMicroseconds": 49,
+                        "errorMessage": "",
+                        "functionName": "right",
+                        "line": 72
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 33,
+                        "durationMicroseconds": 43,
+                        "errorMessage": "",
+                        "functionName": "bottom",
+                        "line": 73
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 31,
+                        "durationMicroseconds": 123,
+                        "errorMessage": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant",
+                        "functionName": "color",
+                        "line": 76
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 31,
+                        "durationMicroseconds": 38,
+                        "errorMessage": "",
+                        "functionName": "alignment",
+                        "line": 84
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 27,
+                        "durationMicroseconds": 14,
+                        "errorMessage": "Cannot access value for name contactName",
+                        "functionName": "text",
+                        "line": 93
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 28,
+                        "durationMicroseconds": 38,
+                        "errorMessage": "",
+                        "functionName": "elide",
+                        "line": 98
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 34,
+                        "durationMicroseconds": 51,
+                        "errorMessage": "Cannot access value for name unreadCount",
+                        "functionName": "weight",
+                        "line": 95
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 27,
+                        "durationMicroseconds": 13,
+                        "errorMessage": "Cannot access value for name msgTime",
+                        "functionName": "text",
+                        "line": 102
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 28,
+                        "durationMicroseconds": 29,
+                        "errorMessage": "Cannot access value for name unreadCount",
+                        "functionName": "color",
+                        "line": 105
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 27,
+                        "durationMicroseconds": 13,
+                        "errorMessage": "Cannot access value for name lastMsg",
+                        "functionName": "text",
+                        "line": 115
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 28,
+                        "durationMicroseconds": 26,
+                        "errorMessage": "Cannot access value for name unreadCount",
+                        "functionName": "color",
+                        "line": 118
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 28,
+                        "durationMicroseconds": 34,
+                        "errorMessage": "",
+                        "functionName": "elide",
+                        "line": 119
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 34,
+                        "durationMicroseconds": 30,
+                        "errorMessage": "Cannot access value for name unreadCount",
+                        "functionName": "weight",
+                        "line": 120
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 30,
+                        "durationMicroseconds": 14,
+                        "errorMessage": "Cannot access value for name unreadCount",
+                        "functionName": "visible",
+                        "line": 125
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 44,
+                        "durationMicroseconds": 18,
+                        "errorMessage": "Cannot access value for name unreadCount",
+                        "functionName": "preferredWidth",
+                        "line": 126
+                    },
+                    {
+                        "codegenSuccessful": false,
+                        "column": 31,
+                        "durationMicroseconds": 37,
+                        "errorMessage": "Cannot access value for name unreadCount",
+                        "functionName": "text",
+                        "line": 133
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 43,
+                        "durationMicroseconds": 24,
+                        "errorMessage": "",
+                        "functionName": "centerIn",
+                        "line": 132
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 38,
+                        "durationMicroseconds": 32,
+                        "errorMessage": "",
+                        "functionName": "weight",
+                        "line": 135
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 20,
+                        "durationMicroseconds": 58,
+                        "errorMessage": "",
+                        "functionName": "onClicked",
+                        "line": 149
+                    },
+                    {
+                        "codegenSuccessful": true,
+                        "column": 23,
+                        "durationMicroseconds": 23,
+                        "errorMessage": "",
+                        "functionName": "fill",
+                        "line": 147
+                    }
+                ],
+                "filePath": "/Users/remidesbordes/Documents/Teams/TeamsClient_/src/QML/ContactItem.qml"
+            }
+        ],
+        "moduleId": "TeamsClient(TeamsClient_Core)"
+    }
+]

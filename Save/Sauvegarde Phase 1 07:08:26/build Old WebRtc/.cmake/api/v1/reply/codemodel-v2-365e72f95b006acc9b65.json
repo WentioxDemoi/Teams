@@ -1,0 +1,367 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-a74d513dcefeca6c6753.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						29,
+						30,
+						31,
+						32,
+						33,
+						34
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "TeamsClient_",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						29,
+						30,
+						31,
+						32,
+						33,
+						34
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_-ec2b156b59fa68a3ad70.json",
+					"name" : "TeamsClient_",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core-d11be92087f7b37fab0f.json",
+					"name" : "TeamsClient_Core",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_Coverage::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_Coverage-16ff7da0ef3020f54b7b.json",
+					"name" : "TeamsClient_Core_Coverage",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_Coverage_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_Coverage_autogen-663836f9d3ad09b3ea3a.json",
+					"name" : "TeamsClient_Core_Coverage_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_Coverage_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_Coverage_autogen_timestamp_deps-c897a42f3f8599e483cb.json",
+					"name" : "TeamsClient_Core_Coverage_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_autogen-1c257578e485e4e76023.json",
+					"name" : "TeamsClient_Core_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_autogen_timestamp_deps-c7dbd707b7c9c06ef35b.json",
+					"name" : "TeamsClient_Core_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_copy_qml::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_copy_qml-353d6c73bad300da3222.json",
+					"name" : "TeamsClient_Core_copy_qml",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_copy_res::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_copy_res-f281abc5f445eeae1991.json",
+					"name" : "TeamsClient_Core_copy_res",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_qmllint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_qmllint-1e0e662ff437ccca7da8.json",
+					"name" : "TeamsClient_Core_qmllint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_qmllint_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_qmllint_json-e2e5b5a612453776e1f3.json",
+					"name" : "TeamsClient_Core_qmllint_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_qmllint_module::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_qmllint_module-4e6be3a83d9f035dd179.json",
+					"name" : "TeamsClient_Core_qmllint_module",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_qmltyperegistration::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_qmltyperegistration-57b56f73f424e627fbde.json",
+					"name" : "TeamsClient_Core_qmltyperegistration",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_resources_1::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_resources_1-ae2f1ea36f0b656b22d5.json",
+					"name" : "TeamsClient_Core_resources_1",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_resources_2::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_resources_2-2a6046b0737106b9e214.json",
+					"name" : "TeamsClient_Core_resources_2",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Core_resources_3::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Core_resources_3-b4f3c0f3f6651944abea.json",
+					"name" : "TeamsClient_Core_resources_3",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Coreplugin::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Coreplugin-24cab31751fb45299dad.json",
+					"name" : "TeamsClient_Coreplugin",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Coreplugin_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Coreplugin_autogen-0b5e265a2359a84c71a3.json",
+					"name" : "TeamsClient_Coreplugin_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Coreplugin_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Coreplugin_autogen_timestamp_deps-ce9e9ea54cfd1a18fb26.json",
+					"name" : "TeamsClient_Coreplugin_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Coreplugin_init::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Coreplugin_init-fe89537190eb8eea9baf.json",
+					"name" : "TeamsClient_Coreplugin_init",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Coreplugin_init_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Coreplugin_init_autogen-95b6b26712fa351e7bcb.json",
+					"name" : "TeamsClient_Coreplugin_init_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Coreplugin_init_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Coreplugin_init_autogen_timestamp_deps-8fd9c753956481150c98.json",
+					"name" : "TeamsClient_Coreplugin_init_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Tests::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Tests-4ea7861894378714bdb5.json",
+					"name" : "TeamsClient_Tests",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Tests_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Tests_autogen-5c76d5054ff4b337d7a2.json",
+					"name" : "TeamsClient_Tests_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient_Tests_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient_Tests_autogen_timestamp_deps-1a1469d8f1204e1855a2.json",
+					"name" : "TeamsClient_Tests_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient__autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient__autogen-fedc6187f2c4f7363616.json",
+					"name" : "TeamsClient__autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient__autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient__autogen_timestamp_deps-a054de504dfc89d79314.json",
+					"name" : "TeamsClient__autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TeamsClient__qmlimportscan::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TeamsClient__qmlimportscan-98555cafd6028ab611c1.json",
+					"name" : "TeamsClient__qmlimportscan",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_aotstats::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_aotstats-0d8df4659610b52fbb75.json",
+					"name" : "all_aotstats",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint-92e98f08e97a1ba71258.json",
+					"name" : "all_qmllint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint_json-b01edd052a3c84109c4a.json",
+					"name" : "all_qmllint_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint_module::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint_module-b1a9bbb00adf7b4016f3.json",
+					"name" : "all_qmllint_module",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmltyperegistrations::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmltyperegistrations-959b2289fe97e808b904.json",
+					"name" : "all_qmltyperegistrations",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "clean_coverage_data::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-clean_coverage_data-39382d69c4c28821dbee.json",
+					"name" : "clean_coverage_data",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "module_TeamsClient_Core_aotstats_target::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-module_TeamsClient_Core_aotstats_target-e04c3143b3e13f679862.json",
+					"name" : "module_TeamsClient_Core_aotstats_target",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/remidesbordes/Documents/Teams/TeamsClient_/build",
+		"source" : "/Users/remidesbordes/Documents/Teams/TeamsClient_"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 8
+	}
+}

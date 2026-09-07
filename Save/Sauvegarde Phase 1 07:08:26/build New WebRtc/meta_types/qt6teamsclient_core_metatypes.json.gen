@@ -1,0 +1,1829 @@
+[
+    {
+        "classes": [
+            {
+                "className": "LocalUserService",
+                "lineNumber": 17,
+                "object": true,
+                "qualifiedClassName": "LocalUserService",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "user",
+                                "type": "User"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "localUserSaved",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "ILocalUserService"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "LocalUserService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "ContactList",
+                "lineNumber": 25,
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "row",
+                                "type": "int"
+                            }
+                        ],
+                        "index": 0,
+                        "isConst": true,
+                        "name": "get",
+                        "returnType": "QVariantMap"
+                    }
+                ],
+                "object": true,
+                "qualifiedClassName": "ContactList",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "ContactList.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "MessageList",
+                "lineNumber": 15,
+                "object": true,
+                "qualifiedClassName": "MessageList",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "MessageList.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "SearchResults",
+                "lineNumber": 25,
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "row",
+                                "type": "int"
+                            }
+                        ],
+                        "index": 0,
+                        "isConst": true,
+                        "name": "get",
+                        "returnType": "QVariantMap"
+                    }
+                ],
+                "object": true,
+                "qualifiedClassName": "SearchResults",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "SearchResults.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "user"
+                    }
+                ],
+                "className": "User",
+                "gadget": true,
+                "lineNumber": 19,
+                "properties": [
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 0,
+                        "name": "uuid",
+                        "read": "uuid",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 1,
+                        "name": "username",
+                        "read": "fullName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 2,
+                        "name": "initials",
+                        "read": "initials",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 3,
+                        "name": "avatarColor",
+                        "read": "avatarColor",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 4,
+                        "name": "online",
+                        "read": "online",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 5,
+                        "name": "lastMessage",
+                        "read": "lastMessage",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 6,
+                        "name": "status",
+                        "read": "status",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 7,
+                        "name": "unreadCount",
+                        "notify": "unreadCountChanged",
+                        "read": "unreadCount",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setUnreadCount"
+                    }
+                ],
+                "qualifiedClassName": "User"
+            }
+        ],
+        "inputFile": "User.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "IAuthService",
+                "lineNumber": 15,
+                "object": true,
+                "qualifiedClassName": "IAuthService",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "user",
+                                "type": "User"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "authSuccess",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "error",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 1,
+                        "name": "authError",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "error",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 2,
+                        "name": "errorToken",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 3,
+                        "name": "noTokenFound",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "server",
+                                "type": "ServerType"
+                            },
+                            {
+                                "name": "status",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 4,
+                        "name": "connectionUpdate",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "IAuthService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "ICallService",
+                "lineNumber": 15,
+                "object": true,
+                "qualifiedClassName": "ICallService",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "error",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "callError",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "callerUuid",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 1,
+                        "name": "incomingCallReceived",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "callerUuid",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 2,
+                        "name": "incomingCallCancelled",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "remoteUsername",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 3,
+                        "name": "openCallWindow",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 4,
+                        "name": "closeCallWindow",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "sdp",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 5,
+                        "name": "offerReceived",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "sdp",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 6,
+                        "name": "answerReceived",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "candidate",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "mid",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "index",
+                                "type": "int"
+                            }
+                        ],
+                        "index": 7,
+                        "name": "iceReceived",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 8,
+                        "name": "triggerCreateOffer",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "isConnected",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 9,
+                        "name": "isContactConnectedChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "cameraEnabled",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 10,
+                        "name": "onCameraEnabledChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "ICallService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "IChatService",
+                "lineNumber": 19,
+                "object": true,
+                "qualifiedClassName": "IChatService",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "error",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "messageError",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "message",
+                                "type": "Message"
+                            }
+                        ],
+                        "index": 1,
+                        "name": "messageReceived",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "messages",
+                                "type": "QList<Message>"
+                            }
+                        ],
+                        "index": 2,
+                        "name": "conversationsLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "error",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 3,
+                        "name": "callError",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "callerUuid",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 4,
+                        "name": "incomingCallReceived",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "callerUuid",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 5,
+                        "name": "incomingCallCancelled",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "remoteUsername",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 6,
+                        "name": "openCallWindow",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 7,
+                        "name": "closeCallWindow",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "isConnected",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 8,
+                        "name": "isContactConnectedChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "cameraEnabled",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 9,
+                        "name": "onCameraEnabledChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "IChatService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "IContactService",
+                "lineNumber": 20,
+                "object": true,
+                "qualifiedClassName": "IContactService",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "user",
+                                "type": "User"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "userResolved",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "contacts",
+                                "type": "QList<User>"
+                            }
+                        ],
+                        "index": 1,
+                        "name": "usersSearchLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "uuid",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "status",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 2,
+                        "name": "contactStatusUpdated",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "contacts",
+                                "type": "QList<User>"
+                            }
+                        ],
+                        "index": 3,
+                        "name": "contactsLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "error",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 4,
+                        "name": "contactError",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "IContactService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "ILocalUserService",
+                "lineNumber": 13,
+                "object": true,
+                "qualifiedClassName": "ILocalUserService",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "user",
+                                "type": "User"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "localUserSaved",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "user",
+                                "type": "User"
+                            }
+                        ],
+                        "index": 1,
+                        "name": "saveLocalUser",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 2,
+                        "name": "deleteAll",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "ILocalUserService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "IMessageService",
+                "lineNumber": 19,
+                "object": true,
+                "qualifiedClassName": "IMessageService",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "messages",
+                                "type": "QList<Message>"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "conversationsLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "error",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 1,
+                        "name": "messageError",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "message",
+                                "type": "Message"
+                            }
+                        ],
+                        "index": 2,
+                        "name": "messageReceived",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "IMessageService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "IMessageRepository",
+                "lineNumber": 9,
+                "object": true,
+                "qualifiedClassName": "IMessageRepository",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "IMessageRepository.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "IUserRepository",
+                "lineNumber": 9,
+                "object": true,
+                "qualifiedClassName": "IUserRepository",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "IUserRepository.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "MessageRepository",
+                "lineNumber": 19,
+                "object": true,
+                "qualifiedClassName": "MessageRepository",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "message",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "error",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "IMessageRepository"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "MessageRepository.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "UserRepository",
+                "lineNumber": 16,
+                "object": true,
+                "qualifiedClassName": "UserRepository",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "message",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "error",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "IUserRepository"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "UserRepository.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "ITokenManager",
+                "lineNumber": 14,
+                "object": true,
+                "qualifiedClassName": "ITokenManager",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "ITokenManager.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "ContactService",
+                "lineNumber": 20,
+                "object": true,
+                "qualifiedClassName": "ContactService",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "IContactService"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "ContactService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "MessageService",
+                "lineNumber": 17,
+                "object": true,
+                "qualifiedClassName": "MessageService",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "IMessageService"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "MessageService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "AuthViewModel",
+                "lineNumber": 17,
+                "object": true,
+                "qualifiedClassName": "AuthViewModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "user",
+                                "type": "User"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "authSuccess",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "error",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 1,
+                        "name": "authError",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 2,
+                        "name": "noTokenFound",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "UUID",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 3,
+                        "name": "registerWithServer4WebRTC",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "email",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "password",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 4,
+                        "name": "loginUser",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "firstName",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "lastName",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "email",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "password",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 5,
+                        "name": "registerUser",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 6,
+                        "name": "start",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "AuthViewModel.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "ChatViewModel",
+                "lineNumber": 27,
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "userUuid",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 7,
+                        "name": "selectUser",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "contactUuid",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 8,
+                        "name": "selectContact",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "query",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 9,
+                        "name": "searchUsers",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "content",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 10,
+                        "name": "sendMessage",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "contactUuid",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "contactUsername",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 11,
+                        "name": "startCall",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 0,
+                        "name": "contactList",
+                        "read": "contactList",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "ContactList*",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 1,
+                        "name": "currentMessageList",
+                        "notify": "messageListChanged",
+                        "read": "messageList",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "MessageList*",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 2,
+                        "name": "selectedContact",
+                        "notify": "selectedContactChanged",
+                        "read": "selectedContact",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariantMap",
+                        "user": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 3,
+                        "name": "searchResults",
+                        "read": "searchResults",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "SearchResults*",
+                        "user": false
+                    }
+                ],
+                "qualifiedClassName": "ChatViewModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "index": 0,
+                        "name": "messageListChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 1,
+                        "name": "selectedContactChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "contact",
+                                "type": "QVariantMap"
+                            }
+                        ],
+                        "index": 2,
+                        "name": "incomingCall",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "contact",
+                                "type": "QVariantMap"
+                            }
+                        ],
+                        "index": 3,
+                        "name": "cancelIncomingCall",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "error",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 4,
+                        "name": "chatError",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "remoteUsername",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 5,
+                        "name": "acceptIncomingCall",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 6,
+                        "name": "rejectIncomingCall",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "ChatViewModel.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "WebRTCViewModel",
+                "lineNumber": 31,
+                "methods": [
+                    {
+                        "access": "public",
+                        "index": 13,
+                        "isConst": true,
+                        "name": "cameraEnabled",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "index": 14,
+                        "isConst": true,
+                        "name": "micEnabled",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "index": 15,
+                        "isConst": true,
+                        "name": "remoteUsername",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "index": 16,
+                        "isConst": true,
+                        "name": "isContactConnected",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "index": 17,
+                        "isConst": true,
+                        "name": "isRemoteCameraEnabled",
+                        "returnType": "bool"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 0,
+                        "name": "cameraEnabled",
+                        "notify": "cameraEnabledChanged",
+                        "read": "cameraEnabled",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 1,
+                        "name": "micEnabled",
+                        "notify": "micEnabledChanged",
+                        "read": "micEnabled",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 2,
+                        "name": "remoteUsername",
+                        "notify": "remoteUsernameChanged",
+                        "read": "remoteUsername",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 3,
+                        "name": "isContactConnected",
+                        "notify": "isContactConnectedChanged",
+                        "read": "isContactConnected",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 4,
+                        "name": "isRemoteCameraEnabled",
+                        "notify": "isRemoteCameraEnabledChanged",
+                        "read": "isRemoteCameraEnabled",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false
+                    }
+                ],
+                "qualifiedClassName": "WebRTCViewModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "index": 0,
+                        "name": "onCallEnded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 1,
+                        "name": "cameraEnabledChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 2,
+                        "name": "micEnabledChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 3,
+                        "name": "remoteUsernameChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 4,
+                        "name": "isRemoteCameraEnabledChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 5,
+                        "name": "isContactConnectedChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "sink",
+                                "type": "QVideoSink*"
+                            }
+                        ],
+                        "index": 6,
+                        "name": "setLocalVideoSink",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "sink",
+                                "type": "QVideoSink*"
+                            }
+                        ],
+                        "index": 7,
+                        "name": "setRemoteVideoSink",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 8,
+                        "name": "toggleCamera",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 9,
+                        "name": "toggleMic",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 10,
+                        "name": "hangup",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "remoteUsername",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 11,
+                        "name": "onOpenCallWindow",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 12,
+                        "name": "onCloseCallWindow",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "WebRTCViewModel.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "SessionState",
+                "lineNumber": 16,
+                "object": true,
+                "qualifiedClassName": "SessionState",
+                "signals": [
+                    {
+                        "access": "public",
+                        "index": 0,
+                        "name": "onApplicationQuit",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "server",
+                                "type": "ServerType"
+                            },
+                            {
+                                "name": "status",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 1,
+                        "name": "onServerConnectionUpdate",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "SessionState.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "UserState",
+                "lineNumber": 15,
+                "object": true,
+                "qualifiedClassName": "UserState",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "user_",
+                                "type": "User"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "localUserSaved",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "user",
+                                "type": "User"
+                            }
+                        ],
+                        "index": 1,
+                        "name": "saveLocalUser",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 2,
+                        "name": "deleteLocalUser",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "UserState.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "INetworkService",
+                "lineNumber": 10,
+                "object": true,
+                "qualifiedClassName": "INetworkService",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "json",
+                                "type": "QJsonObject"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "jsonReceived",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "error",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 1,
+                        "name": "networkError",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "server",
+                                "type": "ServerType"
+                            },
+                            {
+                                "name": "status",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 2,
+                        "name": "connectionUpdate",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "INetworkService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "NetworkService",
+                "lineNumber": 25,
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "data",
+                                "type": "QByteArray"
+                            }
+                        ],
+                        "index": 0,
+                        "name": "handleIncomingData",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "qualifiedClassName": "NetworkService",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "INetworkService"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "NetworkService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "AuthService",
+                "lineNumber": 17,
+                "object": true,
+                "qualifiedClassName": "AuthService",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "IAuthService"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "AuthService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "CallService",
+                "lineNumber": 24,
+                "object": true,
+                "qualifiedClassName": "CallService",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "ICallService"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "CallService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "IWebRTCService",
+                "lineNumber": 9,
+                "object": true,
+                "qualifiedClassName": "IWebRTCService",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "IWebRTCService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "WebRTCService",
+                "lineNumber": 19,
+                "object": true,
+                "qualifiedClassName": "WebRTCService",
+                "signals": [
+                    {
+                        "access": "public",
+                        "index": 0,
+                        "name": "connected",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 1,
+                        "name": "disconnected",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "webrtc::VideoFrame"
+                            }
+                        ],
+                        "index": 2,
+                        "name": "remoteVideoFrame",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 3,
+                        "name": "error",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "IWebRTCService"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "WebRTCService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "ChatService",
+                "lineNumber": 19,
+                "object": true,
+                "qualifiedClassName": "ChatService",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "IChatService"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "ChatService.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "TokenManager",
+                "lineNumber": 20,
+                "object": true,
+                "qualifiedClassName": "TokenManager",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "ITokenManager"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "TokenManager.h",
+        "outputRevision": 69
+    }
+]

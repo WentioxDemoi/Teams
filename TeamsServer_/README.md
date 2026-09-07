@@ -1,26 +1,26 @@
 # Teams Server
 
-Serveur backend pour l'application Teams, gérant l'authentification, la messagerie et la communication temps réel.
+Backend server for the Teams application, handling authentication, messaging, and real-time communication.
 
-## Architecture du projet
+## Project Architecture
 
 ```text
 src/
-├── Core/            # Logique métier principale et modèles
-│   ├── Models/      # Structures de données (ex: User)
-│   ├── Registeries/ # Pool de sessions utilisateurs
-│   ├── Repositories/# Accès aux données (UserRepository, etc.)
-│   └── Services/    # Logique métier (AuthService, etc.)
-├── Handlers/        # Gestion des requêtes entrantes et routage
-├── Infrastructure/  # Gestion technique (DB, ConnectionPool, QueryBuilder, etc.)
-├── Network/         # Serveurs TCP/SSL et sessions réseau (TcpListener, AuthSession)
-├── Utils/           # Utilitaires généraux (Crypto, Config, ResponseFormater, BoostErrorHandler)
-└── main.cpp         # Point d'entrée de l'application
+├── Core/            # Core business logic and models
+│   ├── Models/      # Data structures (e.g. User)
+│   ├── Registeries/ # User session pool
+│   ├── Repositories/# Data access (UserRepository, etc.)
+│   └── Services/    # Business logic (AuthService, etc.)
+├── Handlers/        # Incoming request handling and routing
+├── Infrastructure/  # Technical infrastructure (DB, ConnectionPool, QueryBuilder, etc.)
+├── Network/         # TCP/SSL servers and network sessions (TcpListener, AuthSession)
+├── Utils/           # General utilities (Crypto, Config, ResponseFormater, BoostErrorHandler)
+└── main.cpp         # Application entry point
 
-C'est une architecture en layer avec injection de dépendances
+This project uses a layered architecture with dependency injection.
 ```
 
-## Prérequis
+## Prerequisites
 
 - Docker >= 28.4.0
 - CMake >= 3.22.1
@@ -29,48 +29,48 @@ C'est une architecture en layer avec injection de dépendances
 - GoogleTest >= 1.17.0
 - g++ >= 11.4.0
 
-## Déploiement avec Docker
+## Deployment with Docker
 
-Le serveur est compilé et exécuté via Docker, garantissant une cohérence d'environnement avec le déploiement sur EC2.
+The server is built and run using Docker, ensuring a consistent environment with the EC2 deployment environment.
 
-### Méthode 1 : Docker Compose
+### Method 1: Docker Compose
 
-1. Lancez le serveur et la base de données :
+1. Start the server and database:
 ```bash
 docker-compose --env-file .env up --build
 ```
 
-2. Pour réinitialiser l'environnement :
+2. To reset the environment:
 ```bash
 docker-compose down -v
 ```
 
-### Méthode 2 : DevContainer (Recommandé)
+### Method 2: DevContainer (Recommended)
 
-1. Lancez le dev container via VSCode (CMD + SHIFT + P) --> Reconstruire le container
+1. Launch the DevContainer through VSCode (`CMD + SHIFT + P`) → **Rebuild Container**.
 
-2. Une fois dedans, compilez et lancez manuellement.
+2. Once inside the container, build and run the project manually.
 
-## Tests unitaires
+## Unit Tests
 
-Les tests unitaires utilisent **GoogleTest**, intégré automatiquement par CMake via FetchContent.
+Unit tests use **GoogleTest**, which is automatically integrated by CMake through FetchContent.
 
-### Compilation et exécution des tests
+### Building and Running the Tests
 
-1. Dans le CMake, décommentez la partie dédiée aux tests.
-2. Dans le Dockerfile, commentez la ligne qui lance le serveur et décommentez celle qui lance le terminal.
-3. Une fois connecté au terminal du DevContainer, compilez le projet puis lancez les tests :
+1. Uncomment the test-related section in `CMakeLists.txt`.
+2. In the Dockerfile, comment out the line that starts the server and uncomment the line that starts the terminal.
+3. Once connected to the DevContainer terminal, build the project and run the tests:
 
 ```bash
 cd build/
 ./server_tests
 ```
 
-### Génération du coverage
+### Generating Code Coverage
 
-Le projet utilise **gcovr** afin de générer un rapport HTML permettant de visualiser graphiquement la couverture du code.
+The project uses **gcovr** to generate an HTML report that provides a graphical representation of code coverage.
 
-Après avoir exécuté les tests, toujours depuis le dossier `build/`, lancez :
+After running the tests, still from the `build/` directory, run:
 
 ```bash
 gcovr \
@@ -79,54 +79,53 @@ gcovr \
     --html-details coverage.html
 ```
 
-Cette commande génère le fichier :
+This command generates the following file:
 
 ```text
 build/coverage.html
 ```
 
-Ouvrez ensuite `coverage.html` dans un navigateur pour consulter le rapport de couverture, notamment la couverture par fichier et les lignes de code couvertes ou non couvertes.
- 
-> **Remarque :** les tests doivent être exécutés avant la génération du rapport afin que les fichiers de données de couverture soient correctement générés.
+Open `coverage.html` in a browser to view the coverage report, including per-file coverage and covered or uncovered lines of code.
+
+> **Note:** The tests must be run before generating the report so that the coverage data files are properly generated.
 
 ## Configuration
 
-Le serveur utilise un fichier `.env` pour la configuration. Les certificats SSL (`server.crt`, `server.key`) sont fournis dans le dépôt.
+The server uses a `.env` file for configuration. SSL certificates (`server.crt`, `server.key`) are provided in the repository.
 
-**Note :** Ce projet ayant un but pédagogique et ne contenant pas de données sensibles, les fichiers `.env`, certificats SSL et configurations VSCode sont inclus dans le dépôt.
+**Note:** Since this project is intended for educational purposes and does not contain sensitive data, the `.env` files, SSL certificates, and VSCode configurations are included in the repository.
 
-## Ports utilisés
+## Ports Used
 
-- **8080** : Serveur d'authentification
-- **8082** : Serveur de messagerie
-- **8083** : Serveur d'échange WebRTC
-- **8084** : Serveur des contacts
+- **8080**: Authentication server
+- **8082**: Messaging server
+- **8083**: WebRTC exchange server
+- **8084**: Contacts server
 
-## Dépendances
+## Dependencies
 
-- **Boost.Asio** : Serveurs TCP asynchrones et gestion des threads pour le pool de workers
-- **libpqxx / PostgreSQL** : Accès à la base de données PostgreSQL
-- **OpenSSL** : Support TLS/SSL
-- **GoogleTest & GoogleMock** : Tests unitaires et mocks pour AuthService et UserRepository
-- **Argon2** : Hachage sécurisé des mots de passe
-- **gcovr** : Génération du rapport HTML de couverture du code
+- **Boost.Asio**: Asynchronous TCP servers and thread management for the worker pool
+- **libpqxx / PostgreSQL**: PostgreSQL database access
+- **OpenSSL**: TLS/SSL support
+- **GoogleTest & GoogleMock**: Unit tests and mocks for AuthService and UserRepository
+- **Argon2**: Secure password hashing
+- **gcovr**: HTML code coverage report generation
 
-## Architecture technique
+## Technical Architecture
 
-- **Connection Pool** : Gestion optimisée des connexions PostgreSQL via ConnectionPool et DatabaseManager
-- **Session Management** : Gestion des sessions client sécurisées via AuthSession avec SSL et authentification par token
-- **Handler Layer** : Handler et AuthHandler pour router et traiter les requêtes JSON
-- **Async I/O** : Traitement asynchrone des connexions et requêtes via asio::io_context et thread_pool
-- **Core Layer** : Logique métier centralisée dans Core/Services et accès aux données via Core/Repositories
-- **Utils Layer** : Outils génériques pour la sécurité (Crypto), configuration (Config) et formatage JSON (ResponseFormater)
+- **Connection Pool**: Optimized PostgreSQL connection management through `ConnectionPool` and `DatabaseManager`
+- **Session Management**: Secure client session management through `AuthSession` with SSL and token-based authentication
+- **Handler Layer**: `Handler` and `AuthHandler` for routing and processing JSON requests
+- **Async I/O**: Asynchronous connection and request processing through `asio::io_context` and `thread_pool`
+- **Core Layer**: Centralized business logic in `Core/Services` and data access through `Core/Repositories`
+- **Utils Layer**: Generic tools for security (`Crypto`), configuration (`Config`), and JSON formatting (`ResponseFormater`)
 
-## Notes importantes
+## Important Notes
 
-- Le CMake sera enrichi au fur et à mesure du développement
-- D'autres fonctionnalités seront ajoutées progressivement
-- Des UMLs sont présents dans la branch diagram
+- The CMake configuration will be expanded as development progresses
+- Additional features will be added progressively
+- UML diagrams are available in the `diagram` branch
 
 ## TODO
 
-- Refactor le système d'include pour soulager clang
-```
+- Refactor the include system to reduce the load on Clang
