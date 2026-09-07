@@ -8,6 +8,7 @@ ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 INSTALL_DIR="$ROOT_DIR/libyuv"
 SRC_DIR="$ROOT_DIR/libyuv/libyuv_src"
 BUILD_DIR="$SRC_DIR/build"
+LIBYUV_COMMIT="f489037bfc93bd5338974b00b5765efb7b3afa4c"
 
 echo "== Installing libyuv locally =="
 echo "Root        : $ROOT_DIR"
@@ -22,6 +23,14 @@ if [ ! -d "$SRC_DIR" ]; then
 else
   echo "libyuv source already exists"
 fi
+
+cd "$SRC_DIR"
+echo "Checking out libyuv commit: $LIBYUV_COMMIT"
+
+git fetch origin
+git checkout "$LIBYUV_COMMIT"
+
+cd "$ROOT_DIR"
 
 # =========================
 # Build

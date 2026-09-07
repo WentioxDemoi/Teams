@@ -4,7 +4,7 @@ Ce dossier contient des **versions compilées localement et statiquement de WebR
 
 Les sources complètes de WebRTC et libyuv ne sont pas incluses dans ce repository. Elles sont téléchargées et compilées via des scripts afin de conserver un environnement de build maîtrisé.
 
-> ⚠️ Les versions de WebRTC sont susceptibles d'évoluer. Les commits utilisés pour les builds fonctionnels sont documentés ci-dessous afin de pouvoir retrouver les versions correspondantes si nécessaire.
+> ⚠️ Les versions de WebRTC et libyuv sont susceptibles d'évoluer. Les commits utilisés pour les builds fonctionnels sont documentés ci-dessous afin de pouvoir retrouver les versions correspondantes si nécessaire.
 
 ---
 
@@ -38,8 +38,7 @@ WebRTC commit:
 c4f5b6ef7e5711428a6e433eb7c8d9d3593e7e1a
 ```
 
->
-> WebRTC est récupéré via `fetch` / `gclient sync`. En cas de problème de compilation ou de changement de comportement, il peut donc être nécessaire de revenir manuellement au commit fonctionnel indiqué ci-dessus.
+> ⚠️ WebRTC est récupéré via `fetch` / `gclient sync`. En cas de problème de compilation ou de changement de comportement, il peut donc être nécessaire de revenir manuellement au commit fonctionnel indiqué ci-dessus.
 
 Si une nouvelle version de WebRTC est utilisée, il faudra potentiellement adapter le script de build, notamment en cas de modification de l'API, des fichiers `BUILD.gn`, des dépendances ou des options GN.
 
@@ -116,6 +115,17 @@ libyuv est une bibliothèque bas niveau utilisée par WebRTC pour :
 
 Elle est construite **localement et indépendamment**, afin d'éviter toute dépendance système implicite.
 
+### Version libyuv utilisée
+
+Le build fonctionnel actuel a été réalisé avec le commit suivant :
+
+```text
+libyuv commit:
+f489037bfc93bd5338974b00b5765efb7b3afa4c
+```
+
+Le script de build checkout cette version afin de conserver une version connue comme fonctionnelle.
+
 Selon le projet, libyuv peut être :
 
 - liée directement par l'application ;
@@ -134,9 +144,10 @@ Depuis le dossier `third_party` :
 Le script effectue les étapes suivantes :
 
 1. Clone libyuv depuis le dépôt Chromium officiel.
-2. Configure une build Release pour macOS arm64.
-3. Compile la librairie.
-4. Installe les headers et la librairie statique localement.
+2. Checkout la version figée de libyuv.
+3. Configure une build Release pour macOS arm64.
+4. Compile la librairie.
+5. Installe les headers et la librairie statique localement.
 
 > ⚠️ Le script est actuellement configuré pour **macOS arm64**.
 >
@@ -210,15 +221,30 @@ Aucune infrastructure réseau (signalisation, TURN) n'est fournie ici.
 
 ## Reproductibilité et versions fonctionnelles
 
-Les versions fonctionnelles de WebRTC sont conservées comme référence afin d'éviter de devoir retrouver ultérieurement une combinaison de versions compatible.
+Les versions fonctionnelles de WebRTC et libyuv sont conservées comme référence afin d'éviter de devoir retrouver ultérieurement une combinaison de versions compatible.
 
-Le commit `depot_tools` est **figé directement dans le script de build**.
+Les versions utilisées pour le build fonctionnel actuel sont :
 
-Le commit WebRTC fonctionnel est **documenté dans ce README**, mais n'est pas actuellement forcé automatiquement par le script.
+```text
+WebRTC:
+c4f5b6ef7e5711428a6e433eb7c8d9d3593e7e1a
 
-Cette distinction est volontaire : une évolution de WebRTC peut nécessiter une adaptation du patch `BUILD.gn`, des options GN ou du code C++ utilisant WebRTC.
+depot_tools:
+6fbb6012d6138844379a2df23eea5e86a2ea6696
 
-En cas de problème avec une nouvelle version, revenir à la version WebRTC connue comme fonctionnelle permet de retrouver l'environnement de compilation utilisé précédemment.
+libyuv:
+f489037bfc93bd5338974b00b5765efb7b3afa4c
+```
+
+Les commits `depot_tools` et libyuv sont **figés directement dans les scripts de build**.
+
+Le commit WebRTC fonctionnel est également utilisé par le script pour sélectionner la version correspondante.
+
+Cette configuration permet de conserver une combinaison de dépendances connue comme fonctionnelle.
+
+Une mise à jour de WebRTC ou de ses dépendances peut nécessiter une adaptation du patch `BUILD.gn`, des options GN ou du code C++ utilisant WebRTC.
+
+En cas de problème avec une nouvelle version, revenir aux commits indiqués ci-dessus permet de retrouver l'environnement de compilation utilisé précédemment.
 
 ---
 
