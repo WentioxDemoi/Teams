@@ -125,7 +125,3 @@ The server uses a `.env` file for configuration. SSL certificates (`server.crt`,
 - The CMake configuration will be expanded as development progresses
 - Additional features will be added progressively
 - UML diagrams are available in the `diagram` branch
-
-## TODO
-
-- Refactor the include system to reduce the load on Clang
